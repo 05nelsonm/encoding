@@ -33,6 +33,64 @@ dependencies {
 }
 ```
 
+### Usage
+
+Encoding/Decoding are extension functions, but below are example
+classes for demonstration purposes.
+
+```kotlin
+import io.matthewnelson.component.encoding.base32.*
+
+class Base32EncodeDecodeExample {
+
+    // enable whichever for decoding/encoding
+    private val base32: Base32 = Base32.Default
+    // private val base32: Base32 = Base32.Hex
+    // private val base32: Base32 = Base32.Crockford(checkSymbol = null)
+    
+    fun base32Encode(bytes: ByteArray): String =
+        bytes.encodeBase32(base32 = base32)
+    
+    fun base32EncodeToCharArray(bytes: ByteArray): CharArray =
+        bytes.encodeBase32ToCharArray(base32 = base32)
+        
+    fun base32EncodeToByteArray(bytes: ByteArray): ByteArray =
+        bytes.encodeBase32ToByteArray(base32 = base32)
+    
+    fun base32Decode(string: String): ByteArray? =
+        string.decodeBase32ToArray(base32 = base32)
+    
+    fun base32Decode(chars: CharArray): ByteArray? =
+        chars.decodeBase32ToArray(base32 = base32)
+}
+```
+
+```kotlin
+import io.matthewnelson.component.encoding.base64.*
+
+class Base64EncodeDecodeExample {
+
+    // enable whichever for decoding/encoding
+    private val base64: Base64 = Base64.Default
+    // private val base64: Base64 = Base64.UrlSafe(pad = true)
+    
+    fun base64Encode(bytes: ByteArray): String =
+        bytes.encodeBase64(base64 = base64)
+    
+    fun base64EncodeToCharArray(bytes: ByteArray): CharArray =
+        bytes.encodeBase64ToCharArray(base64 = base64)
+        
+    fun base64EncodeToByteArray(bytes: ByteArray): ByteArray =
+        bytes.encodeBase64ToByteArray(base64 = base64)
+    
+    fun base64Decode(string: String): ByteArray? =
+        string.decodeBase64ToArray()
+    
+    fun base64Decode(chars: CharArray): ByteArray? =
+        chars.decodeBase64ToArray()
+}
+```
+
 ### Git
 
 This project utilizes git submodules. You will need to initialize them when
