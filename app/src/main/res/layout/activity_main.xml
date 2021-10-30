@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_view_hello_world"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:gravity="center"
+        android:text="@string/hello_world"
+        android:textIsSelectable="true"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/text_view_crockford"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:gravity="center"
+        android:textIsSelectable="true"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_hello_world"
+        tools:text="some text" />
+
+    <TextView
+        android:id="@+id/text_view_default"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:gravity="center"
+        android:textIsSelectable="true"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_crockford"
+        tools:text="some text" />
+
+    <TextView
+        android:id="@+id/text_view_hex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:gravity="center"
+        android:textIsSelectable="true"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_default"
+        tools:text="some text" />
+
+    <TextView
+        android:id="@+id/text_view_base64"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:gravity="center"
+        android:textIsSelectable="true"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_hex"
+        tools:text="some text" />
+
+    <TextView
+        android:id="@+id/text_view_base64_url_safe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16sp"
+        android:gravity="center"
+        android:textIsSelectable="true"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_base64"
+        tools:text="some text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,4 @@
+[submodule "kotlin-components"]
+	path = kotlin-components
+	url = https://github.com/05nelsonm/kotlin-components.git
+	branch = master
