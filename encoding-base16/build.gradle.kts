@@ -86,6 +86,6 @@ kmpConfiguration {
 
 kmpPublish {
     setupModule(
-        pomDescription = "Kotlin Components' Base32 Encoding Component",
+        pomDescription = "Kotlin Components' Base16 Encoding Component",
     )
 }

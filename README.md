@@ -1,5 +1,8 @@
 # component-encoding
 
+**Base16**
+ - [Default (Rfc 4648 section 8)](https://www.ietf.org/rfc/rfc4648.html#section-8)
+
 **Base32**
  - [Crockford](https://www.crockford.com/base32.html)
  - [Default (Rfc 4648 section 6)](https://www.ietf.org/rfc/rfc4648.html#section-6)
@@ -18,6 +21,7 @@ A full list of `kotlin-components` projects can be found [HERE](https://kotlin-c
 
 dependencies {
     val encoding = "1.0.0"
+    implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
 }
@@ -28,6 +32,7 @@ dependencies {
 
 dependencies {
     def encoding = "1.0.0"
+    implementation "io.matthewnelson.kotlin-components:encoding-base16:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base32:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base64:$encoding"
 }
@@ -37,6 +42,29 @@ dependencies {
 
 Encoding/Decoding are extension functions, but below are example
 classes for demonstration purposes.
+
+```kotlin
+import io.matthewnelson.component.encoding.base16.*
+
+class Base16EncodeDecodeExample {
+    
+    fun base16Encode(bytes: ByteArray): String =
+        bytes.encodeBase16()
+    
+    fun base16EncodeToCharArray(bytes: ByteArray): CharArray =
+        bytes.encodeBase16ToCharArray()
+        
+    fun base16EncodeToByteArray(bytes: ByteArray): ByteArray =
+        bytes.encodeBase16ToByteArray()
+    
+    fun base16Decode(string: String): ByteArray? =
+        string.decodeBase16ToArray()
+    
+    fun base16Decode(chars: CharArray): ByteArray? =
+        chars.decodeBase16ToArray()
+}
+```
+
 
 ```kotlin
 import io.matthewnelson.component.encoding.base32.*

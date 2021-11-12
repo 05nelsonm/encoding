@@ -3,6 +3,7 @@ rootProject.name = "component-encoding"
 includeBuild("kotlin-components/includeBuild/dependencies")
 includeBuild("kotlin-components/includeBuild/kmp")
 
+include(":encoding-base16")
 include(":encoding-base32")
 include(":encoding-base64")
 include(":encoding-test")
