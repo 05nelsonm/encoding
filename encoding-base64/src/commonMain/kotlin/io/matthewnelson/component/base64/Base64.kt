@@ -26,6 +26,7 @@
 
 package io.matthewnelson.component.base64
 
+import kotlin.jvm.JvmSynthetic
 import kotlin.native.concurrent.SharedImmutable
 
 @SharedImmutable
@@ -44,6 +45,7 @@ private val URL_SAFE_TABLE = Base64.UrlSafe.CHARS.encodeToByteArray()
  * */
 sealed class Base64 {
 
+    @get:JvmSynthetic
     internal abstract val encodingTable: ByteArray
 
     /**
@@ -68,8 +70,7 @@ sealed class Base64 {
             const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
         }
 
-        override val encodingTable: ByteArray
-            get() = URL_SAFE_TABLE
+        override val encodingTable: ByteArray get() = URL_SAFE_TABLE
     }
 }
 
