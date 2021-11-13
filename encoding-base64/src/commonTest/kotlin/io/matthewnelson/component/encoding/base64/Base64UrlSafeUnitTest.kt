@@ -43,6 +43,7 @@ class Base64UrlSafeUnitTest: BaseEncodingTestBase() {
             expected = ("53 61 6c 74 65 64 5f 5f f3 94 90 6e fa 9d 10 f1 b1 df e0 0f 40 15 01 " +
                     "3a 97 ec 1f 48 ba 76 ad a9").decodeHexToByteArray()
         ),
+        Data(raw = "======", expected = ByteArray(0), message = "Decoding a String containing only padding '=' should return an empty ByteArray"),
         Data(raw = "Zg==", expected = "f".encodeToByteArray()),
         Data(raw = "Zm8=", expected = "fo".encodeToByteArray()),
         Data(raw = "Zm9v", expected = "foo".encodeToByteArray()),

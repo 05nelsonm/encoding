@@ -2,6 +2,7 @@ package io.matthewnelson.component.encoding.test
 
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 abstract class BaseEncodingTestBase {
 
@@ -71,21 +72,23 @@ abstract class BaseEncodingTestBase {
     }
 
     protected fun checkUniversalDecoderParameters() {
-        assertNull(
-            actual = decode(""),
-            message = "Decoding an empty String should return null"
+        val emptyDecode = decode("")
+        assertTrue(
+            actual = emptyDecode?.isEmpty() == true,
+            message = "Decoding an empty String should return an empty ByteArray"
         )
-        assertNull(
-            actual = decode("      "),
-            message = "Decoding a String with all spaces should return null"
+        val emptyDecode2 = decode("      ")
+        assertTrue(
+            actual = emptyDecode2?.isEmpty() == true,
+            message = "Decoding a String with all spaces should return an empty ByteArray"
         )
 
-        // For Base32.Crockford, the standard '=' padding is only accepted when
-        // appended as a check symbol, so checking here for all other decoders is ok
-        assertNull(
-            actual = decode("=="),
-            message = "Decoding a String containing only padding '=' should return null"
-        )
+//        // For Base32.Crockford, the standard '=' padding is only accepted when
+//        // appended as a check symbol, so checking here for all other decoders is ok
+//        assertNull(
+//            actual = decode("=="),
+//            message = "Decoding a String containing only padding '=' should return null"
+//        )
 
         val newHelloWorldEncodedString = decodeSuccessHelloWorld.raw.let { string ->
             val sb = StringBuilder()

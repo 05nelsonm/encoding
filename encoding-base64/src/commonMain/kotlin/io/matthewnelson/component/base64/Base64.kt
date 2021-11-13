@@ -93,7 +93,7 @@ fun CharArray.decodeBase64ToArray(): ByteArray? {
 
     // Was all padding, whitespace, or otherwise ignorable characters
     if (limit == 0) {
-        return null
+        return ByteArray(0)
     }
 
     // If the input includes whitespace, this output array will be longer than necessary.
