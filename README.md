@@ -1,6 +1,6 @@
 # component-encoding
 
-**Base16**
+**Base16 (Hex)**
  - [Default (Rfc 4648 section 8)](https://www.ietf.org/rfc/rfc4648.html#section-8)
 
 **Base32**
@@ -20,7 +20,7 @@ A full list of `kotlin-components` projects can be found [HERE](https://kotlin-c
 // build.gradle.kts
 
 dependencies {
-    val encoding = "1.0.0"
+    val encoding = "1.0.1"
     implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
@@ -31,7 +31,7 @@ dependencies {
 // build.gradle
 
 dependencies {
-    def encoding = "1.0.0"
+    def encoding = "1.0.1"
     implementation "io.matthewnelson.kotlin-components:encoding-base16:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base32:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base64:$encoding"

@@ -86,9 +86,9 @@ kmpConfiguration {
         commonMainSourceSet = {
             project.kmpPublishRootProjectConfiguration?.let { config ->
                 dependencies {
+                    implementation("${config.group}:encoding-base16:${config.versionName}")
                     implementation("${config.group}:encoding-base32:${config.versionName}")
                     implementation("${config.group}:encoding-base64:${config.versionName}")
-                    implementation("${config.group}:encoding-hex:${config.versionName}")
                 }
             }
         },
