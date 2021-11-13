@@ -52,8 +52,8 @@ plugins {
 
 kmpPublish {
     setupRootProject(
-        versionName = "1.0.1",
-        versionCode = 101000,
+        versionName = "1.0.2-SNAPSHOT",
+        versionCode = 102000,
         pomInceptionYear = 2021,
     )
 }
