@@ -22,6 +22,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import io.matthewnelson.component.base64.Base64
 import io.matthewnelson.component.base64.encodeBase64
 import io.matthewnelson.component.encoding.app.databinding.ActivityMainBinding
+import io.matthewnelson.component.encoding.base16.encodeBase16
 import io.matthewnelson.component.encoding.base32.Base32
 import io.matthewnelson.component.encoding.base32.encodeBase32
 
@@ -37,12 +38,14 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bytes = HELLO_WORLD.encodeToByteArray()
+        val base16 = bytes.encodeBase16()
         val crockford = bytes.encodeBase32(Base32.Crockford('*'))
         val default = bytes.encodeBase32(Base32.Default)
         val hex = bytes.encodeBase32(Base32.Hex)
         val base64 = bytes.encodeBase64(Base64.Default)
         val base64UrlSafe = bytes.encodeBase64(Base64.UrlSafe(pad = true))
 
+        binding.textViewBase16.text = "Base16 (hex):\n$base16"
         binding.textViewCrockford.text = "Base32 Crockford(checkSymbol = *):\n$crockford"
         binding.textViewDefault.text = "Base32 Default:\n$default"
         binding.textViewHex.text = "Base32 Hex:\n$hex"

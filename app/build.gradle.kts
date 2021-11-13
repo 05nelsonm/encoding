@@ -53,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":encoding-base16"))
     implementation(project(":encoding-base32"))
     implementation(project(":encoding-base64"))
 
