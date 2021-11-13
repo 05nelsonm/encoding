@@ -18,6 +18,7 @@ class Base32HexUnitTest: BaseEncodingTestBase() {
 
     override val decodeSuccessDataSet: Set<Data<String, ByteArray>> = setOf(
         decodeSuccessHelloWorld,
+        Data(raw = "======", expected = ByteArray(0), message = "Decoding a String containing only padding '=' should return an empty ByteArray"),
         Data(raw = "CO======", expected = "f".encodeToByteArray()),
         Data(raw = "CO", expected = "f".encodeToByteArray(), message = "Stripped padding should decode"),
         Data(raw = "CPNG====", expected = "fo".encodeToByteArray()),

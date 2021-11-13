@@ -19,7 +19,6 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
         Data(raw = "auu", expected = null, message = "Character 'u' should return null"),
         Data(raw = "UA", expected = null, message = "Character 'U' should return null"),
         Data(raw = "ua", expected = null, message = "Character 'u' should return null"),
-        Data(raw = "-----", expected = null, message = "String of only hyphens '-' should return null"),
     )
 
     companion object {
@@ -33,6 +32,7 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
     override val decodeSuccessDataSet: Set<Data<String, ByteArray>> = setOf(
         decodeSuccessHelloWorld,
         Data(raw = " 91JP RV3F41B PYW KCC GGG  ", expected = "Hello World!".encodeToByteArray(), message = "Spaces ' ' should be ignored"),
+        Data(raw = "-----", expected = ByteArray(0), message = "Decoding a String containing only hyphens '-' should return an empty ByteArray"),
 
         Data(raw = "CR", expected = "f".encodeToByteArray()),
         Data(raw = "cR", expected = "f".encodeToByteArray(), message = MESSAGE_LOWERCASE),

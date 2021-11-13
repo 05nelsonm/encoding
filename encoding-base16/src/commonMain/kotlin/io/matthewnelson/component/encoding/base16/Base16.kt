@@ -38,7 +38,7 @@ fun CharArray.decodeBase16ToArray(): ByteArray? {
     }
 
     if (limit == 0) {
-        return null
+        return ByteArray(0)
     }
 
     val out: ByteArray = ByteArray(limit / 2)

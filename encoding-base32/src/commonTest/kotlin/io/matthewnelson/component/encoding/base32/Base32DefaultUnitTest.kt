@@ -17,6 +17,7 @@ class Base32DefaultUnitTest: BaseEncodingTestBase() {
 
     override val decodeSuccessDataSet: Set<Data<String, ByteArray>> = setOf(
         decodeSuccessHelloWorld,
+        Data(raw = "========", expected = ByteArray(0), message = "Decoding a String containing only padding '=' should return an empty ByteArray"),
         Data(raw = "MY======", expected = "f".encodeToByteArray()),
         Data(raw = "MY", expected = "f".encodeToByteArray(), message = "Stripped padding should decode"),
         Data(raw = "MZXQ====", expected = "fo".encodeToByteArray()),

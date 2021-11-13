@@ -118,7 +118,7 @@ fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
 
     // Was all padding, whitespace, or otherwise ignorable characters
     if (limit == 0) {
-        return null
+        return ByteArray(0)
     }
 
     val out: ByteArray = ByteArray((limit * 5L / 8L).toInt())
