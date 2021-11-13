@@ -17,8 +17,19 @@
 
 package io.matthewnelson.component.encoding.base32
 
+import kotlin.jvm.JvmSynthetic
+import kotlin.native.concurrent.SharedImmutable
+
+@SharedImmutable
+private val CROCKFORD_TABLE = Base32.Crockford.CHARS.encodeToByteArray()
+@SharedImmutable
+private val DEFAULT_TABLE = Base32.Default.CHARS.encodeToByteArray()
+@SharedImmutable
+private val HEX_TABLE = Base32.Hex.CHARS.encodeToByteArray()
+
 sealed class Base32 {
 
+    @get:JvmSynthetic
     internal abstract val encodingTable: ByteArray
 
     /**
@@ -46,17 +57,11 @@ sealed class Base32 {
 
         companion object {
             const val CHARS: String = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
-            private val encodingTable: ByteArray = CHARS.encodeToByteArray()
         }
 
-        override val encodingTable: ByteArray
-            get() = Companion.encodingTable
-
-        inline val hasCheckSymbol: Boolean
-            get() = checkSymbol != null
-
-        inline val checkByte: Byte?
-            get() = checkSymbol?.uppercaseChar()?.code?.toByte()
+        override val encodingTable: ByteArray get() = CROCKFORD_TABLE
+        inline val hasCheckSymbol: Boolean get() = checkSymbol != null
+        inline val checkByte: Byte? get() = checkSymbol?.uppercaseChar()?.code?.toByte()
     }
 
     /**
@@ -65,7 +70,7 @@ sealed class Base32 {
      * */
     object Default: Base32() {
         const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-        override val encodingTable: ByteArray = CHARS.encodeToByteArray()
+        override val encodingTable: ByteArray get() = DEFAULT_TABLE
     }
 
     /**
@@ -74,7 +79,7 @@ sealed class Base32 {
      * */
     object Hex: Base32() {
         const val CHARS: String = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
-        override val encodingTable: ByteArray = CHARS.encodeToByteArray()
+        override val encodingTable: ByteArray get() = HEX_TABLE
     }
 }
 
