@@ -15,11 +15,7 @@ buildscript {
 
     dependencies {
         classpath(io.matthewnelson.kotlin.components.dependencies.plugins.android.gradle)
-
-        /* Replace version 1.5.31 with 1.6.0-RC2 due to native test errors with llvm */
-        classpath(io.matthewnelson.kotlin.components.dependencies.plugins.kotlin.gradle
-            .replaceAfterLast(':', "1.6.0-RC2")
-        )
+        classpath(io.matthewnelson.kotlin.components.dependencies.plugins.kotlin.gradle)
         classpath(io.matthewnelson.kotlin.components.dependencies.plugins.intellij)
         classpath(io.matthewnelson.kotlin.components.dependencies.plugins.mavenPublish)
 
@@ -52,7 +48,7 @@ plugins {
 
 kmpPublish {
     setupRootProject(
-        versionName = "1.0.2-SNAPSHOT",
+        versionName = "1.0.2",
         versionCode = 102000,
         pomInceptionYear = 2021,
     )
