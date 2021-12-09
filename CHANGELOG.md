@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 1.0.2 (2021-12-09)
+ - Removes unnecessary Android target
+ - JVM target compile to JavaVersion 1.8 in stead of 11
+
 ## Version 1.0.2 (2021-11-15)
  - Drops kotlin gradle plugin version down to 1.5.31 for source
    compatibility.
