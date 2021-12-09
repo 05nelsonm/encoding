@@ -14,7 +14,7 @@ include(":encoding-test")
 private val KMP_TARGETS: String? by settings
 @Suppress("PrivatePropertyName")
 private val KMP_TARGETS_ALL: String? by settings
-if (KMP_TARGETS_ALL != null || KMP_TARGETS?.split(',')?.contains("ANDROID") != false) {
+if (KMP_TARGETS_ALL != null || KMP_TARGETS?.split(',')?.contains("JVM") != false) {
     include(":app")
 }
 
