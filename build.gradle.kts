@@ -16,7 +16,6 @@ buildscript {
     dependencies {
         classpath(io.matthewnelson.kotlin.components.dependencies.plugins.android.gradle)
         classpath(io.matthewnelson.kotlin.components.dependencies.plugins.kotlin.gradle)
-        classpath(io.matthewnelson.kotlin.components.dependencies.plugins.intellij)
         classpath(io.matthewnelson.kotlin.components.dependencies.plugins.mavenPublish)
 
         // NOTE: Do not place your application dependencies here; they belong
