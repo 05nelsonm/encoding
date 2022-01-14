@@ -38,6 +38,12 @@ dependencies {
 }
 ```
 
+### Kotlin Version Compatibility
+
+|  encoding  |    kotlin    |
+| :--------: | :----------: |
+|    1.0.3   |    1.5.31    |
+
 ### Usage
 
 Encoding/Decoding are extension functions, but below are example
