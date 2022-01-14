@@ -8,8 +8,7 @@ include(":encoding-base32")
 include(":encoding-base64")
 include(":encoding-test")
 
-// if ANDROID is not being built, don't include the app as it relies
-// on some android only kmp projects
+// if JVM is not being built, don't include the app
 @Suppress("PrivatePropertyName")
 private val KMP_TARGETS: String? by settings
 @Suppress("PrivatePropertyName")
