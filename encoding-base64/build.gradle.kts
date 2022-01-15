@@ -38,11 +38,11 @@ kmpConfiguration {
                 testSourceSet = null,
             ),
 
-            KmpTarget.NonJvm.Native.Unix.Darwin.Ios.All(enableSimulator = {}),
+            KmpTarget.NonJvm.Native.Unix.Darwin.Ios.All.DEFAULT,
             KmpTarget.NonJvm.Native.Unix.Darwin.Macos.Arm64.DEFAULT,
             KmpTarget.NonJvm.Native.Unix.Darwin.Macos.X64.DEFAULT,
-            KmpTarget.NonJvm.Native.Unix.Darwin.Tvos.All(enableSimulator = {}),
-            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.All(enableSimulator = {}),
+            KmpTarget.NonJvm.Native.Unix.Darwin.Tvos.All.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.All.DEFAULT,
 
             KmpTarget.NonJvm.Native.Unix.Linux.Arm32Hfp.DEFAULT,
             KmpTarget.NonJvm.Native.Unix.Linux.Mips32.DEFAULT,

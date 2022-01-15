@@ -20,7 +20,7 @@ A full list of `kotlin-components` projects can be found [HERE](https://kotlin-c
 // build.gradle.kts
 
 dependencies {
-    val encoding = "1.0.3"
+    val encoding = "1.1.0"
     implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
@@ -31,7 +31,7 @@ dependencies {
 // build.gradle
 
 dependencies {
-    def encoding = "1.0.3"
+    def encoding = "1.1.0"
     implementation "io.matthewnelson.kotlin-components:encoding-base16:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base32:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base64:$encoding"
@@ -40,9 +40,12 @@ dependencies {
 
 ### Kotlin Version Compatibility
 
+**Note:** as of `1.1.0`, the experimental memory model for KotlinNative is enabled.
+
 |  encoding  |    kotlin    |
 | :--------: | :----------: |
 |    1.0.3   |    1.5.31    |
+|    1.1.0   |    1.6.10    |
 
 ### Usage
 

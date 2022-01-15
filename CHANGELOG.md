@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## Version 1.0.2 (2021-12-09)
+## Version 1.1.0 (2022-01-14)
+ - Bumps dependencies
+ - Enables Kotlin 1.6's new memory model
+
+## Version 1.0.3 (2021-12-09)
  - Removes unnecessary Android target
  - JVM target compile to JavaVersion 1.8 in stead of 11
 
