@@ -134,7 +134,7 @@ This project utilizes git submodules. You will need to initialize them when
 cloning the repository via:
 
 ```bash
-$ git clone --recursive https://github.com/05nelsonm/component-request.git
+$ git clone --recursive https://github.com/05nelsonm/component-encoding.git
 ```
 
 If you've already cloned the repository, run:
