@@ -41,7 +41,7 @@ kmpPublishRootProjectConfiguration?.let { config ->
 kmpConfiguration {
     setupMultiplatform(
         setOf(
-            KmpTarget.Jvm.Jvm(kotlinJvmTarget = JavaVersion.VERSION_1_8),
+            KmpTarget.Jvm.Jvm(kotlinJvmTarget = JavaVersion.VERSION_11),
 
             KmpTarget.NonJvm.JS(
                 compilerType = KotlinJsCompilerType.BOTH,
