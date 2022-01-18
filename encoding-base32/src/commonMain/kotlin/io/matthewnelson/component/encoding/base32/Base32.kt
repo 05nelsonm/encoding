@@ -17,6 +17,7 @@
 
 package io.matthewnelson.component.encoding.base32
 
+import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 import kotlin.native.concurrent.SharedImmutable
 
@@ -41,7 +42,7 @@ sealed class Base32 {
      * @throws [IllegalArgumentException] if [checkSymbol] is not one of the accepted
      *  symbols (*, ~, $, =, U, u) or `null` to omit (omitted by default)
      * */
-    data class Crockford(val checkSymbol: Char? = null): Base32() {
+    data class Crockford @JvmOverloads constructor(val checkSymbol: Char? = null): Base32() {
 
         init {
             when (checkSymbol) {
@@ -83,11 +84,13 @@ sealed class Base32 {
     }
 }
 
+@JvmOverloads
 @Suppress("nothing_to_inline")
 inline fun String.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
     return toCharArray().decodeBase32ToArray(base32)
 }
 
+@JvmOverloads
 fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
     var limit: Int = size
 
@@ -291,11 +294,13 @@ fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
     }
 }
 
+@JvmOverloads
 @Suppress("nothing_to_inline")
 inline fun ByteArray.encodeBase32(base32: Base32 = Base32.Default): String {
     return encodeBase32ToCharArray(base32).joinToString("")
 }
 
+@JvmOverloads
 @Suppress("nothing_to_inline")
 inline fun ByteArray.encodeBase32ToCharArray(base32: Base32 = Base32.Default): CharArray {
     return encodeBase32ToByteArray(base32).let { bytes ->
@@ -307,6 +312,7 @@ inline fun ByteArray.encodeBase32ToCharArray(base32: Base32 = Base32.Default): C
     }
 }
 
+@JvmOverloads
 fun ByteArray.encodeBase32ToByteArray(base32: Base32 = Base32.Default): ByteArray {
     val base32Lookup: ByteArray = base32.encodingTable
 

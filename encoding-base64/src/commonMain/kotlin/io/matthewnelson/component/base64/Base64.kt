@@ -26,6 +26,7 @@
 
 package io.matthewnelson.component.base64
 
+import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 import kotlin.native.concurrent.SharedImmutable
 
@@ -64,7 +65,7 @@ sealed class Base64 {
      * @param [pad] specify whether or not to add padding character '='
      *  while encoding (true by default).
      * */
-    data class UrlSafe(val pad: Boolean = true): Base64() {
+    data class UrlSafe @JvmOverloads constructor(val pad: Boolean = true): Base64() {
 
         companion object {
             const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
@@ -170,11 +171,13 @@ fun CharArray.decodeBase64ToArray(): ByteArray? {
     }
 }
 
+@JvmOverloads
 @Suppress("nothing_to_inline")
 inline fun ByteArray.encodeBase64(base64: Base64 = Base64.Default): String {
     return encodeBase64ToCharArray(base64).joinToString("")
 }
 
+@JvmOverloads
 @Suppress("nothing_to_inline")
 inline fun ByteArray.encodeBase64ToCharArray(base64: Base64 = Base64.Default): CharArray {
     return encodeBase64ToByteArray(base64).let { bytes ->
@@ -186,6 +189,7 @@ inline fun ByteArray.encodeBase64ToCharArray(base64: Base64 = Base64.Default): C
     }
 }
 
+@JvmOverloads
 fun ByteArray.encodeBase64ToByteArray(base64: Base64 = Base64.Default): ByteArray {
     val base64Lookup: ByteArray = base64.encodingTable
 
