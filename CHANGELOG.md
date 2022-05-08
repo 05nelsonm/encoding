@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 1.1.1 (2022-05-08)
+ - Updates Kotlin-Components
+     - Bumps Kotlin `1.6.10` -> `1.6.21`
+
 ## Version 1.1.0 (2022-01-14)
  - Bumps dependencies
  - Enables Kotlin 1.6's new memory model
