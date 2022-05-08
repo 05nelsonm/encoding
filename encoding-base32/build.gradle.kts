@@ -24,7 +24,7 @@ plugins {
 kmpConfiguration {
     setupMultiplatform(
         setOf(
-            KmpTarget.Jvm.Jvm(kotlinJvmTarget = JavaVersion.VERSION_11),
+            KmpTarget.Jvm.Jvm.DEFAULT,
 
             KmpTarget.NonJvm.JS(
                 compilerType = KotlinJsCompilerType.BOTH,

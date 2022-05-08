@@ -30,8 +30,8 @@ kmpPublishRootProjectConfiguration?.let { config ->
         } else {
             maven("https://oss.sonatype.org/content/groups/staging") {
                 credentials {
-                    username = ext.get("mavenCentralUsername").toString()
-                    password = ext.get("mavenCentralPassword").toString()
+                    username = rootProject.ext.get("mavenCentralUsername").toString()
+                    password = rootProject.ext.get("mavenCentralPassword").toString()
                 }
             }
         }
