@@ -11,9 +11,11 @@ include(":encoding-test")
 // if JVM is not being built, don't include the app
 @Suppress("PrivatePropertyName")
 private val KMP_TARGETS: String? by settings
-@Suppress("PrivatePropertyName")
-private val KMP_TARGETS_ALL: String? by settings
-if (KMP_TARGETS_ALL != null || KMP_TARGETS?.split(',')?.contains("JVM") != false) {
+
+private val allTargets = System.getProperty("KMP_TARGETS_ALL") != null
+private val targets = KMP_TARGETS?.split(',')
+
+if (allTargets || targets?.contains("JVM") != false) {
     include(":app")
 }
 

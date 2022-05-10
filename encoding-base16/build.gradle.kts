@@ -28,21 +28,27 @@ kmpConfiguration {
 
             KmpTarget.NonJvm.JS(
                 compilerType = KotlinJsCompilerType.BOTH,
-                browser = KmpTarget.NonJvm.JS.Browser(
-                    jsBrowserDsl = null
-                ),
-                node = KmpTarget.NonJvm.JS.Node(
-                    jsNodeDsl = null
-                ),
-                mainSourceSet = null,
-                testSourceSet = null,
+                browser = KmpTarget.NonJvm.JS.Browser(),
+                node = KmpTarget.NonJvm.JS.Node(),
             ),
 
-            KmpTarget.NonJvm.Native.Unix.Darwin.Ios.All.DEFAULT,
-            KmpTarget.NonJvm.Native.Unix.Darwin.Macos.Arm64.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Ios.Arm32.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Ios.Arm64.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Ios.X64.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Ios.SimulatorArm64.DEFAULT,
+
             KmpTarget.NonJvm.Native.Unix.Darwin.Macos.X64.DEFAULT,
-            KmpTarget.NonJvm.Native.Unix.Darwin.Tvos.All.DEFAULT,
-            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.All.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Macos.Arm64.DEFAULT,
+
+            KmpTarget.NonJvm.Native.Unix.Darwin.Tvos.Arm64.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Tvos.X64.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Tvos.SimulatorArm64.DEFAULT,
+
+            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.Arm32.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.Arm64.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.X64.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.X86.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.SimulatorArm64.DEFAULT,
 
             KmpTarget.NonJvm.Native.Unix.Linux.Arm32Hfp.DEFAULT,
             KmpTarget.NonJvm.Native.Unix.Linux.Mips32.DEFAULT,
