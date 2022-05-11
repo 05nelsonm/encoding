@@ -17,6 +17,8 @@ import io.matthewnelson.kotlin.components.dependencies.versions
 import io.matthewnelson.kotlin.components.kmp.KmpTarget
 import io.matthewnelson.kotlin.components.kmp.publish.isSnapshotVersion
 import io.matthewnelson.kotlin.components.kmp.publish.kmpPublishRootProjectConfiguration
+import io.matthewnelson.kotlin.components.kmp.util.includeSnapshotsRepoIfTrue
+import io.matthewnelson.kotlin.components.kmp.util.includeStagingRepoIfTrue
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 
 plugins {
@@ -26,18 +28,8 @@ plugins {
 
 val pConfig = kmpPublishRootProjectConfiguration!!
 
-repositories {
-    if (pConfig.isSnapshotVersion) {
-        maven("https://oss.sonatype.org/content/repositories/snapshots/")
-    } else {
-        maven("https://oss.sonatype.org/content/groups/staging") {
-            credentials {
-                username = rootProject.ext.get("mavenCentralUsername").toString()
-                password = rootProject.ext.get("mavenCentralPassword").toString()
-            }
-        }
-    }
-}
+includeSnapshotsRepoIfTrue(pConfig.isSnapshotVersion)
+includeStagingRepoIfTrue(!pConfig.isSnapshotVersion)
 
 kmpConfiguration {
     setupMultiplatform(
