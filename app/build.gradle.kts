@@ -17,8 +17,8 @@ import io.matthewnelson.kotlin.components.dependencies.deps
 import io.matthewnelson.kotlin.components.dependencies.versions
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
+    id(pluginId.android.application)
+    id(pluginId.kotlin.android)
 }
 
 android {

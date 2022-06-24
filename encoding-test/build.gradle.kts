@@ -17,7 +17,7 @@ import io.matthewnelson.kotlin.components.kmp.KmpTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 
 plugins {
-    id("kmp-configuration")
+    id(pluginId.kmp.configuration)
 }
 
 kmpConfiguration {
