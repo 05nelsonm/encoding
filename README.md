@@ -33,7 +33,7 @@ A full list of `kotlin-components` projects can be found [HERE](https://kotlin-c
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "1.1.2"
+    val encoding = "1.1.3"
     implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
@@ -43,7 +43,7 @@ dependencies {
 ```groovy
 // build.gradle
 dependencies {
-    def encoding = "1.1.2"
+    def encoding = "1.1.3"
     implementation "io.matthewnelson.kotlin-components:encoding-base16:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base32:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base64:$encoding"
@@ -56,10 +56,11 @@ dependencies {
 
 |  encoding  |    kotlin    |
 | :--------: | :----------: |
-|    1.0.3   |    1.5.31    |
-|    1.1.0   |    1.6.10    |
-|    1.1.1   |    1.6.21    |
+|    1.1.3   |    1.6.21    |
 |    1.1.2   |    1.6.21    |
+|    1.1.1   |    1.6.21    |
+|    1.1.0   |    1.6.10    |
+|    1.0.3   |    1.5.31    |
 
 ### Usage
 
