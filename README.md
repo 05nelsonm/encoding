@@ -68,7 +68,7 @@ Encoding/Decoding are extension functions, but below are example
 classes for demonstration purposes.
 
 ```kotlin
-import io.matthewnelson.component.encoding.base16.*
+import io.matthewnelson.component.base16.*
 
 class Base16EncodeDecodeExample {
     
@@ -91,7 +91,7 @@ class Base16EncodeDecodeExample {
 
 
 ```kotlin
-import io.matthewnelson.component.encoding.base32.*
+import io.matthewnelson.component.base32.*
 
 class Base32EncodeDecodeExample {
 
@@ -118,7 +118,7 @@ class Base32EncodeDecodeExample {
 ```
 
 ```kotlin
-import io.matthewnelson.component.encoding.base64.*
+import io.matthewnelson.component.base64.*
 
 class Base64EncodeDecodeExample {
 
