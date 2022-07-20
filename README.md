@@ -118,7 +118,7 @@ class Base32EncodeDecodeExample {
 ```
 
 ```kotlin
-import io.matthewnelson.component.encoding.base64.*
+import io.matthewnelson.component.base64.*
 
 class Base64EncodeDecodeExample {
 
