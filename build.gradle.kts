@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+import io.matthewnelson.kotlin.components.kmp.util.configureYarn
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
@@ -56,13 +57,19 @@ allprojects {
 
 }
 
+configureYarn { rootYarn, _ ->
+    rootYarn.apply {
+        lockFileDirectory = project.rootDir.resolve(".kotlin-js-store")
+    }
+}
+
 plugins {
     id(pluginId.kmp.publish)
 }
 
 kmpPublish {
     setupRootProject(
-        versionName = "1.1.4-SNAPSHOT",
+        versionName = "1.1.4",
         // 1.0.0-alpha1 == 01_00_00_11
         // 1.0.0-alpha2 == 01_00_00_12
         // 1.0.0-beta1  == 01_00_00_21

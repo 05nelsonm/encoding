@@ -1,11 +1,22 @@
 # CHANGELOG
 
+## Version 1.1.4 (2023-01-07)
+ - Updates `kotlin-components` submodule
+     - Kotlin `1.6.21` -> `1.7.20`
+     - Support new targets:
+         - `androidNativeArm32`
+         - `androidNativeArm64`
+         - `androidNativeX64`
+         - `androidNativeX86`
+         - `linuxArm64`
+         - `wasm32`
+
 ## Version 1.1.3 (2022-06-24)
  - Re-enable compiler flag `enableCompatibilityMetadataVariant=true` to support
    non-hierarchical projects. (sorry...)
 
 ## Version 1.1.2 (2022-05-14)
- - Updates Kotlin-Components
+ - Updates `kotlin-components` submodule
      - Support new targets:
          - `iosArm32`
          - `iosSimulatorArm64`
@@ -14,16 +25,17 @@
          - `watchosSimulatorArm64`
 
 ## Version 1.1.1 (2022-05-08)
- - Updates Kotlin-Components
-     - Bumps Kotlin `1.6.10` -> `1.6.21`
+ - Updates `kotlin-components` submodule
+     - Kotlin `1.6.10` -> `1.6.21`
 
 ## Version 1.1.0 (2022-01-14)
- - Bumps dependencies
+ - Updates `kotlin-components` submodule
+     - Kotlin `1.5.31` -> `1.6.10`
  - Enables Kotlin 1.6's new memory model
 
 ## Version 1.0.3 (2021-12-09)
  - Removes unnecessary Android target
- - JVM target compile to JavaVersion 1.8 in stead of 11
+ - JVM target compile to JavaVersion 1.8 instead of 11
 
 ## Version 1.0.2 (2021-11-15)
  - Drops kotlin gradle plugin version down to 1.5.31 for source
