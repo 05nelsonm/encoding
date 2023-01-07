@@ -24,6 +24,7 @@ plugins {
 android {
     compileSdk = versions.android.sdkCompile
     buildToolsVersion = versions.android.buildTools
+    namespace = "io.matthewnelson.component.encoding.app"
 
     packagingOptions {
         resources.excludes.add("META-INF/gradle/incremental.annotation.processors")
@@ -74,5 +75,6 @@ dependencies {
 
     implementation(deps.androidx.appCompat)
     implementation(deps.androidx.constraintLayout)
+    implementation(deps.androidx.lifecycle.viewModel)
     implementation(deps.viewBindingDelegateNoReflect)
 }
