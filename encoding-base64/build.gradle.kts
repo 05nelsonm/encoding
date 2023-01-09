@@ -25,6 +25,7 @@ kmpConfiguration {
         setOf(
             KmpTarget.Jvm.Jvm.DEFAULT,
             KmpTarget.NonJvm.JS.DEFAULT,
+            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.DeviceArm64.DEFAULT,
         ) +
         KmpTarget.NonJvm.Native.Android.ALL_DEFAULT             +
         KmpTarget.NonJvm.Native.Unix.Darwin.Ios.ALL_DEFAULT     +
