@@ -69,7 +69,7 @@ plugins {
 
 kmpPublish {
     setupRootProject(
-        versionName = "1.1.5",
+        versionName = "1.1.6-SNAPSHOT",
         // 1.0.0-alpha1 == 01_00_00_11
         // 1.0.0-alpha2 == 01_00_00_12
         // 1.0.0-beta1  == 01_00_00_21
@@ -78,7 +78,7 @@ kmpPublish {
         // 1.0.1        == 01_00_01_99
         // 1.1.1        == 01_01_01_99
         // 1.15.1       == 01_15_01_99
-        versionCode = /*0 */1_01_05_99,
+        versionCode = /*0 */1_01_06_99,
         pomInceptionYear = 2021,
     )
 }
