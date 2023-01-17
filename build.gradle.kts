@@ -65,6 +65,7 @@ configureYarn { rootYarn, _ ->
 
 plugins {
     id(pluginId.kmp.publish)
+    id(pluginId.kotlin.binaryCompat) version(versions.gradle.binaryCompat)
 }
 
 kmpPublish {
@@ -81,4 +82,25 @@ kmpPublish {
         versionCode = /*0 */1_01_06_99,
         pomInceptionYear = 2021,
     )
+}
+
+@Suppress("LocalVariableName")
+apiValidation {
+    val KMP_TARGETS = findProperty("KMP_TARGETS") as? String
+    val CHECK_PUBLICATION = findProperty("CHECK_PUBLICATION") as? String
+    val KMP_TARGETS_ALL = System.getProperty("KMP_TARGETS_ALL") != null
+    val TARGETS = KMP_TARGETS?.split(',')
+
+    if (CHECK_PUBLICATION != null) {
+        ignoredProjects.add("check-publication")
+    } else {
+        val JVM = TARGETS?.contains("JVM") != false
+        val ANDROID = TARGETS?.contains("ANDROID") != false
+
+        ignoredProjects.add("encoding-test")
+
+        if (KMP_TARGETS_ALL || (ANDROID && JVM)) {
+            ignoredProjects.add("app")
+        }
+    }
 }
