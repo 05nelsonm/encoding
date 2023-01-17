@@ -13,7 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection", "RedundantExplicitType")
+@file:Suppress(
+    "KotlinRedundantDiagnosticSuppress",
+    "RedundantExplicitType",
+    "SpellCheckingInspection",
+)
 
 package io.matthewnelson.component.encoding.base16
 
@@ -22,12 +26,12 @@ import kotlin.native.concurrent.SharedImmutable
 @SharedImmutable
 private val HEX_TABLE = "0123456789ABCDEF".encodeToByteArray()
 
-@Suppress("nothing_to_inline")
-inline fun String.decodeBase16ToArray(): ByteArray? {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun String.decodeBase16ToArray(): ByteArray? {
     return toCharArray().decodeBase16ToArray()
 }
 
-fun CharArray.decodeBase16ToArray(): ByteArray? {
+public fun CharArray.decodeBase16ToArray(): ByteArray? {
     var limit = size
     while (limit > 0) {
         val c = this[limit - 1]
@@ -93,13 +97,13 @@ fun CharArray.decodeBase16ToArray(): ByteArray? {
     }
 }
 
-@Suppress("nothing_to_inline")
-inline fun ByteArray.encodeBase16(): String {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase16(): String {
     return encodeBase16ToCharArray().joinToString("")
 }
 
-@Suppress("nothing_to_inline")
-inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
     return encodeBase16ToByteArray().let { bytes ->
         val chars = CharArray(bytes.size)
         for ((i, byte) in bytes.withIndex()) {
@@ -109,7 +113,7 @@ inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
     }
 }
 
-fun ByteArray.encodeBase16ToByteArray(): ByteArray {
+public fun ByteArray.encodeBase16ToByteArray(): ByteArray {
     val base16Lookup: ByteArray = HEX_TABLE
 
     val out = ByteArray(size * 2)
