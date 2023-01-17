@@ -13,7 +13,13 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 * */
-@file:Suppress("SpellCheckingInspection", "MemberVisibilityCanBePrivate", "RedundantExplicitType")
+@file:Suppress(
+    "KotlinRedundantDiagnosticSuppress",
+    "MemberVisibilityCanBePrivate",
+    "PrivatePropertyName",
+    "RedundantExplicitType",
+    "SpellCheckingInspection",
+)
 
 package io.matthewnelson.component.encoding.base32
 
@@ -28,7 +34,7 @@ private val DEFAULT_TABLE = Base32.Default.CHARS.encodeToByteArray()
 @SharedImmutable
 private val HEX_TABLE = Base32.Hex.CHARS.encodeToByteArray()
 
-sealed class Base32 {
+public sealed class Base32 {
 
     @get:JvmSynthetic
     internal abstract val encodingTable: ByteArray
@@ -42,7 +48,7 @@ sealed class Base32 {
      * @throws [IllegalArgumentException] if [checkSymbol] is not one of the accepted
      *  symbols (*, ~, $, =, U, u) or `null` to omit (omitted by default)
      * */
-    data class Crockford @JvmOverloads constructor(val checkSymbol: Char? = null): Base32() {
+    public data class Crockford @JvmOverloads constructor(val checkSymbol: Char? = null): Base32() {
 
         init {
             when (checkSymbol) {
@@ -56,8 +62,8 @@ sealed class Base32 {
             }
         }
 
-        companion object {
-            const val CHARS: String = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+        public companion object {
+            public const val CHARS: String = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
         }
 
         override val encodingTable: ByteArray get() = CROCKFORD_TABLE
@@ -69,8 +75,8 @@ sealed class Base32 {
      * Base32 encoding in accordance with RFC 4648 section 6
      * https://www.ietf.org/rfc/rfc4648.html#section-6
      * */
-    object Default: Base32() {
-        const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+    public object Default: Base32() {
+        public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
         override val encodingTable: ByteArray get() = DEFAULT_TABLE
     }
 
@@ -78,20 +84,20 @@ sealed class Base32 {
      * Base32Hex encoding in accordance with RFC 4648 section 7
      * https://www.ietf.org/rfc/rfc4648.html#section-7
      * */
-    object Hex: Base32() {
-        const val CHARS: String = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
+    public object Hex: Base32() {
+        public const val CHARS: String = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
         override val encodingTable: ByteArray get() = HEX_TABLE
     }
 }
 
 @JvmOverloads
-@Suppress("nothing_to_inline")
-inline fun String.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun String.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
     return toCharArray().decodeBase32ToArray(base32)
 }
 
 @JvmOverloads
-fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
+public fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
     var limit: Int = size
 
     // Check symbol if specified for Crockford
@@ -295,14 +301,14 @@ fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
 }
 
 @JvmOverloads
-@Suppress("nothing_to_inline")
-inline fun ByteArray.encodeBase32(base32: Base32 = Base32.Default): String {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase32(base32: Base32 = Base32.Default): String {
     return encodeBase32ToCharArray(base32).joinToString("")
 }
 
 @JvmOverloads
-@Suppress("nothing_to_inline")
-inline fun ByteArray.encodeBase32ToCharArray(base32: Base32 = Base32.Default): CharArray {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32 = Base32.Default): CharArray {
     return encodeBase32ToByteArray(base32).let { bytes ->
         val chars = CharArray(bytes.size)
         for ((i, byte) in bytes.withIndex()) {
@@ -313,7 +319,7 @@ inline fun ByteArray.encodeBase32ToCharArray(base32: Base32 = Base32.Default): C
 }
 
 @JvmOverloads
-fun ByteArray.encodeBase32ToByteArray(base32: Base32 = Base32.Default): ByteArray {
+public fun ByteArray.encodeBase32ToByteArray(base32: Base32 = Base32.Default): ByteArray {
     val base32Lookup: ByteArray = base32.encodingTable
 
     val out = ByteArray((size + 4) / 5 * 8)
@@ -418,7 +424,7 @@ fun ByteArray.encodeBase32ToByteArray(base32: Base32 = Base32.Default): ByteArra
     }
 }
 
-@Suppress("nothing_to_inline")
+@Suppress("NOTHING_TO_INLINE")
 private inline fun ByteArray.retrieveBits(index: Int): Long =
     this[index].toLong().let { bits ->
         return if (bits < 0) {
