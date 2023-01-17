@@ -41,6 +41,10 @@ kmpConfiguration {
                 implementation(kotlin("test"))
                 implementation(project(":encoding-test"))
             }
+        },
+
+        kotlin = {
+            explicitApi()
         }
     )
 }
