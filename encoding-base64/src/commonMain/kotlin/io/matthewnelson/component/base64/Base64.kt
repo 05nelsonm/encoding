@@ -22,7 +22,13 @@
 *
 *      Alexander Y. Kleymenov
 * */
-@file:Suppress("SpellCheckingInspection", "MemberVisibilityCanBePrivate", "RedundantExplicitType")
+@file:Suppress(
+    "KotlinRedundantDiagnosticSuppress",
+    "MemberVisibilityCanBePrivate",
+    "PrivatePropertyName",
+    "RedundantExplicitType",
+    "SpellCheckingInspection",
+)
 
 package io.matthewnelson.component.base64
 
@@ -44,7 +50,7 @@ private val URL_SAFE_TABLE = Base64.UrlSafe.CHARS.encodeToByteArray()
  * @author original: Alexander Y. Kleymenov
  * @suppress
  * */
-sealed class Base64 {
+public sealed class Base64 {
 
     @get:JvmSynthetic
     internal abstract val encodingTable: ByteArray
@@ -53,8 +59,8 @@ sealed class Base64 {
      * Base64 encoding in accordance with RFC 4648 seciton 4
      * https://www.ietf.org/rfc/rfc4648.html#section-4
      * */
-    object Default: Base64() {
-        const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    public object Default: Base64() {
+        public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
         override val encodingTable: ByteArray get() = DEFAULT_TABLE
     }
 
@@ -65,22 +71,22 @@ sealed class Base64 {
      * @param [pad] specify whether or not to add padding character '='
      *  while encoding (true by default).
      * */
-    data class UrlSafe @JvmOverloads constructor(val pad: Boolean = true): Base64() {
+    public data class UrlSafe @JvmOverloads constructor(val pad: Boolean = true): Base64() {
 
-        companion object {
-            const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+        public companion object {
+            public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
         }
 
         override val encodingTable: ByteArray get() = URL_SAFE_TABLE
     }
 }
 
-@Suppress("nothing_to_inline")
-inline fun String.decodeBase64ToArray(): ByteArray? {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun String.decodeBase64ToArray(): ByteArray? {
     return toCharArray().decodeBase64ToArray()
 }
 
-fun CharArray.decodeBase64ToArray(): ByteArray? {
+public fun CharArray.decodeBase64ToArray(): ByteArray? {
     var limit = size
 
     // Disregard padding and/or whitespace from end of input
@@ -172,14 +178,14 @@ fun CharArray.decodeBase64ToArray(): ByteArray? {
 }
 
 @JvmOverloads
-@Suppress("nothing_to_inline")
-inline fun ByteArray.encodeBase64(base64: Base64 = Base64.Default): String {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase64(base64: Base64 = Base64.Default): String {
     return encodeBase64ToCharArray(base64).joinToString("")
 }
 
 @JvmOverloads
-@Suppress("nothing_to_inline")
-inline fun ByteArray.encodeBase64ToCharArray(base64: Base64 = Base64.Default): CharArray {
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64 = Base64.Default): CharArray {
     return encodeBase64ToByteArray(base64).let { bytes ->
         val chars = CharArray(bytes.size)
         for ((i, byte) in bytes.withIndex()) {
@@ -190,7 +196,7 @@ inline fun ByteArray.encodeBase64ToCharArray(base64: Base64 = Base64.Default): C
 }
 
 @JvmOverloads
-fun ByteArray.encodeBase64ToByteArray(base64: Base64 = Base64.Default): ByteArray {
+public fun ByteArray.encodeBase64ToByteArray(base64: Base64 = Base64.Default): ByteArray {
     val base64Lookup: ByteArray = base64.encodingTable
 
     val out = ByteArray((size + 2) / 3 * 4)
