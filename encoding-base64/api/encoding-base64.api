@@ -1,0 +1,40 @@
+public abstract class io/matthewnelson/component/base64/Base64 {
+}
+
+public final class io/matthewnelson/component/base64/Base64$Default : io/matthewnelson/component/base64/Base64 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field INSTANCE Lio/matthewnelson/component/base64/Base64$Default;
+}
+
+public final class io/matthewnelson/component/base64/Base64$UrlSafe : io/matthewnelson/component/base64/Base64 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field Companion Lio/matthewnelson/component/base64/Base64$UrlSafe$Companion;
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun copy (Z)Lio/matthewnelson/component/base64/Base64$UrlSafe;
+	public static synthetic fun copy$default (Lio/matthewnelson/component/base64/Base64$UrlSafe;ZILjava/lang/Object;)Lio/matthewnelson/component/base64/Base64$UrlSafe;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPad ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/matthewnelson/component/base64/Base64$UrlSafe$Companion {
+}
+
+public final class io/matthewnelson/component/base64/Base64Kt {
+	public static final fun decodeBase64ToArray (Ljava/lang/String;)[B
+	public static final fun decodeBase64ToArray ([C)[B
+	public static final fun encodeBase64 ([B)Ljava/lang/String;
+	public static final fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64;)Ljava/lang/String;
+	public static synthetic fun encodeBase64$default ([BLio/matthewnelson/component/base64/Base64;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun encodeBase64ToByteArray ([B)[B
+	public static final fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64;)[B
+	public static synthetic fun encodeBase64ToByteArray$default ([BLio/matthewnelson/component/base64/Base64;ILjava/lang/Object;)[B
+	public static final fun encodeBase64ToCharArray ([B)[C
+	public static final fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64;)[C
+	public static synthetic fun encodeBase64ToCharArray$default ([BLio/matthewnelson/component/base64/Base64;ILjava/lang/Object;)[C
+}
+

@@ -1,0 +1,8 @@
+public final class io/matthewnelson/component/encoding/base16/Base16Kt {
+	public static final fun decodeBase16ToArray (Ljava/lang/String;)[B
+	public static final fun decodeBase16ToArray ([C)[B
+	public static final fun encodeBase16 ([B)Ljava/lang/String;
+	public static final fun encodeBase16ToByteArray ([B)[B
+	public static final fun encodeBase16ToCharArray ([B)[C
+}
+

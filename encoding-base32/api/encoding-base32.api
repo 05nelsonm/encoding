@@ -1,0 +1,51 @@
+public abstract class io/matthewnelson/component/encoding/base32/Base32 {
+}
+
+public final class io/matthewnelson/component/encoding/base32/Base32$Crockford : io/matthewnelson/component/encoding/base32/Base32 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field Companion Lio/matthewnelson/component/encoding/base32/Base32$Crockford$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Character;)V
+	public synthetic fun <init> (Ljava/lang/Character;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Character;
+	public final fun copy (Ljava/lang/Character;)Lio/matthewnelson/component/encoding/base32/Base32$Crockford;
+	public static synthetic fun copy$default (Lio/matthewnelson/component/encoding/base32/Base32$Crockford;Ljava/lang/Character;ILjava/lang/Object;)Lio/matthewnelson/component/encoding/base32/Base32$Crockford;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCheckByte ()Ljava/lang/Byte;
+	public final fun getCheckSymbol ()Ljava/lang/Character;
+	public final fun getHasCheckSymbol ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/matthewnelson/component/encoding/base32/Base32$Crockford$Companion {
+}
+
+public final class io/matthewnelson/component/encoding/base32/Base32$Default : io/matthewnelson/component/encoding/base32/Base32 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field INSTANCE Lio/matthewnelson/component/encoding/base32/Base32$Default;
+}
+
+public final class io/matthewnelson/component/encoding/base32/Base32$Hex : io/matthewnelson/component/encoding/base32/Base32 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field INSTANCE Lio/matthewnelson/component/encoding/base32/Base32$Hex;
+}
+
+public final class io/matthewnelson/component/encoding/base32/Base32Kt {
+	public static final fun decodeBase32ToArray (Ljava/lang/String;)[B
+	public static final fun decodeBase32ToArray (Ljava/lang/String;Lio/matthewnelson/component/encoding/base32/Base32;)[B
+	public static final fun decodeBase32ToArray ([C)[B
+	public static final fun decodeBase32ToArray ([CLio/matthewnelson/component/encoding/base32/Base32;)[B
+	public static synthetic fun decodeBase32ToArray$default (Ljava/lang/String;Lio/matthewnelson/component/encoding/base32/Base32;ILjava/lang/Object;)[B
+	public static synthetic fun decodeBase32ToArray$default ([CLio/matthewnelson/component/encoding/base32/Base32;ILjava/lang/Object;)[B
+	public static final fun encodeBase32 ([B)Ljava/lang/String;
+	public static final fun encodeBase32 ([BLio/matthewnelson/component/encoding/base32/Base32;)Ljava/lang/String;
+	public static synthetic fun encodeBase32$default ([BLio/matthewnelson/component/encoding/base32/Base32;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun encodeBase32ToByteArray ([B)[B
+	public static final fun encodeBase32ToByteArray ([BLio/matthewnelson/component/encoding/base32/Base32;)[B
+	public static synthetic fun encodeBase32ToByteArray$default ([BLio/matthewnelson/component/encoding/base32/Base32;ILjava/lang/Object;)[B
+	public static final fun encodeBase32ToCharArray ([B)[C
+	public static final fun encodeBase32ToCharArray ([BLio/matthewnelson/component/encoding/base32/Base32;)[C
+	public static synthetic fun encodeBase32ToCharArray$default ([BLio/matthewnelson/component/encoding/base32/Base32;ILjava/lang/Object;)[C
+}
+
