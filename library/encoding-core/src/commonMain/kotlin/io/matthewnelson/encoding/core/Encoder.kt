@@ -29,7 +29,7 @@ import kotlin.jvm.JvmStatic
  * @see [Feed]
  * @see [newEncoderFeed]
  * */
-public sealed class Encoder: Decoder() {
+public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(config) {
 
     // TODO: This should be moved to the Configuration
     //  and instead accept a wrapper class which holds

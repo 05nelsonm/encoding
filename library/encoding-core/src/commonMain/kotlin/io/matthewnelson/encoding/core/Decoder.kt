@@ -28,7 +28,7 @@ import kotlin.jvm.JvmStatic
  * @see [Feed]
  * @see [newDecoderFeed]
  * */
-public sealed class Decoder {
+public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
 
     // TODO: These should be moved to the Configuration
     //  and instead accept a wrapper class which holds

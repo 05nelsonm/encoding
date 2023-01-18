@@ -1,5 +1,6 @@
 public abstract class io/matthewnelson/encoding/core/Decoder {
 	public static final field Companion Lio/matthewnelson/encoding/core/Decoder$Companion;
+	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Configuration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun decodeToArray (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
 	public static final fun decodeToArray ([BLio/matthewnelson/encoding/core/Decoder;)[B
 	public static final fun decodeToArray ([CLio/matthewnelson/encoding/core/Decoder;)[B
@@ -7,6 +8,7 @@ public abstract class io/matthewnelson/encoding/core/Decoder {
 	public static final fun decodeToArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
 	public static final fun decodeToArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
 	public abstract fun decodedOutMaxSize (I)I
+	public final fun getConfig ()Lio/matthewnelson/encoding/core/EncoderDecoder$Configuration;
 	public abstract fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
 	public fun quickAnalysisIsValid (Ljava/lang/String;)V
 	public fun quickAnalysisIsValid ([B)V
@@ -34,6 +36,7 @@ public abstract class io/matthewnelson/encoding/core/Decoder$Feed {
 
 public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/encoding/core/Decoder {
 	public static final field Companion Lio/matthewnelson/encoding/core/Encoder$Companion;
+	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Configuration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun encodeToByteArray ([BLio/matthewnelson/encoding/core/Encoder;)[B
 	public static final fun encodeToCharArray ([BLio/matthewnelson/encoding/core/Encoder;)[C
 	public static final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
@@ -55,6 +58,24 @@ public abstract class io/matthewnelson/encoding/core/Encoder$Feed {
 	public final fun toString ()Ljava/lang/String;
 	public final fun update (B)V
 	protected abstract fun updateProtected (B)V
+}
+
+public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthewnelson/encoding/core/Encoder {
+	public fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Configuration;)V
+	public final fun equals (Ljava/lang/Object;)Z
+	public final fun hashCode ()I
+	protected abstract fun name ()Ljava/lang/String;
+	public final fun toString ()Ljava/lang/String;
+}
+
+public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
+	public final field isLenient Z
+	public final field paddingChar Ljava/lang/Character;
+	public fun <init> (ZLjava/lang/Character;)V
+	public final fun equals (Ljava/lang/Object;)Z
+	public final fun hashCode ()I
+	public final fun toString ()Ljava/lang/String;
+	protected abstract fun toString (Ljava/lang/StringBuilder;)V
 }
 
 public final class io/matthewnelson/encoding/core/EncodingException : java/lang/RuntimeException {
