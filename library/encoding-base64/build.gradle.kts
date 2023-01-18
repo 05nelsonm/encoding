@@ -39,7 +39,7 @@ kmpConfiguration {
         commonTestSourceSet = {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(project(":encoding-test"))
+                implementation(project(":library:encoding-test"))
             }
         },
 
@@ -51,6 +51,6 @@ kmpConfiguration {
 
 kmpPublish {
     setupModule(
-        pomDescription = "Kotlin Components' Base16 Encoding Component",
+        pomDescription = "Kotlin Components' Base64 Encoding Component",
     )
 }
