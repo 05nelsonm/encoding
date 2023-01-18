@@ -15,10 +15,15 @@ private val TARGETS = KMP_TARGETS?.split(',')
 if (CHECK_PUBLICATION != null) {
     include(":tools:check-publication")
 } else {
-    include(":encoding-base16")
-    include(":encoding-base32")
-    include(":encoding-base64")
-    include(":encoding-test")
+    listOf(
+        "encoding-base16",
+        "encoding-base32",
+        "encoding-base64",
+        "encoding-core",
+        "encoding-test",
+    ).forEach { name ->
+        include(":library:$name")
+    }
 
     if (KMP_TARGETS_ALL || (TARGETS?.contains("ANDROID") != false && TARGETS?.contains("JVM") != false)) {
         include(":app")

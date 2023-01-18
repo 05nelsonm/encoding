@@ -66,9 +66,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":encoding-base16"))
-    implementation(project(":encoding-base32"))
-    implementation(project(":encoding-base64"))
+    implementation(project(":library:encoding-base16"))
+    implementation(project(":library:encoding-base32"))
+    implementation(project(":library:encoding-base64"))
 
     implementation(deps.androidx.appCompat)
     implementation(deps.androidx.constraintLayout)

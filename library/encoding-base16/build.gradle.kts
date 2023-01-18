@@ -17,12 +17,23 @@ import io.matthewnelson.kotlin.components.kmp.KmpTarget
 
 plugins {
     id(pluginId.kmp.configuration)
+    id(pluginId.kmp.publish)
 }
 
 kmpConfiguration {
     setupMultiplatform(targets=
         setOf(
-            KmpTarget.Jvm.Jvm.DEFAULT,
+            KmpTarget.Jvm.Jvm(
+                kotlinJvmTarget = JavaVersion.VERSION_1_8,
+                target = {
+                    withJava()
+
+                    extensions.configure<JavaPluginExtension> {
+                        sourceCompatibility = JavaVersion.VERSION_1_8
+                        targetCompatibility = JavaVersion.VERSION_1_8
+                    }
+                }
+            ),
             KmpTarget.NonJvm.JS.DEFAULT,
             KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.DeviceArm64.DEFAULT,
         ) +
@@ -37,8 +48,25 @@ kmpConfiguration {
 
         commonMainSourceSet = {
             dependencies {
-                implementation(kotlin("test"))
+                api(project(":library:encoding-core"))
             }
+        },
+
+        commonTestSourceSet = {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(project(":library:encoding-test"))
+            }
+        },
+
+        kotlin = {
+            explicitApi()
         }
+    )
+}
+
+kmpPublish {
+    setupModule(
+        pomDescription = "Kotlin Components' Base16 Encoding Component",
     )
 }

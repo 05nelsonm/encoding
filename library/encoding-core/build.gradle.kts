@@ -14,20 +14,11 @@
  * limitations under the License.
  **/
 import io.matthewnelson.kotlin.components.kmp.KmpTarget
-import io.matthewnelson.kotlin.components.kmp.publish.isSnapshotVersion
-import io.matthewnelson.kotlin.components.kmp.publish.kmpPublishRootProjectConfiguration
-import io.matthewnelson.kotlin.components.kmp.util.includeSnapshotsRepoIfTrue
-import io.matthewnelson.kotlin.components.kmp.util.includeStagingRepoIfTrue
 
 plugins {
     id(pluginId.kmp.configuration)
     id(pluginId.kmp.publish)
 }
-
-val pConfig = kmpPublishRootProjectConfiguration!!
-
-includeSnapshotsRepoIfTrue(pConfig.isSnapshotVersion)
-includeStagingRepoIfTrue(!pConfig.isSnapshotVersion)
 
 kmpConfiguration {
     setupMultiplatform(targets=
@@ -55,12 +46,20 @@ kmpConfiguration {
         KmpTarget.NonJvm.Native.Mingw.ALL_DEFAULT               +
         KmpTarget.NonJvm.Native.Wasm.ALL_DEFAULT,
 
-        commonMainSourceSet = {
+        commonTestSourceSet = {
             dependencies {
-                implementation("${pConfig.group}:encoding-base16:${pConfig.versionName}")
-                implementation("${pConfig.group}:encoding-base32:${pConfig.versionName}")
-                implementation("${pConfig.group}:encoding-base64:${pConfig.versionName}")
+                implementation(kotlin("test"))
             }
         },
+
+        kotlin = {
+            explicitApi()
+        }
+    )
+}
+
+kmpPublish {
+    setupModule(
+        pomDescription = "Kotlin Components' Core Encoding Library",
     )
 }

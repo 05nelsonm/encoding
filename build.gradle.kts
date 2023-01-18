@@ -19,6 +19,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED
+import org.jetbrains.kotlin.psi.addRemoveModifier.addAnnotationEntry
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
@@ -94,6 +95,8 @@ apiValidation {
     if (CHECK_PUBLICATION != null) {
         ignoredProjects.add("check-publication")
     } else {
+        nonPublicMarkers.add("io.matthewnelson.encoding.core.internal.InternalEncodingApi")
+
         val JVM = TARGETS?.contains("JVM") != false
         val ANDROID = TARGETS?.contains("ANDROID") != false
 

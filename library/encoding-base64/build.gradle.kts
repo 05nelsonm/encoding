@@ -23,7 +23,17 @@ plugins {
 kmpConfiguration {
     setupMultiplatform(targets=
         setOf(
-            KmpTarget.Jvm.Jvm.DEFAULT,
+            KmpTarget.Jvm.Jvm(
+                kotlinJvmTarget = JavaVersion.VERSION_1_8,
+                target = {
+                    withJava()
+
+                    extensions.configure<JavaPluginExtension> {
+                        sourceCompatibility = JavaVersion.VERSION_1_8
+                        targetCompatibility = JavaVersion.VERSION_1_8
+                    }
+                }
+            ),
             KmpTarget.NonJvm.JS.DEFAULT,
             KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.DeviceArm64.DEFAULT,
         ) +
@@ -36,10 +46,16 @@ kmpConfiguration {
         KmpTarget.NonJvm.Native.Mingw.ALL_DEFAULT               +
         KmpTarget.NonJvm.Native.Wasm.ALL_DEFAULT,
 
+        commonMainSourceSet = {
+            dependencies {
+                api(project(":library:encoding-core"))
+            }
+        },
+
         commonTestSourceSet = {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(project(":encoding-test"))
+                implementation(project(":library:encoding-test"))
             }
         },
 
@@ -51,6 +67,6 @@ kmpConfiguration {
 
 kmpPublish {
     setupModule(
-        pomDescription = "Kotlin Components' Base32 Encoding Component",
+        pomDescription = "Kotlin Components' Base64 Encoding Component",
     )
 }
