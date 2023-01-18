@@ -18,7 +18,6 @@ import io.matthewnelson.kotlin.components.kmp.publish.isSnapshotVersion
 import io.matthewnelson.kotlin.components.kmp.publish.kmpPublishRootProjectConfiguration
 import io.matthewnelson.kotlin.components.kmp.util.includeSnapshotsRepoIfTrue
 import io.matthewnelson.kotlin.components.kmp.util.includeStagingRepoIfTrue
-import org.jetbrains.kotlin.gradle.plugin.KotlinJsCompilerType
 
 plugins {
     id(pluginId.kmp.configuration)
@@ -33,7 +32,17 @@ includeStagingRepoIfTrue(!pConfig.isSnapshotVersion)
 kmpConfiguration {
     setupMultiplatform(targets=
         setOf(
-            KmpTarget.Jvm.Jvm.DEFAULT,
+            KmpTarget.Jvm.Jvm(
+                kotlinJvmTarget = JavaVersion.VERSION_1_8,
+                target = {
+                    withJava()
+
+                    extensions.configure<JavaPluginExtension> {
+                        sourceCompatibility = JavaVersion.VERSION_1_8
+                        targetCompatibility = JavaVersion.VERSION_1_8
+                    }
+                }
+            ),
             KmpTarget.NonJvm.JS.DEFAULT,
             KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.DeviceArm64.DEFAULT,
         ) +
