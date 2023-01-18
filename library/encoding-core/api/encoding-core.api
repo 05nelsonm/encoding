@@ -1,4 +1,82 @@
+public abstract class io/matthewnelson/encoding/core/Decoder {
+	public static final field Companion Lio/matthewnelson/encoding/core/Decoder$Companion;
+	public static final fun decodeToArray (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToArray ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToArray ([CLio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToArrayOrNull (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
+	public abstract fun decodedOutMaxSize (I)I
+	public abstract fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun quickAnalysisIsValid (Ljava/lang/String;)V
+	public fun quickAnalysisIsValid ([B)V
+	public fun quickAnalysisIsValid ([C)V
+}
+
+public final class io/matthewnelson/encoding/core/Decoder$Companion {
+	public final fun decodeToArray (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToArray ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToArray ([CLio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToArrayOrNull (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
+}
+
+public abstract class io/matthewnelson/encoding/core/Decoder$Feed {
+	public fun <init> (Lio/matthewnelson/encoding/core/Decoder;)V
+	public final fun doFinal ()V
+	protected abstract fun doFinalProtected ()V
+	public final fun isClosed ()Z
+	public final fun toString ()Ljava/lang/String;
+	public final fun update (C)V
+	protected abstract fun updateProtected (C)V
+}
+
+public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/encoding/core/Decoder {
+	public static final field Companion Lio/matthewnelson/encoding/core/Encoder$Companion;
+	public static final fun encodeToByteArray ([BLio/matthewnelson/encoding/core/Encoder;)[B
+	public static final fun encodeToCharArray ([BLio/matthewnelson/encoding/core/Encoder;)[C
+	public static final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
+	public abstract fun encodedOutSize (I)I
+	public abstract fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+}
+
+public final class io/matthewnelson/encoding/core/Encoder$Companion {
+	public final fun encodeToByteArray ([BLio/matthewnelson/encoding/core/Encoder;)[B
+	public final fun encodeToCharArray ([BLio/matthewnelson/encoding/core/Encoder;)[C
+	public final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
+}
+
+public abstract class io/matthewnelson/encoding/core/Encoder$Feed {
+	public fun <init> (Lio/matthewnelson/encoding/core/Encoder;)V
+	public final fun doFinal ()V
+	protected abstract fun doFinalProtected ()V
+	public final fun isClosed ()Z
+	public final fun toString ()Ljava/lang/String;
+	public final fun update (B)V
+	protected abstract fun updateProtected (B)V
+}
+
+public final class io/matthewnelson/encoding/core/EncodingException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun getMessage ()Ljava/lang/String;
+}
+
 public abstract interface annotation class io/matthewnelson/encoding/core/ExperimentalEncodingApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface class io/matthewnelson/encoding/core/OutFeed {
+	public abstract fun invoke (B)V
+}
+
+public final class io/matthewnelson/encoding/core/internal/ByteChar$Companion {
+	public final fun toByteChar-qQkxe1M (B)Ljava/lang/Object;
+	public final fun toByteChar-qQkxe1M (C)Ljava/lang/Object;
+}
+
+public final class io/matthewnelson/encoding/core/internal/EncodingTable$Companion {
+	public final fun from-T0v-vo0 (Ljava/lang/String;)[B
 }
 
 public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
