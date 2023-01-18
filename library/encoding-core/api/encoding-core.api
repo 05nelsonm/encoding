@@ -1,0 +1,6 @@
+public abstract interface annotation class io/matthewnelson/encoding/core/ExperimentalEncodingApi : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
+}
+

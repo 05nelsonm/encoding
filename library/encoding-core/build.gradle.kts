@@ -46,16 +46,9 @@ kmpConfiguration {
         KmpTarget.NonJvm.Native.Mingw.ALL_DEFAULT               +
         KmpTarget.NonJvm.Native.Wasm.ALL_DEFAULT,
 
-        commonMainSourceSet = {
-            dependencies {
-                api(project(":library:encoding-core"))
-            }
-        },
-
         commonTestSourceSet = {
             dependencies {
                 implementation(kotlin("test"))
-                implementation(project(":library:encoding-test"))
             }
         },
 
@@ -67,6 +60,6 @@ kmpConfiguration {
 
 kmpPublish {
     setupModule(
-        pomDescription = "Kotlin Components' Base16 Encoding Component",
+        pomDescription = "Kotlin Components' Core Encoding Library",
     )
 }

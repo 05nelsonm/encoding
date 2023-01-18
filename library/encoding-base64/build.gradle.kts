@@ -46,6 +46,12 @@ kmpConfiguration {
         KmpTarget.NonJvm.Native.Mingw.ALL_DEFAULT               +
         KmpTarget.NonJvm.Native.Wasm.ALL_DEFAULT,
 
+        commonMainSourceSet = {
+            dependencies {
+                api(project(":library:encoding-core"))
+            }
+        },
+
         commonTestSourceSet = {
             dependencies {
                 implementation(kotlin("test"))
