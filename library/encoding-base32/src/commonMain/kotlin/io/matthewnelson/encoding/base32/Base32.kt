@@ -86,8 +86,19 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
 
             @Throws(EncodingException::class)
             override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
-                // TODO
-                throw EncodingException("Not yet implemented")
+                var outSize = encodedSize
+
+                if (checkByte != null) {
+                    // Check last character
+                    val actual = input[encodedSize - 1]
+                    if (actual != checkByte.char) {
+                        throw EncodingException("checkSymbol[$actual] for encoded did not match expected[$checkSymbol]")
+                    } else {
+                        outSize--
+                    }
+                }
+
+                return decodeOutMaxSize(outSize)
             }
 
             override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
@@ -231,11 +242,12 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
         ): EncoderDecoder.Configuration(isLenient, paddingByte = '='.byte) {
 
             override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
-                // TODO
-                throw EncodingException("Not yet implemented")
+                return decodeOutMaxSize(encodedSize)
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Int): Int = encodedOutSize(unEncodedSize, padEncoded)
+            override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
+                return encodedOutSize(unEncodedSize, padEncoded)
+            }
 
             override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
@@ -353,11 +365,12 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
         ): EncoderDecoder.Configuration(isLenient, paddingByte = '='.byte) {
 
             override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
-                // TODO
-                throw EncodingException("Not yet implemented")
+                return decodeOutMaxSize(encodedSize)
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Int): Int = encodedOutSize(unEncodedSize, padEncoded)
+            override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
+                return encodedOutSize(unEncodedSize, padEncoded)
+            }
 
             override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
@@ -429,6 +442,9 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
     }
 
     private companion object {
+
+        @JvmStatic
+        private fun decodeOutMaxSize(encodedSize: Int): Int = (encodedSize * 5L / 8L).toInt()
 
         @JvmStatic
         private fun encodedOutSize(
