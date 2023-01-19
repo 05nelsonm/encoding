@@ -22,7 +22,7 @@ import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.util.byte
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmSynthetic
+import kotlin.jvm.JvmName
 
 /**
  * Creates a configured [Base32.Crockford] encoder/decoder.
@@ -147,8 +147,10 @@ public class Base32CrockfordBuilder {
     @JvmField
     public var hyphenInterval: Short = 0
 
-    @get:JvmSynthetic
-    internal var checkByte: Byte? = null
+    @get:JvmName("checkByte")
+    public var checkByte: Byte? = null
+        private set
+    @get:JvmName("checkSymbol")
     public val checkSymbol: Char? get() = checkByte?.char
 
     /**
@@ -162,7 +164,7 @@ public class Base32CrockfordBuilder {
      * @throws [IllegalArgumentException] If not a valid check symbol.
      * */
     @Throws(IllegalArgumentException::class)
-    public fun setCheckSymbol(checkSymbol: Char?): Base32CrockfordBuilder {
+    public fun checkByte(checkSymbol: Char?): Base32CrockfordBuilder {
         when (checkSymbol) {
             null, '*', '~', '$', '=', 'U', 'u' -> {
                 checkByte = checkSymbol?.byte

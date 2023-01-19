@@ -25,6 +25,7 @@ import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.byte
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
@@ -48,7 +49,7 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
      *         isLenient = true
      *         acceptLowercase = true
      *         hyphenInterval = 5
-     *         setCheckSymbol('*')
+     *         setCheckByte(checkSymbol = '*')
      *     }
      *
      *     val text = "Hello World!"
@@ -79,9 +80,11 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             public val acceptLowercase: Boolean,
             @JvmField
             public val hyphenInterval: Short,
-            internal val checkByte: Byte?,
+            @JvmField
+            public val checkByte: Byte?,
         ): EncoderDecoder.Configuration(isLenient, paddingByte = null) {
 
+            @get:JvmName("checkSymbol")
             public val checkSymbol: Char? get() = checkByte?.char
 
             @Throws(EncodingException::class)
@@ -92,7 +95,9 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
                     // Check last character
                     val actual = input[encodedSize - 1]
                     if (actual != checkByte.char) {
-                        throw EncodingException("checkSymbol[$actual] for encoded did not match expected[$checkSymbol]")
+                        throw EncodingException(
+                            "checkSymbol[$actual] for encoded did not match expected[${checkByte.char}]"
+                        )
                     } else {
                         outSize--
                     }
@@ -133,7 +138,7 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
                     append(hyphenInterval)
                     appendLine()
                     append("    checkSymbol: ")
-                    append(checkSymbol)
+                    append(checkByte?.char)
                 }
             }
 

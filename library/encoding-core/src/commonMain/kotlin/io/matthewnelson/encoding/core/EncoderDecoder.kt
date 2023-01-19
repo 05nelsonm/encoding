@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
@@ -183,6 +184,7 @@ constructor(config: Configuration): Encoder(config) {
      * @see [Decoder.Feed]
      * */
     public sealed class Feed {
+        @get:JvmName("isClosed")
         public var isClosed: Boolean = false
             private set
 
