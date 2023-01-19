@@ -15,18 +15,9 @@
  **/
 @file:Suppress("KotlinRedundantDiagnosticSuppress")
 
-package io.matthewnelson.encoding.core.internal
-
-import io.matthewnelson.encoding.core.Decoder
-import io.matthewnelson.encoding.core.Encoder
-import io.matthewnelson.encoding.core.EncodingException
+package io.matthewnelson.encoding.core
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun Encoder.Feed.closedException(): EncodingException {
-    return EncodingException("$this is closed")
-}
-
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun Decoder.Feed.closedException(): EncodingException {
+internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
     return EncodingException("$this is closed")
 }

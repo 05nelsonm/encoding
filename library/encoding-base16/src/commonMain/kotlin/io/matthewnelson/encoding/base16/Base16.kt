@@ -111,11 +111,11 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
         private val TABLE = EncodingTable.from(CHARS)
     }
 
-    override fun newEncoderFeed(out: OutFeed): Feed {
+    override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
         return object : Encoder.Feed() {
 
-            override fun updateProtected(b: Byte) {
-                val bits = b.toInt() and 0xff
+            override fun updateProtected(input: Byte) {
+                val bits = input.toInt() and 0xff
                 val b1 = TABLE.get(bits shr    4)
                 val b2 = TABLE.get(bits and 0x0f)
 
@@ -138,11 +138,11 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
             private var bitBuffer = 0
 
             @Throws(EncodingException::class)
-            override fun updateProtected(c: Char) {
+            override fun updateProtected(input: Char) {
                 val char = if ((config as Configuration).decodeLowercase) {
-                    c.uppercaseChar()
+                    input.uppercaseChar()
                 } else {
-                    c
+                    input
                 }
 
                 val bits: Int
@@ -151,13 +151,13 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
                         // char ASCII value
                         // 0     48    0
                         // 9     57    9 (ASCII - 48)
-                        bits = c.code - 48
+                        bits = char.code - 48
                     }
                     in 'A'..'F' -> {
                         // char ASCII value
                         //   A   65    10
                         //   F   70    15 (ASCII - 55)
-                        bits = c.code - 55
+                        bits = char.code - 55
                     }
                     '\n', '\r', ' ', '\t' -> {
                         if (config.isLenient) {
@@ -167,7 +167,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
                         }
                     }
                     else -> {
-                        throw EncodingException("Char[$c] is not a valid Base16 character")
+                        throw EncodingException("Char[$char] is not a valid Base16 character")
                     }
                 }
 

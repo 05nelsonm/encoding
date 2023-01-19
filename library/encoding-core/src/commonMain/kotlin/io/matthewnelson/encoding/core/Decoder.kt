@@ -17,13 +17,13 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toInputAnalysis
 import kotlin.jvm.JvmStatic
 
 /**
  * Decode things.
  *
+ * @see [EncoderDecoder]
  * @see [decodeToArray]
  * @see [decodeToArrayOrNull]
  * @see [Feed]
@@ -49,34 +49,12 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
      * [doFinal] to close the [Decoder.Feed] and perform
      * finalization for leftover data still in the [Decoder.Feed]
      * implementation's buffer.
+     *
+     * @see [EncoderDecoder.Feed]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor() {
-
-        public var isClosed: Boolean = false
-            private set
-
-        @Throws(EncodingException::class)
-        protected abstract fun updateProtected(c: Char)
-        @Throws(EncodingException::class)
-        protected abstract fun doFinalProtected()
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun update(c: Char) {
-            if (isClosed) throw closedException()
-            updateProtected(c)
-        }
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun doFinal() {
-            if (isClosed) throw closedException()
-            isClosed = true
-            doFinalProtected()
-        }
-
+    constructor(): EncoderDecoder.Feed<Char>() {
         final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
     }
 

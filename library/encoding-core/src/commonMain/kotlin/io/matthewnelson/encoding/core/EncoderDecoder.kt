@@ -22,7 +22,6 @@ import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmName
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
@@ -30,6 +29,7 @@ import kotlin.jvm.JvmName
  * both.
  *
  * @see [Configuration]
+ * @see [Feed]
  * */
 public abstract class EncoderDecoder
 @ExperimentalEncodingApi
@@ -142,5 +142,42 @@ constructor(config: Configuration): Encoder(config) {
 
     final override fun toString(): String {
         return "EncoderDecoder[${name()}]"
+    }
+
+    /**
+     * Base abstraction for encoding/decoding data.
+     *
+     * After pushing all data through [update], call
+     * [doFinal] to complete encoding/decoding.
+     *
+     * @see [Encoder.Feed]
+     * @see [Decoder.Feed]
+     * */
+    public sealed class Feed<T: Any> {
+        public var isClosed: Boolean = false
+            private set
+
+        // Only throws exception if decoding
+        @Throws(EncodingException::class)
+        protected abstract fun updateProtected(input: T)
+
+        // Only throws exception if decoding
+        @Throws(EncodingException::class)
+        protected abstract fun doFinalProtected()
+
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public fun update(input: T) {
+            if (isClosed) throw closedException()
+            updateProtected(input)
+        }
+
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public fun doFinal() {
+            if (isClosed) throw closedException()
+            isClosed = true
+            doFinalProtected()
+        }
     }
 }

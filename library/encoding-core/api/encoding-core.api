@@ -20,14 +20,9 @@ public final class io/matthewnelson/encoding/core/Decoder$Companion {
 	public final fun decodeToArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
 }
 
-public abstract class io/matthewnelson/encoding/core/Decoder$Feed {
+public abstract class io/matthewnelson/encoding/core/Decoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public fun <init> (Lio/matthewnelson/encoding/core/Decoder;)V
-	public final fun doFinal ()V
-	protected abstract fun doFinalProtected ()V
-	public final fun isClosed ()Z
 	public final fun toString ()Ljava/lang/String;
-	public final fun update (C)V
-	protected abstract fun updateProtected (C)V
 }
 
 public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/encoding/core/Decoder {
@@ -45,13 +40,10 @@ public final class io/matthewnelson/encoding/core/Encoder$Companion {
 	public final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
 }
 
-public abstract class io/matthewnelson/encoding/core/Encoder$Feed {
+public abstract class io/matthewnelson/encoding/core/Encoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public fun <init> (Lio/matthewnelson/encoding/core/Encoder;)V
-	public final fun doFinal ()V
 	protected abstract fun doFinalProtected ()V
-	public final fun isClosed ()Z
 	public final fun toString ()Ljava/lang/String;
-	public final fun update (B)V
 	protected abstract fun updateProtected (B)V
 }
 
@@ -73,6 +65,14 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Configuratio
 	public final fun paddingChar ()Ljava/lang/Character;
 	public final fun toString ()Ljava/lang/String;
 	protected abstract fun toString (Ljava/lang/StringBuilder;)V
+}
+
+public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
+	public final fun doFinal ()V
+	protected abstract fun doFinalProtected ()V
+	public final fun isClosed ()Z
+	public final fun update (Ljava/lang/Object;)V
+	protected abstract fun updateProtected (Ljava/lang/Object;)V
 }
 
 public final class io/matthewnelson/encoding/core/EncodingException : java/lang/RuntimeException {

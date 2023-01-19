@@ -19,12 +19,12 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.internal.closedException
 import kotlin.jvm.JvmStatic
 
 /**
  * Encode things.
  *
+ * @see [EncoderDecoder]
  * @see [encodeToString]
  * @see [encodeToCharArray]
  * @see [encodeToByteArray]
@@ -51,32 +51,14 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
      * [doFinal] to close the [Encoder.Feed] and perform
      * finalization for leftover data still in the [Encoder.Feed]
      * implementation's buffer.
+     *
+     * @see [EncoderDecoder.Feed]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor() {
-
-        public var isClosed: Boolean = false
-            private set
-
-        protected abstract fun updateProtected(b: Byte)
-        protected abstract fun doFinalProtected()
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun update(b: Byte) {
-            if (isClosed) throw closedException()
-            updateProtected(b)
-        }
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun doFinal() {
-            if (isClosed) throw closedException()
-            isClosed = true
-            doFinalProtected()
-        }
-
+    constructor(): EncoderDecoder.Feed<Byte>() {
+        protected abstract override fun updateProtected(input: Byte)
+        protected abstract override fun doFinalProtected()
         final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
     }
 
