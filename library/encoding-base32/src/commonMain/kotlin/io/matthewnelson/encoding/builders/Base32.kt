@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-//@file:Suppress("FunctionName", "SpellCheckingInspection")
-
 @file:Suppress("FunctionName", "SpellCheckingInspection")
 
 package io.matthewnelson.encoding.builders
@@ -27,7 +25,7 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
 /**
- * Builds a [Base32.Crockford] encoder/decoder.
+ * Creates a configured [Base32.Crockford] encoder/decoder.
  *
  * @param [config] inherit settings from.
  * @see [Base32CrockfordBuilder]
@@ -42,7 +40,7 @@ public fun Base32Crockford(
 }
 
 /**
- * Builds a [Base32.Crockford] encoder/decoder.
+ * Creates a configured [Base32.Crockford] encoder/decoder.
  *
  * @see [Base32CrockfordBuilder]
  * */
@@ -53,7 +51,7 @@ public fun Base32Crockford(
 }
 
 /**
- * Builds a [Base32.Default] encoder/decoder.
+ * Creates a configured [Base32.Default] encoder/decoder.
  *
  * @param [config] to inherit from.
  * @see [Base32DefaultBuilder]
@@ -68,7 +66,7 @@ public fun Base32Default(
 }
 
 /**
- * Builds a [Base32.Default] encoder/decoder.
+ * Creates a configured [Base32.Default] encoder/decoder.
  *
  * @see [Base32DefaultBuilder]
  * */
@@ -79,7 +77,7 @@ public fun Base32Default(
 }
 
 /**
- * Builds a [Base32.Hex] encoder/decoder.
+ * Creates a configured [Base32.Hex] encoder/decoder.
  *
  * @param [config] to inherit from.
  * @see [Base32HexBuilder]
@@ -94,7 +92,7 @@ public fun Base32Hex(
 }
 
 /**
- * Builds a [Base32.Hex] encoder/decoder.
+ * Creates a configured [Base32.Hex] encoder/decoder.
  *
  * @see [Base32HexBuilder]
  * */
@@ -105,8 +103,7 @@ public fun Base32Hex(
 }
 
 /**
- * Builder for configuring and then creating
- * a [Base32.Crockford] encoder/decoder.
+ * Builder for creating a [Base32.Crockford.Configuration].
  *
  * @see [Base32Crockford]
  * */
@@ -183,15 +180,13 @@ public class Base32CrockfordBuilder {
     }
 
     /**
-     * Builds a [Base32.Crockford] encoder/decoder for the
-     * given settings.
+     * Builds a [Base32.Crockford.Configuration] for the provided settings.
      * */
     public fun build(): Base32.Crockford.Configuration = Base32.Crockford.Configuration.from(this)
 }
 
 /**
- * Builder for configuring and then creating
- * a [Base32.Default] encoder/decoder.
+ * Builder for creating a [Base32.Default.Configuration].
  *
  * @see [Base32Default]
  * */
@@ -247,15 +242,13 @@ public class Base32DefaultBuilder {
     public var padEncoded: Boolean = true
 
     /**
-     * Builds a [Base32.Default] encoder/decoder for the
-     * given settings
+     * Builds a [Base32.Default.Configuration] for the provided settings.
      * */
     public fun build(): Base32.Default.Configuration = Base32.Default.Configuration.from(this)
 }
 
 /**
- * Builder for configuring and then creating
- * a [Base32.Hex] encoder/decoder.
+ * Builder for creating a [Base32.Hex.Configuration].
  *
  * @see [Base32Hex]
  * */
@@ -311,8 +304,7 @@ public class Base32HexBuilder {
     public var padEncoded: Boolean = true
 
     /**
-     * Builds a [Base32.Hex] encoder/decoder for the
-     * given settings.
+     * Builds a [Base32.Hex.Configuration] for the provided settings.
      * */
     public fun build(): Base32.Hex.Configuration = Base32.Hex.Configuration.from(this)
 }

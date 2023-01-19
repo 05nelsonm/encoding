@@ -22,7 +22,7 @@ import io.matthewnelson.encoding.core.EncodingException
 import kotlin.jvm.JvmField
 
 /**
- * Builds a [Base16] encoder/decoder.
+ * Creates a configured [Base16] encoder/decoder.
  *
  * @param [config] inherit settings from.
  * @see [Base16Builder]
@@ -37,7 +37,7 @@ public fun Base16(
 }
 
 /**
- * Builds a [Base16] encoder/decoder.
+ * Creates a configured [Base16] encoder/decoder.
  *
  * @see [Base16Builder]
  * */
@@ -48,8 +48,9 @@ public fun Base16(
 }
 
 /**
- * Builder for configuring and then creating
- * a [Base16] encoder/decoder.
+ * Builder for creating a [Base16.Configuration].
+ *
+ * @see [io.matthewnelson.encoding.builders.Base16]
  * */
 public class Base16Builder {
 
@@ -92,7 +93,7 @@ public class Base16Builder {
     public var encodeToLowercase: Boolean = true
 
     /**
-     * Builds a [Base16.Configuration] for the given settings.
+     * Builds a [Base16.Configuration] for the provided settings.
      * */
     public fun build(): Configuration = Configuration.from(this)
 }
