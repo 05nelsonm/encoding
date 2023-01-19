@@ -29,3 +29,13 @@ public final class io/matthewnelson/encoding/base16/Base16$Configuration : io/ma
 	public fun encodeOutSize (I)I
 }
 
+public final class io/matthewnelson/encoding/builders/Base16Builder {
+	public field decodeLowercase Z
+	public field encodeToLowercase Z
+	public field isLenient Z
+}
+
+public final class io/matthewnelson/encoding/builders/Base16BuilderKt {
+	public static final fun Base16 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
+}
+

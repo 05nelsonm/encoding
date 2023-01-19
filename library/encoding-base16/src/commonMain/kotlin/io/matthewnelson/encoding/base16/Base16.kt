@@ -17,6 +17,7 @@
 
 package io.matthewnelson.encoding.base16
 
+import io.matthewnelson.encoding.builders.Base16
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
@@ -29,8 +30,23 @@ import kotlin.jvm.JvmStatic
  * RFC 4648 section 8.
  * https://www.ietf.org/rfc/rfc4648.html#section-8
  *
- * @see [strict]
+ * e.g.
+ *
+ *     val base16 = Base16 {
+ *         isLenient = true
+ *         decodeLowercase = true
+ *         encodeToLowercase = false
+ *     }
+ *
+ *     val text = "Hello World!"
+ *     val bytes = text.encodeToByteArray()
+ *     val encoded = bytes.encodeToString(base16)
+ *     println(encoded) // 48656C6C6F20576F726C6421
+ *     val decoded = encoded.decodeToArray(base16).decodeToString()
+ *     assertEquals(text, decoded)
+ *
  * @see [default]
+ * @see [strict]
  * @see [Configuration]
  * @see [CHARS]
  * @see [EncoderDecoder]
