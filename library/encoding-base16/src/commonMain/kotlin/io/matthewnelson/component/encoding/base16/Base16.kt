@@ -18,6 +18,7 @@
 package io.matthewnelson.component.encoding.base16
 
 import io.matthewnelson.encoding.base16.Base16
+import io.matthewnelson.encoding.builders.Base16
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
@@ -26,13 +27,11 @@ import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 
 @PublishedApi
 @InternalEncodingApi
-internal val COMPATIBILITY: Base16 = Base16(
-    Base16.Configuration(
-        isLenient = true,
-        acceptLowercase = false,
-        encodeToLowercase = false,
-    )
-)
+internal val COMPATIBILITY: Base16 = Base16 {
+    isLenient = true
+    acceptLowercase = false
+    encodeToLowercase = false
+}
 
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase16ToArray(): ByteArray? {

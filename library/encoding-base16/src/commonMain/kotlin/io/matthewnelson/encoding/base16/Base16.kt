@@ -26,6 +26,7 @@ import io.matthewnelson.encoding.core.util.char
 import io.matthewnelson.encoding.core.util.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.lowercaseCharByte
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmSynthetic
 
 /**
  * Base16 (aka "hex") encoding/decoding in accordance with
@@ -64,7 +65,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
      * @see [Base16Builder]
      * @see [EncoderDecoder.Configuration]
      * */
-    public class Configuration internal constructor(
+    public class Configuration private constructor(
         isLenient: Boolean,
         @JvmField
         public val acceptLowercase: Boolean,
@@ -82,6 +83,17 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
                 appendLine()
                 append("    encodeToLowercase: ")
                 append(encodeToLowercase)
+            }
+        }
+
+        internal companion object {
+            @JvmSynthetic
+            internal fun from(builder: Base16Builder): Configuration {
+                return Configuration(
+                    isLenient = builder.isLenient,
+                    acceptLowercase = builder.acceptLowercase,
+                    encodeToLowercase = builder.encodeToLowercase,
+                )
             }
         }
     }

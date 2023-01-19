@@ -20,6 +20,7 @@ public final class io/matthewnelson/encoding/base16/Base16$Companion {
 public final class io/matthewnelson/encoding/base16/Base16$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
 	public final field acceptLowercase Z
 	public final field encodeToLowercase Z
+	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 }
 
@@ -29,7 +30,7 @@ public final class io/matthewnelson/encoding/builders/Base16Builder {
 	public field isLenient Z
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Configuration;)V
-	public final fun build ()Lio/matthewnelson/encoding/base16/Base16;
+	public final fun build ()Lio/matthewnelson/encoding/base16/Base16$Configuration;
 }
 
 public final class io/matthewnelson/encoding/builders/Base16Kt {

@@ -33,7 +33,7 @@ public fun Base16(
 ): Base16 {
     val builder = Base16Builder(config)
     block.invoke(builder)
-    return builder.build()
+    return Base16(builder.build())
 }
 
 /**
@@ -82,20 +82,17 @@ public class Base16Builder {
     public var acceptLowercase: Boolean = true
 
     /**
-     * If true, will output lowercase characters instead of
-     * uppercase (against RFC 4648).
+     * If true, will output lowercase characters when
+     * encoding (against RFC 4648).
+     *
+     * If false, will output uppercase characters when
+     * encoding.
      * */
     @JvmField
     public var encodeToLowercase: Boolean = true
 
     /**
-     * Builds a [Base16] encoder/decoder for the given settings.
+     * Builds a [Base16.Configuration] for the given settings.
      * */
-    public fun build(): Base16 {
-        return Base16(Configuration(
-            isLenient = isLenient,
-            acceptLowercase = acceptLowercase,
-            encodeToLowercase = encodeToLowercase,
-        ))
-    }
+    public fun build(): Configuration = Configuration.from(this)
 }
