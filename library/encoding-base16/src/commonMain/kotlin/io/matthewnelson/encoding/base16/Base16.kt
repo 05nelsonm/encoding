@@ -30,6 +30,7 @@ import kotlin.jvm.JvmField
 /**
  * Base16 (aka "hex") encoding/decoding in accordance with
  * RFC 4648 section 8.
+ *
  * https://www.ietf.org/rfc/rfc4648.html#section-8
  *
  * e.g.
@@ -58,13 +59,12 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
     /**
      * Configuration for [Base16] encoding/decoding.
      *
-     * @param [isLenient] See [EncoderDecoder.Configuration]
-     * @param [acceptLowercase] If true, will also accept lowercase
-     *   characters when decoding (against RFC 4648).
-     * @param [encodeToLowercase] If true, will output lowercase
-     *   characters instead of uppercase (against RFC 4648).
+     * Use [Base16Builder] to create.
+     *
+     * @see [Base16Builder]
+     * @see [EncoderDecoder.Configuration]
      * */
-    public class Configuration(
+    public class Configuration internal constructor(
         isLenient: Boolean,
         @JvmField
         public val acceptLowercase: Boolean,
@@ -87,6 +87,10 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
     }
 
     public companion object {
+
+        /**
+         * Base16 encoding characters.
+         * */
         public const val CHARS: String = "0123456789ABCDEF"
         private val TABLE = EncodingTable.from(CHARS)
     }
