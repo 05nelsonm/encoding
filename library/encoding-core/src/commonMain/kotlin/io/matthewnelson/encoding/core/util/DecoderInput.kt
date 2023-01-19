@@ -91,9 +91,11 @@ private constructor(
             break
         }
 
-        val size = config.decodeOutMaxSizeOrFail(limit, this)
-
-        decodeOutMaxSize = if (size < 0) 0 else size
+        decodeOutMaxSize = if (limit == 0) {
+            0
+        } else {
+            config.decodeOutMaxSizeOrFail(limit, this)
+        }
     }
 
     public companion object {
