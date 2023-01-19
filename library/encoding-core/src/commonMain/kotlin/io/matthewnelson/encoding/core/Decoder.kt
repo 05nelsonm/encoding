@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.closedException
+import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toInputAnalysis
 import kotlin.jvm.JvmStatic
 
 /**
@@ -29,30 +30,6 @@ import kotlin.jvm.JvmStatic
  * @see [newDecoderFeed]
  * */
 public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
-
-    // TODO: These should be moved to the Configuration
-    //  and instead accept a wrapper class which holds
-    //  Any. Then based off of the configuration it can
-    //  be determined whether or not the it is a valid
-    //  encoding for the encoder so we can quit early.
-    //  .
-    //  Maybe the config generates Regex or something once
-    //  it's instantiated, based off of the options that
-    //  are set???
-    @ExperimentalEncodingApi
-    @Throws(EncodingException::class)
-    public open fun quickAnalysisIsValid(encoded: String) {}
-    @ExperimentalEncodingApi
-    @Throws(EncodingException::class)
-    public open fun quickAnalysisIsValid(encoded: CharArray) {}
-    @ExperimentalEncodingApi
-    @Throws(EncodingException::class)
-    public open fun quickAnalysisIsValid(encoded: ByteArray) {}
-
-    // TODO: This should be moved to the Configuration
-    //  and instead accept a wrapper class which holds
-    //  Any.
-    public abstract fun decodedOutMaxSize(inSize: Int): Int
 
     /**
      * Creates a new [Decoder.Feed] for the [Decoder], outputting
@@ -69,8 +46,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
      * to [OutFeed] allowing for a "lazy" decode and streaming.
      *
      * Once all the data has been submitted via [update], call
-     * [doFinal] to close the [Feed] which is where the [Decoder]
-     * will finalize the decoding and check for correctness.
+     * [doFinal] to close the [Decoder.Feed] and perform
+     * finalization for leftover data still in the [Decoder.Feed]
+     * implementation's buffer.
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
@@ -115,8 +93,8 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun String.decodeToArray(decoder: Decoder): ByteArray {
-            decoder.quickAnalysisIsValid(this)
-            return decoder.decode(length) {
+            val size = toInputAnalysis(decoder.config).decodeOutMaxSize
+            return decoder.decode(size) {
                 forEach { char ->
                     update(char)
                 }
@@ -127,7 +105,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         public fun String.decodeToArrayOrNull(decoder: Decoder): ByteArray? {
             return try {
                 decodeToArray(decoder)
-            } catch (e: EncodingException) {
+            } catch (_: EncodingException) {
                 null
             }
         }
@@ -143,7 +121,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharArray.decodeToArray(decoder: Decoder): ByteArray {
-            decoder.quickAnalysisIsValid(this)
+            val size = toInputAnalysis(decoder.config).decodeOutMaxSize
             return decoder.decode(size) {
                 forEach { char ->
                     update(char)
@@ -155,7 +133,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         public fun CharArray.decodeToArrayOrNull(decoder: Decoder): ByteArray? {
             return try {
                 decodeToArray(decoder)
-            } catch (e: EncodingException) {
+            } catch (_: EncodingException) {
                 null
             }
         }
@@ -171,7 +149,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun ByteArray.decodeToArray(decoder: Decoder): ByteArray {
-            decoder.quickAnalysisIsValid(this)
+            val size = toInputAnalysis(decoder.config).decodeOutMaxSize
             return decoder.decode(size) {
                 forEach { byte ->
                     update(byte.toInt().toChar())
@@ -190,8 +168,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
 
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        private fun Decoder.decode(length: Int, update: Decoder.Feed.() -> Unit): ByteArray {
-            val size = decodedOutMaxSize(length)
+        private fun Decoder.decode(size: Int, update: Decoder.Feed.() -> Unit): ByteArray {
             val ba = ByteArray(size)
 
             var i = 0

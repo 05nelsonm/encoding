@@ -17,6 +17,7 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.jvm.JvmField
 
 /**
@@ -31,10 +32,10 @@ public abstract class EncoderDecoder
 constructor(config: Configuration): Encoder(config) {
 
     /**
-     * Used in the [toString] output.
+     * The name of the [EncoderDecoder]. Utilized in the
+     * output of [toString].
      *
      * e.g.
-     *
      *   Base16
      *   Base32.Hex
      *   Base64.UrlSafe
@@ -62,6 +63,26 @@ constructor(config: Configuration): Encoder(config) {
         @JvmField
         public val paddingChar: Char?,
     ) {
+
+        /**
+         * Calculates and returns the maximum size of the output after
+         * decoding occurs, based off of the configuration options set
+         * for the [Configuration] implementation.
+         *
+         * @see [DecoderInput]
+         * @param [encodedSize] size of the data being decoded.
+         * @param [input] Provided for additional analysis in the event
+         *   the decoding specification has checks to fail early.
+         * */
+        @Throws(EncodingException::class)
+        public abstract fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int
+
+        /**
+         * Calculates and returns the size of the output after encoding
+         * occurs, based off of the configuration options set for the
+         * [Configuration] implementation.
+         * */
+        public abstract fun encodeOutSize(unencodedSize: Int): Int
 
         /**
          * Will be called whenever [toString] is invoked, allowing

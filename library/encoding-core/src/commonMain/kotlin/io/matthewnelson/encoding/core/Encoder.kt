@@ -31,11 +31,6 @@ import kotlin.jvm.JvmStatic
  * */
 public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(config) {
 
-    // TODO: This should be moved to the Configuration
-    //  and instead accept a wrapper class which holds
-    //  Any.
-    public abstract fun encodedOutSize(inSize: Int): Int
-
     /**
      * Creates a new [Encoder.Feed] for the [Encoder], outputting
      * encoded bytes to the provided [OutFeed].
@@ -51,9 +46,9 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
      * to [OutFeed] allowing for a "lazy" encode and streaming.
      *
      * Once all the data has been submitted via [update], call
-     * [doFinal] to close the [Feed] which is where the [Encoder]
-     * will finalize the encoding (such as applying padding, if
-     * specified)
+     * [doFinal] to close the [Encoder.Feed] and perform
+     * finalization for leftover data still in the [Encoder.Feed]
+     * implementation's buffer.
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
@@ -91,7 +86,8 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * */
         @JvmStatic
         public fun ByteArray.encodeToString(encoder: Encoder): String {
-            val sb = StringBuilder(encoder.encodedOutSize(size))
+            val sb = StringBuilder(encoder.config.encodeOutSize(size))
+
             encoder.encode(this) { byte ->
                 sb.append(byte.toInt().toChar())
             }
@@ -104,7 +100,8 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * */
         @JvmStatic
         public fun ByteArray.encodeToCharArray(encoder: Encoder): CharArray {
-            val ca = CharArray(encoder.encodedOutSize(size))
+            val ca = CharArray(encoder.config.encodeOutSize(size))
+
             var i = 0
             encoder.encode(this) { byte ->
                 ca[i++] = byte.toInt().toChar()
@@ -118,7 +115,8 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * */
         @JvmStatic
         public fun ByteArray.encodeToByteArray(encoder: Encoder): ByteArray {
-            val ba = ByteArray(encoder.encodedOutSize(size))
+            val ba = ByteArray(encoder.config.encodeOutSize(size))
+
             var i = 0
             encoder.encode(this) { byte ->
                 ba[i++] = byte
@@ -128,6 +126,7 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
 
         @OptIn(ExperimentalEncodingApi::class)
         private fun Encoder.encode(bytes: ByteArray, out: OutFeed) {
+            if (bytes.isEmpty()) return
             val feed = newEncoderFeed(out)
             for (byte in bytes) {
                 feed.update(byte)
