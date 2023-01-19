@@ -163,12 +163,16 @@ constructor(config: Configuration): Encoder(config) {
     /**
      * Base abstraction for encoding/decoding data.
      *
-     * After pushing all data through [update], call
-     * [doFinal] to complete encoding/decoding.
+     * After pushing all data through [update], call [doFinal]
+     * to complete encoding/decoding.
      *
+     * Alternatively, utilize the [use] extension function which
+     * will call [doFinal] or [close] when you're done pushing
+     * data through [update].
+     *
+     * @see [use]
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
-     * @see [use]
      * */
     public sealed class Feed {
         public var isClosed: Boolean = false
