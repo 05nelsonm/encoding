@@ -34,10 +34,10 @@ public class Base16Builder internal constructor() {
     public var isLenient: Boolean = false
 
     /**
-     * See [Configuration.decodeLowercase]
+     * See [Configuration.acceptLowercase]
      * */
     @JvmField
-    public var decodeLowercase: Boolean = false
+    public var acceptLowercase: Boolean = false
 
     /**
      * See [Configuration.encodeToLowercase]
@@ -48,7 +48,7 @@ public class Base16Builder internal constructor() {
     internal fun build(): Base16 {
         return Base16(Configuration(
             isLenient = isLenient,
-            decodeLowercase = decodeLowercase,
+            acceptLowercase = acceptLowercase,
             encodeToLowercase = encodeToLowercase,
         ))
     }

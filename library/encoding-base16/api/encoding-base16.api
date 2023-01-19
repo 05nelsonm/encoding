@@ -18,7 +18,7 @@ public final class io/matthewnelson/encoding/base16/Base16$Companion {
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
-	public final field decodeLowercase Z
+	public final field acceptLowercase Z
 	public final field encodeToLowercase Z
 	public fun <init> (ZZZ)V
 	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
@@ -26,7 +26,7 @@ public final class io/matthewnelson/encoding/base16/Base16$Configuration : io/ma
 }
 
 public final class io/matthewnelson/encoding/builders/Base16Builder {
-	public field decodeLowercase Z
+	public field acceptLowercase Z
 	public field encodeToLowercase Z
 	public field isLenient Z
 }

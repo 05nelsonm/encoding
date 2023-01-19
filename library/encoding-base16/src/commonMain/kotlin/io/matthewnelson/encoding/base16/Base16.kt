@@ -36,7 +36,7 @@ import kotlin.jvm.JvmField
  *
  *     val base16 = Base16 {
  *         isLenient = true
- *         decodeLowercase = true
+ *         acceptLowercase = true
  *         encodeToLowercase = false
  *     }
  *
@@ -59,7 +59,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
      * Configuration for [Base16] encoding/decoding.
      *
      * @param [isLenient] See [EncoderDecoder.Configuration]
-     * @param [decodeLowercase] If true, will also accept lowercase
+     * @param [acceptLowercase] If true, will also accept lowercase
      *   characters when decoding (against RFC 4648).
      * @param [encodeToLowercase] If true, will output lowercase
      *   characters instead of uppercase (against RFC 4648).
@@ -67,7 +67,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
     public class Configuration(
         isLenient: Boolean,
         @JvmField
-        public val decodeLowercase: Boolean,
+        public val acceptLowercase: Boolean,
         @JvmField
         public val encodeToLowercase: Boolean,
     ): EncoderDecoder.Configuration(isLenient, paddingByte = null) {
@@ -77,8 +77,8 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
 
         override fun toStringAddSettings(sb: StringBuilder) {
             with(sb) {
-                append("    decodeLowercase: ")
-                append(decodeLowercase)
+                append("    acceptLowercase: ")
+                append(acceptLowercase)
                 appendLine()
                 append("    encodeToLowercase: ")
                 append(encodeToLowercase)
@@ -119,7 +119,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
 
             @Throws(EncodingException::class)
             override fun updateProtected(input: Byte) {
-                val char = if ((config as Configuration).decodeLowercase) {
+                val char = if ((config as Configuration).acceptLowercase) {
                     input.char.uppercaseChar()
                 } else {
                     input.char
