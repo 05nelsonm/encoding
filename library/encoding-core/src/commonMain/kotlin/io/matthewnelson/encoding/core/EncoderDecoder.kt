@@ -20,7 +20,6 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmSynthetic
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
