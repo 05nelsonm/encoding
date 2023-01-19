@@ -6,3 +6,26 @@ public final class io/matthewnelson/component/encoding/base16/Base16Kt {
 	public static final fun encodeBase16ToCharArray ([B)[C
 }
 
+public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/encoding/core/EncoderDecoder {
+	public static final field CHARS Ljava/lang/String;
+	public static final field Companion Lio/matthewnelson/encoding/base16/Base16$Companion;
+	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Configuration;)V
+	public static final fun default ()Lio/matthewnelson/encoding/base16/Base16;
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	public static final fun strict ()Lio/matthewnelson/encoding/base16/Base16;
+}
+
+public final class io/matthewnelson/encoding/base16/Base16$Companion {
+	public final fun default ()Lio/matthewnelson/encoding/base16/Base16;
+	public final fun strict ()Lio/matthewnelson/encoding/base16/Base16;
+}
+
+public final class io/matthewnelson/encoding/base16/Base16$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
+	public final field decodeLowercase Z
+	public final field encodeToLowercase Z
+	public fun <init> (ZZZ)V
+	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
+	public fun encodeOutSize (I)I
+}
+
