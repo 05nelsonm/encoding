@@ -36,6 +36,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
      * decoded bytes to the provided [OutFeed].
      *
      * @see [Decoder.Feed]
+     * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
      * */
     @ExperimentalEncodingApi
     public abstract fun newDecoderFeed(out: OutFeed): Decoder.Feed

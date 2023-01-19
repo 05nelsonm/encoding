@@ -25,11 +25,11 @@ import kotlin.jvm.JvmField
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
- * classes) such that inheriting classes must implement
- * both.
+ * classes) such that inheriting classes must implement both.
  *
  * @see [Configuration]
  * @see [Feed]
+ * @sample [io.matthewnelson.encoding.base16.Base16]
  * */
 public abstract class EncoderDecoder
 @ExperimentalEncodingApi
@@ -58,6 +58,7 @@ constructor(config: Configuration): Encoder(config) {
      *   output for the given encoding; NOT "if padding should be
      *   used". If the encoding specification does not ues padding,
      *   pass `null`.
+     * @sample [io.matthewnelson.encoding.base16.Base16.Configuration]
      * */
     @OptIn(InternalEncodingApi::class)
     public abstract class Configuration
@@ -96,8 +97,29 @@ constructor(config: Configuration): Encoder(config) {
          * Will be called whenever [toString] is invoked, allowing
          * inheritors of [Configuration] to add their settings to
          * the output.
+         *
+         * [isLenient] and [paddingChar] are automatically added.
+         *
+         * Output of [toString] is used in [equals] and [hashCode], so
+         * this affects their outcome.
+         *
+         * e.g.
+         *   override fun toStringAddSettings(sb: StringBuilder) {
+         *       with(sb) {
+         *           // already starting on a new line
+         *           append("    setting1: ") // 4 space indent + colon + single space
+         *           append(setting1)
+         *           appendLine()             // Add new line if multiple settings
+         *           append("    setting2: ")
+         *           append(setting2)
+         *           // a new line is automatically added after
+         *       }
+         *   }
+         *
+         * @see [toString]
+         * @sample [io.matthewnelson.encoding.base16.Base16.Configuration.toStringAddSettings]
          * */
-        protected abstract fun toString(sb: StringBuilder)
+        protected abstract fun toStringAddSettings(sb: StringBuilder)
 
         final override fun equals(other: Any?): Boolean {
             return  other is Configuration
@@ -119,7 +141,7 @@ constructor(config: Configuration): Encoder(config) {
                 append("    paddingChar: ")
                 append(paddingChar())
                 appendLine()
-                toString(this)
+                toStringAddSettings(this)
                 appendLine()
                 append(']')
             }.toString()

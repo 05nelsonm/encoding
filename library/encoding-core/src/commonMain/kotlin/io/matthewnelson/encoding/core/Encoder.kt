@@ -38,6 +38,7 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
      * encoded bytes to the provided [OutFeed].
      *
      * @see [Encoder.Feed]
+     * @sample [io.matthewnelson.encoding.base16.Base16.newEncoderFeed]
      * */
     @ExperimentalEncodingApi
     public abstract fun newEncoderFeed(out: OutFeed): Encoder.Feed

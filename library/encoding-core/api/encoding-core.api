@@ -64,7 +64,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Configuratio
 	public final fun hashCode ()I
 	public final fun paddingChar ()Ljava/lang/Character;
 	public final fun toString ()Ljava/lang/String;
-	protected abstract fun toString (Ljava/lang/StringBuilder;)V
+	protected abstract fun toStringAddSettings (Ljava/lang/StringBuilder;)V
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {

@@ -74,7 +74,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
         override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int = encodedSize / 2
         override fun encodeOutSize(unencodedSize: Int): Int = unencodedSize * 2
 
-        override fun toString(sb: StringBuilder) {
+        override fun toStringAddSettings(sb: StringBuilder) {
             with(sb) {
                 append("    decodeLowercase: ")
                 append(decodeLowercase)
