@@ -19,6 +19,9 @@ import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.base16.Base16.Configuration
 import kotlin.jvm.JvmField
 
+/**
+ * Builder for [Base16]
+ * */
 public fun Base16(block: Base16Builder.() -> Unit): Base16 {
     val builder = Base16Builder()
     block.invoke(builder)

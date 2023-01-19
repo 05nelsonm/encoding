@@ -85,7 +85,7 @@ constructor(config: Configuration): Encoder(config) {
          * occurs, based off of the configuration options set for the
          * [Configuration] implementation.
          * */
-        public abstract fun encodeOutSize(unencodedSize: Int): Int
+        public abstract fun encodeOutSize(unEncodedSize: Int): Int
 
         /**
          * Will be called whenever [toString] is invoked, allowing
