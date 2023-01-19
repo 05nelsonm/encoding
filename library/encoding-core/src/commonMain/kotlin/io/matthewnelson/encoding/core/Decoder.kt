@@ -54,6 +54,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
      * implementation's buffer.
      *
      * @see [EncoderDecoder.Feed]
+     * @see [use]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
@@ -150,12 +151,11 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
             val ba = ByteArray(input.decodeOutMaxSize)
 
             var i = 0
-            val feed = newDecoderFeed { byte ->
+            newDecoderFeed { byte ->
                 ba[i++] = byte
+            }.use { feed ->
+                update.invoke(feed)
             }
-
-            update.invoke(feed)
-            feed.doFinal()
 
             return if (i == input.decodeOutMaxSize) {
                 ba

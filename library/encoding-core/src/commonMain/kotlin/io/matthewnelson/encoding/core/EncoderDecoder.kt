@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmSynthetic
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
@@ -168,6 +169,7 @@ constructor(config: Configuration): Encoder(config) {
      *
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
+     * @see [use]
      * */
     public sealed class Feed {
         public var isClosed: Boolean = false
@@ -181,6 +183,12 @@ constructor(config: Configuration): Encoder(config) {
         @Throws(EncodingException::class)
         protected abstract fun doFinalProtected()
 
+        /**
+         * Updates the [Feed] with a new byte to encode/decode.
+         *
+         * @throws [EncodingException] if [isClosed] is true, or
+         *   there was an error decoding.
+         * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public fun update(input: Byte) {
@@ -188,18 +196,34 @@ constructor(config: Configuration): Encoder(config) {
 
             try {
                 updateProtected(input)
-            } catch (e: EncodingException) {
-                isClosed = true
-                throw e
+            } catch (t: Throwable) {
+                close()
+                throw t
             }
         }
 
+        /**
+         * Closes the [Feed] and finalizes the encoding/decoding, such
+         * as applying padding (encoding), or dumping it's buffer
+         * to [OutFeed] (decoding).
+         *
+         * @throws [EncodingException] if [isClosed] is true, or
+         *   there was an error decoding.
+         * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public fun doFinal() {
             if (isClosed) throw closedException()
-            isClosed = true
+            close()
             doFinalProtected()
+        }
+
+        /**
+         * Closes the feed, rendering it useless.
+         * */
+        @ExperimentalEncodingApi
+        public fun close() {
+            isClosed = true
         }
     }
 }

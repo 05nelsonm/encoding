@@ -52,6 +52,7 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
      * implementation's buffer.
      *
      * @see [EncoderDecoder.Feed]
+     * @see [use]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
@@ -107,11 +108,12 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
         @OptIn(ExperimentalEncodingApi::class)
         private fun Encoder.encode(bytes: ByteArray, out: OutFeed) {
             if (bytes.isEmpty()) return
-            val feed = newEncoderFeed(out)
-            for (byte in bytes) {
-                feed.update(byte)
+
+            newEncoderFeed(out).use { feed ->
+                for (byte in bytes) {
+                    feed.update(byte)
+                }
             }
-            feed.doFinal()
         }
     }
 }

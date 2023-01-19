@@ -17,7 +17,45 @@
 
 package io.matthewnelson.encoding.core
 
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import io.matthewnelson.encoding.core.EncoderDecoder.Feed
+
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun EncoderDecoder.Feed.closedException(): EncodingException {
+internal inline fun Feed.closedException(): EncodingException {
     return EncodingException("$this is closed")
+}
+
+/**
+ * Executes the given [block] function and then closes
+ * the [Feed] by either:
+ *  - Calling [Feed.doFinal] if [block] **DID NOT** throw an
+ *    exception and the feed is still open.
+ *  - Calling [Feed.close] if [block] **DID** throw an
+ *    exception.
+ *
+ * @sample [io.matthewnelson.encoding.core.Encoder.encode]
+ * @sample [io.matthewnelson.encoding.core.Decoder.decode]
+ * */
+@ExperimentalEncodingApi
+@OptIn(ExperimentalContracts::class)
+public inline fun <T: Feed?, V> T.use(block: (T) -> V): V {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+
+    var threw = false
+    return try {
+        block.invoke(this)
+    } catch (t: Throwable) {
+        threw = true
+        throw t
+    } finally {
+        when {
+            this == null -> {}
+            !threw && !isClosed -> doFinal()
+            else -> close()
+        }
+    }
 }

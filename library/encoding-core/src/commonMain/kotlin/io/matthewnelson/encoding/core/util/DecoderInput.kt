@@ -70,13 +70,6 @@ private constructor(
             else -> (input as ByteArray).size
         }
 
-        fun Char.matches(): Boolean {
-            return when (this) {
-                '\n', '\r', ' ', '\t' -> true
-                else -> false
-            }
-        }
-
         // Disregard any padding or spaces/new lines (if applicable)
         while (limit > 0) {
             val c = get(limit - 1)

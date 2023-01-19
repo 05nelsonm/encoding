@@ -68,6 +68,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Configuratio
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
+	public final fun close ()V
 	public final fun doFinal ()V
 	protected abstract fun doFinalProtected ()V
 	public final fun isClosed ()Z
@@ -86,6 +87,10 @@ public abstract interface annotation class io/matthewnelson/encoding/core/Experi
 
 public abstract interface class io/matthewnelson/encoding/core/OutFeed {
 	public abstract fun invoke (B)V
+}
+
+public final class io/matthewnelson/encoding/core/_FeedKt {
+	public static final fun use (Lio/matthewnelson/encoding/core/EncoderDecoder$Feed;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class io/matthewnelson/encoding/core/internal/EncodingTable$Companion {
