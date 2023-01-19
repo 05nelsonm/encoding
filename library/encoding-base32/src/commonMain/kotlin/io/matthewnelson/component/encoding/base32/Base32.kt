@@ -63,7 +63,7 @@ public sealed class Base32 {
         }
 
         public companion object {
-            public const val CHARS: String = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+            public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Crockford.CHARS
         }
 
         override val encodingTable: ByteArray get() = CROCKFORD_TABLE
@@ -76,7 +76,7 @@ public sealed class Base32 {
      * https://www.ietf.org/rfc/rfc4648.html#section-6
      * */
     public object Default: Base32() {
-        public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+        public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Default.CHARS
         override val encodingTable: ByteArray get() = DEFAULT_TABLE
     }
 
@@ -85,7 +85,7 @@ public sealed class Base32 {
      * https://www.ietf.org/rfc/rfc4648.html#section-7
      * */
     public object Hex: Base32() {
-        public const val CHARS: String = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
+        public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Hex.CHARS
         override val encodingTable: ByteArray get() = HEX_TABLE
     }
 }

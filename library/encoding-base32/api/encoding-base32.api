@@ -49,3 +49,104 @@ public final class io/matthewnelson/component/encoding/base32/Base32Kt {
 	public static synthetic fun encodeBase32ToCharArray$default ([BLio/matthewnelson/component/encoding/base32/Base32;ILjava/lang/Object;)[C
 }
 
+public abstract class io/matthewnelson/encoding/base32/Base32 : io/matthewnelson/encoding/core/EncoderDecoder {
+	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Configuration;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthewnelson/encoding/base32/Base32 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Crockford$Companion;
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Configuration;)V
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion {
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Crockford$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
+	public final field acceptLowercase Z
+	public final field hyphenInterval S
+	public synthetic fun <init> (ZZSLjava/lang/Byte;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
+	public final fun getCheckSymbol ()Ljava/lang/Character;
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewnelson/encoding/base32/Base32 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Default$Companion;
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Configuration;)V
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Default$Companion {
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Default$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
+	public final field acceptLowercase Z
+	public final field encodeToLowercase Z
+	public final field padEncoded Z
+	public synthetic fun <init> (ZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
+	public static final field CHARS Ljava/lang/String;
+	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Hex$Companion;
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Configuration;)V
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion {
+}
+
+public final class io/matthewnelson/encoding/base32/Base32$Hex$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
+	public final field acceptLowercase Z
+	public final field encodeToLowercase Z
+	public final field padEncoded Z
+	public synthetic fun <init> (ZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
+}
+
+public final class io/matthewnelson/encoding/builders/Base32CrockfordBuilder {
+	public field acceptLowercase Z
+	public field hyphenInterval S
+	public field isLenient Z
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Configuration;)V
+	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Crockford$Configuration;
+	public final fun getCheckSymbol ()Ljava/lang/Character;
+	public final fun setCheckSymbol (Ljava/lang/Character;)Lio/matthewnelson/encoding/builders/Base32CrockfordBuilder;
+}
+
+public final class io/matthewnelson/encoding/builders/Base32DefaultBuilder {
+	public field acceptLowercase Z
+	public field encodeToLowercase Z
+	public field isLenient Z
+	public field padEncoded Z
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Configuration;)V
+	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Default$Configuration;
+}
+
+public final class io/matthewnelson/encoding/builders/Base32HexBuilder {
+	public field acceptLowercase Z
+	public field encodeToLowercase Z
+	public field isLenient Z
+	public field padEncoded Z
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Configuration;)V
+	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Hex$Configuration;
+}
+
+public final class io/matthewnelson/encoding/builders/Base32Kt {
+	public static final fun Base32Crockford (Lio/matthewnelson/encoding/base32/Base32$Crockford$Configuration;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
+	public static final fun Base32Crockford (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
+	public static final fun Base32Default (Lio/matthewnelson/encoding/base32/Base32$Default$Configuration;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
+	public static final fun Base32Default (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
+	public static final fun Base32Hex (Lio/matthewnelson/encoding/base32/Base32$Hex$Configuration;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
+	public static final fun Base32Hex (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
+}
+
