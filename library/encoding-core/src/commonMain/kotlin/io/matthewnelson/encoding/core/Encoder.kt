@@ -17,8 +17,6 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmStatic
 
 /**
@@ -57,7 +55,7 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed<Byte>() {
+    constructor(): EncoderDecoder.Feed() {
         protected abstract override fun updateProtected(input: Byte)
         protected abstract override fun doFinalProtected()
         final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
@@ -70,11 +68,10 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * returns the encoded data in the form of a [String].
          * */
         @JvmStatic
-        @OptIn(InternalEncodingApi::class)
         public fun ByteArray.encodeToString(encoder: Encoder): String {
             val sb = StringBuilder(encoder.config.encodeOutSize(size))
             encoder.encode(this) { byte ->
-                sb.append(byte.toByteChar().char)
+                sb.append(byte.toInt().toChar())
             }
             return sb.toString()
         }
@@ -84,12 +81,11 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * returns the encoded data in the form of a [CharArray].
          * */
         @JvmStatic
-        @OptIn(InternalEncodingApi::class)
         public fun ByteArray.encodeToCharArray(encoder: Encoder): CharArray {
             val ca = CharArray(encoder.config.encodeOutSize(size))
             var i = 0
             encoder.encode(this) { byte ->
-                ca[i++] = byte.toByteChar().char
+                ca[i++] = byte.toInt().toChar()
             }
             return ca
         }

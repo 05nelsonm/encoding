@@ -17,10 +17,8 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.internal.ByteChar
-import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
 
 /**
@@ -54,24 +52,20 @@ constructor(config: Configuration): Encoder(config) {
      *   and new lines ('\n', '\r', ' ', '\t'). If false, an
      *   [EncodingException] will be thrown when encountering those
      *   characters.
-     * @param [paddingChar] The character used when padding the
-     *   output for the given encoding; NOT "if padding should be
-     *   used". If the encoding specification does not ues padding,
-     *   pass `null`.
+     * @param [paddingByte] The byte used when padding the output for
+     *   the given encoding; NOT "if padding should be
+     *   used". (e.g. '='.code.toByte()).
+     *   If the encoding specification does not ues padding, pass `null`.
      * @sample [io.matthewnelson.encoding.base16.Base16.Configuration]
      * */
-    @OptIn(InternalEncodingApi::class)
     public abstract class Configuration
     @ExperimentalEncodingApi
     constructor(
         @JvmField
         public val isLenient: Boolean,
-        paddingChar: Char?,
+        @JvmField
+        public val paddingByte: Byte?,
     ) {
-
-        @InternalEncodingApi
-        public val paddingByteChar: ByteChar? = paddingChar?.toByteChar()
-        public fun paddingChar(): Char? = paddingByteChar?.char
 
         /**
          * Calculates and returns the maximum size of the output after
@@ -98,7 +92,7 @@ constructor(config: Configuration): Encoder(config) {
          * inheritors of [Configuration] to add their settings to
          * the output.
          *
-         * [isLenient] and [paddingChar] are automatically added.
+         * [isLenient] and [paddingByte] are automatically added.
          *
          * Output of [toString] is used in [equals] and [hashCode], so
          * this affects their outcome.
@@ -139,7 +133,7 @@ constructor(config: Configuration): Encoder(config) {
                 append(isLenient)
                 appendLine()
                 append("    paddingChar: ")
-                append(paddingChar())
+                append(paddingByte?.char)
                 appendLine()
                 toStringAddSettings(this)
                 appendLine()
@@ -175,13 +169,13 @@ constructor(config: Configuration): Encoder(config) {
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
      * */
-    public sealed class Feed<T: Any> {
+    public sealed class Feed {
         public var isClosed: Boolean = false
             private set
 
         // Only throws exception if decoding
         @Throws(EncodingException::class)
-        protected abstract fun updateProtected(input: T)
+        protected abstract fun updateProtected(input: Byte)
 
         // Only throws exception if decoding
         @Throws(EncodingException::class)
@@ -189,7 +183,7 @@ constructor(config: Configuration): Encoder(config) {
 
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
-        public fun update(input: T) {
+        public fun update(input: Byte) {
             if (isClosed) throw closedException()
             updateProtected(input)
         }

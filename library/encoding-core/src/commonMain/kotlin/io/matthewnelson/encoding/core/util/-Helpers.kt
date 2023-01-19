@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.internal
+@file:Suppress("KotlinRedundantDiagnosticSuppress")
 
-import kotlin.jvm.JvmInline
-import kotlin.jvm.JvmStatic
+package io.matthewnelson.encoding.core.util
 
-@JvmInline
-@InternalEncodingApi
-public value class EncodingTable private constructor(private val value: ByteArray) {
-
-    @Throws(IndexOutOfBoundsException::class)
-    public operator fun get(index: Int): Byte = value[index]
-
-    public companion object {
-        @JvmStatic
-        public fun from(chars: String): EncodingTable = EncodingTable(chars.encodeToByteArray())
+@Suppress("NOTHING_TO_INLINE")
+public inline fun Char.isSpaceOrNewLine(): Boolean {
+    return when(this) {
+        '\n', '\r', ' ', '\t' -> true
+        else -> false
     }
 }

@@ -17,7 +17,6 @@ package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
-import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
@@ -52,12 +51,12 @@ private constructor(
      * early.
      * */
     @Throws(EncodingException::class)
-    public fun get(index: Int): Char {
+    public operator fun get(index: Int): Char {
         return try {
             when (input) {
                 is String -> input[index]
                 is CharArray -> input[index]
-                else -> (input as ByteArray)[index].toByteChar().char
+                else -> (input as ByteArray)[index].char
             }
         } catch (e: IndexOutOfBoundsException) {
             throw EncodingException("Index out of bounds", e)
@@ -71,21 +70,27 @@ private constructor(
             else -> (input as ByteArray).size
         }
 
+        fun Char.matches(): Boolean {
+            return when (this) {
+                '\n', '\r', ' ', '\t' -> true
+                else -> false
+            }
+        }
+
         // Disregard any padding or spaces/new lines (if applicable)
         while (limit > 0) {
             val c = get(limit - 1)
-            when (c) {
-                '\n', '\r', ' ', '\t' -> {
-                    if (!config.isLenient) {
-                        throw isLenientFalseEncodingException()
-                    } else {
-                        limit--
-                        continue
-                    }
+
+            if (c.isSpaceOrNewLine()) {
+                if (!config.isLenient) {
+                    throw isLenientFalseEncodingException()
+                } else {
+                    limit--
+                    continue
                 }
             }
 
-            if (c.toByteChar() == config.paddingByteChar) {
+            if (c.byte == config.paddingByte) {
                 limit--
                 continue
             }

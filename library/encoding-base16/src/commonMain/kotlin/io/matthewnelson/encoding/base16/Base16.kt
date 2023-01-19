@@ -17,13 +17,15 @@
 
 package io.matthewnelson.encoding.base16
 
-import io.matthewnelson.encoding.builders.Base16
+import io.matthewnelson.encoding.builders.Base16Builder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.core.util.char
+import io.matthewnelson.encoding.core.util.isSpaceOrNewLine
+import io.matthewnelson.encoding.core.util.lowercaseCharByte
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 
 /**
  * Base16 (aka "hex") encoding/decoding in accordance with
@@ -45,8 +47,7 @@ import kotlin.jvm.JvmStatic
  *     val decoded = encoded.decodeToArray(base16).decodeToString()
  *     assertEquals(text, decoded)
  *
- * @see [default]
- * @see [strict]
+ * @see [Base16Builder]
  * @see [Configuration]
  * @see [CHARS]
  * @see [EncoderDecoder]
@@ -69,7 +70,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
         public val decodeLowercase: Boolean,
         @JvmField
         public val encodeToLowercase: Boolean,
-    ): EncoderDecoder.Configuration(isLenient, paddingChar = null) {
+    ): EncoderDecoder.Configuration(isLenient, paddingByte = null) {
 
         override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int = encodedSize / 2
         override fun encodeOutSize(unencodedSize: Int): Int = unencodedSize * 2
@@ -87,43 +88,6 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
 
     public companion object {
         public const val CHARS: String = "0123456789ABCDEF"
-
-        private val DEFAULT = Base16(Configuration(
-            isLenient = true,
-            decodeLowercase = true,
-            encodeToLowercase = true,
-        ))
-
-        private val STRICT = Base16(Configuration(
-            isLenient = false,
-            decodeLowercase = false,
-            encodeToLowercase = false,
-        ))
-
-        /**
-         * A default configuration for Base16 encoding/decoding where:
-         *  - [Configuration.isLenient] = true
-         *  - [Configuration.decodeLowercase] = true
-         *  - [Configuration.encodeToLowercase] = true
-         *
-         * ENCODING: Non-compliant with RFC 4648 section 8
-         * DECODING: Non-compliant with RFC 4648 section 8
-         * */
-        @JvmStatic
-        public fun default(): Base16 = DEFAULT
-
-        /**
-         * A strict configuration for Base16 encoding/decoding where:
-         *  - [Configuration.isLenient] = false
-         *  - [Configuration.decodeLowercase] = false
-         *  - [Configuration.encodeToLowercase] = false
-         *
-         * ENCODING: Compliant with RFC 4648 section 8
-         * DECODING: Compliant with RFC 4648 section 8
-         * */
-        @JvmStatic
-        public fun strict(): Base16 = STRICT
-
         private val TABLE = EncodingTable.from(CHARS)
     }
 
@@ -132,15 +96,15 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
 
             override fun updateProtected(input: Byte) {
                 val bits = input.toInt() and 0xff
-                val b1 = TABLE.get(bits shr    4)
-                val b2 = TABLE.get(bits and 0x0f)
+                val b1 = TABLE[bits shr    4]
+                val b2 = TABLE[bits and 0x0f]
 
                 if ((config as Configuration).encodeToLowercase) {
-                    out.invoke(b1.lowercaseByte())
-                    out.invoke(b2.lowercaseByte())
+                    out.invoke(b1.lowercaseCharByte())
+                    out.invoke(b2.lowercaseCharByte())
                 } else {
-                    out.invoke(b1.byte)
-                    out.invoke(b2.byte)
+                    out.invoke(b1)
+                    out.invoke(b2)
                 }
             }
 
@@ -154,33 +118,33 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
             private var bitBuffer = 0
 
             @Throws(EncodingException::class)
-            override fun updateProtected(input: Char) {
+            override fun updateProtected(input: Byte) {
                 val char = if ((config as Configuration).decodeLowercase) {
-                    input.uppercaseChar()
+                    input.char.uppercaseChar()
                 } else {
-                    input
+                    input.char
                 }
 
-                val bits: Int
-                when (char) {
+                if (char.isSpaceOrNewLine()) {
+                    if (config.isLenient) {
+                        return
+                    } else {
+                        throw DecoderInput.isLenientFalseEncodingException()
+                    }
+                }
+
+                val bits: Int = when (char) {
                     in '0'..'9' -> {
                         // char ASCII value
                         // 0     48    0
                         // 9     57    9 (ASCII - 48)
-                        bits = char.code - 48
+                        char.code - 48
                     }
                     in 'A'..'F' -> {
                         // char ASCII value
                         //   A   65    10
                         //   F   70    15 (ASCII - 55)
-                        bits = char.code - 55
-                    }
-                    '\n', '\r', ' ', '\t' -> {
-                        if (config.isLenient) {
-                            return
-                        } else {
-                            throw DecoderInput.isLenientFalseEncodingException()
-                        }
+                        char.code - 55
                     }
                     else -> {
                         throw EncodingException("Char[$char] is not a valid Base16 character")

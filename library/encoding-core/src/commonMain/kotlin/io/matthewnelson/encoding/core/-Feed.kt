@@ -18,6 +18,6 @@
 package io.matthewnelson.encoding.core
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
+internal inline fun EncoderDecoder.Feed.closedException(): EncodingException {
     return EncodingException("$this is closed")
 }

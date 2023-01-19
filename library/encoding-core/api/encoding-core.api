@@ -57,12 +57,12 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthew
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
 	public final field isLenient Z
-	public fun <init> (ZLjava/lang/Character;)V
+	public final field paddingByte Ljava/lang/Byte;
+	public fun <init> (ZLjava/lang/Byte;)V
 	public abstract fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 	public abstract fun encodeOutSize (I)I
 	public final fun equals (Ljava/lang/Object;)Z
 	public final fun hashCode ()I
-	public final fun paddingChar ()Ljava/lang/Character;
 	public final fun toString ()Ljava/lang/String;
 	protected abstract fun toStringAddSettings (Ljava/lang/StringBuilder;)V
 }
@@ -71,8 +71,8 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public final fun doFinal ()V
 	protected abstract fun doFinalProtected ()V
 	public final fun isClosed ()Z
-	public final fun update (Ljava/lang/Object;)V
-	protected abstract fun updateProtected (Ljava/lang/Object;)V
+	public final fun update (B)V
+	protected abstract fun updateProtected (B)V
 }
 
 public final class io/matthewnelson/encoding/core/EncodingException : java/lang/RuntimeException {
@@ -86,11 +86,6 @@ public abstract interface annotation class io/matthewnelson/encoding/core/Experi
 
 public abstract interface class io/matthewnelson/encoding/core/OutFeed {
 	public abstract fun invoke (B)V
-}
-
-public final class io/matthewnelson/encoding/core/internal/ByteChar$Companion {
-	public final fun toByteChar-qQkxe1M (B)B
-	public final fun toByteChar-qQkxe1M (C)B
 }
 
 public final class io/matthewnelson/encoding/core/internal/EncodingTable$Companion {
@@ -107,5 +102,15 @@ public final class io/matthewnelson/encoding/core/util/DecoderInput {
 }
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput$Companion {
+}
+
+public final class io/matthewnelson/encoding/core/util/_ConversionsKt {
+	public static final fun getByte (C)B
+	public static final fun getChar (B)C
+	public static final fun lowercaseCharByte (B)B
+}
+
+public final class io/matthewnelson/encoding/core/util/_HelpersKt {
+	public static final fun isSpaceOrNewLine (C)Z
 }
 

@@ -10,15 +10,11 @@ public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/en
 	public static final field CHARS Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base16/Base16$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Configuration;)V
-	public static final fun default ()Lio/matthewnelson/encoding/base16/Base16;
 	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
 	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
-	public static final fun strict ()Lio/matthewnelson/encoding/base16/Base16;
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Companion {
-	public final fun default ()Lio/matthewnelson/encoding/base16/Base16;
-	public final fun strict ()Lio/matthewnelson/encoding/base16/Base16;
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
@@ -35,7 +31,7 @@ public final class io/matthewnelson/encoding/builders/Base16Builder {
 	public field isLenient Z
 }
 
-public final class io/matthewnelson/encoding/builders/Base16BuilderKt {
+public final class io/matthewnelson/encoding/builders/Base16Kt {
 	public static final fun Base16 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 }
 
