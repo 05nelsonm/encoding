@@ -17,6 +17,7 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmStatic
 
 /**
@@ -72,7 +73,7 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
         public fun ByteArray.encodeToString(encoder: Encoder): String {
             val sb = StringBuilder(encoder.config.encodeOutSize(size))
             encoder.encode(this) { byte ->
-                sb.append(byte.toInt().toChar())
+                sb.append(byte.char)
             }
             return sb.toString()
         }
@@ -86,7 +87,7 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
             val ca = CharArray(encoder.config.encodeOutSize(size))
             var i = 0
             encoder.encode(this) { byte ->
-                ca[i++] = byte.toInt().toChar()
+                ca[i++] = byte.char
             }
             return ca
         }
