@@ -73,7 +73,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
     ): EncoderDecoder.Configuration(isLenient, paddingByte = null) {
 
         override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int = encodedSize / 2
-        override fun encodeOutSize(unEncodedSize: Int): Int = unEncodedSize * 2
+        override fun encodeOutSizeProtected(unEncodedSize: Int): Int = unEncodedSize * 2
 
         override fun toStringAddSettings(sb: StringBuilder) {
             with(sb) {

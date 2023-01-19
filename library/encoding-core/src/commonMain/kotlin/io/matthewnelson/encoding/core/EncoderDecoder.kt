@@ -80,12 +80,20 @@ constructor(config: Configuration): Encoder(config) {
         @Throws(EncodingException::class)
         public abstract fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int
 
+        protected abstract fun encodeOutSizeProtected(unEncodedSize: Int): Int
+
         /**
          * Calculates and returns the size of the output after encoding
-         * occurs, based off of the configuration options set for the
-         * [Configuration] implementation.
+         * occurs based off of the configuration options set.
          * */
-        public abstract fun encodeOutSize(unEncodedSize: Int): Int
+        public fun encodeOutSize(unEncodedSize: Int): Int {
+            return if (unEncodedSize <= 0) {
+                0
+            } else {
+                encodeOutSizeProtected(unEncodedSize)
+            }
+        }
+
 
         /**
          * Will be called whenever [toString] is invoked, allowing

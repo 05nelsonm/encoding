@@ -60,7 +60,8 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Configuratio
 	public final field paddingByte Ljava/lang/Byte;
 	public fun <init> (ZLjava/lang/Byte;)V
 	public abstract fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
-	public abstract fun encodeOutSize (I)I
+	public final fun encodeOutSize (I)I
+	protected abstract fun encodeOutSizeProtected (I)I
 	public final fun equals (Ljava/lang/Object;)Z
 	public final fun hashCode ()I
 	public final fun toString ()Ljava/lang/String;
