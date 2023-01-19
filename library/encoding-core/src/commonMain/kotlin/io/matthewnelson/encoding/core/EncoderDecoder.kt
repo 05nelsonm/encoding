@@ -185,7 +185,13 @@ constructor(config: Configuration): Encoder(config) {
         @Throws(EncodingException::class)
         public fun update(input: Byte) {
             if (isClosed) throw closedException()
-            updateProtected(input)
+
+            try {
+                updateProtected(input)
+            } catch (e: EncodingException) {
+                isClosed = true
+                throw e
+            }
         }
 
         @ExperimentalEncodingApi
