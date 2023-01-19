@@ -17,13 +17,15 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.internal.closedException
+import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toInputAnalysis
+import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic
 
 /**
  * Decode things.
  *
+ * @see [EncoderDecoder]
  * @see [decodeToArray]
  * @see [decodeToArrayOrNull]
  * @see [Feed]
@@ -36,6 +38,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
      * decoded bytes to the provided [OutFeed].
      *
      * @see [Decoder.Feed]
+     * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
      * */
     @ExperimentalEncodingApi
     public abstract fun newDecoderFeed(out: OutFeed): Decoder.Feed
@@ -49,34 +52,13 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
      * [doFinal] to close the [Decoder.Feed] and perform
      * finalization for leftover data still in the [Decoder.Feed]
      * implementation's buffer.
+     *
+     * @see [EncoderDecoder.Feed]
+     * @see [use]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor() {
-
-        public var isClosed: Boolean = false
-            private set
-
-        @Throws(EncodingException::class)
-        protected abstract fun updateProtected(c: Char)
-        @Throws(EncodingException::class)
-        protected abstract fun doFinalProtected()
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun update(c: Char) {
-            if (isClosed) throw closedException()
-            updateProtected(c)
-        }
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun doFinal() {
-            if (isClosed) throw closedException()
-            isClosed = true
-            doFinalProtected()
-        }
-
+    constructor(): EncoderDecoder.Feed() {
         final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
     }
 
@@ -93,10 +75,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun String.decodeToArray(decoder: Decoder): ByteArray {
-            val size = toInputAnalysis(decoder.config).decodeOutMaxSize
-            return decoder.decode(size) {
+            return decoder.decode(toInputAnalysis(decoder.config)) {
                 forEach { char ->
-                    update(char)
+                    update(char.byte)
                 }
             }
         }
@@ -121,10 +102,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharArray.decodeToArray(decoder: Decoder): ByteArray {
-            val size = toInputAnalysis(decoder.config).decodeOutMaxSize
-            return decoder.decode(size) {
+            return decoder.decode(toInputAnalysis(decoder.config)) {
                 forEach { char ->
-                    update(char)
+                    update(char.byte)
                 }
             }
         }
@@ -149,10 +129,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun ByteArray.decodeToArray(decoder: Decoder): ByteArray {
-            val size = toInputAnalysis(decoder.config).decodeOutMaxSize
-            return decoder.decode(size) {
+            return decoder.decode(toInputAnalysis(decoder.config)) {
                 forEach { byte ->
-                    update(byte.toInt().toChar())
+                    update(byte)
                 }
             }
         }
@@ -168,18 +147,17 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
 
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        private fun Decoder.decode(size: Int, update: Decoder.Feed.() -> Unit): ByteArray {
-            val ba = ByteArray(size)
+        private fun Decoder.decode(input: DecoderInput, update: Decoder.Feed.() -> Unit): ByteArray {
+            val ba = ByteArray(input.decodeOutMaxSize)
 
             var i = 0
-            val feed = newDecoderFeed { byte ->
+            newDecoderFeed { byte ->
                 ba[i++] = byte
+            }.use { feed ->
+                update.invoke(feed)
             }
 
-            update.invoke(feed)
-            feed.doFinal()
-
-            return if (i == size) {
+            return if (i == input.decodeOutMaxSize) {
                 ba
             } else {
                 ba.copyOf(i)

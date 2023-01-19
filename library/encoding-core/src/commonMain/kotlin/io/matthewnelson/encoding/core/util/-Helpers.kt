@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core
+@file:Suppress("KotlinRedundantDiagnosticSuppress")
 
-/**
- * A callback
- *
- * @see [Encoder.newEncoderFeed]
- * @see [Decoder.newDecoderFeed]
- * */
-public fun interface OutFeed {
-    public fun invoke(byte: Byte)
+package io.matthewnelson.encoding.core.util
+
+@Suppress("NOTHING_TO_INLINE")
+public inline fun Char.isSpaceOrNewLine(): Boolean {
+    return when(this) {
+        '\n', '\r', ' ', '\t' -> true
+        else -> false
+    }
 }

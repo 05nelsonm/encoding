@@ -15,18 +15,13 @@
  **/
 @file:Suppress("KotlinRedundantDiagnosticSuppress")
 
-package io.matthewnelson.encoding.core.internal
-
-import io.matthewnelson.encoding.core.Decoder
-import io.matthewnelson.encoding.core.Encoder
-import io.matthewnelson.encoding.core.EncodingException
+package io.matthewnelson.encoding.core.util
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun Encoder.Feed.closedException(): EncodingException {
-    return EncodingException("$this is closed")
-}
+public inline val Char.byte: Byte get() = code.toByte()
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun Decoder.Feed.closedException(): EncodingException {
-    return EncodingException("$this is closed")
-}
+public inline val Byte.char: Char get() = toInt().toChar()
+
+@Suppress("NOTHING_TO_INLINE")
+public inline fun Byte.lowercaseCharByte(): Byte = char.lowercaseChar().byte

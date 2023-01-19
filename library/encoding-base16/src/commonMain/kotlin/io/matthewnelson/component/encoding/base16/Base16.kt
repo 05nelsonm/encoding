@@ -29,7 +29,7 @@ import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 internal val COMPATIBILITY: Base16 = Base16(
     Base16.Configuration(
         isLenient = true,
-        decodeLowercase = false,
+        acceptLowercase = false,
         encodeToLowercase = false,
     )
 )

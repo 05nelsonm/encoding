@@ -17,14 +17,13 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.internal.closedException
+import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmStatic
 
 /**
  * Encode things.
  *
+ * @see [EncoderDecoder]
  * @see [encodeToString]
  * @see [encodeToCharArray]
  * @see [encodeToByteArray]
@@ -38,6 +37,7 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
      * encoded bytes to the provided [OutFeed].
      *
      * @see [Encoder.Feed]
+     * @sample [io.matthewnelson.encoding.base16.Base16.newEncoderFeed]
      * */
     @ExperimentalEncodingApi
     public abstract fun newEncoderFeed(out: OutFeed): Encoder.Feed
@@ -51,32 +51,15 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
      * [doFinal] to close the [Encoder.Feed] and perform
      * finalization for leftover data still in the [Encoder.Feed]
      * implementation's buffer.
+     *
+     * @see [EncoderDecoder.Feed]
+     * @see [use]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor() {
-
-        public var isClosed: Boolean = false
-            private set
-
-        protected abstract fun updateProtected(b: Byte)
-        protected abstract fun doFinalProtected()
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun update(b: Byte) {
-            if (isClosed) throw closedException()
-            updateProtected(b)
-        }
-
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun doFinal() {
-            if (isClosed) throw closedException()
-            isClosed = true
-            doFinalProtected()
-        }
-
+    constructor(): EncoderDecoder.Feed() {
+        protected abstract override fun updateProtected(input: Byte)
+        protected abstract override fun doFinalProtected()
         final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
     }
 
@@ -87,11 +70,10 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * returns the encoded data in the form of a [String].
          * */
         @JvmStatic
-        @OptIn(InternalEncodingApi::class)
         public fun ByteArray.encodeToString(encoder: Encoder): String {
             val sb = StringBuilder(encoder.config.encodeOutSize(size))
             encoder.encode(this) { byte ->
-                sb.append(byte.toByteChar().char)
+                sb.append(byte.char)
             }
             return sb.toString()
         }
@@ -101,12 +83,11 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * returns the encoded data in the form of a [CharArray].
          * */
         @JvmStatic
-        @OptIn(InternalEncodingApi::class)
         public fun ByteArray.encodeToCharArray(encoder: Encoder): CharArray {
             val ca = CharArray(encoder.config.encodeOutSize(size))
             var i = 0
             encoder.encode(this) { byte ->
-                ca[i++] = byte.toByteChar().char
+                ca[i++] = byte.char
             }
             return ca
         }
@@ -128,11 +109,12 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
         @OptIn(ExperimentalEncodingApi::class)
         private fun Encoder.encode(bytes: ByteArray, out: OutFeed) {
             if (bytes.isEmpty()) return
-            val feed = newEncoderFeed(out)
-            for (byte in bytes) {
-                feed.update(byte)
+
+            newEncoderFeed(out).use { feed ->
+                for (byte in bytes) {
+                    feed.update(byte)
+                }
             }
-            feed.doFinal()
         }
     }
 }

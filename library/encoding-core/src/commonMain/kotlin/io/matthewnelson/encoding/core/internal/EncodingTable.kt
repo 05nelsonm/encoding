@@ -15,7 +15,6 @@
  **/
 package io.matthewnelson.encoding.core.internal
 
-import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
 import kotlin.jvm.JvmInline
 import kotlin.jvm.JvmStatic
 
@@ -24,7 +23,7 @@ import kotlin.jvm.JvmStatic
 public value class EncodingTable private constructor(private val value: ByteArray) {
 
     @Throws(IndexOutOfBoundsException::class)
-    public fun get(index: Int): ByteChar = value[index].toByteChar()
+    public operator fun get(index: Int): Byte = value[index]
 
     public companion object {
         @JvmStatic

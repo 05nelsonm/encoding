@@ -17,19 +17,17 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.internal.ByteChar
-import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmName
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
- * classes) such that inheriting classes must implement
- * both.
+ * classes) such that inheriting classes must implement both.
  *
  * @see [Configuration]
+ * @see [Feed]
+ * @sample [io.matthewnelson.encoding.base16.Base16]
  * */
 public abstract class EncoderDecoder
 @ExperimentalEncodingApi
@@ -54,23 +52,20 @@ constructor(config: Configuration): Encoder(config) {
      *   and new lines ('\n', '\r', ' ', '\t'). If false, an
      *   [EncodingException] will be thrown when encountering those
      *   characters.
-     * @param [paddingChar] The character used when padding the
-     *   output for the given encoding; NOT "if padding should be
-     *   used". If the encoding specification does not ues padding,
-     *   pass `null`.
+     * @param [paddingByte] The byte used when padding the output for
+     *   the given encoding; NOT "if padding should be
+     *   used". (e.g. '='.code.toByte()).
+     *   If the encoding specification does not ues padding, pass `null`.
+     * @sample [io.matthewnelson.encoding.base16.Base16.Configuration]
      * */
-    @OptIn(InternalEncodingApi::class)
     public abstract class Configuration
     @ExperimentalEncodingApi
     constructor(
         @JvmField
         public val isLenient: Boolean,
-        paddingChar: Char?,
+        @JvmField
+        public val paddingByte: Byte?,
     ) {
-
-        @InternalEncodingApi
-        public val paddingByteChar: ByteChar? = paddingChar?.toByteChar()
-        public fun paddingChar(): Char? = paddingByteChar?.char
 
         /**
          * Calculates and returns the maximum size of the output after
@@ -96,8 +91,29 @@ constructor(config: Configuration): Encoder(config) {
          * Will be called whenever [toString] is invoked, allowing
          * inheritors of [Configuration] to add their settings to
          * the output.
+         *
+         * [isLenient] and [paddingByte] are automatically added.
+         *
+         * Output of [toString] is used in [equals] and [hashCode], so
+         * this affects their outcome.
+         *
+         * e.g.
+         *   override fun toStringAddSettings(sb: StringBuilder) {
+         *       with(sb) {
+         *           // already starting on a new line
+         *           append("    setting1: ") // 4 space indent + colon + single space
+         *           append(setting1)
+         *           appendLine()             // Add new line if multiple settings
+         *           append("    setting2: ")
+         *           append(setting2)
+         *           // a new line is automatically added after
+         *       }
+         *   }
+         *
+         * @see [toString]
+         * @sample [io.matthewnelson.encoding.base16.Base16.Configuration.toStringAddSettings]
          * */
-        protected abstract fun toString(sb: StringBuilder)
+        protected abstract fun toStringAddSettings(sb: StringBuilder)
 
         final override fun equals(other: Any?): Boolean {
             return  other is Configuration
@@ -117,9 +133,9 @@ constructor(config: Configuration): Encoder(config) {
                 append(isLenient)
                 appendLine()
                 append("    paddingChar: ")
-                append(paddingChar())
+                append(paddingByte?.char)
                 appendLine()
-                toString(this)
+                toStringAddSettings(this)
                 appendLine()
                 append(']')
             }.toString()
@@ -142,5 +158,75 @@ constructor(config: Configuration): Encoder(config) {
 
     final override fun toString(): String {
         return "EncoderDecoder[${name()}]"
+    }
+
+    /**
+     * Base abstraction for encoding/decoding data.
+     *
+     * After pushing all data through [update], call [doFinal]
+     * to complete encoding/decoding.
+     *
+     * Alternatively, utilize the [use] extension function which
+     * will call [doFinal] or [close] when you're done pushing
+     * data through [update].
+     *
+     * @see [use]
+     * @see [Encoder.Feed]
+     * @see [Decoder.Feed]
+     * */
+    public sealed class Feed {
+        public var isClosed: Boolean = false
+            private set
+
+        // Only throws exception if decoding
+        @Throws(EncodingException::class)
+        protected abstract fun updateProtected(input: Byte)
+
+        // Only throws exception if decoding
+        @Throws(EncodingException::class)
+        protected abstract fun doFinalProtected()
+
+        /**
+         * Updates the [Feed] with a new byte to encode/decode.
+         *
+         * @throws [EncodingException] if [isClosed] is true, or
+         *   there was an error decoding.
+         * */
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public fun update(input: Byte) {
+            if (isClosed) throw closedException()
+
+            try {
+                updateProtected(input)
+            } catch (t: Throwable) {
+                close()
+                throw t
+            }
+        }
+
+        /**
+         * Closes the [Feed] and finalizes the encoding/decoding, such
+         * as applying padding (encoding), or dumping it's buffer
+         * to [OutFeed] (decoding).
+         *
+         * @throws [EncodingException] if [isClosed] is true, or
+         *   there was an error decoding.
+         * */
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public fun doFinal() {
+            if (isClosed) throw closedException()
+            close()
+            doFinalProtected()
+        }
+
+        /**
+         * Closes the feed, rendering it useless.
+         * */
+        @ExperimentalEncodingApi
+        public fun close() {
+            isClosed = true
+        }
     }
 }
