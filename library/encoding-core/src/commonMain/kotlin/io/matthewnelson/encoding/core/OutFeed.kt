@@ -15,6 +15,12 @@
  **/
 package io.matthewnelson.encoding.core
 
+/**
+ * A callback
+ *
+ * @see [Encoder.newEncoderFeed]
+ * @see [Decoder.newDecoderFeed]
+ * */
 public fun interface OutFeed {
     public fun invoke(byte: Byte)
 }
