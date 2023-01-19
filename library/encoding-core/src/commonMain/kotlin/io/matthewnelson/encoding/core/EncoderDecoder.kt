@@ -17,8 +17,12 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.ByteChar
+import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
+import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
@@ -55,14 +59,18 @@ constructor(config: Configuration): Encoder(config) {
      *   used". If the encoding specification does not ues padding,
      *   pass `null`.
      * */
+    @OptIn(InternalEncodingApi::class)
     public abstract class Configuration
     @ExperimentalEncodingApi
     constructor(
         @JvmField
         public val isLenient: Boolean,
-        @JvmField
-        public val paddingChar: Char?,
+        paddingChar: Char?,
     ) {
+
+        @InternalEncodingApi
+        public val paddingByteChar: ByteChar? = paddingChar?.toByteChar()
+        public fun paddingChar(): Char? = paddingByteChar?.char
 
         /**
          * Calculates and returns the maximum size of the output after
@@ -109,7 +117,7 @@ constructor(config: Configuration): Encoder(config) {
                 append(isLenient)
                 appendLine()
                 append("    paddingChar: ")
-                append(paddingChar)
+                append(paddingChar())
                 appendLine()
                 toString(this)
                 appendLine()

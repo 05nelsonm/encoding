@@ -73,21 +73,24 @@ private constructor(
 
         // Disregard any padding or spaces/new lines (if applicable)
         while (limit > 0) {
-            when (get(limit - 1)) {
+            val c = get(limit - 1)
+            when (c) {
                 '\n', '\r', ' ', '\t' -> {
                     if (!config.isLenient) {
                         throw isLenientFalseEncodingException()
                     } else {
                         limit--
+                        continue
                     }
                 }
-                config.paddingChar -> {
-                    limit--
-                }
-                else -> {
-                    break
-                }
             }
+
+            if (c.toByteChar() == config.paddingByteChar) {
+                limit--
+                continue
+            }
+
+            break
         }
 
         val size = config.decodeOutMaxSizeOrFail(limit, this)

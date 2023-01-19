@@ -65,12 +65,12 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthew
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
 	public final field isLenient Z
-	public final field paddingChar Ljava/lang/Character;
 	public fun <init> (ZLjava/lang/Character;)V
 	public abstract fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 	public abstract fun encodeOutSize (I)I
 	public final fun equals (Ljava/lang/Object;)Z
 	public final fun hashCode ()I
+	public final fun paddingChar ()Ljava/lang/Character;
 	public final fun toString ()Ljava/lang/String;
 	protected abstract fun toString (Ljava/lang/StringBuilder;)V
 }
@@ -89,8 +89,8 @@ public abstract interface class io/matthewnelson/encoding/core/OutFeed {
 }
 
 public final class io/matthewnelson/encoding/core/internal/ByteChar$Companion {
-	public final fun toByteChar-qQkxe1M (B)Ljava/lang/Object;
-	public final fun toByteChar-qQkxe1M (C)Ljava/lang/Object;
+	public final fun toByteChar-qQkxe1M (B)B
+	public final fun toByteChar-qQkxe1M (C)B
 }
 
 public final class io/matthewnelson/encoding/core/internal/EncodingTable$Companion {

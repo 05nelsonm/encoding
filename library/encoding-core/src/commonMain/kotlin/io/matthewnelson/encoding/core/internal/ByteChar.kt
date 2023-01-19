@@ -22,30 +22,16 @@ import kotlin.jvm.JvmStatic
 
 @JvmInline
 @InternalEncodingApi
-public value class ByteChar private constructor(private val value: Any) {
+public value class ByteChar private constructor(public val byte: Byte) {
 
-    public val char: Char get() {
-        return if (value is Char) {
-            value
-        } else {
-            (value as Byte).toInt().toChar()
-        }
-    }
-
-    public val byte: Byte get() {
-        return if (value is Byte) {
-            value
-        } else {
-            (value as Char).code.toByte()
-        }
-    }
+    public val char: Char get() = byte.toInt().toChar()
 
     public fun lowercaseChar(): Char = char.lowercaseChar()
     public fun lowercaseByte(): Byte = lowercaseChar().code.toByte()
 
     public companion object {
         @JvmStatic
-        public fun Char.toByteChar(): ByteChar = ByteChar(this)
+        public fun Char.toByteChar(): ByteChar = ByteChar(this.code.toByte())
         @JvmStatic
         public fun Byte.toByteChar(): ByteChar = ByteChar(this)
     }

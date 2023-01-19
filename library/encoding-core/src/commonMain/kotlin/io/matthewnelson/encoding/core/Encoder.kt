@@ -17,6 +17,8 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.ByteChar.Companion.toByteChar
+import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.internal.closedException
 import kotlin.jvm.JvmStatic
 
@@ -85,11 +87,11 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * returns the encoded data in the form of a [String].
          * */
         @JvmStatic
+        @OptIn(InternalEncodingApi::class)
         public fun ByteArray.encodeToString(encoder: Encoder): String {
             val sb = StringBuilder(encoder.config.encodeOutSize(size))
-
             encoder.encode(this) { byte ->
-                sb.append(byte.toInt().toChar())
+                sb.append(byte.toByteChar().char)
             }
             return sb.toString()
         }
@@ -99,12 +101,12 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
          * returns the encoded data in the form of a [CharArray].
          * */
         @JvmStatic
+        @OptIn(InternalEncodingApi::class)
         public fun ByteArray.encodeToCharArray(encoder: Encoder): CharArray {
             val ca = CharArray(encoder.config.encodeOutSize(size))
-
             var i = 0
             encoder.encode(this) { byte ->
-                ca[i++] = byte.toInt().toChar()
+                ca[i++] = byte.toByteChar().char
             }
             return ca
         }
@@ -116,7 +118,6 @@ public sealed class Encoder(config: EncoderDecoder.Configuration): Decoder(confi
         @JvmStatic
         public fun ByteArray.encodeToByteArray(encoder: Encoder): ByteArray {
             val ba = ByteArray(encoder.config.encodeOutSize(size))
-
             var i = 0
             encoder.encode(this) { byte ->
                 ba[i++] = byte
