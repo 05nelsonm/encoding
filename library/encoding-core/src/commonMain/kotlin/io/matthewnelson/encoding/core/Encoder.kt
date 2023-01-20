@@ -69,8 +69,15 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
         /**
          * Encodes a [ByteArray] for the provided [encoder] and
          * returns the encoded data in the form of a [String].
+         *
+         * @throws [EncodingSizeException] if the encoded output
+         *   exceeds [Int.MAX_VALUE]. This is not applicable for
+         *   most encoding specifications as the majority compress
+         *   data, but is something that can occur with Base16
+         *   which produces 2 characters for every 1 byte of input.
          * */
         @JvmStatic
+        @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToString(encoder: Encoder): String {
             val sb = StringBuilder(encoder.config.encodeOutSize(size))
             encoder.encode(this) { byte ->
@@ -82,8 +89,15 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
         /**
          * Encodes a [ByteArray] for the provided [encoder] and
          * returns the encoded data in the form of a [CharArray].
+         *
+         * @throws [EncodingSizeException] if the encoded output
+         *   exceeds [Int.MAX_VALUE]. This is not applicable for
+         *   most encoding specifications as the majority compress
+         *   data, but is something that can occur with Base16
+         *   which produces 2 characters for every 1 byte of input.
          * */
         @JvmStatic
+        @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToCharArray(encoder: Encoder): CharArray {
             val ca = CharArray(encoder.config.encodeOutSize(size))
             var i = 0
@@ -96,8 +110,15 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
         /**
          * Encodes a [ByteArray] for the provided [encoder] and
          * returns the encoded data in the form of a [ByteArray].
+         *
+         * @throws [EncodingSizeException] if the encoded output
+         *   exceeds [Int.MAX_VALUE]. This is not applicable for
+         *   most encoding specifications as the majority compress
+         *   data, but is something that can occur with Base16
+         *   which produces 2 characters for every 1 byte of input.
          * */
         @JvmStatic
+        @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToByteArray(encoder: Encoder): ByteArray {
             val ba = ByteArray(encoder.config.encodeOutSize(size))
             var i = 0
