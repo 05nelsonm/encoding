@@ -48,6 +48,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *     val base32Crockford = Base32Crockford {
      *         isLenient = true
      *         acceptLowercase = true
+     *         encodeToLowercase = false
      *         hyphenInterval = 5
      *         checkByte(checkSymbol = '~')
      *     }
