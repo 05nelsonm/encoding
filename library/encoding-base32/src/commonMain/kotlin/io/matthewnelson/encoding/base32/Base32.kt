@@ -113,12 +113,16 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 var outSize = encodedOutSize(unEncodedSize, willBePadded = false)
 
                 if (hyphenInterval > 0) {
-                    // TODO: This is still off because encodedOutSize returns Int
-                    //  will need to fix (Issue #48)
-                    val hyphenCount = (outSize / hyphenInterval) - 1
+                    val hyphenCount: Float = (outSize.toFloat() / hyphenInterval) - 1F
 
-                    if (hyphenCount > 0) {
-                        outSize += hyphenCount
+                    if (hyphenCount > 0F) {
+                        // Count rounded down
+                        outSize += hyphenCount.toLong()
+
+                        // If there was a remainder, manually add it
+                        if (hyphenCount.rem(1) > 0F) {
+                            outSize++
+                        }
                     }
                 }
 
@@ -462,7 +466,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             unEncodedSize: Long,
             willBePadded: Boolean,
         ): Long {
-            var outSize = (unEncodedSize + 4L) / 5L * 8L
+            var outSize: Long = ((unEncodedSize + 4L) / 5L) * 8L
             if (willBePadded) return outSize
 
             when (unEncodedSize - (unEncodedSize - unEncodedSize % 5)) {
