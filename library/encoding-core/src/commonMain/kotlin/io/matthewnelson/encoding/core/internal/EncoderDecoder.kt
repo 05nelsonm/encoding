@@ -32,7 +32,12 @@ internal inline fun Decoder.decode(
 
     var i = 0
     newDecoderFeed { byte ->
-        ba[i++] = byte
+        try {
+            ba[i++] = byte
+        } catch (e: IndexOutOfBoundsException) {
+            // Something is wrong with the encoder's pre-calculation
+            throw EncodingSizeException("Encoder's pre-calculation of Size[${input.decodeOutMaxSize}] was incorrect", e)
+        }
     }.use { feed ->
         update.invoke(feed)
     }
