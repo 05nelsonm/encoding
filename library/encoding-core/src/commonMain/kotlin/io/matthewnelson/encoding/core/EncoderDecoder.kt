@@ -126,6 +126,7 @@ constructor(config: Config): Encoder(config) {
          *
          * @see [toString]
          * @sample [io.matthewnelson.encoding.base16.Base16.Config.toStringAddSettings]
+         * @sample [io.matthewnelson.encoding.base32.Base32.Crockford.Config.toStringAddSettings]
          * */
         protected abstract fun toStringAddSettings(sb: StringBuilder)
 

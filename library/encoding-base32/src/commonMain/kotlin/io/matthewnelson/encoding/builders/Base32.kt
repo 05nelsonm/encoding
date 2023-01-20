@@ -160,7 +160,17 @@ public class Base32CrockfordConfigBuilder {
      * lowercase characters are encountered when decoding.
      * */
     @JvmField
-    public var acceptLowercase: Boolean = false
+    public var acceptLowercase: Boolean = true
+
+    /**
+     * If true, will output lowercase characters when
+     * encoding (against Crockford spec).
+     *
+     * If false, will output uppercase characters when
+     * encoding.
+     * */
+    @JvmField
+    public var encodeToLowercase: Boolean = true
 
     /**
      * For every [hyphenInterval] of decoded output, a

@@ -79,6 +79,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             @JvmField
             public val acceptLowercase: Boolean,
             @JvmField
+            public val encodeToLowercase: Boolean,
+            @JvmField
             public val hyphenInterval: Short,
             @JvmField
             public val checkByte: Byte?,
@@ -132,6 +134,9 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     append("    acceptLowercase: ")
                     append(acceptLowercase)
                     appendLine()
+                    append("    encodeToLowercase: ")
+                    append(encodeToLowercase)
+                    appendLine()
                     append("    hyphenInterval: ")
                     append(hyphenInterval)
                     appendLine()
@@ -147,6 +152,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     return Config(
                         isLenient = builder.isLenient,
                         acceptLowercase = builder.acceptLowercase,
+                        encodeToLowercase = builder.encodeToLowercase,
                         hyphenInterval = builder.hyphenInterval,
                         checkByte = builder.checkByte
                     )
