@@ -149,6 +149,7 @@ public class Base32CrockfordConfigBuilder {
         if (config == null) return
         isLenient = config.isLenient
         acceptLowercase = config.acceptLowercase
+        encodeToLowercase = config.encodeToLowercase
         hyphenInterval = config.hyphenInterval
         checkByte = config.checkByte
     }
