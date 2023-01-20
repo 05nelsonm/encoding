@@ -75,7 +75,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @JvmStatic
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        public fun String.decodeToByteArray(decoder: Decoder): ByteArray {
+        public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(toDecoderInput(decoder.config)) { feed ->
                 forEach { char ->
                     feed.update(char.byte)
@@ -84,7 +84,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         }
 
         @JvmStatic
-        public fun String.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
+        public fun CharSequence.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
             return try {
                 decodeToByteArray(decoder)
             } catch (_: EncodingException) {
