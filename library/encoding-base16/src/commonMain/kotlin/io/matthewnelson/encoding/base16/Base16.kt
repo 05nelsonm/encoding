@@ -173,7 +173,9 @@ public class Base16(config: Config): EncoderDecoder(config) {
                         char.code - 55
                     }
                     else -> {
-                        throw EncodingException("Char[${input.char}] is not a valid Base16 character")
+                        throw EncodingException(
+                            "Char[${input.char}] is not a valid Base16 character"
+                        )
                     }
                 }
 
@@ -191,7 +193,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
                 // 4*1 = 4 bits. Truncated, fail.
                 val i = count % 2
                 if (i == 0) return
-                throw EncodingException("Truncated input. Count was $i when it should have been 0")
+                throw EncodingException("Truncated input. Count[$i] should have been 0")
             }
         }
     }
