@@ -18,8 +18,8 @@ package io.matthewnelson.encoding.core.util
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
-import kotlin.jvm.JvmSynthetic
 
 /**
  * Helper class for analyzing encoded data in order to
@@ -29,9 +29,10 @@ import kotlin.jvm.JvmSynthetic
  * Will "strip" padding (if the config specifies it) and
  * spaces/new lines from the end in order to provide
  * [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
- * with the best guess at input size.
+ * with the best guess of the last relevant character.
  *
  * @see [get]
+ * @see [toDecoderInput]
  * @see [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
  * */
 @OptIn(InternalEncodingApi::class)
@@ -42,8 +43,9 @@ private constructor(
     private val input: Any
 ) {
 
-    @get:JvmSynthetic
-    internal val decodeOutMaxSize: Int
+    private var _decodeOutMaxSize: Int = 0
+    @get:JvmName("decodeOutMaxSize")
+    public val decodeOutMaxSize: Int get() = _decodeOutMaxSize
 
     /**
      * Can be utilized by [EncoderDecoder.Config]
@@ -91,14 +93,7 @@ private constructor(
             break
         }
 
-        decodeOutMaxSize = if (limit == 0) {
-            0
-        } else {
-            // TODO: Decoder implementation could have an overflow
-            //  and return negative here. Must still check negative
-            //  and throw.
-            config.decodeOutMaxSizeOrFail(limit, this)
-        }
+        _decodeOutMaxSize = config.decodeOutMaxSizeOrFail(limit, this)
     }
 
     public companion object {
@@ -109,21 +104,21 @@ private constructor(
             return EncodingException("Spaces and new lines are forbidden when isLenient[false]")
         }
 
-        @JvmSynthetic
+        @JvmStatic
         @Throws(EncodingException::class)
-        internal fun String.toInputAnalysis(
+        public fun String.toDecoderInput(
             config: EncoderDecoder.Config
         ): DecoderInput = DecoderInput(config, this)
 
-        @JvmSynthetic
+        @JvmStatic
         @Throws(EncodingException::class)
-        internal fun CharArray.toInputAnalysis(
+        public fun CharArray.toDecoderInput(
             config: EncoderDecoder.Config
         ): DecoderInput = DecoderInput(config, this)
 
-        @JvmSynthetic
+        @JvmStatic
         @Throws(EncodingException::class)
-        internal fun ByteArray.toInputAnalysis(
+        public fun ByteArray.toDecoderInput(
             config: EncoderDecoder.Config
         ): DecoderInput = DecoderInput(config, this)
     }
