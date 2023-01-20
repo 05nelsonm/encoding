@@ -71,7 +71,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io
 	public final field hyphenInterval S
 	public synthetic fun <init> (ZZZSLjava/lang/Byte;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun checkSymbol ()Ljava/lang/Character;
-	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewnelson/encoding/base32/Base32 {
@@ -90,7 +89,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/m
 	public final field encodeToLowercase Z
 	public final field padEncoded Z
 	public synthetic fun <init> (ZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
@@ -109,7 +107,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matth
 	public final field encodeToLowercase Z
 	public final field padEncoded Z
 	public synthetic fun <init> (ZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 }
 
 public final class io/matthewnelson/encoding/builders/Base32CrockfordConfigBuilder {

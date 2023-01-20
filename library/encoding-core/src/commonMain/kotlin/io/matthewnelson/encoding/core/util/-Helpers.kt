@@ -17,6 +17,12 @@
 
 package io.matthewnelson.encoding.core.util
 
+/**
+ * Helper for checking if a character is a space or
+ * new line.
+ *
+ * @return true if the character matches '\n', '\r', ' ', or '\t'
+ * */
 @Suppress("NOTHING_TO_INLINE")
 public inline fun Char.isSpaceOrNewLine(): Boolean {
     return when(this) {

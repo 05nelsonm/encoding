@@ -15,12 +15,17 @@
  **/
 package io.matthewnelson.encoding.core
 
-public class EncodingException: RuntimeException {
+public open class EncodingException: RuntimeException {
 
-    override val message: String
+    final override val message: String
 
     public constructor(message: String): this(message, null)
     public constructor(message: String, cause: Throwable?): super(message, cause) {
         this.message = message
     }
+}
+
+public open class EncodingSizeException: EncodingException {
+    public constructor(message: String): this(message, null)
+    public constructor(message: String, cause: Throwable?): super(message, cause)
 }

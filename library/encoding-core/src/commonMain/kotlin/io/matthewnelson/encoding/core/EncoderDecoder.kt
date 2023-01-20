@@ -19,6 +19,7 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
+import io.matthewnelson.encoding.core.util.isSpaceOrNewLine
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
@@ -28,22 +29,13 @@ import kotlin.jvm.JvmName
  *
  * @see [Config]
  * @see [Feed]
+ * @see [Encoder]
+ * @see [Decoder]
  * @sample [io.matthewnelson.encoding.base16.Base16]
  * */
 public abstract class EncoderDecoder
 @ExperimentalEncodingApi
 constructor(config: Config): Encoder(config) {
-
-    /**
-     * The name of the [EncoderDecoder]. Utilized in the
-     * output of [toString].
-     *
-     * e.g.
-     *   Base16
-     *   Base32.Hex
-     *   Base64.UrlSafe
-     * */
-    protected abstract fun name(): String
 
     /**
      * Base configuration for an [EncoderDecoder]. More options
@@ -52,7 +44,7 @@ constructor(config: Config): Encoder(config) {
      * @param [isLenient] If true, decoding will skip over spaces
      *   and new lines ('\n', '\r', ' ', '\t'). If false, an
      *   [EncodingException] will be thrown when encountering those
-     *   characters.
+     *   characters. See [isSpaceOrNewLine].
      * @param [paddingByte] The byte used when padding the output for
      *   the given encoding; NOT "if padding should be
      *   used". (e.g. '='.code.toByte()).
@@ -70,36 +62,78 @@ constructor(config: Config): Encoder(config) {
     ) {
 
         /**
-         * Calculates and returns the maximum size of the output after
-         * decoding occurs, based off of the configuration options set
-         * for the [Config] implementation.
-         *
-         * // TODO: Should accept Long and return Long
-         *
-         * @see [DecoderInput]
-         * @param [encodedSize] size of the data being decoded.
-         * @param [input] Provided for additional analysis in the event
-         *   the decoding specification has checks to fail early.
-         * */
-        @Throws(EncodingException::class)
-        public abstract fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int
-
-        protected abstract fun encodeOutSizeProtected(unEncodedSize: Int): Int
-
-        /**
          * Calculates and returns the size of the output after encoding
-         * occurs based off of the configuration options set.
+         * would occur, based off of the configuration options set for the
+         * [Config] implementation.
+         *
+         * Will always return a value greater than or equal to 0.
          *
          * TODO: Should accept Long and return Long
+         *
+         * @param [unEncodedSize] The size of the data being encoded.
+         * @throws [EncodingSizeException] if there was an error calculating
+         *   the size, or [unEncodedSize] was negative.
          * */
-        public fun encodeOutSize(unEncodedSize: Int): Int {
-            return if (unEncodedSize <= 0) {
-                0
-            } else {
-                encodeOutSizeProtected(unEncodedSize)
+        @Throws(EncodingSizeException::class)
+        public fun encodeOutSize(unEncodedSize: Long): Long {
+            if (unEncodedSize < 0L) {
+                throw EncodingSizeException("unEncodedSize cannot be negative")
             }
+
+            // return early
+            if (unEncodedSize == 0L) return 0L
+
+            val outSize = encodeOutSizeProtected(unEncodedSize)
+            if (outSize < 0L) {
+                throw EncodingSizeException("Calculated size was negative")
+            }
+            return outSize
         }
 
+        /**
+         * Calculates and returns the maximum size of the output after
+         * decoding would occur, based off of the configuration options
+         * set for the [Config] implementation.
+         *
+         * Will always return a value greater than or equal to 0.
+         *
+         * TODO: Should accept Long and return Long
+         *
+         * @param [encodedSize] The size of the encoded data being decoded.
+         * @param [input] Optional paramater for [Config] implementation to
+         *   check to fail quickly (if it has a check).
+         * @throws [EncodingSizeException] if there was an error calculating
+         *   the size, or [encodedSize] was negative.
+         * @throws [EncodingException] if the [Config] implementation's check
+         *   of [input] (if it has one) failed.
+         * */
+        @Throws(EncodingException::class)
+        public fun decodeOutMaxSizeOrFail(encodedSize: Long, input: DecoderInput?): Long {
+            if (encodedSize < 0L) {
+                throw EncodingSizeException("encodedSize cannot be negative")
+            }
+
+            // return early
+            if (encodedSize == 0L) return 0L
+
+            val outSize = decodeOutMaxSizeOrFailProtected(encodedSize, input)
+            if (outSize < 0L) {
+                throw EncodingSizeException("Calculated size was negative")
+            }
+            return outSize
+        }
+
+        /**
+         * Will only receive values greater than 0.
+         * */
+        @Throws(EncodingSizeException::class)
+        protected abstract fun encodeOutSizeProtected(unEncodedSize: Long): Long
+
+        /**
+         * Will only receive values greater than 0.
+         * */
+        @Throws(EncodingException::class)
+        protected abstract fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long
 
         /**
          * Will be called whenever [toString] is invoked, allowing
@@ -155,24 +189,6 @@ constructor(config: Config): Encoder(config) {
                 append(']')
             }.toString()
         }
-    }
-
-    final override fun equals(other: Any?): Boolean {
-        return  other is EncoderDecoder
-                && other::class == this::class
-                && other.name() == name()
-                && other.config.hashCode() == config.hashCode()
-    }
-
-    final override fun hashCode(): Int {
-        var result = 17
-        result = result * 31 + toString().hashCode()
-        result = result * 31 + config.hashCode()
-        return result
-    }
-
-    final override fun toString(): String {
-        return "EncoderDecoder[${name()}]"
     }
 
     /**
@@ -244,5 +260,34 @@ constructor(config: Config): Encoder(config) {
         public fun close() {
             isClosed = true
         }
+    }
+
+    /**
+     * The name of the [EncoderDecoder]. This is utilized in the
+     * output of [toString], [equals], and [hashCode].
+     *
+     * e.g.
+     *   Base16
+     *   Base32.Hex
+     *   Base64.UrlSafe
+     * */
+    protected abstract fun name(): String
+
+    final override fun equals(other: Any?): Boolean {
+        return  other is EncoderDecoder
+                && other::class == this::class
+                && other.name() == name()
+                && other.config.hashCode() == config.hashCode()
+    }
+
+    final override fun hashCode(): Int {
+        var result = 17
+        result = result * 31 + toString().hashCode()
+        result = result * 31 + config.hashCode()
+        return result
+    }
+
+    final override fun toString(): String {
+        return "EncoderDecoder[${name()}]"
     }
 }

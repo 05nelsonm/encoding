@@ -35,8 +35,8 @@ internal inline fun Feed.closedException(): EncodingException {
  *  - Calling [Feed.close] if [block] **DID** throw an
  *    exception.
  *
- * @sample [io.matthewnelson.encoding.core.Encoder.encode]
- * @sample [io.matthewnelson.encoding.core.Decoder.decode]
+ * @sample [io.matthewnelson.encoding.core.internal.encode]
+ * @sample [io.matthewnelson.encoding.core.internal.decode]
  * */
 @ExperimentalEncodingApi
 @OptIn(ExperimentalContracts::class)
