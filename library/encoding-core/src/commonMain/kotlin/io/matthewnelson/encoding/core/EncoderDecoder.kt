@@ -19,6 +19,7 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
+import io.matthewnelson.encoding.core.util.isSpaceOrNewLine
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
@@ -52,7 +53,7 @@ constructor(config: Config): Encoder(config) {
      * @param [isLenient] If true, decoding will skip over spaces
      *   and new lines ('\n', '\r', ' ', '\t'). If false, an
      *   [EncodingException] will be thrown when encountering those
-     *   characters.
+     *   characters. See [isSpaceOrNewLine].
      * @param [paddingByte] The byte used when padding the output for
      *   the given encoding; NOT "if padding should be
      *   used". (e.g. '='.code.toByte()).
