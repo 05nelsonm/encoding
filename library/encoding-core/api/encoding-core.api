@@ -59,7 +59,8 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field isLenient Z
 	public final field paddingByte Ljava/lang/Byte;
 	public fun <init> (ZLjava/lang/Byte;)V
-	public abstract fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
+	public final fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
+	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 	public final fun encodeOutSize (I)I
 	protected abstract fun encodeOutSizeProtected (I)I
 	public final fun equals (Ljava/lang/Object;)Z
@@ -77,10 +78,15 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	protected abstract fun updateProtected (B)V
 }
 
-public final class io/matthewnelson/encoding/core/EncodingException : java/lang/RuntimeException {
+public class io/matthewnelson/encoding/core/EncodingException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
-	public fun getMessage ()Ljava/lang/String;
+	public final fun getMessage ()Ljava/lang/String;
+}
+
+public class io/matthewnelson/encoding/core/EncodingSizeException : io/matthewnelson/encoding/core/EncodingException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 }
 
 public abstract interface annotation class io/matthewnelson/encoding/core/ExperimentalEncodingApi : java/lang/annotation/Annotation {
@@ -104,10 +110,17 @@ public abstract interface annotation class io/matthewnelson/encoding/core/intern
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public static final field Companion Lio/matthewnelson/encoding/core/util/DecoderInput$Companion;
 	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun decodeOutMaxSize ()I
 	public final fun get (I)C
+	public static final fun toDecoderInput (Ljava/lang/String;Lio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
+	public static final fun toDecoderInput ([BLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
+	public static final fun toDecoderInput ([CLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 }
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput$Companion {
+	public final fun toDecoderInput (Ljava/lang/String;Lio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
+	public final fun toDecoderInput ([BLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
+	public final fun toDecoderInput ([CLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 }
 
 public final class io/matthewnelson/encoding/core/util/_ConversionsKt {

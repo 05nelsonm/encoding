@@ -21,7 +21,6 @@ public final class io/matthewnelson/encoding/base16/Base16$Config : io/matthewne
 	public final field acceptLowercase Z
 	public final field encodeToLowercase Z
 	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 }
 
 public final class io/matthewnelson/encoding/builders/Base16ConfigBuilder {
