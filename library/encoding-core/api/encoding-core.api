@@ -1,23 +1,23 @@
 public abstract class io/matthewnelson/encoding/core/Decoder {
 	public static final field Companion Lio/matthewnelson/encoding/core/Decoder$Companion;
 	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun decodeToArray (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
-	public static final fun decodeToArray ([BLio/matthewnelson/encoding/core/Decoder;)[B
-	public static final fun decodeToArray ([CLio/matthewnelson/encoding/core/Decoder;)[B
-	public static final fun decodeToArrayOrNull (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
-	public static final fun decodeToArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
-	public static final fun decodeToArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToByteArray (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToByteArray ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToByteArray ([CLio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToByteArrayOrNull (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToByteArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public static final fun decodeToByteArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
 	public final fun getConfig ()Lio/matthewnelson/encoding/core/EncoderDecoder$Config;
 	public abstract fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/core/Decoder$Companion {
-	public final fun decodeToArray (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
-	public final fun decodeToArray ([BLio/matthewnelson/encoding/core/Decoder;)[B
-	public final fun decodeToArray ([CLio/matthewnelson/encoding/core/Decoder;)[B
-	public final fun decodeToArrayOrNull (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
-	public final fun decodeToArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
-	public final fun decodeToArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToByteArray (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToByteArray ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToByteArray ([CLio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToByteArrayOrNull (Ljava/lang/String;Lio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToByteArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
+	public final fun decodeToByteArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
 }
 
 public abstract class io/matthewnelson/encoding/core/Decoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {

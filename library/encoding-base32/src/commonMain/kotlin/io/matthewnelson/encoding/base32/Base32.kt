@@ -57,7 +57,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *     val bytes = text.encodeToByteArray()
      *     val encoded = bytes.encodeToString(base32Crockford)
      *     println(encoded) // 91JPR-V3F41-BPYWK-CCGGG~
-     *     val decoded = encoded.decodeToArray(base32Crockford).decodeToString()
+     *     val decoded = encoded.decodeToByteArray(base32Crockford).decodeToString()
      *     assertEquals(text, decoded)
      *
      * @see [Base32Crockford]
@@ -227,7 +227,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *     val bytes = text.encodeToByteArray()
      *     val encoded = bytes.encodeToString(base32Default)
      *     println(encoded) // JBSWY3DPEBLW64TMMQQQ====
-     *     val decoded = encoded.decodeToArray(base32Default).decodeToString()
+     *     val decoded = encoded.decodeToByteArray(base32Default).decodeToString()
      *     assertEquals(text, decoded)
      *
      * @see [Base32Default]
@@ -351,7 +351,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *     val bytes = text.encodeToByteArray()
      *     val encoded = bytes.encodeToString(base32Hex)
      *     println(encoded) // 91IMOR3F41BMUSJCCGGG====
-     *     val decoded = encoded.decodeToArray(base32Hex).decodeToString()
+     *     val decoded = encoded.decodeToByteArray(base32Hex).decodeToString()
      *     assertEquals(text, decoded)
      *
      * @see [Base32Hex]
