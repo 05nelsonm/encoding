@@ -37,7 +37,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Hex]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
-public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder(config) {
+public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config) {
 
     /**
      * Base32 Crockford encoding/decoding in accordance with
@@ -60,21 +60,21 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
      *     assertEquals(text, decoded)
      *
      * @see [Base32Crockford]
-     * @see [Configuration]
+     * @see [Crockford.Config]
      * @see [CHARS]
      * @see [EncoderDecoder]
      * */
-    public class Crockford(config: Crockford.Configuration): Base32(config) {
+    public class Crockford(config: Crockford.Config): Base32(config) {
 
         /**
          * Configuration for [Base32.Crockford] encoding/decoding.
          *
-         * Use [Base32CrockfordBuilder] to create.
+         * Use [Base32CrockfordConfigBuilder] to create.
          *
-         * @see [Base32CrockfordBuilder]
-         * @see [EncoderDecoder.Configuration]
+         * @see [Base32CrockfordConfigBuilder]
+         * @see [EncoderDecoder.Config]
          * */
-        public class Configuration private constructor(
+        public class Config private constructor(
             isLenient: Boolean,
             @JvmField
             public val acceptLowercase: Boolean,
@@ -82,7 +82,7 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             public val hyphenInterval: Short,
             @JvmField
             public val checkByte: Byte?,
-        ): EncoderDecoder.Configuration(isLenient, paddingByte = null) {
+        ): EncoderDecoder.Config(isLenient, paddingByte = null) {
 
             @get:JvmName("checkSymbol")
             public val checkSymbol: Char? get() = checkByte?.char
@@ -109,6 +109,7 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
                 var outSize = encodedOutSize(unEncodedSize, willBePadded = false)
 
+                // TODO: Don't loop here... use maths
                 if (hyphenInterval > 0) {
                     val interval = hyphenInterval.toInt()
                     val size = outSize
@@ -145,8 +146,8 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             internal companion object {
 
                 @JvmSynthetic
-                internal fun from(builder: Base32CrockfordBuilder): Configuration {
-                    return Configuration(
+                internal fun from(builder: Base32CrockfordConfigBuilder): Config {
+                    return Config(
                         isLenient = builder.isLenient,
                         acceptLowercase = builder.acceptLowercase,
                         hyphenInterval = builder.hyphenInterval,
@@ -222,21 +223,21 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
      *     assertEquals(text, decoded)
      *
      * @see [Base32Default]
-     * @see [Configuration]
+     * @see [Default.Config]
      * @see [CHARS]
      * @see [EncoderDecoder]
      * */
-    public class Default(config: Default.Configuration): Base32(config) {
+    public class Default(config: Default.Config): Base32(config) {
 
         /**
          * Configuration for [Base32.Default] encoding/decoding.
          *
-         * Use [Base32DefaultBuilder] to create.
+         * Use [Base32DefaultConfigBuilder] to create.
          *
-         * @see [Base32DefaultBuilder]
-         * @see [EncoderDecoder.Configuration]
+         * @see [Base32DefaultConfigBuilder]
+         * @see [EncoderDecoder.Config]
          * */
-        public class Configuration private constructor(
+        public class Config private constructor(
             isLenient: Boolean,
             @JvmField
             public val acceptLowercase: Boolean,
@@ -244,7 +245,7 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Configuration(isLenient, paddingByte = '='.byte) {
+        ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
             override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
                 return decodeOutMaxSize(encodedSize)
@@ -270,8 +271,8 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             internal companion object {
 
                 @JvmSynthetic
-                internal fun from(builder: Base32DefaultBuilder): Configuration {
-                    return Configuration(
+                internal fun from(builder: Base32DefaultConfigBuilder): Config {
+                    return Config(
                         isLenient = builder.isLenient,
                         acceptLowercase = builder.acceptLowercase,
                         encodeToLowercase = builder.encodeToLowercase,
@@ -346,20 +347,21 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
      *     assertEquals(text, decoded)
      *
      * @see [Base32Hex]
+     * @see [Hex.Config]
      * @see [CHARS]
      * @see [EncoderDecoder]
      * */
-    public class Hex(config: Hex.Configuration): Base32(config) {
+    public class Hex(config: Hex.Config): Base32(config) {
 
         /**
          * Configuration for [Base32.Hex] encoding/decoding.
          *
-         * Use [Base32HexBuilder] to create.
+         * Use [Base32HexConfigBuilder] to create.
          *
-         * @see [Base32HexBuilder]
-         * @see [EncoderDecoder.Configuration]
+         * @see [Base32HexConfigBuilder]
+         * @see [EncoderDecoder.Config]
          * */
-        public class Configuration private constructor(
+        public class Config private constructor(
             isLenient: Boolean,
             @JvmField
             public val acceptLowercase: Boolean,
@@ -367,7 +369,7 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Configuration(isLenient, paddingByte = '='.byte) {
+        ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
             override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
                 return decodeOutMaxSize(encodedSize)
@@ -393,8 +395,8 @@ public sealed class Base32(config: EncoderDecoder.Configuration): EncoderDecoder
             internal companion object {
 
                 @JvmSynthetic
-                internal fun from(builder: Base32HexBuilder): Configuration {
-                    return Configuration(
+                internal fun from(builder: Base32HexConfigBuilder): Config {
+                    return Config(
                         isLenient = builder.isLenient,
                         acceptLowercase = builder.acceptLowercase,
                         encodeToLowercase = builder.encodeToLowercase,

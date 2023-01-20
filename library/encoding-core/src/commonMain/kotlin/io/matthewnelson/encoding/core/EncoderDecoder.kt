@@ -26,13 +26,13 @@ import kotlin.jvm.JvmName
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
  * classes) such that inheriting classes must implement both.
  *
- * @see [Configuration]
+ * @see [Config]
  * @see [Feed]
  * @sample [io.matthewnelson.encoding.base16.Base16]
  * */
 public abstract class EncoderDecoder
 @ExperimentalEncodingApi
-constructor(config: Configuration): Encoder(config) {
+constructor(config: Config): Encoder(config) {
 
     /**
      * The name of the [EncoderDecoder]. Utilized in the
@@ -57,9 +57,10 @@ constructor(config: Configuration): Encoder(config) {
      *   the given encoding; NOT "if padding should be
      *   used". (e.g. '='.code.toByte()).
      *   If the encoding specification does not ues padding, pass `null`.
-     * @sample [io.matthewnelson.encoding.base16.Base16.Configuration]
+     * @sample [io.matthewnelson.encoding.base16.Base16.Config]
+     * @sample [io.matthewnelson.encoding.base32.Base32.Default.Config]
      * */
-    public abstract class Configuration
+    public abstract class Config
     @ExperimentalEncodingApi
     constructor(
         @JvmField
@@ -71,7 +72,9 @@ constructor(config: Configuration): Encoder(config) {
         /**
          * Calculates and returns the maximum size of the output after
          * decoding occurs, based off of the configuration options set
-         * for the [Configuration] implementation.
+         * for the [Config] implementation.
+         *
+         * // TODO: Should accept Long and return Long
          *
          * @see [DecoderInput]
          * @param [encodedSize] size of the data being decoded.
@@ -86,6 +89,8 @@ constructor(config: Configuration): Encoder(config) {
         /**
          * Calculates and returns the size of the output after encoding
          * occurs based off of the configuration options set.
+         *
+         * TODO: Should accept Long and return Long
          * */
         public fun encodeOutSize(unEncodedSize: Int): Int {
             return if (unEncodedSize <= 0) {
@@ -98,7 +103,7 @@ constructor(config: Configuration): Encoder(config) {
 
         /**
          * Will be called whenever [toString] is invoked, allowing
-         * inheritors of [Configuration] to add their settings to
+         * inheritors of [Config] to add their settings to
          * the output.
          *
          * [isLenient] and [paddingByte] are automatically added.
@@ -120,12 +125,12 @@ constructor(config: Configuration): Encoder(config) {
          *   }
          *
          * @see [toString]
-         * @sample [io.matthewnelson.encoding.base16.Base16.Configuration.toStringAddSettings]
+         * @sample [io.matthewnelson.encoding.base16.Base16.Config.toStringAddSettings]
          * */
         protected abstract fun toStringAddSettings(sb: StringBuilder)
 
         final override fun equals(other: Any?): Boolean {
-            return  other is Configuration
+            return  other is Config
                     && other::class == this::class
                     && other.toString() == toString()
         }

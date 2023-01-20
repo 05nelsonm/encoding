@@ -31,7 +31,7 @@ import kotlin.jvm.JvmStatic
  * @see [Feed]
  * @see [newDecoderFeed]
  * */
-public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
+public sealed class Decoder(public val config: EncoderDecoder.Config) {
 
     /**
      * Creates a new [Decoder.Feed] for the [Decoder], outputting
@@ -53,6 +53,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Configuration) {
      * finalization for leftover data still in the [Decoder.Feed]
      * implementation's buffer.
      *
+     * @see [newDecoderFeed]
      * @see [EncoderDecoder.Feed]
      * @see [use]
      * */

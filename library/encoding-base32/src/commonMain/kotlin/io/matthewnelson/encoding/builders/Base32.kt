@@ -28,13 +28,13 @@ import kotlin.jvm.JvmName
  * Creates a configured [Base32.Crockford] encoder/decoder.
  *
  * @param [config] inherit settings from.
- * @see [Base32CrockfordBuilder]
+ * @see [Base32CrockfordConfigBuilder]
  * */
 public fun Base32Crockford(
-    config: Base32.Crockford.Configuration?,
-    block: Base32CrockfordBuilder.() -> Unit,
+    config: Base32.Crockford.Config?,
+    block: Base32CrockfordConfigBuilder.() -> Unit,
 ): Base32.Crockford {
-    val builder = Base32CrockfordBuilder(config)
+    val builder = Base32CrockfordConfigBuilder(config)
     block.invoke(builder)
     return Base32.Crockford(builder.build())
 }
@@ -42,25 +42,33 @@ public fun Base32Crockford(
 /**
  * Creates a configured [Base32.Crockford] encoder/decoder.
  *
- * @see [Base32CrockfordBuilder]
+ * @see [Base32CrockfordConfigBuilder]
  * */
 public fun Base32Crockford(
-    block: Base32CrockfordBuilder.() -> Unit,
+    block: Base32CrockfordConfigBuilder.() -> Unit,
 ): Base32.Crockford {
     return Base32Crockford(config = null, block)
 }
 
 /**
+ * Creates a configured [Base32.Crockford] encoder/decoder
+ * using the default settings.
+ *
+ * @see [Base32CrockfordConfigBuilder]
+ * */
+public fun Base32Crockford(): Base32.Crockford = Base32Crockford {}
+
+/**
  * Creates a configured [Base32.Default] encoder/decoder.
  *
  * @param [config] to inherit from.
- * @see [Base32DefaultBuilder]
+ * @see [Base32DefaultConfigBuilder]
  * */
 public fun Base32Default(
-    config: Base32.Default.Configuration?,
-    block: Base32DefaultBuilder.() -> Unit,
+    config: Base32.Default.Config?,
+    block: Base32DefaultConfigBuilder.() -> Unit,
 ): Base32.Default {
-    val builder = Base32DefaultBuilder(config)
+    val builder = Base32DefaultConfigBuilder(config)
     block.invoke(builder)
     return Base32.Default(builder.build())
 }
@@ -68,25 +76,33 @@ public fun Base32Default(
 /**
  * Creates a configured [Base32.Default] encoder/decoder.
  *
- * @see [Base32DefaultBuilder]
+ * @see [Base32DefaultConfigBuilder]
  * */
 public fun Base32Default(
-    block: Base32DefaultBuilder.() -> Unit,
+    block: Base32DefaultConfigBuilder.() -> Unit,
 ): Base32.Default {
     return Base32Default(config = null, block)
 }
 
 /**
+ * Creates a configured [Base32.Default] encoder/decoder
+ * using the default settings.
+ *
+ * @see [Base32DefaultConfigBuilder]
+ * */
+public fun Base32Default(): Base32.Default = Base32Default {}
+
+/**
  * Creates a configured [Base32.Hex] encoder/decoder.
  *
  * @param [config] to inherit from.
- * @see [Base32HexBuilder]
+ * @see [Base32HexConfigBuilder]
  * */
 public fun Base32Hex(
-    config: Base32.Hex.Configuration?,
-    block: Base32HexBuilder.() -> Unit,
+    config: Base32.Hex.Config?,
+    block: Base32HexConfigBuilder.() -> Unit,
 ): Base32.Hex {
-    val builder = Base32HexBuilder(config)
+    val builder = Base32HexConfigBuilder(config)
     block.invoke(builder)
     return Base32.Hex(builder.build())
 }
@@ -94,23 +110,31 @@ public fun Base32Hex(
 /**
  * Creates a configured [Base32.Hex] encoder/decoder.
  *
- * @see [Base32HexBuilder]
+ * @see [Base32HexConfigBuilder]
  * */
 public fun Base32Hex(
-    block: Base32HexBuilder.() -> Unit,
+    block: Base32HexConfigBuilder.() -> Unit,
 ): Base32.Hex {
     return Base32Hex(config = null, block)
 }
 
 /**
- * Builder for creating a [Base32.Crockford.Configuration].
+ * Creates a configured [Base32.Hex] encoder/decoder
+ * using the default settings.
+ *
+ * @see [Base32HexConfigBuilder]
+ * */
+public fun Base32Hex(): Base32.Hex = Base32Hex {}
+
+/**
+ * Builder for creating a [Base32.Crockford.Config].
  *
  * @see [Base32Crockford]
  * */
-public class Base32CrockfordBuilder {
+public class Base32CrockfordConfigBuilder {
 
     public constructor()
-    public constructor(config: Base32.Crockford.Configuration?): this() {
+    public constructor(config: Base32.Crockford.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient
         acceptLowercase = config.acceptLowercase
@@ -164,7 +188,7 @@ public class Base32CrockfordBuilder {
      * @throws [IllegalArgumentException] If not a valid check symbol.
      * */
     @Throws(IllegalArgumentException::class)
-    public fun checkByte(checkSymbol: Char?): Base32CrockfordBuilder {
+    public fun checkByte(checkSymbol: Char?): Base32CrockfordConfigBuilder {
         when (checkSymbol) {
             null, '*', '~', '$', '=', 'U', 'u' -> {
                 checkByte = checkSymbol?.byte
@@ -182,20 +206,20 @@ public class Base32CrockfordBuilder {
     }
 
     /**
-     * Builds a [Base32.Crockford.Configuration] for the provided settings.
+     * Builds a [Base32.Crockford.Config] for the provided settings.
      * */
-    public fun build(): Base32.Crockford.Configuration = Base32.Crockford.Configuration.from(this)
+    public fun build(): Base32.Crockford.Config = Base32.Crockford.Config.from(this)
 }
 
 /**
- * Builder for creating a [Base32.Default.Configuration].
+ * Builder for creating a [Base32.Default.Config].
  *
  * @see [Base32Default]
  * */
-public class Base32DefaultBuilder {
+public class Base32DefaultConfigBuilder {
 
     public constructor()
-    public constructor(config: Base32.Default.Configuration?): this() {
+    public constructor(config: Base32.Default.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient
         acceptLowercase = config.acceptLowercase
@@ -244,20 +268,20 @@ public class Base32DefaultBuilder {
     public var padEncoded: Boolean = true
 
     /**
-     * Builds a [Base32.Default.Configuration] for the provided settings.
+     * Builds a [Base32.Default.Config] for the provided settings.
      * */
-    public fun build(): Base32.Default.Configuration = Base32.Default.Configuration.from(this)
+    public fun build(): Base32.Default.Config = Base32.Default.Config.from(this)
 }
 
 /**
- * Builder for creating a [Base32.Hex.Configuration].
+ * Builder for creating a [Base32.Hex.Config].
  *
  * @see [Base32Hex]
  * */
-public class Base32HexBuilder {
+public class Base32HexConfigBuilder {
 
     public constructor()
-    public constructor(config: Base32.Hex.Configuration?): this() {
+    public constructor(config: Base32.Hex.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient
         acceptLowercase = config.acceptLowercase
@@ -306,7 +330,7 @@ public class Base32HexBuilder {
     public var padEncoded: Boolean = true
 
     /**
-     * Builds a [Base32.Hex.Configuration] for the provided settings.
+     * Builds a [Base32.Hex.Config] for the provided settings.
      * */
-    public fun build(): Base32.Hex.Configuration = Base32.Hex.Configuration.from(this)
+    public fun build(): Base32.Hex.Config = Base32.Hex.Config.from(this)
 }

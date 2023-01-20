@@ -17,7 +17,7 @@
 
 package io.matthewnelson.encoding.base16
 
-import io.matthewnelson.encoding.builders.Base16Builder
+import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
@@ -49,29 +49,29 @@ import kotlin.jvm.JvmSynthetic
  *     val decoded = encoded.decodeToArray(base16).decodeToString()
  *     assertEquals(text, decoded)
  *
- * @see [Base16Builder]
- * @see [Configuration]
+ * @see [Base16ConfigBuilder]
+ * @see [Config]
  * @see [CHARS]
  * @see [EncoderDecoder]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
-public class Base16(config: Configuration): EncoderDecoder(config) {
+public class Base16(config: Config): EncoderDecoder(config) {
 
     /**
      * Configuration for [Base16] encoding/decoding.
      *
-     * Use [Base16Builder] to create.
+     * Use [Base16ConfigBuilder] to create.
      *
-     * @see [Base16Builder]
-     * @see [EncoderDecoder.Configuration]
+     * @see [Base16ConfigBuilder]
+     * @see [EncoderDecoder.Config]
      * */
-    public class Configuration private constructor(
+    public class Config private constructor(
         isLenient: Boolean,
         @JvmField
         public val acceptLowercase: Boolean,
         @JvmField
         public val encodeToLowercase: Boolean,
-    ): EncoderDecoder.Configuration(isLenient, paddingByte = null) {
+    ): EncoderDecoder.Config(isLenient, paddingByte = null) {
 
         override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int = encodedSize / 2
         override fun encodeOutSizeProtected(unEncodedSize: Int): Int = unEncodedSize * 2
@@ -88,8 +88,8 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
 
         internal companion object {
             @JvmSynthetic
-            internal fun from(builder: Base16Builder): Configuration {
-                return Configuration(
+            internal fun from(builder: Base16ConfigBuilder): Config {
+                return Config(
                     isLenient = builder.isLenient,
                     acceptLowercase = builder.acceptLowercase,
                     encodeToLowercase = builder.encodeToLowercase,
@@ -115,7 +115,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
                 val b1 = TABLE[bits shr    4]
                 val b2 = TABLE[bits and 0x0f]
 
-                if ((config as Configuration).encodeToLowercase) {
+                if ((config as Config).encodeToLowercase) {
                     out.invoke(b1.lowercaseCharByte())
                     out.invoke(b2.lowercaseCharByte())
                 } else {
@@ -135,7 +135,7 @@ public class Base16(config: Configuration): EncoderDecoder(config) {
 
             @Throws(EncodingException::class)
             override fun updateProtected(input: Byte) {
-                val char = if ((config as Configuration).acceptLowercase) {
+                val char = if ((config as Config).acceptLowercase) {
                     input.char.uppercaseChar()
                 } else {
                     input.char

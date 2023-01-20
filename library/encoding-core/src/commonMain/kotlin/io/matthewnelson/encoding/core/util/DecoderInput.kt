@@ -24,21 +24,21 @@ import kotlin.jvm.JvmSynthetic
 /**
  * Helper class for analyzing encoded data in order to
  * determine the maximum output size based off of the
- * options set for provided [EncoderDecoder.Configuration].
+ * options set for provided [EncoderDecoder.Config].
  *
  * Will "strip" padding (if the config specifies it) and
  * spaces/new lines from the end in order to provide
- * [EncoderDecoder.Configuration.decodeOutMaxSizeOrFail]
+ * [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
  * with the best guess at input size.
  *
  * @see [get]
- * @see [EncoderDecoder.Configuration.decodeOutMaxSizeOrFail]
+ * @see [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
  * */
 @OptIn(InternalEncodingApi::class)
 public class DecoderInput
 @Throws(EncodingException::class)
 private constructor(
-    config: EncoderDecoder.Configuration,
+    config: EncoderDecoder.Config,
     private val input: Any
 ) {
 
@@ -46,7 +46,7 @@ private constructor(
     internal val decodeOutMaxSize: Int
 
     /**
-     * Can be utilized by [EncoderDecoder.Configuration]
+     * Can be utilized by [EncoderDecoder.Config]
      * implementation to check [input] in order to fail
      * early.
      * */
@@ -94,6 +94,9 @@ private constructor(
         decodeOutMaxSize = if (limit == 0) {
             0
         } else {
+            // TODO: Decoder implementation could have an overflow
+            //  and return negative here. Must still check negative
+            //  and throw.
             config.decodeOutMaxSizeOrFail(limit, this)
         }
     }
@@ -109,19 +112,19 @@ private constructor(
         @JvmSynthetic
         @Throws(EncodingException::class)
         internal fun String.toInputAnalysis(
-            config: EncoderDecoder.Configuration
+            config: EncoderDecoder.Config
         ): DecoderInput = DecoderInput(config, this)
 
         @JvmSynthetic
         @Throws(EncodingException::class)
         internal fun CharArray.toInputAnalysis(
-            config: EncoderDecoder.Configuration
+            config: EncoderDecoder.Config
         ): DecoderInput = DecoderInput(config, this)
 
         @JvmSynthetic
         @Throws(EncodingException::class)
         internal fun ByteArray.toInputAnalysis(
-            config: EncoderDecoder.Configuration
+            config: EncoderDecoder.Config
         ): DecoderInput = DecoderInput(config, this)
     }
 }

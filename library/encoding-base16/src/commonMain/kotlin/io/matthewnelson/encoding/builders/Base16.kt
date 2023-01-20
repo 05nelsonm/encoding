@@ -16,8 +16,7 @@
 package io.matthewnelson.encoding.builders
 
 import io.matthewnelson.encoding.base16.Base16
-import io.matthewnelson.encoding.base16.Base16.Configuration
-import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.base16.Base16.Config
 import io.matthewnelson.encoding.core.EncodingException
 import kotlin.jvm.JvmField
 
@@ -25,13 +24,13 @@ import kotlin.jvm.JvmField
  * Creates a configured [Base16] encoder/decoder.
  *
  * @param [config] inherit settings from.
- * @see [Base16Builder]
+ * @see [Base16ConfigBuilder]
  * */
 public fun Base16(
-    config: Configuration?,
-    block: Base16Builder.() -> Unit
+    config: Config?,
+    block: Base16ConfigBuilder.() -> Unit
 ): Base16 {
-    val builder = Base16Builder(config)
+    val builder = Base16ConfigBuilder(config)
     block.invoke(builder)
     return Base16(builder.build())
 }
@@ -39,23 +38,32 @@ public fun Base16(
 /**
  * Creates a configured [Base16] encoder/decoder.
  *
- * @see [Base16Builder]
+ * @see [Base16ConfigBuilder]
  * */
 public fun Base16(
-    block: Base16Builder.() -> Unit
+    block: Base16ConfigBuilder.() -> Unit
 ): Base16 {
     return Base16(config = null, block)
 }
 
 /**
- * Builder for creating a [Base16.Configuration].
+ * Creates a configured [Base16] encoder/decoder
+ * using the default settings.
+ *
+ * @see [Base16ConfigBuilder]
+ * */
+public fun Base16(): Base16 = Base16 {}
+
+
+/**
+ * Builder for creating a [Base16.Config].
  *
  * @see [io.matthewnelson.encoding.builders.Base16]
  * */
-public class Base16Builder {
+public class Base16ConfigBuilder {
 
     public constructor()
-    public constructor(config: Configuration?): this() {
+    public constructor(config: Config?): this() {
         if (config == null) return
         isLenient = config.isLenient
         acceptLowercase = config.acceptLowercase
@@ -93,7 +101,7 @@ public class Base16Builder {
     public var encodeToLowercase: Boolean = true
 
     /**
-     * Builds a [Base16.Configuration] for the provided settings.
+     * Builds a [Base16.Config] for the provided settings.
      * */
-    public fun build(): Configuration = Configuration.from(this)
+    public fun build(): Config = Config.from(this)
 }
