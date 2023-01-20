@@ -23,6 +23,9 @@
 
 package io.matthewnelson.component.encoding.base32
 
+import io.matthewnelson.encoding.builders.Base32Crockford
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 import kotlin.native.concurrent.SharedImmutable
@@ -93,11 +96,29 @@ public sealed class Base32 {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
-    return toCharArray().decodeBase32ToArray(base32)
+    return if (base32 is Base32.Crockford) {
+        decodeToByteArrayOrNull(Base32Crockford {
+            isLenient = true
+            encodeToLowercase = false
+            hyphenInterval = 0
+            checkByte(base32.checkByte?.char)
+        })
+    } else {
+        toCharArray().decodeBase32ToArray(base32)
+    }
 }
 
 @JvmOverloads
 public fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
+    if (base32 is Base32.Crockford) {
+        return decodeToByteArrayOrNull(Base32Crockford {
+            isLenient = true
+            encodeToLowercase = false
+            hyphenInterval = 0
+            checkByte(base32.checkByte?.char)
+        })
+    }
+
     var limit: Int = size
 
     // Check symbol if specified for Crockford

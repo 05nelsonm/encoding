@@ -148,7 +148,6 @@ public class Base32CrockfordConfigBuilder {
     public constructor(config: Base32.Crockford.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient
-        acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
         hyphenInterval = config.hyphenInterval
         checkByte = config.checkByte
@@ -163,16 +162,6 @@ public class Base32CrockfordConfigBuilder {
      * */
     @JvmField
     public var isLenient: Boolean = true
-
-    /**
-     * If true, will accept lowercase **AND** uppercase
-     * characters when decoding (against Crockford spec).
-     *
-     * If false, an [EncodingException] will be thrown if
-     * lowercase characters are encountered when decoding.
-     * */
-    @JvmField
-    public var acceptLowercase: Boolean = true
 
     /**
      * If true, will output lowercase characters when
@@ -244,7 +233,6 @@ public class Base32CrockfordConfigBuilder {
      * */
     public fun strict(): Base32CrockfordConfigBuilder {
         isLenient = false
-        acceptLowercase = false
         encodeToLowercase = false
         return this
     }
