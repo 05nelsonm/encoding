@@ -46,7 +46,7 @@ import kotlin.jvm.JvmSynthetic
  *     val bytes = text.encodeToByteArray()
  *     val encoded = bytes.encodeToString(base16)
  *     println(encoded) // 48656C6C6F20576F726C6421
- *     val decoded = encoded.decodeToArray(base16).decodeToString()
+ *     val decoded = encoded.decodeToByteArray(base16).decodeToString()
  *     assertEquals(text, decoded)
  *
  * @see [io.matthewnelson.encoding.builders.Base16]

@@ -26,8 +26,8 @@ import kotlin.jvm.JvmStatic
  * Decode things.
  *
  * @see [EncoderDecoder]
- * @see [decodeToArray]
- * @see [decodeToArrayOrNull]
+ * @see [decodeToByteArray]
+ * @see [decodeToByteArrayOrNull]
  * @see [Feed]
  * @see [newDecoderFeed]
  * */
@@ -69,13 +69,13 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
          * Decodes a [String] for the provided [decoder] and
          * returns the decoded bytes.
          *
-         * @see [decodeToArrayOrNull]
+         * @see [decodeToByteArrayOrNull]
          * @throws [EncodingException] if decoding failed.
          * */
         @JvmStatic
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        public fun String.decodeToArray(decoder: Decoder): ByteArray {
+        public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(toDecoderInput(decoder.config)) { feed ->
                 forEach { char ->
                     feed.update(char.byte)
@@ -84,9 +84,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         }
 
         @JvmStatic
-        public fun String.decodeToArrayOrNull(decoder: Decoder): ByteArray? {
+        public fun CharSequence.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
             return try {
-                decodeToArray(decoder)
+                decodeToByteArray(decoder)
             } catch (_: EncodingException) {
                 null
             }
@@ -96,13 +96,13 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
          * Decodes a [CharArray] for the provided [decoder] and
          * returns the decoded bytes.
          *
-         * @see [decodeToArrayOrNull]
+         * @see [decodeToByteArrayOrNull]
          * @throws [EncodingException] if decoding failed.
          * */
         @JvmStatic
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        public fun CharArray.decodeToArray(decoder: Decoder): ByteArray {
+        public fun CharArray.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(toDecoderInput(decoder.config)) { feed ->
                 forEach { char ->
                     feed.update(char.byte)
@@ -111,9 +111,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         }
 
         @JvmStatic
-        public fun CharArray.decodeToArrayOrNull(decoder: Decoder): ByteArray? {
+        public fun CharArray.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
             return try {
-                decodeToArray(decoder)
+                decodeToByteArray(decoder)
             } catch (_: EncodingException) {
                 null
             }
@@ -123,13 +123,13 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
          * Decodes a [ByteArray] for the provided [decoder] and
          * returns the decoded bytes.
          *
-         * @see [decodeToArrayOrNull]
+         * @see [decodeToByteArrayOrNull]
          * @throws [EncodingException] if decoding failed.
          * */
         @JvmStatic
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        public fun ByteArray.decodeToArray(decoder: Decoder): ByteArray {
+        public fun ByteArray.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(toDecoderInput(decoder.config)) { feed ->
                 forEach { byte ->
                     feed.update(byte)
@@ -138,9 +138,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         }
 
         @JvmStatic
-        public fun ByteArray.decodeToArrayOrNull(decoder: Decoder): ByteArray? {
+        public fun ByteArray.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
             return try {
-                decodeToArray(decoder)
+                decodeToByteArray(decoder)
             } catch (_: EncodingException) {
                 null
             }

@@ -57,7 +57,7 @@ private constructor(
     public operator fun get(index: Int): Char {
         return try {
             when (input) {
-                is String -> input[index]
+                is CharSequence -> input[index]
                 is CharArray -> input[index]
                 else -> (input as ByteArray)[index].char
             }
@@ -68,7 +68,7 @@ private constructor(
 
     init {
         var limit = when (input) {
-            is String -> input.length
+            is CharSequence -> input.length
             is CharArray -> input.size
             else -> (input as ByteArray).size
         }
@@ -122,7 +122,7 @@ private constructor(
 
         @JvmStatic
         @Throws(EncodingException::class)
-        public fun String.toDecoderInput(
+        public fun CharSequence.toDecoderInput(
             config: EncoderDecoder.Config
         ): DecoderInput = DecoderInput(config, this)
 

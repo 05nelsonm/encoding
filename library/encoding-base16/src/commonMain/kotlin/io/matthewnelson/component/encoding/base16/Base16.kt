@@ -19,7 +19,7 @@ package io.matthewnelson.component.encoding.base16
 
 import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.builders.Base16
-import io.matthewnelson.encoding.core.Decoder.Companion.decodeToArrayOrNull
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
@@ -36,12 +36,12 @@ internal val COMPATIBILITY: Base16 = Base16 {
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase16ToArray(): ByteArray? {
     @OptIn(InternalEncodingApi::class)
-    return decodeToArrayOrNull(COMPATIBILITY)
+    return decodeToByteArrayOrNull(COMPATIBILITY)
 }
 
 public fun CharArray.decodeBase16ToArray(): ByteArray? {
     @OptIn(InternalEncodingApi::class)
-    return decodeToArrayOrNull(COMPATIBILITY)
+    return decodeToByteArrayOrNull(COMPATIBILITY)
 }
 
 @Suppress("NOTHING_TO_INLINE")

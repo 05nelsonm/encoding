@@ -97,4 +97,45 @@ class DecoderInputUnitTest {
             // pass
         }
     }
+
+    @Test
+    fun givenDecoderInput_whenInputIsCharSequence_thenSuccess() {
+        // Include spaces and set isLenient = true (so they are
+        // skipped) in order to exercise DecoderInput.get
+        val validInput = "D    " as CharSequence
+        val config = TestConfig(isLenient = true) { inputSize ->
+            assertEquals(1L, inputSize)
+            inputSize// pass
+        }
+
+        validInput.toDecoderInput(config)
+    }
+
+    @Test
+    fun givenDecoderInput_whenInputIsCharArray_thenSuccess() {
+        // Include spaces and set isLenient = true (so they are
+        // skipped) in order to exercise DecoderInput.get
+        val validInput = CharArray(5) { ' ' }.apply { set(0, 'D') }
+        val config = TestConfig(isLenient = true) { inputSize ->
+            assertEquals(1L, inputSize)
+            inputSize
+        }
+
+        validInput.toDecoderInput(config)
+    }
+
+    @Test
+    fun givenDecoderInput_whenInputIsByteArray_thenSuccess() {
+        // Include spaces and set isLenient = true (so they are
+        // skipped) in order to exercise DecoderInput.get
+        val validInput = ByteArray(5) { ' '.byte }.apply { set(0, 'D'.byte) }
+        val config = TestConfig(isLenient = true) { inputSize ->
+            assertEquals(1L, inputSize)
+            inputSize
+        }
+
+        validInput.toDecoderInput(config)
+    }
+
+
 }
