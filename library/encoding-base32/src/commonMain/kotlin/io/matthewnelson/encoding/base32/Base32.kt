@@ -49,13 +49,13 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *         isLenient = true
      *         acceptLowercase = true
      *         hyphenInterval = 5
-     *         setCheckByte(checkSymbol = '*')
+     *         checkByte(checkSymbol = '~')
      *     }
      *
      *     val text = "Hello World!"
      *     val bytes = text.encodeToByteArray()
      *     val encoded = bytes.encodeToString(base32Crockford)
-     *     println(encoded) // 91JPR-V3F41-BPYWK-CCGGG*
+     *     println(encoded) // 91JPR-V3F41-BPYWK-CCGGG~
      *     val decoded = encoded.decodeToArray(base32Crockford).decodeToString()
      *     assertEquals(text, decoded)
      *
@@ -109,16 +109,13 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
                 var outSize = encodedOutSize(unEncodedSize, willBePadded = false)
 
-                // TODO: Don't loop here... use maths
                 if (hyphenInterval > 0) {
-                    val interval = hyphenInterval.toInt()
-                    val size = outSize
-                    var count = 0
-                    var index = 0
-                    while (index++ < size) {
-                        if (count++ != interval) continue
-                        outSize++
-                        count = 0
+                    // TODO: This is still off because encodedOutSize returns Int
+                    //  will need to fix (Issue #48)
+                    val hyphenCount = (outSize / hyphenInterval) - 1
+
+                    if (hyphenCount > 0) {
+                        outSize += hyphenCount
                     }
                 }
 

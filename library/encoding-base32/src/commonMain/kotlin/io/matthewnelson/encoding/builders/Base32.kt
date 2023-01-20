@@ -163,8 +163,19 @@ public class Base32CrockfordConfigBuilder {
     public var acceptLowercase: Boolean = false
 
     /**
-     * The interval at which hyphens ("-") should be inserted
-     * when encoding data.
+     * For every [hyphenInterval] of decoded output, a
+     * hyphen ("-") will be inserted.
+     *
+     * e.g.
+     *
+     *     hyphenInterval = 0
+     *     // 91JPRV3F41BPYWKCCGGG
+     *
+     *     hyphenInterval = 5
+     *     // 91JPR-V3F41-BPYWK-CCGGG
+     *
+     *     hyphenInterval = 4
+     *     // 91JP-RV3F-41BP-YWKC-CGGG
      *
      * Enable by setting to a value greater than 0.
      * */
