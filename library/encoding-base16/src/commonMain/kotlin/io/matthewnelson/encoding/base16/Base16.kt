@@ -49,9 +49,9 @@ import kotlin.jvm.JvmSynthetic
  *     val decoded = encoded.decodeToArray(base16).decodeToString()
  *     assertEquals(text, decoded)
  *
- * @see [Base16ConfigBuilder]
- * @see [Config]
- * @see [CHARS]
+ * @see [io.matthewnelson.encoding.builders.Base16]
+ * @see [Base16.Config]
+ * @see [Base16.CHARS]
  * @see [EncoderDecoder]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
@@ -73,7 +73,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         public val encodeToLowercase: Boolean,
     ): EncoderDecoder.Config(isLenient, paddingByte = null) {
 
-        override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int = encodedSize / 2
+        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int = encodedSize / 2
         override fun encodeOutSizeProtected(unEncodedSize: Int): Int = unEncodedSize * 2
 
         override fun toStringAddSettings(sb: StringBuilder) {

@@ -62,7 +62,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *
      * @see [Base32Crockford]
      * @see [Crockford.Config]
-     * @see [CHARS]
+     * @see [Crockford.CHARS]
      * @see [EncoderDecoder]
      * */
     public class Crockford(config: Crockford.Config): Base32(config) {
@@ -91,7 +91,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val checkSymbol: Char? get() = checkByte?.char
 
             @Throws(EncodingException::class)
-            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int {
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int {
                 var outSize = encodedSize
 
                 if (input != null && checkByte != null) {
@@ -228,7 +228,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *
      * @see [Base32Default]
      * @see [Default.Config]
-     * @see [CHARS]
+     * @see [Default.CHARS]
      * @see [EncoderDecoder]
      * */
     public class Default(config: Default.Config): Base32(config) {
@@ -251,7 +251,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int {
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int {
                 return decodeOutMaxSize(encodedSize)
             }
 
@@ -352,7 +352,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *
      * @see [Base32Hex]
      * @see [Hex.Config]
-     * @see [CHARS]
+     * @see [Hex.CHARS]
      * @see [EncoderDecoder]
      * */
     public class Hex(config: Hex.Config): Base32(config) {
@@ -375,7 +375,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int {
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int {
                 return decodeOutMaxSize(encodedSize)
             }
 
