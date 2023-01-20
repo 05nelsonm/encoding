@@ -97,7 +97,7 @@ private constructor(
         val outSize = config.decodeOutMaxSizeOrFail(limit.toLong(), this)
 
         if (outSize > Int.MAX_VALUE.toLong()) {
-            throw outSizeExceedsIntMaxEncodingException()
+            throw outSizeExceedsMaxEncodingSizeException(limit, Int.MAX_VALUE)
         }
 
         _decodeOutMaxSize = outSize.toInt()
@@ -106,15 +106,18 @@ private constructor(
     public companion object {
 
         @JvmStatic
-        @InternalEncodingApi
+        @InternalEncodingApi // might move this somewhere else... don't use.
         public fun isLenientFalseEncodingException(): EncodingException {
             return EncodingException("Spaces and new lines are forbidden when isLenient[false]")
         }
 
         @JvmStatic
-        @InternalEncodingApi
-        public fun outSizeExceedsIntMaxEncodingException(): EncodingSizeException {
-            return EncodingSizeException("Size of encoded data would exceed the maximum value of ${Int.MAX_VALUE}")
+        @InternalEncodingApi // might move this somewhere else... don't use.
+        public fun outSizeExceedsMaxEncodingSizeException(
+            inSize: Number,
+            maxSize: Number,
+        ): EncodingSizeException {
+            return EncodingSizeException("Size[$inSize] of data would exceed the maximum[$maxSize] for this operation")
         }
 
         @JvmStatic

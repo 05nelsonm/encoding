@@ -79,9 +79,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         @Throws(EncodingSizeException::class)
         override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             if (unEncodedSize > (Long.MAX_VALUE / 2)) {
-                throw EncodingSizeException(
-                    "unEncodedSize[$unEncodedSize] would exceed the maximum[${Long.MAX_VALUE}] when encoded"
-                )
+                throw DecoderInput.outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
             }
 
             return unEncodedSize * 2L
