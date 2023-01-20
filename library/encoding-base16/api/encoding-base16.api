@@ -31,11 +31,14 @@ public final class io/matthewnelson/encoding/builders/Base16ConfigBuilder {
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
 	public final fun build ()Lio/matthewnelson/encoding/base16/Base16$Config;
+	public final fun strict ()Lio/matthewnelson/encoding/builders/Base16ConfigBuilder;
 }
 
 public final class io/matthewnelson/encoding/builders/Base16Kt {
 	public static final fun Base16 ()Lio/matthewnelson/encoding/base16/Base16;
 	public static final fun Base16 (Lio/matthewnelson/encoding/base16/Base16$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 	public static final fun Base16 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
+	public static final fun Base16 (Z)Lio/matthewnelson/encoding/base16/Base16;
+	public static synthetic fun Base16$default (ZILjava/lang/Object;)Lio/matthewnelson/encoding/base16/Base16;
 }
 

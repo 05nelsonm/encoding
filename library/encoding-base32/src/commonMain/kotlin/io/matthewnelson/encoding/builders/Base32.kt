@@ -23,6 +23,7 @@ import io.matthewnelson.encoding.core.util.byte
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
+import kotlin.jvm.JvmOverloads
 
 /**
  * Creates a configured [Base32.Crockford] encoder/decoder.
@@ -54,9 +55,12 @@ public fun Base32Crockford(
  * Creates a configured [Base32.Crockford] encoder/decoder
  * using the default settings.
  *
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with the Crockford spec.
  * @see [Base32CrockfordConfigBuilder]
  * */
-public fun Base32Crockford(): Base32.Crockford = Base32Crockford {}
+@JvmOverloads
+public fun Base32Crockford(strict: Boolean = false): Base32.Crockford = Base32Crockford { if (strict) strict() }
 
 /**
  * Creates a configured [Base32.Default] encoder/decoder.
@@ -88,9 +92,12 @@ public fun Base32Default(
  * Creates a configured [Base32.Default] encoder/decoder
  * using the default settings.
  *
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with RFC 4648.
  * @see [Base32DefaultConfigBuilder]
  * */
-public fun Base32Default(): Base32.Default = Base32Default {}
+@JvmOverloads
+public fun Base32Default(strict: Boolean = false): Base32.Default = Base32Default { if (strict) strict() }
 
 /**
  * Creates a configured [Base32.Hex] encoder/decoder.
@@ -122,13 +129,17 @@ public fun Base32Hex(
  * Creates a configured [Base32.Hex] encoder/decoder
  * using the default settings.
  *
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with RFC 4648.
  * @see [Base32HexConfigBuilder]
  * */
-public fun Base32Hex(): Base32.Hex = Base32Hex {}
+@JvmOverloads
+public fun Base32Hex(strict: Boolean = false): Base32.Hex = Base32Hex { if (strict) strict() }
 
 /**
  * Builder for creating a [Base32.Crockford.Config].
  *
+ * @see [strict]
  * @see [Base32Crockford]
  * */
 public class Base32CrockfordConfigBuilder {
@@ -227,6 +238,17 @@ public class Base32CrockfordConfigBuilder {
     }
 
     /**
+     * A shortcut for configuring things to be in strict
+     * adherence with the Crockford spec.
+     * */
+    public fun strict(): Base32CrockfordConfigBuilder {
+        isLenient = false
+        acceptLowercase = false
+        encodeToLowercase = false
+        return this
+    }
+
+    /**
      * Builds a [Base32.Crockford.Config] for the provided settings.
      * */
     public fun build(): Base32.Crockford.Config = Base32.Crockford.Config.from(this)
@@ -235,6 +257,7 @@ public class Base32CrockfordConfigBuilder {
 /**
  * Builder for creating a [Base32.Default.Config].
  *
+ * @see [strict]
  * @see [Base32Default]
  * */
 public class Base32DefaultConfigBuilder {
@@ -289,6 +312,18 @@ public class Base32DefaultConfigBuilder {
     public var padEncoded: Boolean = true
 
     /**
+     * A shortcut for configuring things to be in strict
+     * adherence with RFC 4648.
+     * */
+    public fun strict(): Base32DefaultConfigBuilder {
+        isLenient = false
+        acceptLowercase = false
+        encodeToLowercase = false
+        padEncoded = true
+        return this
+    }
+
+    /**
      * Builds a [Base32.Default.Config] for the provided settings.
      * */
     public fun build(): Base32.Default.Config = Base32.Default.Config.from(this)
@@ -297,6 +332,7 @@ public class Base32DefaultConfigBuilder {
 /**
  * Builder for creating a [Base32.Hex.Config].
  *
+ * @see [strict]
  * @see [Base32Hex]
  * */
 public class Base32HexConfigBuilder {
@@ -349,6 +385,18 @@ public class Base32HexConfigBuilder {
      * */
     @JvmField
     public var padEncoded: Boolean = true
+
+    /**
+     * A shortcut for configuring things to be in strict
+     * adherence with RFC 4648.
+     * */
+    public fun strict(): Base32HexConfigBuilder {
+        isLenient = false
+        acceptLowercase = false
+        encodeToLowercase = false
+        padEncoded = true
+        return this
+    }
 
     /**
      * Builds a [Base32.Hex.Config] for the provided settings.

@@ -19,6 +19,7 @@ import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.base16.Base16.Config
 import io.matthewnelson.encoding.core.EncodingException
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmOverloads
 
 /**
  * Creates a configured [Base16] encoder/decoder.
@@ -50,14 +51,18 @@ public fun Base16(
  * Creates a configured [Base16] encoder/decoder
  * using the default settings.
  *
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with RFC 4648.
  * @see [Base16ConfigBuilder]
  * */
-public fun Base16(): Base16 = Base16 {}
+@JvmOverloads
+public fun Base16(strict: Boolean = false): Base16 = Base16 { if (strict) strict() }
 
 
 /**
  * Builder for creating a [Base16.Config].
  *
+ * @see [strict]
  * @see [io.matthewnelson.encoding.builders.Base16]
  * */
 public class Base16ConfigBuilder {
@@ -99,6 +104,17 @@ public class Base16ConfigBuilder {
      * */
     @JvmField
     public var encodeToLowercase: Boolean = true
+
+    /**
+     * A shortcut for configuring things to be in strict
+     * adherence with RFC 4648.
+     * */
+    public fun strict(): Base16ConfigBuilder {
+        isLenient = false
+        acceptLowercase = false
+        encodeToLowercase = false
+        return this
+    }
 
     /**
      * Builds a [Base16.Config] for the provided settings.
