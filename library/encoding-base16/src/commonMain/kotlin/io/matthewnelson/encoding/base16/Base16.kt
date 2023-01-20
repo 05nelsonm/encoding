@@ -173,7 +173,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
                         char.code - 55
                     }
                     else -> {
-                        throw EncodingException("Char[$char] is not a valid Base16 character")
+                        throw EncodingException("Char[${input.char}] is not a valid Base16 character")
                     }
                 }
 
