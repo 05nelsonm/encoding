@@ -44,6 +44,19 @@ private constructor(
     private val input: Any
 ) {
 
+    /**
+     * After [input] has its padding (if applicable)
+     * "stripped", this is set to indicate the size
+     * of the [input], up to the last relevant character.
+     *
+     * e.g.
+     *
+     *     for (i in 0 until lastRelevantCharacter) {
+     *         // retrieve character from input
+     *     }
+     * */
+    public val lastRelevantCharacter: Int
+
     private var _decodeOutMaxSize: Int = 0
     @get:JvmName("decodeOutMaxSize")
     public val decodeOutMaxSize: Int get() = _decodeOutMaxSize
@@ -93,6 +106,8 @@ private constructor(
 
             break
         }
+
+        lastRelevantCharacter = limit
 
         val outSize = config.decodeOutMaxSizeOrFail(limit.toLong(), this)
 
