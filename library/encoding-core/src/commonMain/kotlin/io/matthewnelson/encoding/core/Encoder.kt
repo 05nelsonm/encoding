@@ -60,7 +60,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed() {
+    constructor(): EncoderDecoder.Feed(config) {
         protected abstract override fun updateProtected(input: Byte)
         protected abstract override fun doFinalProtected()
         final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"

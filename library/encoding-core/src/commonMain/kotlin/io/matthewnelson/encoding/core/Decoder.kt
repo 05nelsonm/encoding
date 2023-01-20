@@ -59,7 +59,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed() {
+    constructor(): EncoderDecoder.Feed(config) {
         final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
     }
 
@@ -76,9 +76,11 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
-            return decoder.decode(toDecoderInput(decoder.config)) { feed ->
-                forEach { char ->
-                    feed.update(char.byte)
+            val input = toDecoderInput(decoder.config)
+
+            return decoder.decode(input) { feed ->
+                for (i in 0 until input.lastRelevantCharacter) {
+                    feed.update(this[i].byte)
                 }
             }
         }
@@ -103,9 +105,11 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharArray.decodeToByteArray(decoder: Decoder): ByteArray {
-            return decoder.decode(toDecoderInput(decoder.config)) { feed ->
-                forEach { char ->
-                    feed.update(char.byte)
+            val input = toDecoderInput(decoder.config)
+
+            return decoder.decode(input) { feed ->
+                for (i in 0 until input.lastRelevantCharacter) {
+                    feed.update(this[i].byte)
                 }
             }
         }
@@ -130,9 +134,11 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun ByteArray.decodeToByteArray(decoder: Decoder): ByteArray {
-            return decoder.decode(toDecoderInput(decoder.config)) { feed ->
-                forEach { byte ->
-                    feed.update(byte)
+            val input = toDecoderInput(decoder.config)
+
+            return decoder.decode(input) { feed ->
+                for (i in 0 until input.lastRelevantCharacter) {
+                    feed.update(this[i])
                 }
             }
         }

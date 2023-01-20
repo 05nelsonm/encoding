@@ -32,7 +32,12 @@ internal inline fun Decoder.decode(
 
     var i = 0
     newDecoderFeed { byte ->
-        ba[i++] = byte
+        try {
+            ba[i++] = byte
+        } catch (e: IndexOutOfBoundsException) {
+            // Something is wrong with the encoder's pre-calculation
+            throw EncodingSizeException("Encoder's pre-calculation of Size[${input.decodeOutMaxSize}] was incorrect", e)
+        }
     }.use { feed ->
         update.invoke(feed)
     }
@@ -73,5 +78,19 @@ internal inline fun Encoder.encode(
         for (byte in bytes) {
             feed.update(byte)
         }
+    }
+}
+
+/**
+ * Helper for checking if a character is a space or
+ * new line.
+ *
+ * @return true if the character matches '\n', '\r', ' ', or '\t'
+ * */
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Char.isSpaceOrNewLine(): Boolean {
+    return when(this) {
+        '\n', '\r', ' ', '\t' -> true
+        else -> false
     }
 }

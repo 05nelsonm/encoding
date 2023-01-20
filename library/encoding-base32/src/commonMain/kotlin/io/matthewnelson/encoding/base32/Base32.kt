@@ -19,11 +19,10 @@ package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
+import io.matthewnelson.encoding.core.internal.BitBuffer
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.byte
-import io.matthewnelson.encoding.core.util.char
+import io.matthewnelson.encoding.core.util.*
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -47,7 +46,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      *
      *     val base32Crockford = Base32Crockford {
      *         isLenient = true
-     *         acceptLowercase = true
      *         encodeToLowercase = false
      *         hyphenInterval = 5
      *         checkByte(checkSymbol = '~')
@@ -78,8 +76,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         public class Config private constructor(
             isLenient: Boolean,
             @JvmField
-            public val acceptLowercase: Boolean,
-            @JvmField
             public val encodeToLowercase: Boolean,
             @JvmField
             public val hyphenInterval: Byte,
@@ -94,12 +90,16 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
                 var outSize = encodedSize
 
-                if (input != null && checkByte != null) {
-                    // Check last character
-                    val actual = input[encodedSize.toInt() - 1]
-                    if (actual != checkByte.char) {
+                val checkSymbol = checkSymbol?.uppercaseChar()
+
+                if (input != null && checkSymbol != null) {
+                    // Always uppercase it b/c little u and U should
+                    // be decoded the same for Crockford.
+                    val actual = input[input.lastRelevantCharacter - 1].uppercaseChar()
+
+                    if (actual != checkSymbol) {
                         throw EncodingException(
-                            "checkSymbol[$actual] for encoded did not match expected[${checkByte.char}]"
+                            "checkSymbol[$actual] for encoded did not match expected[${checkSymbol}]"
                         )
                     } else {
                         outSize--
@@ -136,8 +136,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
             override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
-                    append("    acceptLowercase: ")
-                    append(acceptLowercase)
                     appendLine()
                     append("    encodeToLowercase: ")
                     append(encodeToLowercase)
@@ -156,7 +154,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 internal fun from(builder: Base32CrockfordConfigBuilder): Config {
                     return Config(
                         isLenient = builder.isLenient,
-                        acceptLowercase = builder.acceptLowercase,
                         encodeToLowercase = builder.encodeToLowercase,
                         hyphenInterval = builder.hyphenInterval,
                         checkByte = builder.checkByte
@@ -177,18 +174,107 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
+                private val buffer = Base32BitBuffer(out)
+                private var isCheckByteSet = false
+
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
-                    // TODO
-                    throw EncodingException("Not yet implemented")
+                    // Crockford requires that decoding accept both
+                    // uppercase and lowercase. So, uppercase
+                    // everything that comes in.
+                    val char = input.char.uppercaseChar()
+
+                    if (isCheckByteSet) {
+                        val symbol = (config as Crockford.Config).checkSymbol
+                        // If the set checkByte was not intended, it's only a valid
+                        // as the very last character and the previous update call
+                        // was invalid.
+                        throw EncodingException("checkSymbol[$symbol] was set, but decoding is still being attempted.")
+                    }
+
+                    val bits: Long = when (char) {
+                        in '0'..'9' -> {
+                            // char ASCII value
+                            //  0    48    0
+                            //  9    57    9 (ASCII - 48)
+                            char.code - 48L
+                        }
+                        in 'A'..'H' -> {
+                            // char ASCII value
+                            //  A    65    10
+                            //  H    72    17 (ASCII - 55)
+                            char.code - 55L
+                        }
+                        'I', 'L' -> {
+                            // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
+
+                            // char ASCII value
+                            //  1    49    1 (ASCII - 48)
+                            '1'.code - 48L
+                        }
+                        'J', 'K' -> {
+                            // char ASCII value
+                            //  J    74    18
+                            //  K    75    19 (ASCII - 56)
+                            char.code - 56L
+                        }
+                        'M', 'N' -> {
+                            // char ASCII value
+                            //  M    77    20
+                            //  N    78    21 (ASCII - 57)
+                            char.code - 57L
+                        }
+                        'O' -> {
+                            // Crockford treats characters 'O' and 'o' as 0
+
+                            // char ASCII value
+                            //  0    48    0 (ASCII - 48)
+                            '0'.code - 48L
+                        }
+                        in 'P'..'T' -> {
+                            // char ASCII value
+                            //  P    80    22
+                            //  T    84    26 (ASCII - 58)
+                            char.code - 58L
+                        }
+                        in 'V'..'Z' -> {
+                            // char ASCII value
+                            //  V    86    27
+                            //  Z    90    31 (ASCII - 59)
+                            char.code - 59L
+                        }
+                        // We don't care about little u b/c
+                        // everything is being uppercased.
+                        '*', '~', '$', '=', 'U'/*, 'u'*/ -> {
+                            when (val checkSymbol = (config as Crockford.Config).checkByte?.char?.uppercaseChar()) {
+                                char -> {
+                                    isCheckByteSet = true
+                                    return
+                                }
+                                else -> {
+                                    throw EncodingException(
+                                        "Char[${input.char}] IS a valid checkSymbol, but did not match what is configured[$checkSymbol]"
+                                    )
+                                }
+                            }
+                        }
+                        '-' -> {
+                            // Crockford allows for insertion of hyphens,
+                            // which are to be ignored when decoding.
+                            return
+                        }
+                        else -> {
+                            throw EncodingException("Char[${input.char}] is not a valid Base32 Crockford character")
+                        }
+                    }
+
+                    buffer.update(bits)
                 }
 
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
-                    // TODO
-                    throw EncodingException("Not yet implemented")
+                    buffer.doFinal()
                 }
-
             }
         }
 
@@ -302,16 +388,40 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
+                private val buffer = Base32BitBuffer(out)
+
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
-                    // TODO
-                    throw EncodingException("Not yet implemented")
+                    val char = if ((config as Default.Config).acceptLowercase) {
+                        input.char.uppercaseChar()
+                    } else {
+                        input.char
+                    }
+
+                    val bits: Long = when (char) {
+                        in '2'..'7' -> {
+                            // char ASCII value
+                            //  2    50    26
+                            //  7    55    31 (ASCII - 24)
+                            char.code - 24L
+                        }
+                        in 'A'..'Z' -> {
+                            // char ASCII value
+                            //  A    65    0
+                            //  Z    90    25 (ASCII - 65)
+                            char.code - 65L
+                        }
+                        else -> {
+                            throw EncodingException("Char[${input.char}] is not a valid Base32 Default character")
+                        }
+                    }
+
+                    buffer.update(bits)
                 }
 
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
-                    // TODO
-                    throw EncodingException("Not yet implemented")
+                    buffer.doFinal()
                 }
             }
         }
@@ -426,16 +536,40 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
+                private val buffer = Base32BitBuffer(out)
+
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
-                    // TODO
-                    throw EncodingException("Not yet implemented")
+                    val char = if ((config as Hex.Config).acceptLowercase) {
+                        input.char.uppercaseChar()
+                    } else {
+                        input.char
+                    }
+
+                    val bits: Long = when (char) {
+                        in '0'..'9' -> {
+                            // char ASCII value
+                            //  0    48    0
+                            //  9    57    9 (ASCII - 48)
+                            char.code - 48L
+                        }
+                        in 'A'..'V' -> {
+                            // char ASCII value
+                            //  A    65    10
+                            //  V    86    31 (ASCII - 55)
+                            char.code - 55L
+                        }
+                        else -> {
+                            throw EncodingException("Char[${input.char}] is not a valid Base32 Hex character")
+                        }
+                    }
+
+                    buffer.update(bits)
                 }
 
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
-                    // TODO
-                    throw EncodingException("Not yet implemented")
+                    buffer.doFinal()
                 }
             }
         }
@@ -479,5 +613,61 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
             return outSize
         }
+    }
+
+    @OptIn(InternalEncodingApi::class)
+    private inner class Base32BitBuffer(out: OutFeed): BitBuffer<Long>(
+        blockSize = 8,
+        onUpdate = { buffer, bits ->
+            // Append this char's 5 bits to the buffer
+            buffer shl 5 or bits
+        },
+        onOutput = { buffer ->
+            // For every 8 chars of input, we accumulate 40 bits of output data. Emit 5 bytes
+            out.invoke((buffer shr 32).toByte())
+            out.invoke((buffer shr 24).toByte())
+            out.invoke((buffer shr 16).toByte())
+            out.invoke((buffer shr  8).toByte())
+            out.invoke((buffer       ).toByte())
+        },
+        doFinal = { count, buf ->
+            var buffer = buf
+
+            when (count % 8) {
+                0 -> {}
+                1, 3, 6 -> {
+                    // 5*1 = 5 bits.  Truncated, fail.
+                    // 5*3 = 15 bits. Truncated, fail.
+                    // 5*6 = 30 bits. Truncated, fail.
+                    throw EncodingException("Truncated input. Count[$count] should have been 2, 4, 5, or 7")
+                }
+                2 -> { // 5*2 = 10 bits. Drop 2
+                    buffer = buffer shr 2
+                    out.invoke((buffer      ).toByte())
+                }
+                4 -> { // 5*4 = 20 bits. Drop 4
+                    buffer = buffer shr 4
+                    out.invoke((buffer shr 8).toByte())
+                    out.invoke((buffer      ).toByte())
+                }
+                5 -> { // 5*5 = 25 bits. Drop 1
+                    buffer = buffer shr 1
+                    out.invoke((buffer shr 16).toByte())
+                    out.invoke((buffer shr  8).toByte())
+                    out.invoke((buffer       ).toByte())
+                }
+                7 -> { // 5*7 = 35 bits. Drop 3
+                    buffer = buffer shr 3
+                    out.invoke((buffer shr 24).toByte())
+                    out.invoke((buffer shr 16).toByte())
+                    out.invoke((buffer shr  8).toByte())
+                    out.invoke((buffer       ).toByte())
+                }
+            }
+        }
+    ) {
+        override var bitBuffer: Long = 0L
+        override fun resetBitBuffer() { bitBuffer = 0L }
+        override fun definitelyDoNotUseThisClassItWillBeChanging() {}
     }
 }

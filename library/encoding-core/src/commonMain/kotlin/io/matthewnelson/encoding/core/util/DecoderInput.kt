@@ -19,6 +19,8 @@ import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
+import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
+import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
@@ -43,6 +45,20 @@ private constructor(
     config: EncoderDecoder.Config,
     private val input: Any
 ) {
+
+    /**
+     * After [input] has its padding (if applicable)
+     * "stripped", this is set to indicate the size
+     * of the [input], up to the last relevant character.
+     *
+     * e.g.
+     *
+     *     for (i in 0 until lastRelevantCharacter) {
+     *         // retrieve character from input
+     *     }
+     * */
+    @JvmField
+    public val lastRelevantCharacter: Int
 
     private var _decodeOutMaxSize: Int = 0
     @get:JvmName("decodeOutMaxSize")
@@ -94,6 +110,8 @@ private constructor(
             break
         }
 
+        lastRelevantCharacter = limit
+
         val outSize = config.decodeOutMaxSizeOrFail(limit.toLong(), this)
 
         if (outSize > Int.MAX_VALUE.toLong()) {
@@ -105,9 +123,7 @@ private constructor(
 
     public companion object {
 
-        @JvmStatic
-        @InternalEncodingApi // might move this somewhere else... don't use.
-        public fun isLenientFalseEncodingException(): EncodingException {
+        internal fun isLenientFalseEncodingException(): EncodingException {
             return EncodingException("Spaces and new lines are forbidden when isLenient[false]")
         }
 

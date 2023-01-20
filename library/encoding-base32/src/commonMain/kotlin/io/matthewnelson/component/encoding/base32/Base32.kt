@@ -23,6 +23,11 @@
 
 package io.matthewnelson.component.encoding.base32
 
+import io.matthewnelson.encoding.builders.Base32Crockford
+import io.matthewnelson.encoding.builders.Base32Default
+import io.matthewnelson.encoding.builders.Base32Hex
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 import kotlin.native.concurrent.SharedImmutable
@@ -93,210 +98,61 @@ public sealed class Base32 {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
-    return toCharArray().decodeBase32ToArray(base32)
+    return when (base32) {
+        is Base32.Crockford -> {
+            decodeToByteArrayOrNull(Base32Crockford {
+                isLenient = true
+                encodeToLowercase = false
+                hyphenInterval = 0
+                checkByte(base32.checkByte?.char)
+            })
+        }
+        is Base32.Default -> {
+            decodeToByteArrayOrNull(Base32Default {
+                isLenient = true
+                acceptLowercase = false
+                encodeToLowercase = false
+                padEncoded = true
+            })
+        }
+        is Base32.Hex -> {
+            decodeToByteArrayOrNull(Base32Hex {
+                isLenient = true
+                acceptLowercase = false
+                encodeToLowercase = false
+                padEncoded = true
+            })
+        }
+    }
 }
 
 @JvmOverloads
 public fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
-    var limit: Int = size
-
-    // Check symbol if specified for Crockford
-    if (base32 is Base32.Crockford && base32.hasCheckSymbol) {
-        if (this.lastOrNull()?.uppercaseChar()?.code?.toByte() == base32.checkSymbol?.uppercaseChar()?.code?.toByte()) {
-            // disregard last char from decoding
-            limit--
-        } else {
-            return null
+    return when (base32) {
+        is Base32.Crockford -> {
+            decodeToByteArrayOrNull(Base32Crockford {
+                isLenient = true
+                encodeToLowercase = false
+                hyphenInterval = 0
+                checkByte(base32.checkByte?.char)
+            })
         }
-    }
-
-    // Disregard padding and/or whitespace from end of input
-    while (limit > 0) {
-        val c = this[limit - 1]
-        if (c != '\n' && c != '\r' && c != ' ' && c != '\t') {
-            if (base32 is Base32.Crockford) {
-                if (c != '-') {
-                    break
-                }
-            } else if (c != '=') {
-                break
-            }
+        is Base32.Default -> {
+            decodeToByteArrayOrNull(Base32Default {
+                isLenient = true
+                acceptLowercase = false
+                encodeToLowercase = false
+                padEncoded = true
+            })
         }
-        limit--
-    }
-
-    // Was all padding, whitespace, or otherwise ignorable characters
-    if (limit == 0) {
-        return ByteArray(0)
-    }
-
-    val out: ByteArray = ByteArray((limit * 5L / 8L).toInt())
-    var outCount: Int = 0
-    var inCount: Int = 0
-
-    var bitBuffer: Long = 0L
-    for (i in 0 until limit) {
-        val bits: Long = when (val c: Char = if (base32 is Base32.Crockford) this[i].uppercaseChar() else this[i]) {
-            in 'A'..'Z' -> {
-                when (base32) {
-                    is Base32.Crockford -> {
-                        when (c) {
-                            in 'A'..'H' -> {
-                                // char ASCII value
-                                //  A    65    10
-                                //  H    72    17 (ASCII - 55)
-                                c.code - 55L
-                            }
-                            'I', 'L' -> {
-                                // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
-
-                                // char ASCII value
-                                //  1    49    1 (ASCII - 48)
-                                '1'.code - 48L
-                            }
-                            'J', 'K' -> {
-                                // char ASCII value
-                                //  J    74    18
-                                //  K    75    19 (ASCII - 56)
-                                c.code - 56L
-                            }
-                            'M', 'N' -> {
-                                // char ASCII value
-                                //  M    77    20
-                                //  N    78    21 (ASCII - 57)
-                                c.code - 57L
-                            }
-                            'O' -> {
-                                // Crockford treats characters 'O' and 'o' as 0
-
-                                // char ASCII value
-                                //  0    48    0 (ASCII - 48)
-                                '0'.code - 48L
-                            }
-                            in 'P'..'T' -> {
-                                // char ASCII value
-                                //  P    80    22
-                                //  T    84    26 (ASCII - 58)
-                                c.code - 58L
-                            }
-                            'U' -> {
-                                // Crockford excludes 'U' and 'u'
-                                return null
-                            }
-                            else -> { // Remaining characters are V-Z
-                                // char ASCII value
-                                //  V    86    27
-                                //  Z    90    31 (ASCII - 59)
-                                c.code - 59L
-                            }
-                        }
-                    }
-                    is Base32.Default -> {
-                        // char ASCII value
-                        //  A    65    0
-                        //  Z    90    25 (ASCII - 65)
-                        c.code - 65L
-                    }
-                    is Base32.Hex -> {
-
-                        // base32Hex uses A-V only
-                        if (c in 'W'..'Z') {
-                            return null
-                        }
-
-                        // char ASCII value
-                        //  A    65    10
-                        //  V    86    31 (ASCII - 55)
-                        c.code - 55L
-                    }
-                }
-            }
-            in '0'..'9' -> {
-                when (base32) {
-                    is Base32.Default -> {
-
-                        // Default base32 uses 2-7 only
-                        if (c in '0'..'1' || c in '8'..'9') {
-                            return null
-                        }
-
-                        // char ASCII value
-                        //  2    50    26
-                        //  7    55    31 (ASCII - 24)
-                        c.code - 24L
-                    }
-                    is Base32.Crockford,
-                    is Base32.Hex -> {
-                        // char ASCII value
-                        //  0    48    0
-                        //  9    57    9 (ASCII - 48)
-                        c.code - 48L
-                    }
-                }
-            }
-            '\n', '\r', ' ', '\t' -> {
-                continue
-            }
-            else -> {
-                // Crockford allows insertion of hyphens which we ignore when decoding
-                if (base32 is Base32.Crockford && c == '-') {
-                    continue
-                }
-
-                return null
-            }
+        is Base32.Hex -> {
+            decodeToByteArrayOrNull(Base32Hex {
+                isLenient = true
+                acceptLowercase = false
+                encodeToLowercase = false
+                padEncoded = true
+            })
         }
-
-        // Append this char's 5 bits to the buffer
-        bitBuffer = bitBuffer shl 5 or bits
-
-        // For every 8 chars of input, we accumulate 40 bits of output data. Emit 5 bytes
-        inCount++
-        if (inCount % 8 == 0) {
-            out[outCount++] = (bitBuffer shr 32).toByte()
-            out[outCount++] = (bitBuffer shr 24).toByte()
-            out[outCount++] = (bitBuffer shr 16).toByte()
-            out[outCount++] = (bitBuffer shr  8).toByte()
-            out[outCount++] = (bitBuffer       ).toByte()
-        }
-    }
-
-    when (inCount % 8) {
-        0 -> {}
-        1, 3, 6 -> {
-            // 5*1 = 5 bits.  Truncated, fail.
-            // 5*3 = 15 bits. Truncated, fail.
-            // 5*6 = 30 bits. Truncated, fail.
-            return null
-        }
-        2 -> { // 5*2 = 10 bits. Drop 2
-            bitBuffer = bitBuffer shr 2
-            out[outCount++] = bitBuffer.toByte()
-        }
-        4 -> { // 5*4 = 20 bits. Drop 4
-            bitBuffer = bitBuffer shr 4
-            out[outCount++] = (bitBuffer shr 8).toByte()
-            out[outCount++] = (bitBuffer      ).toByte()
-        }
-        5 -> { // 5*5 = 25 bits. Drop 1
-            bitBuffer = bitBuffer shr 1
-            out[outCount++] = (bitBuffer shr 16).toByte()
-            out[outCount++] = (bitBuffer shr  8).toByte()
-            out[outCount++] = (bitBuffer       ).toByte()
-        }
-        7 -> { // 5*7 = 35 bits. Drop 3
-            bitBuffer = bitBuffer shr 3
-            out[outCount++] = (bitBuffer shr 24).toByte()
-            out[outCount++] = (bitBuffer shr 16).toByte()
-            out[outCount++] = (bitBuffer shr  8).toByte()
-            out[outCount++] = (bitBuffer       ).toByte()
-        }
-    }
-
-    return if (outCount == out.size) {
-        out
-    } else {
-        out.copyOf(outCount)
     }
 }
 
