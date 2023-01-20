@@ -19,6 +19,7 @@ import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
+import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
@@ -55,6 +56,7 @@ private constructor(
      *         // retrieve character from input
      *     }
      * */
+    @JvmField
     public val lastRelevantCharacter: Int
 
     private var _decodeOutMaxSize: Int = 0

@@ -109,10 +109,10 @@ public abstract interface annotation class io/matthewnelson/encoding/core/intern
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public static final field Companion Lio/matthewnelson/encoding/core/util/DecoderInput$Companion;
+	public final field lastRelevantCharacter I
 	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun decodeOutMaxSize ()I
 	public final fun get (I)C
-	public final fun getLastRelevantCharacter ()I
 	public static final fun toDecoderInput (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 	public static final fun toDecoderInput ([BLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 	public static final fun toDecoderInput ([CLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
