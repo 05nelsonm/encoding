@@ -9,7 +9,7 @@ public final class io/matthewnelson/component/encoding/base16/Base16Kt {
 public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/encoding/core/EncoderDecoder {
 	public static final field CHARS Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base16/Base16$Companion;
-	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Configuration;)V
+	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
 	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
 	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
@@ -17,21 +17,28 @@ public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/en
 public final class io/matthewnelson/encoding/base16/Base16$Companion {
 }
 
-public final class io/matthewnelson/encoding/base16/Base16$Configuration : io/matthewnelson/encoding/core/EncoderDecoder$Configuration {
+public final class io/matthewnelson/encoding/base16/Base16$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field acceptLowercase Z
 	public final field encodeToLowercase Z
-	public fun <init> (ZZZ)V
+	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
-	public fun encodeOutSize (I)I
 }
 
-public final class io/matthewnelson/encoding/builders/Base16Builder {
+public final class io/matthewnelson/encoding/builders/Base16ConfigBuilder {
 	public field acceptLowercase Z
 	public field encodeToLowercase Z
 	public field isLenient Z
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
+	public final fun build ()Lio/matthewnelson/encoding/base16/Base16$Config;
+	public final fun strict ()Lio/matthewnelson/encoding/builders/Base16ConfigBuilder;
 }
 
 public final class io/matthewnelson/encoding/builders/Base16Kt {
+	public static final fun Base16 ()Lio/matthewnelson/encoding/base16/Base16;
+	public static final fun Base16 (Lio/matthewnelson/encoding/base16/Base16$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 	public static final fun Base16 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
+	public static final fun Base16 (Z)Lio/matthewnelson/encoding/base16/Base16;
+	public static synthetic fun Base16$default (ZILjava/lang/Object;)Lio/matthewnelson/encoding/base16/Base16;
 }
 
