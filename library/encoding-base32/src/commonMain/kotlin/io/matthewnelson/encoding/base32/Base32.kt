@@ -19,12 +19,10 @@ package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
+import io.matthewnelson.encoding.core.internal.BitBuffer
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.byte
-import io.matthewnelson.encoding.core.util.char
-import io.matthewnelson.encoding.core.util.isSpaceOrNewLine
+import io.matthewnelson.encoding.core.util.*
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -92,14 +90,16 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
                 var outSize = encodedSize
 
-                if (input != null && checkByte != null) {
-                    // Check last character
+                val checkSymbol = checkSymbol?.uppercaseChar()
+
+                if (input != null && checkSymbol != null) {
                     // Always uppercase it b/c little u and U should
-                    // be decoded the same.
+                    // be decoded the same for Crockford.
                     val actual = input[encodedSize.toInt() - 1].uppercaseChar()
-                    if (actual != checkByte.char.uppercaseChar()) {
+
+                    if (actual != checkSymbol) {
                         throw EncodingException(
-                            "checkSymbol[$actual] for encoded did not match expected[${checkByte.char}]"
+                            "checkSymbol[$actual] for encoded did not match expected[${checkSymbol}]"
                         )
                     } else {
                         outSize--
@@ -173,8 +173,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
-                private var count = 0
-                private var bitBuffer = 0L
+
+                private val buffer = Base32BitBuffer(out)
                 private var isCheckByteSet = false
 
                 @Throws(EncodingException::class)
@@ -253,8 +253,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                             //  Z    90    31 (ASCII - 59)
                             char.code - 59L
                         }
-                        // We don't care about little u b/c everything
-                        // is being uppercased
+                        // We don't care about little u b/c
+                        // everything is being uppercased.
                         '*', '~', '$', '=', 'U'/*, 'u'*/ -> {
                             when (val checkSymbol = (config as Config).checkByte?.char?.uppercaseChar()) {
                                 char -> {
@@ -278,56 +278,13 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         }
                     }
 
-                    // Append this char's 5 bits to the buffer
-                    bitBuffer = bitBuffer shl 5 or bits
-
-                    // For every 8 chars of input, we accumulate 40 bits of output data. Emit 5 bytes
-                    if (++count % 8 == 0) {
-                        out.invoke((bitBuffer shr 32).toByte())
-                        out.invoke((bitBuffer shr 24).toByte())
-                        out.invoke((bitBuffer shr 16).toByte())
-                        out.invoke((bitBuffer shr  8).toByte())
-                        out.invoke((bitBuffer       ).toByte())
-                        count = 0
-                        bitBuffer = 0
-                    }
+                    buffer.update(bits)
                 }
 
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
-                    when (count % 8) {
-                        0 -> {}
-                        1, 3, 6 -> {
-                            // 5*1 = 5 bits.  Truncated, fail.
-                            // 5*3 = 15 bits. Truncated, fail.
-                            // 5*6 = 30 bits. Truncated, fail.
-                            throw EncodingException("Truncated input. Count[$count] should have been 2, 4, 5, or 7")
-                        }
-                        2 -> { // 5*2 = 10 bits. Drop 2
-                            bitBuffer = bitBuffer shr 2
-                            out.invoke((bitBuffer      ).toByte())
-                        }
-                        4 -> { // 5*4 = 20 bits. Drop 4
-                            bitBuffer = bitBuffer shr 4
-                            out.invoke((bitBuffer shr 8).toByte())
-                            out.invoke((bitBuffer      ).toByte())
-                        }
-                        5 -> { // 5*5 = 25 bits. Drop 1
-                            bitBuffer = bitBuffer shr 1
-                            out.invoke((bitBuffer shr 16).toByte())
-                            out.invoke((bitBuffer shr  8).toByte())
-                            out.invoke((bitBuffer       ).toByte())
-                        }
-                        7 -> { // 5*7 = 35 bits. Drop 3
-                            bitBuffer = bitBuffer shr 3
-                            out.invoke((bitBuffer shr 24).toByte())
-                            out.invoke((bitBuffer shr 16).toByte())
-                            out.invoke((bitBuffer shr  8).toByte())
-                            out.invoke((bitBuffer       ).toByte())
-                        }
-                    }
+                    buffer.doFinal()
                 }
-
             }
         }
 
@@ -618,5 +575,61 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
             return outSize
         }
+    }
+
+    @OptIn(InternalEncodingApi::class)
+    private inner class Base32BitBuffer(out: OutFeed): BitBuffer<Long>(
+        blockSize = 8,
+        onUpdate = { buffer, bits ->
+            // Append this char's 5 bits to the buffer
+            buffer shl 5 or bits
+        },
+        onOutput = { buffer ->
+            // For every 8 chars of input, we accumulate 40 bits of output data. Emit 5 bytes
+            out.invoke((buffer shr 32).toByte())
+            out.invoke((buffer shr 24).toByte())
+            out.invoke((buffer shr 16).toByte())
+            out.invoke((buffer shr  8).toByte())
+            out.invoke((buffer       ).toByte())
+        },
+        doFinal = { count, buf ->
+            var buffer = buf
+
+            when (count % 8) {
+                0 -> {}
+                1, 3, 6 -> {
+                    // 5*1 = 5 bits.  Truncated, fail.
+                    // 5*3 = 15 bits. Truncated, fail.
+                    // 5*6 = 30 bits. Truncated, fail.
+                    throw EncodingException("Truncated input. Count[$count] should have been 2, 4, 5, or 7")
+                }
+                2 -> { // 5*2 = 10 bits. Drop 2
+                    buffer = buffer shr 2
+                    out.invoke((buffer      ).toByte())
+                }
+                4 -> { // 5*4 = 20 bits. Drop 4
+                    buffer = buffer shr 4
+                    out.invoke((buffer shr 8).toByte())
+                    out.invoke((buffer      ).toByte())
+                }
+                5 -> { // 5*5 = 25 bits. Drop 1
+                    buffer = buffer shr 1
+                    out.invoke((buffer shr 16).toByte())
+                    out.invoke((buffer shr  8).toByte())
+                    out.invoke((buffer       ).toByte())
+                }
+                7 -> { // 5*7 = 35 bits. Drop 3
+                    buffer = buffer shr 3
+                    out.invoke((buffer shr 24).toByte())
+                    out.invoke((buffer shr 16).toByte())
+                    out.invoke((buffer shr  8).toByte())
+                    out.invoke((buffer       ).toByte())
+                }
+            }
+        }
+    ) {
+        override var bitBuffer: Long = 0L
+        override fun resetBitBuffer() { bitBuffer = 0L }
+        override fun definitelyDoNotUseThisClassItWillBeChanging() {}
     }
 }
