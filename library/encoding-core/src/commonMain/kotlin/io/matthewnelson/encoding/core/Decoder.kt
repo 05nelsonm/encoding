@@ -17,7 +17,7 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.core.internal.decode
 import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toDecoderInput
 import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic
@@ -143,25 +143,6 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
                 decodeToArray(decoder)
             } catch (_: EncodingException) {
                 null
-            }
-        }
-
-        @Throws(EncodingException::class)
-        @OptIn(ExperimentalEncodingApi::class)
-        private fun Decoder.decode(input: DecoderInput, update: (Decoder.Feed) -> Unit): ByteArray {
-            val ba = ByteArray(input.decodeOutMaxSize)
-
-            var i = 0
-            newDecoderFeed { byte ->
-                ba[i++] = byte
-            }.use { feed ->
-                update.invoke(feed)
-            }
-
-            return if (i == input.decodeOutMaxSize) {
-                ba
-            } else {
-                ba.copyOf(i)
             }
         }
     }

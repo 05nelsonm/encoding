@@ -59,10 +59,10 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field isLenient Z
 	public final field paddingByte Ljava/lang/Byte;
 	public fun <init> (ZLjava/lang/Byte;)V
-	public final fun decodeOutMaxSizeOrFail (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
-	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
-	public final fun encodeOutSize (I)I
-	protected abstract fun encodeOutSizeProtected (I)I
+	public final fun decodeOutMaxSizeOrFail (JLio/matthewnelson/encoding/core/util/DecoderInput;)J
+	protected abstract fun decodeOutMaxSizeOrFailProtected (JLio/matthewnelson/encoding/core/util/DecoderInput;)J
+	public final fun encodeOutSize (J)J
+	protected abstract fun encodeOutSizeProtected (J)J
 	public final fun equals (Ljava/lang/Object;)Z
 	public final fun hashCode ()I
 	public final fun toString ()Ljava/lang/String;

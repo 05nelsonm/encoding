@@ -17,6 +17,7 @@ package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -93,7 +94,13 @@ private constructor(
             break
         }
 
-        _decodeOutMaxSize = config.decodeOutMaxSizeOrFail(limit, this)
+        val outSize = config.decodeOutMaxSizeOrFail(limit.toLong(), this)
+
+        if (outSize > Int.MAX_VALUE.toLong()) {
+            throw outSizeExceedsIntMaxEncodingException()
+        }
+
+        _decodeOutMaxSize = outSize.toInt()
     }
 
     public companion object {
@@ -102,6 +109,12 @@ private constructor(
         @InternalEncodingApi
         public fun isLenientFalseEncodingException(): EncodingException {
             return EncodingException("Spaces and new lines are forbidden when isLenient[false]")
+        }
+
+        @JvmStatic
+        @InternalEncodingApi
+        public fun outSizeExceedsIntMaxEncodingException(): EncodingSizeException {
+            return EncodingSizeException("Size of encoded data would exceed the maximum value of ${Int.MAX_VALUE}")
         }
 
         @JvmStatic

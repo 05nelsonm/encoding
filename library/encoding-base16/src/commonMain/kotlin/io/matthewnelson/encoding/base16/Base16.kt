@@ -73,8 +73,19 @@ public class Base16(config: Config): EncoderDecoder(config) {
         public val encodeToLowercase: Boolean,
     ): EncoderDecoder.Config(isLenient, paddingByte = null) {
 
-        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int = encodedSize / 2
-        override fun encodeOutSizeProtected(unEncodedSize: Int): Int = unEncodedSize * 2
+        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
+            return encodedSize / 2L
+        }
+        @Throws(EncodingSizeException::class)
+        override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
+            if (unEncodedSize > (Long.MAX_VALUE / 2)) {
+                throw EncodingSizeException(
+                    "unEncodedSize[$unEncodedSize] would exceed the maximum[${Long.MAX_VALUE}] when encoded"
+                )
+            }
+
+            return unEncodedSize * 2L
+        }
 
         override fun toStringAddSettings(sb: StringBuilder) {
             with(sb) {
@@ -87,6 +98,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         }
 
         internal companion object {
+
             @JvmSynthetic
             internal fun from(builder: Base16ConfigBuilder): Config {
                 return Config(

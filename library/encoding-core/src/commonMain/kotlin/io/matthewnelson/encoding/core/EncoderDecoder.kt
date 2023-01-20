@@ -75,19 +75,19 @@ constructor(config: Config): Encoder(config) {
          *   the size, or [unEncodedSize] was negative.
          * */
         @Throws(EncodingSizeException::class)
-        public fun encodeOutSize(unEncodedSize: Int): Int {
-            if (unEncodedSize < 0) {
+        public fun encodeOutSize(unEncodedSize: Long): Long {
+            if (unEncodedSize < 0L) {
                 throw EncodingSizeException("unEncodedSize cannot be negative")
             }
 
             // return early
-            if (unEncodedSize == 0) return 0
+            if (unEncodedSize == 0L) return 0L
 
-            val size = encodeOutSizeProtected(unEncodedSize)
-            if (size < 0) {
+            val outSize = encodeOutSizeProtected(unEncodedSize)
+            if (outSize < 0L) {
                 throw EncodingSizeException("Calculated size was negative")
             }
-            return size
+            return outSize
         }
 
         /**
@@ -108,32 +108,32 @@ constructor(config: Config): Encoder(config) {
          *   of [input] (if it has one) failed.
          * */
         @Throws(EncodingException::class)
-        public fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int {
-            if (encodedSize < 0) {
+        public fun decodeOutMaxSizeOrFail(encodedSize: Long, input: DecoderInput?): Long {
+            if (encodedSize < 0L) {
                 throw EncodingSizeException("encodedSize cannot be negative")
             }
 
             // return early
-            if (encodedSize == 0) return 0
+            if (encodedSize == 0L) return 0L
 
-            val maxSize = decodeOutMaxSizeOrFailProtected(encodedSize, input)
-            if (maxSize < 0) {
+            val outSize = decodeOutMaxSizeOrFailProtected(encodedSize, input)
+            if (outSize < 0L) {
                 throw EncodingSizeException("Calculated size was negative")
             }
-            return maxSize
+            return outSize
         }
 
         /**
          * Will only receive values greater than 0.
          * */
         @Throws(EncodingSizeException::class)
-        protected abstract fun encodeOutSizeProtected(unEncodedSize: Int): Int
+        protected abstract fun encodeOutSizeProtected(unEncodedSize: Long): Long
 
         /**
          * Will only receive values greater than 0.
          * */
         @Throws(EncodingException::class)
-        protected abstract fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int
+        protected abstract fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long
 
         /**
          * Will be called whenever [toString] is invoked, allowing

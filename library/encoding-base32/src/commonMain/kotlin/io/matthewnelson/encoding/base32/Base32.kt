@@ -91,12 +91,12 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val checkSymbol: Char? get() = checkByte?.char
 
             @Throws(EncodingException::class)
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int {
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
                 var outSize = encodedSize
 
                 if (input != null && checkByte != null) {
                     // Check last character
-                    val actual = input[encodedSize - 1]
+                    val actual = input[encodedSize.toInt() - 1]
                     if (actual != checkByte.char) {
                         throw EncodingException(
                             "checkSymbol[$actual] for encoded did not match expected[${checkByte.char}]"
@@ -109,7 +109,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 return decodeOutMaxSize(outSize)
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
+            override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
                 var outSize = encodedOutSize(unEncodedSize, willBePadded = false)
 
                 if (hyphenInterval > 0) {
@@ -251,11 +251,11 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int {
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
                 return decodeOutMaxSize(encodedSize)
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
+            override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
                 return encodedOutSize(unEncodedSize, padEncoded)
             }
 
@@ -375,11 +375,11 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput?): Int {
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
                 return decodeOutMaxSize(encodedSize)
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Int): Int {
+            override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
                 return encodedOutSize(unEncodedSize, padEncoded)
             }
 
@@ -455,22 +455,22 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
     private companion object {
 
         @JvmStatic
-        private fun decodeOutMaxSize(encodedSize: Int): Int = (encodedSize * 5L / 8L).toInt()
+        private fun decodeOutMaxSize(encodedSize: Long): Long = (encodedSize * 5L / 8L)
 
         @JvmStatic
         private fun encodedOutSize(
-            unEncodedSize: Int,
+            unEncodedSize: Long,
             willBePadded: Boolean,
-        ): Int {
-            var outSize = (unEncodedSize + 4) / 5 * 8
+        ): Long {
+            var outSize = (unEncodedSize + 4L) / 5L * 8L
             if (willBePadded) return outSize
 
             when (unEncodedSize - (unEncodedSize - unEncodedSize % 5)) {
-                0 -> { /* no-op */ }
-                1 -> outSize -= 6
-                2 -> outSize -= 4
-                3 -> outSize -= 3
-                4 -> outSize -= 1
+                0L -> { /* no-op */ }
+                1L -> outSize -= 6L
+                2L -> outSize -= 4L
+                3L -> outSize -= 3L
+                4L -> outSize -= 1L
             }
 
             return outSize
