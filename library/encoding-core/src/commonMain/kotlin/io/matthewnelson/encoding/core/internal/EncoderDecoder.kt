@@ -80,3 +80,17 @@ internal inline fun Encoder.encode(
         }
     }
 }
+
+/**
+ * Helper for checking if a character is a space or
+ * new line.
+ *
+ * @return true if the character matches '\n', '\r', ' ', or '\t'
+ * */
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Char.isSpaceOrNewLine(): Boolean {
+    return when(this) {
+        '\n', '\r', ' ', '\t' -> true
+        else -> false
+    }
+}

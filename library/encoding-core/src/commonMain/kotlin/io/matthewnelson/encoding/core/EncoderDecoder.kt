@@ -17,9 +17,9 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
-import io.matthewnelson.encoding.core.util.isSpaceOrNewLine
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
@@ -205,10 +205,12 @@ constructor(config: Config): Encoder(config) {
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
      * */
-    public sealed class Feed {
+    public sealed class Feed(private val config: Config) {
         @get:JvmName("isClosed")
         public var isClosed: Boolean = false
             private set
+
+        private var isPaddingSet = false
 
         // Only throws exception if decoding
         @Throws(EncodingException::class)
@@ -230,6 +232,32 @@ constructor(config: Config): Encoder(config) {
             if (isClosed) throw closedException()
 
             try {
+                if (this is Decoder.Feed) {
+                    if (input.char.isSpaceOrNewLine()) {
+                        if (config.isLenient) {
+                            return
+                        } else {
+                            throw DecoderInput.isLenientFalseEncodingException()
+                        }
+                    }
+
+                    // if paddingByte is null, it will never equal
+                    // input, thus never set isPaddingSet
+                    if (config.paddingByte == input) {
+                        isPaddingSet = true
+                        return
+                    }
+
+                    if (isPaddingSet) {
+                        // Trying to decode something else that is not
+                        // a space, new line, or padding. Fail
+                        throw EncodingException(
+                            "Padding[${config.paddingByte?.char}] was previously passed, " +
+                            "but decoding operations are still being attempted."
+                        )
+                    }
+                }
+
                 updateProtected(input)
             } catch (t: Throwable) {
                 close()

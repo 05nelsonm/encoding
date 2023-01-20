@@ -59,7 +59,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed() {
+    constructor(): EncoderDecoder.Feed(config) {
         final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
     }
 

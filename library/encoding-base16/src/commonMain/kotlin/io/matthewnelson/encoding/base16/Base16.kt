@@ -23,7 +23,6 @@ import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
-import io.matthewnelson.encoding.core.util.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.lowercaseCharByte
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
@@ -151,14 +150,6 @@ public class Base16(config: Config): EncoderDecoder(config) {
                     input.char
                 }
 
-                if (char.isSpaceOrNewLine()) {
-                    if (config.isLenient) {
-                        return
-                    } else {
-                        throw DecoderInput.isLenientFalseEncodingException()
-                    }
-                }
-
                 val bits: Int = when (char) {
                     in '0'..'9' -> {
                         // char ASCII value
@@ -173,9 +164,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
                         char.code - 55
                     }
                     else -> {
-                        throw EncodingException(
-                            "Char[${input.char}] is not a valid Base16 character"
-                        )
+                        throw EncodingException("Char[${input.char}] is not a valid Base16 character")
                     }
                 }
 

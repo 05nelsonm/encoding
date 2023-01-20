@@ -184,16 +184,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     // everything that comes in.
                     val char = input.char.uppercaseChar()
 
-                    if (char.isSpaceOrNewLine()) {
-                        if (config.isLenient) {
-                            return
-                        } else {
-                            throw DecoderInput.isLenientFalseEncodingException()
-                        }
-                    }
-
-                    // Do after space/line/hyphen check in order to simply
-                    // pass over them until the next relevant byte comes in
                     if (isCheckByteSet) {
                         val symbol = (config as Crockford.Config).checkSymbol
                         // If the set checkByte was not intended, it's only a valid
@@ -399,7 +389,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             return object : Decoder.Feed() {
 
                 private val buffer = Base32BitBuffer(out)
-                private var isPaddingSet = false
 
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
@@ -407,14 +396,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         input.char.uppercaseChar()
                     } else {
                         input.char
-                    }
-
-                    if (char.isSpaceOrNewLine()) {
-                        if (config.isLenient) {
-                            return
-                        } else {
-                            throw DecoderInput.isLenientFalseEncodingException()
-                        }
                     }
 
                     val bits: Long = when (char) {
@@ -430,22 +411,9 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                             //  Z    90    25 (ASCII - 65)
                             char.code - 65L
                         }
-                        config.paddingByte?.char -> {
-                            // Skip over padding
-                            isPaddingSet = true
-                            return
-                        }
                         else -> {
                             throw EncodingException("Char[${input.char}] is not a valid Base32 Default character")
                         }
-                    }
-
-                    if (isPaddingSet) {
-                        // Trying to decode another non-padding character, after
-                        // having already passed padding. e.g. ABC=DEF===
-                        throw EncodingException(
-                            "Padding[${config.paddingByte?.char}] was previously seen, but decoding is still being attempted."
-                        )
                     }
 
                     buffer.update(bits)
@@ -569,7 +537,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             return object : Decoder.Feed() {
 
                 private val buffer = Base32BitBuffer(out)
-                private var isPaddingSet = false
 
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
@@ -577,14 +544,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         input.char.uppercaseChar()
                     } else {
                         input.char
-                    }
-
-                    if (char.isSpaceOrNewLine()) {
-                        if (config.isLenient) {
-                            return
-                        } else {
-                            throw DecoderInput.isLenientFalseEncodingException()
-                        }
                     }
 
                     val bits: Long = when (char) {
@@ -600,22 +559,9 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                             //  V    86    31 (ASCII - 55)
                             char.code - 55L
                         }
-                        config.paddingByte?.char -> {
-                            // Skip over padding
-                            isPaddingSet = true
-                            return
-                        }
                         else -> {
                             throw EncodingException("Char[${input.char}] is not a valid Base32 Hex character")
                         }
-                    }
-
-                    if (isPaddingSet) {
-                        // Trying to decode another non-padding character, after
-                        // having already passed padding. e.g. ABC=DEF===
-                        throw EncodingException(
-                            "Padding[${config.paddingByte?.char}] was previously seen, but decoding is still being attempted."
-                        )
                     }
 
                     buffer.update(bits)

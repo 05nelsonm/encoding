@@ -19,6 +19,7 @@ import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
+import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -122,9 +123,7 @@ private constructor(
 
     public companion object {
 
-        @JvmStatic
-        @InternalEncodingApi // might move this somewhere else... don't use.
-        public fun isLenientFalseEncodingException(): EncodingException {
+        internal fun isLenientFalseEncodingException(): EncodingException {
             return EncodingException("Spaces and new lines are forbidden when isLenient[false]")
         }
 
