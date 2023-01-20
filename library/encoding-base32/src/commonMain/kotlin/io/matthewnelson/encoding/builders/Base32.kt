@@ -199,10 +199,10 @@ public class Base32CrockfordConfigBuilder {
      *     hyphenInterval = 4
      *     // 91JP-RV3F-41BP-YWKC-CGGG
      *
-     * Enable by setting to a value greater than 0.
+     * Enable by setting to a value between 1 and 127.
      * */
     @JvmField
-    public var hyphenInterval: Short = 0
+    public var hyphenInterval: Byte = 0
 
     @get:JvmName("checkByte")
     public var checkByte: Byte? = null

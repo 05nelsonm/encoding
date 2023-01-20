@@ -82,7 +82,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             @JvmField
             public val encodeToLowercase: Boolean,
             @JvmField
-            public val hyphenInterval: Short,
+            public val hyphenInterval: Byte,
             @JvmField
             public val checkByte: Byte?,
         ): EncoderDecoder.Config(isLenient, paddingByte = null) {
