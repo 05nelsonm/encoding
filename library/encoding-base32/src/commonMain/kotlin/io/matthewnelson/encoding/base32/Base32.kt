@@ -91,10 +91,10 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val checkSymbol: Char? get() = checkByte?.char
 
             @Throws(EncodingException::class)
-            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
+            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int {
                 var outSize = encodedSize
 
-                if (checkByte != null) {
+                if (input != null && checkByte != null) {
                     // Check last character
                     val actual = input[encodedSize - 1]
                     if (actual != checkByte.char) {
@@ -251,7 +251,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
+            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int {
                 return decodeOutMaxSize(encodedSize)
             }
 
@@ -375,7 +375,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int {
+            override fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int {
                 return decodeOutMaxSize(encodedSize)
             }
 

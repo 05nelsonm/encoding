@@ -81,9 +81,12 @@ constructor(config: Config): Encoder(config) {
          * @param [encodedSize] size of the data being decoded.
          * @param [input] Provided for additional analysis in the event
          *   the decoding specification has checks to fail early.
+         * @throws [EncodingException] if implementation's check of [input]
+         *   failed (if it has one).
+         * @sample [io.matthewnelson.encoding.base32.Base32.Crockford.Config.decodeOutMaxSizeOrFail]
          * */
         @Throws(EncodingException::class)
-        public abstract fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput): Int
+        public abstract fun decodeOutMaxSizeOrFail(encodedSize: Int, input: DecoderInput?): Int
 
         protected abstract fun encodeOutSizeProtected(unEncodedSize: Int): Int
 
