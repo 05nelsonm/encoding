@@ -21,7 +21,7 @@ import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.internal.BitBuffer
+import io.matthewnelson.encoding.core.internal.buffer.DecodingBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
@@ -139,7 +139,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
     override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
         return object : Decoder.Feed() {
 
-            private val buffer = DecodingBuffer(out)
+            private val buffer = Base16DecodingBuffer(out)
 
             @Throws(EncodingException::class)
             override fun updateProtected(input: Byte) {
@@ -179,7 +179,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
 
     override fun name(): String = "Base16"
 
-    private inner class DecodingBuffer(out: OutFeed): BitBuffer<Int>(
+    private inner class Base16DecodingBuffer(out: OutFeed): DecodingBuffer.TypeInt(
         blockSize = 2,
         update = { buffer, bits ->
             buffer shl 4 or bits
@@ -187,7 +187,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         flush = { buffer ->
             out.invoke(buffer.toByte())
         },
-        finalize = { count, blockSize, _ ->
+        finalize = { count, blockSize, _ , _->
             when (count % blockSize) {
                 0 -> {}
                 else -> {
@@ -196,8 +196,5 @@ public class Base16(config: Config): EncoderDecoder(config) {
                 }
             }
         }
-    ) {
-        override var bitBuffer: Int = 0
-        override fun reset() { bitBuffer = 0 }
-    }
+    )
 }
