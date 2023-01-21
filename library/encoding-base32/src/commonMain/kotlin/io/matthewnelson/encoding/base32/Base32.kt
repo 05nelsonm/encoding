@@ -195,6 +195,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
         }
 
+        @ExperimentalEncodingApi
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
@@ -302,6 +303,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             }
         }
 
+        @ExperimentalEncodingApi
         override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
             return object : Encoder.Feed() {
 
@@ -447,6 +449,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
         }
 
+        @ExperimentalEncodingApi
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
@@ -488,6 +491,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             }
         }
 
+        @ExperimentalEncodingApi
         override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
             return object : Encoder.Feed() {
 
@@ -610,6 +614,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
         }
 
+        @ExperimentalEncodingApi
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
@@ -651,6 +656,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             }
         }
 
+        @ExperimentalEncodingApi
         override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
             return object : Encoder.Feed() {
 
