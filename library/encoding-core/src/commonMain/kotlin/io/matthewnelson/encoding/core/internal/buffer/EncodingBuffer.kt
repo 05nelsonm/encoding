@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.encoding.core.internal.buffer
 
 import io.matthewnelson.encoding.core.internal.Internal
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 
+/**
+ * A [Buffer] specifically for encoding things, which includes
+ * a [byteBuffer] for when [finalize] is called.
+ *
+ * @see [TypeInt]
+ * @see [TypeLong]
+ * @see [Buffer]
+ * */
 @InternalEncodingApi
 public sealed class EncodingBuffer<T: Number>(
     blockSize: Int,
@@ -26,18 +36,27 @@ public sealed class EncodingBuffer<T: Number>(
     finalize: Finalize<T, ByteArray>,
 ): Buffer<T, ByteArray>(blockSize, update, flush, finalize) {
 
-    protected abstract fun toBits(byte: Byte): T
-
     private val byteBuffer = ByteArray(blockSize)
 
-    protected final override fun byteBuffer(internal: Internal): ByteArray = byteBuffer
-    protected final override fun updateBits(bits: T) {}
+    /**
+     * Convert the [byte] from [update] to bits which are
+     * used to [updateBits].
+     * */
+    protected abstract fun toBits(byte: Byte): T
 
+    /**
+     * Update all the things with a new [byte].
+     * */
     public fun update(byte: Byte) {
         byteBuffer[count] = byte
         super.updateBits(toBits(byte))
     }
 
+    /**
+     * An [EncodingBuffer] that uses [kotlin.Int].
+     *
+     * @see [Buffer]
+     * */
     public abstract class TypeInt(
         blockSize: Int,
         update: Update<Int>,
@@ -50,6 +69,12 @@ public sealed class EncodingBuffer<T: Number>(
         protected final override fun reset(internal: Internal) { bitBuffer = 0 }
     }
 
+    /**
+     * An [EncodingBuffer] that uses [kotlin.Long].
+     *
+     * @see [Buffer]
+     * @sample [io.matthewnelson.encoding.base32.Base32.Base32EncodingBuffer]
+     * */
     public abstract class TypeLong(
         blockSize: Int,
         update: Update<Long>,
@@ -61,4 +86,7 @@ public sealed class EncodingBuffer<T: Number>(
         protected final override fun bitBuffer(internal: Internal, bits: Long) { bitBuffer = bits }
         protected final override fun reset(internal: Internal) { bitBuffer = 0L }
     }
+
+    protected final override fun byteBuffer(internal: Internal): ByteArray = byteBuffer
+    protected final override fun updateBits(bits: T) {}
 }

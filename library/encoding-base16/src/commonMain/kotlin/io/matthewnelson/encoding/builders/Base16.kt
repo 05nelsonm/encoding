@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.encoding.builders
 
 import io.matthewnelson.encoding.base16.Base16

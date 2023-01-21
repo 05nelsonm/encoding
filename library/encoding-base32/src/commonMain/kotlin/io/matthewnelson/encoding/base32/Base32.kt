@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("MemberVisibilityCanBePrivate", "RemoveRedundantQualifierName", "SpellCheckingInspection")
+@file:Suppress("RemoveRedundantQualifierName", "SpellCheckingInspection")
 
 package io.matthewnelson.encoding.base32
 
+import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize
+import io.matthewnelson.encoding.base32.internal.encodeOutSize
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
+import io.matthewnelson.encoding.base32.internal.toBits
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
@@ -26,7 +29,6 @@ import io.matthewnelson.encoding.core.util.*
 import io.matthewnelson.encoding.core.internal.buffer.DecodingBuffer
 import io.matthewnelson.encoding.core.internal.buffer.EncodingBuffer
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -127,11 +129,11 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     }
                 }
 
-                return decodeOutMaxSize(outSize)
+                return outSize.decodeOutMaxSize()
             }
 
             override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-                var outSize = encodedOutSize(unEncodedSize, willBePadded = false)
+                var outSize = unEncodedSize.encodeOutSize(willBePadded = false)
 
                 // checkByte will be appended if present
                 if (checkSymbol != null) {
@@ -401,11 +403,11 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
             override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
-                return decodeOutMaxSize(encodedSize)
+                return encodedSize.decodeOutMaxSize()
             }
 
             override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-                return encodedOutSize(unEncodedSize, padEncoded)
+                return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
             }
 
             override fun toStringAddSettings(sb: StringBuilder) {
@@ -564,11 +566,11 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
             override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
-                return decodeOutMaxSize(encodedSize)
+                return encodedSize.decodeOutMaxSize()
             }
 
             override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-                return encodedOutSize(unEncodedSize, padEncoded)
+                return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
             }
 
             override fun toStringAddSettings(sb: StringBuilder) {
@@ -677,34 +679,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
 
         override fun name(): String = "Base32.Hex"
-    }
-
-    private companion object {
-
-        @JvmStatic
-        private fun decodeOutMaxSize(encodedSize: Long): Long = (encodedSize * 5L / 8L)
-
-        @JvmStatic
-        private fun encodedOutSize(
-            unEncodedSize: Long,
-            willBePadded: Boolean,
-        ): Long {
-            var outSize: Long = ((unEncodedSize + 4L) / 5L) * 8L
-            if (willBePadded) return outSize
-
-            when (unEncodedSize - (unEncodedSize - unEncodedSize % 5)) {
-                0L -> { /* no-op */ }
-                1L -> outSize -= 6L
-                2L -> outSize -= 4L
-                3L -> outSize -= 3L
-                4L -> outSize -= 1L
-            }
-
-            return outSize
-        }
-
-        @JvmStatic
-        private fun Byte.toBits(): Long = if (this < 0) this + 256L else toLong()
     }
 
     private inner class Base32EncodingBuffer(

@@ -13,19 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("KotlinRedundantDiagnosticSuppress")
+
 package io.matthewnelson.encoding.core.internal
 
-import kotlin.jvm.JvmSynthetic
+import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.core.EncodingException
 
 /**
- * Something to pass as an argument to public
- * functions which only this module can access.
+ * Helper for checking if a character is a space or
+ * new line.
+ *
+ * @return true if the character matches '\n', '\r', ' ', or '\t'
  * */
-@InternalEncodingApi
-public class Internal private constructor() {
-    internal companion object {
-        private val instance = Internal()
-        @JvmSynthetic
-        internal fun get(): Internal = instance
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Char.isSpaceOrNewLine(): Boolean {
+    return when(this) {
+        '\n', '\r', ' ', '\t' -> true
+        else -> false
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun EncoderDecoder.Feed.closedException(): EncodingException {
+    return EncodingException("$this is closed")
 }

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.encoding.core.internal.buffer
 
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.internal.Internal
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmStatic
-import kotlin.jvm.JvmSynthetic
 
 /**
  * An abstraction for performing bitwise operations during
@@ -28,7 +29,7 @@ import kotlin.jvm.JvmSynthetic
  * Bit shifting does not change for the encoding, what does
  * is the bits.
  *
- * For example, Base32 has many specs that use different
+ * For example, Base32 has many variants that use different
  * encoding characters, but the bitwise operations are still
  * the same; the same is true for Base64.
  *
@@ -59,38 +60,6 @@ public sealed class Buffer<T: Number, V: Any>(
     public var count: Int = 0
         private set
 
-    /* get */
-    protected open fun bitBuffer(internal: Internal): T {
-        throw NotImplementedError()
-    }
-
-    /* set */
-    protected open fun bitBuffer(internal: Internal, bits: T) {
-        throw NotImplementedError()
-    }
-
-    /**
-     * Resets the [bitBuffer] back to 0 when called.
-     * */
-    protected open fun reset(internal: Internal) {
-        throw NotImplementedError()
-    }
-
-    protected open fun byteBuffer(internal: Internal): V {
-        throw NotImplementedError()
-    }
-
-    protected open fun updateBits(bits: T) {
-        val internal = Internal.get()
-        bitBuffer(internal, update.invoke(bitBuffer(internal), bits))
-
-        if (++count % blockSize == 0) {
-            flush.invoke(bitBuffer(internal))
-            count = 0
-            reset(internal)
-        }
-    }
-
     /**
      * Call to [Finalize] the remaining bits in the [bitBuffer] and,
      * if using the [EncodingBuffer], remaining bytes in the [byteBuffer].
@@ -110,7 +79,8 @@ public sealed class Buffer<T: Number, V: Any>(
      * Perform a bitwise operation, and return the result to
      * update the [bitBuffer].
      *
-     * Will be invoked whenever [update] is called.
+     * Will be invoked whenever [EncodingBuffer.update] or
+     * [DecodingBuffer.update] is called.
      *
      * e.g.
      *
@@ -145,14 +115,13 @@ public sealed class Buffer<T: Number, V: Any>(
 
     /**
      * When the [Buffer] is done being used, [finalize] should
-     * be called in order to process the remaining bits in the [bitBuffer].
+     * be called in order to process the remaining bits in the
+     * [bitBuffer] (and bytes in the [byteBuffer] if encoding).
      *
-     * Will be invoked whenever [finalize] is called.
-     *
-     * e.g.
+     * e.g. (Decoding)
      *
      *     out: OutFeed,
-     *     finalize = { count, blockSize, buf ->
+     *     finalize = { count, blockSize, buf, _ ->
      *         var buffer = buf
      *
      *         when (count % blockSize) {
@@ -183,6 +152,35 @@ public sealed class Buffer<T: Number, V: Any>(
         @JvmStatic
         public fun truncatedInputEncodingException(count: Int): EncodingException {
             return EncodingException("Truncate input. Illegal block size of count[$count]")
+        }
+    }
+
+    /* get */
+    protected open fun bitBuffer(internal: Internal): T {
+        throw NotImplementedError()
+    }
+
+    /* set */
+    protected open fun bitBuffer(internal: Internal, bits: T) {
+        throw NotImplementedError()
+    }
+
+    protected open fun reset(internal: Internal) {
+        throw NotImplementedError()
+    }
+
+    protected open fun byteBuffer(internal: Internal): V {
+        throw NotImplementedError()
+    }
+
+    protected open fun updateBits(bits: T) {
+        val internal = Internal.get()
+        bitBuffer(internal, update.invoke(bitBuffer(internal), bits))
+
+        if (++count % blockSize == 0) {
+            flush.invoke(bitBuffer(internal))
+            count = 0
+            reset(internal)
         }
     }
 }

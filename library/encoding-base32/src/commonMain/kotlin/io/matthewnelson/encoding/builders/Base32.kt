@@ -214,7 +214,7 @@ public class Base32CrockfordConfigBuilder {
             }
             else -> {
                 throw IllegalArgumentException(
-                    "checkSymbol[$symbol] not recognized.\n" +
+                    "CheckSymbol[$symbol] not recognized.\n" +
                     "Must be one of the following characters: *, ~, \$, =, U, u\n" +
                     "OR null to omit"
                 )

@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.encoding.core.internal.buffer
 
 import io.matthewnelson.encoding.core.internal.Internal
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 
+/**
+ * A [Buffer] specifically for decoding things.
+ *
+ * @see [TypeInt]
+ * @see [TypeLong]
+ * @see [Buffer]
+ * */
 @InternalEncodingApi
 public sealed class DecodingBuffer<T: Number>(
     blockSize: Int,
@@ -26,13 +35,19 @@ public sealed class DecodingBuffer<T: Number>(
     finalize: Finalize<T, Unit>,
 ): Buffer<T, Unit>(blockSize, update, flush, finalize) {
 
-    protected final override fun byteBuffer(internal: Internal): Unit = Unit
-    protected final override fun updateBits(bits: T) {}
-
+    /**
+     * Update all the things with new [bits].
+     * */
     public fun update(bits: T) {
         super.updateBits(bits)
     }
 
+    /**
+     * A [DecodingBuffer] that uses [kotlin.Int].
+     *
+     * @see [Buffer]
+     * @sample [io.matthewnelson.encoding.base16.Base16.Base16DecodingBuffer]
+     * */
     public abstract class TypeInt(
         blockSize: Int,
         update: Update<Int>,
@@ -45,6 +60,12 @@ public sealed class DecodingBuffer<T: Number>(
         protected final override fun reset(internal: Internal) { bitBuffer = 0 }
     }
 
+    /**
+     * A [DecodingBuffer] that uses [kotlin.Long].
+     *
+     * @see [Buffer]
+     * @sample [io.matthewnelson.encoding.base32.Base32.Base32DecodingBuffer]
+     * */
     public abstract class TypeLong(
         blockSize: Int,
         update: Update<Long>,
@@ -56,4 +77,7 @@ public sealed class DecodingBuffer<T: Number>(
         protected final override fun bitBuffer(internal: Internal, bits: Long) { bitBuffer = bits }
         protected final override fun reset(internal: Internal) { bitBuffer = 0L }
     }
+
+    protected final override fun byteBuffer(internal: Internal): Unit = Unit
+    protected final override fun updateBits(bits: T) {}
 }

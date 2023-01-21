@@ -105,9 +105,6 @@ public final class io/matthewnelson/encoding/core/internal/EncodingTable$Compani
 	public final fun from-T0v-vo0 (Ljava/lang/String;)[B
 }
 
-public final class io/matthewnelson/encoding/core/internal/Internal {
-}
-
 public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
 }
 
@@ -169,6 +166,7 @@ public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun decodeOutMaxSize ()I
 	public final fun get (I)C
+	public static final synthetic fun isLenientFalseEncodingException$encoding_core ()Lio/matthewnelson/encoding/core/EncodingException;
 	public static final fun toDecoderInput (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 	public static final fun toDecoderInput ([BLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 	public static final fun toDecoderInput ([CLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
