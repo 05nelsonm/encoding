@@ -22,6 +22,3 @@ public inline val Char.byte: Byte get() = code.toByte()
 
 @Suppress("NOTHING_TO_INLINE")
 public inline val Byte.char: Char get() = toInt().toChar()
-
-@Suppress("NOTHING_TO_INLINE")
-public inline fun Byte.lowercaseCharByte(): Byte = char.lowercaseChar().byte

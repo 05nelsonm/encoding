@@ -24,7 +24,6 @@ import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.internal.BitBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
-import io.matthewnelson.encoding.core.util.lowercaseCharByte
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
@@ -115,23 +114,22 @@ public class Base16(config: Config): EncoderDecoder(config) {
          * */
         public const val CHARS: String = "0123456789ABCDEF"
         private val TABLE = EncodingTable.from(CHARS)
+        private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
     }
 
     override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
         return object : Encoder.Feed() {
 
+            private val table = if ((config as Config).encodeToLowercase) {
+                TABLE_LOWERCASE
+            } else {
+                TABLE
+            }
+
             override fun updateProtected(input: Byte) {
                 val bits = input.toInt() and 0xff
-                val b1 = TABLE[bits shr    4]
-                val b2 = TABLE[bits and 0x0f]
-
-                if ((config as Config).encodeToLowercase) {
-                    out.invoke(b1.lowercaseCharByte())
-                    out.invoke(b2.lowercaseCharByte())
-                } else {
-                    out.invoke(b1)
-                    out.invoke(b2)
-                }
+                out.invoke(table[bits shr    4])
+                out.invoke(table[bits and 0x0f])
             }
 
             override fun doFinalProtected() { /* no-op */ }
