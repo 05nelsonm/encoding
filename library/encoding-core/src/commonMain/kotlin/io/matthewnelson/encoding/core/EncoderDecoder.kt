@@ -177,7 +177,7 @@ constructor(config: Config): Encoder(config) {
 
         final override fun toString(): String {
             return StringBuilder().apply {
-                append("EncoderDecoder.Configuration [")
+                append("EncoderDecoder.Config [")
                 appendLine()
                 append("    isLenient: ")
                 append(isLenient)
