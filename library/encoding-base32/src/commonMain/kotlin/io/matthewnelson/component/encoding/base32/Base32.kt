@@ -27,6 +27,7 @@ import io.matthewnelson.encoding.builders.Base32Crockford
 import io.matthewnelson.encoding.builders.Base32Default
 import io.matthewnelson.encoding.builders.Base32Hex
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
@@ -38,6 +39,24 @@ private val CROCKFORD_TABLE = Base32.Crockford.CHARS.encodeToByteArray()
 private val DEFAULT_TABLE = Base32.Default.CHARS.encodeToByteArray()
 @SharedImmutable
 private val HEX_TABLE = Base32.Hex.CHARS.encodeToByteArray()
+
+@PublishedApi
+@InternalEncodingApi
+internal val COMPATIBILITY_DEFAULT: io.matthewnelson.encoding.base32.Base32.Default = Base32Default {
+    isLenient = true
+    acceptLowercase = false
+    encodeToLowercase = false
+    padEncoded = true
+}
+
+@PublishedApi
+@InternalEncodingApi
+internal val COMPATIBILITY_HEX: io.matthewnelson.encoding.base32.Base32.Hex = Base32Hex {
+    isLenient = true
+    acceptLowercase = false
+    encodeToLowercase = false
+    padEncoded = true
+}
 
 public sealed class Base32 {
 
@@ -98,6 +117,7 @@ public sealed class Base32 {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
+    @OptIn(InternalEncodingApi::class)
     return when (base32) {
         is Base32.Crockford -> {
             decodeToByteArrayOrNull(Base32Crockford {
@@ -108,26 +128,17 @@ public inline fun String.decodeBase32ToArray(base32: Base32 = Base32.Default): B
             })
         }
         is Base32.Default -> {
-            decodeToByteArrayOrNull(Base32Default {
-                isLenient = true
-                acceptLowercase = false
-                encodeToLowercase = false
-                padEncoded = true
-            })
+            decodeToByteArrayOrNull(COMPATIBILITY_DEFAULT)
         }
         is Base32.Hex -> {
-            decodeToByteArrayOrNull(Base32Hex {
-                isLenient = true
-                acceptLowercase = false
-                encodeToLowercase = false
-                padEncoded = true
-            })
+            decodeToByteArrayOrNull(COMPATIBILITY_HEX)
         }
     }
 }
 
 @JvmOverloads
 public fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteArray? {
+    @OptIn(InternalEncodingApi::class)
     return when (base32) {
         is Base32.Crockford -> {
             decodeToByteArrayOrNull(Base32Crockford {
@@ -138,20 +149,10 @@ public fun CharArray.decodeBase32ToArray(base32: Base32 = Base32.Default): ByteA
             })
         }
         is Base32.Default -> {
-            decodeToByteArrayOrNull(Base32Default {
-                isLenient = true
-                acceptLowercase = false
-                encodeToLowercase = false
-                padEncoded = true
-            })
+            decodeToByteArrayOrNull(COMPATIBILITY_DEFAULT)
         }
         is Base32.Hex -> {
-            decodeToByteArrayOrNull(Base32Hex {
-                isLenient = true
-                acceptLowercase = false
-                encodeToLowercase = false
-                padEncoded = true
-            })
+            decodeToByteArrayOrNull(COMPATIBILITY_HEX)
         }
     }
 }
