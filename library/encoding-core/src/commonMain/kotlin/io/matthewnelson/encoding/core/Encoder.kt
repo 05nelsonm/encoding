@@ -52,7 +52,8 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
      * Once all the data has been submitted via [update], call
      * [doFinal] to close the [Encoder.Feed] and perform
      * finalization for leftover data still in the [Encoder.Feed]
-     * implementation's buffer.
+     * implementation's buffer. Alternatively, utilize the [use]
+     * extension function.
      *
      * @see [newEncoderFeed]
      * @see [EncoderDecoder.Feed]

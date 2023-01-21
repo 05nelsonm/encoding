@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.decode
+import io.matthewnelson.encoding.core.util.BitBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toDecoderInput
 import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic
@@ -51,11 +52,13 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
      * Once all the data has been submitted via [update], call
      * [doFinal] to close the [Decoder.Feed] and perform
      * finalization for leftover data still in the [Decoder.Feed]
-     * implementation's buffer.
+     * implementation's buffer. Alternatively, utilize the [use]
+     * extension function.
      *
      * @see [newDecoderFeed]
      * @see [EncoderDecoder.Feed]
      * @see [use]
+     * @see [BitBuffer]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi

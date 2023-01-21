@@ -108,6 +108,35 @@ public final class io/matthewnelson/encoding/core/internal/EncodingTable$Compani
 public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
 }
 
+public abstract class io/matthewnelson/encoding/core/util/BitBuffer {
+	public static final field Companion Lio/matthewnelson/encoding/core/util/BitBuffer$Companion;
+	public fun <init> (BLio/matthewnelson/encoding/core/util/BitBuffer$Update;Lio/matthewnelson/encoding/core/util/BitBuffer$Flush;Lio/matthewnelson/encoding/core/util/BitBuffer$Finalize;)V
+	public final fun finalize ()V
+	protected abstract fun getBitBuffer ()Ljava/lang/Number;
+	public final fun getBlockSize ()B
+	public final fun getCount ()B
+	protected abstract fun reset ()V
+	protected abstract fun setBitBuffer (Ljava/lang/Number;)V
+	public static final fun truncatedInputEncodingException (B)Lio/matthewnelson/encoding/core/EncodingException;
+	public final fun update (Ljava/lang/Number;)V
+}
+
+public final class io/matthewnelson/encoding/core/util/BitBuffer$Companion {
+	public final fun truncatedInputEncodingException (B)Lio/matthewnelson/encoding/core/EncodingException;
+}
+
+public abstract interface class io/matthewnelson/encoding/core/util/BitBuffer$Finalize {
+	public abstract fun invoke (BBLjava/lang/Number;)V
+}
+
+public abstract interface class io/matthewnelson/encoding/core/util/BitBuffer$Flush {
+	public abstract fun invoke (Ljava/lang/Number;)V
+}
+
+public abstract interface class io/matthewnelson/encoding/core/util/BitBuffer$Update {
+	public abstract fun invoke (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+}
+
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public static final field Companion Lio/matthewnelson/encoding/core/util/DecoderInput$Companion;
 	public final field lastRelevantCharacter I

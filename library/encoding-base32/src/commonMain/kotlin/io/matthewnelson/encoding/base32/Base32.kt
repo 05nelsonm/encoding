@@ -19,7 +19,7 @@ package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
-import io.matthewnelson.encoding.core.internal.BitBuffer
+import io.matthewnelson.encoding.core.util.BitBuffer
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.*
@@ -174,7 +174,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
-                private val buffer = Base32BitBuffer(out)
+                private val buffer = DecodingBuffer(out)
                 private var isCheckByteSet = false
 
                 @Throws(EncodingException::class)
@@ -273,7 +273,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
-                    buffer.doFinal()
+                    buffer.finalize()
                 }
             }
         }
@@ -388,7 +388,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
-                private val buffer = Base32BitBuffer(out)
+                private val buffer = DecodingBuffer(out)
 
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
@@ -421,7 +421,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
-                    buffer.doFinal()
+                    buffer.finalize()
                 }
             }
         }
@@ -536,7 +536,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
             return object : Decoder.Feed() {
 
-                private val buffer = Base32BitBuffer(out)
+                private val buffer = DecodingBuffer(out)
 
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
@@ -569,7 +569,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
-                    buffer.doFinal()
+                    buffer.finalize()
                 }
             }
         }
@@ -615,49 +615,61 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
     }
 
-    @OptIn(InternalEncodingApi::class)
-    private inner class Base32BitBuffer(out: OutFeed): BitBuffer<Long>(
+    private inner class DecodingBuffer(out: OutFeed): BitBuffer<Long>(
         blockSize = 8,
-        onUpdate = { buffer, bits ->
-            // Append this char's 5 bits to the buffer
+        update = { buffer, bits ->
+            // Append the char's 5 bits to the buffer
             buffer shl 5 or bits
         },
-        onOutput = { buffer ->
-            // For every 8 chars of input, we accumulate 40 bits of output data. Emit 5 bytes
+        flush = { buffer ->
+            // For every 8 chars of input, we accumulate
+            // 40 bits of output data. Emit 5 bytes.
             out.invoke((buffer shr 32).toByte())
             out.invoke((buffer shr 24).toByte())
             out.invoke((buffer shr 16).toByte())
             out.invoke((buffer shr  8).toByte())
             out.invoke((buffer       ).toByte())
         },
-        doFinal = { count, buf ->
+        finalize = { count, blockSize, buf ->
             var buffer = buf
 
-            when (count % 8) {
+            when (count % blockSize) {
                 0 -> {}
                 1, 3, 6 -> {
-                    // 5*1 = 5 bits.  Truncated, fail.
+                    // 5*1 =  5 bits. Truncated, fail.
                     // 5*3 = 15 bits. Truncated, fail.
                     // 5*6 = 30 bits. Truncated, fail.
-                    throw EncodingException("Truncated input. Count[$count] should have been 2, 4, 5, or 7")
+                    throw truncatedInputEncodingException(count)
                 }
-                2 -> { // 5*2 = 10 bits. Drop 2
-                    buffer = buffer shr 2
-                    out.invoke((buffer      ).toByte())
+                2 -> {
+                    // 5*2 = 10 bits. Drop 2
+                    buffer =    buffer shr  2
+
+                    // 8/8 = 1 byte
+                    out.invoke((buffer       ).toByte())
                 }
-                4 -> { // 5*4 = 20 bits. Drop 4
-                    buffer = buffer shr 4
-                    out.invoke((buffer shr 8).toByte())
-                    out.invoke((buffer      ).toByte())
+                4 -> {
+                    // 5*4 = 20 bits. Drop 4
+                    buffer =    buffer shr  4
+
+                    // 16/8 = 2 bytes
+                    out.invoke((buffer shr  8).toByte())
+                    out.invoke((buffer       ).toByte())
                 }
-                5 -> { // 5*5 = 25 bits. Drop 1
-                    buffer = buffer shr 1
+                5 -> {
+                    // 5*5 = 25 bits. Drop 1
+                    buffer =    buffer shr  1
+
+                    // 24/8 = 3 bytes
                     out.invoke((buffer shr 16).toByte())
                     out.invoke((buffer shr  8).toByte())
                     out.invoke((buffer       ).toByte())
                 }
-                7 -> { // 5*7 = 35 bits. Drop 3
-                    buffer = buffer shr 3
+                7 -> {
+                    // 5*7 = 35 bits. Drop 3
+                    buffer =    buffer shr  3
+
+                    // 32/8 = 4 bytes
                     out.invoke((buffer shr 24).toByte())
                     out.invoke((buffer shr 16).toByte())
                     out.invoke((buffer shr  8).toByte())
@@ -667,7 +679,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
     ) {
         override var bitBuffer: Long = 0L
-        override fun resetBitBuffer() { bitBuffer = 0L }
-        override fun definitelyDoNotUseThisClassItWillBeChanging() {}
+        override fun reset() { bitBuffer = 0L }
     }
 }
