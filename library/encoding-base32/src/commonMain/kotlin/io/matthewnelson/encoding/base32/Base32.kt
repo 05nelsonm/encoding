@@ -740,7 +740,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     out.invoke(table[(bitBuffer shl  1 and 0x1fL).toInt()]) // 5-4 = 1
                     3
                 }
-                4 -> {
+                // 4
+                else -> {
                     // 8*4 = 32 bits
                     bitBuffer = (bitBuffer shl 8) + byteBuffer[0].toBits()
                     bitBuffer = (bitBuffer shl 8) + byteBuffer[1].toBits()
@@ -756,7 +757,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     out.invoke(table[(bitBuffer shl  3 and 0x1fL).toInt()]) // 5-2 = 3
                     1
                 }
-                else -> throw EncodingException("This will never occur and is only to appease the when statement")
             }
 
             paddingByte?.let { byte ->
