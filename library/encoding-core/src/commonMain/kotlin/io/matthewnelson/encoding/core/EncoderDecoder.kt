@@ -44,7 +44,8 @@ constructor(config: Config): Encoder(config) {
      * @param [isLenient] If true, decoding will skip over spaces
      *   and new lines ('\n', '\r', ' ', '\t'). If false, an
      *   [EncodingException] will be thrown when encountering those
-     *   characters. See [isSpaceOrNewLine].
+     *   characters. See [isSpaceOrNewLine]. If null, those bytes
+     *   are sent to the [EncoderDecoder].
      * @param [paddingByte] The byte used when padding the output for
      *   the given encoding; NOT "if padding should be
      *   used". (e.g. '='.code.toByte()).
@@ -56,7 +57,7 @@ constructor(config: Config): Encoder(config) {
     @ExperimentalEncodingApi
     constructor(
         @JvmField
-        public val isLenient: Boolean,
+        public val isLenient: Boolean?,
         @JvmField
         public val paddingByte: Byte?,
     ) {
@@ -233,7 +234,7 @@ constructor(config: Config): Encoder(config) {
 
             try {
                 if (this is Decoder.Feed) {
-                    if (input.char.isSpaceOrNewLine()) {
+                    if (config.isLenient != null && input.char.isSpaceOrNewLine()) {
                         if (config.isLenient) {
                             return
                         } else {

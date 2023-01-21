@@ -147,7 +147,7 @@ public class Base32CrockfordConfigBuilder {
     public constructor()
     public constructor(config: Base32.Crockford.Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         encodeToLowercase = config.encodeToLowercase
         hyphenInterval = config.hyphenInterval
         checkByte = config.checkByte
@@ -254,7 +254,7 @@ public class Base32DefaultConfigBuilder {
     public constructor()
     public constructor(config: Base32.Default.Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
@@ -329,7 +329,7 @@ public class Base32HexConfigBuilder {
     public constructor()
     public constructor(config: Base32.Hex.Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded

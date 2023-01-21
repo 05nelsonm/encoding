@@ -70,7 +70,7 @@ public class Base16ConfigBuilder {
     public constructor()
     public constructor(config: Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
     }

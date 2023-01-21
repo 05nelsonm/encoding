@@ -93,7 +93,7 @@ private constructor(
         while (limit > 0) {
             val c = get(limit - 1)
 
-            if (c.isSpaceOrNewLine()) {
+            if (config.isLenient != null && c.isSpaceOrNewLine()) {
                 if (!config.isLenient) {
                     throw isLenientFalseEncodingException()
                 } else {
