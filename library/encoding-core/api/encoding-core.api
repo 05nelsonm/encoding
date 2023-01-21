@@ -101,6 +101,22 @@ public final class io/matthewnelson/encoding/core/_FeedKt {
 	public static final fun use (Lio/matthewnelson/encoding/core/EncoderDecoder$Feed;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
+public final class io/matthewnelson/encoding/core/internal/BitBuffer$Companion {
+	public final fun truncatedInputEncodingException (B)Lio/matthewnelson/encoding/core/EncodingException;
+}
+
+public abstract interface class io/matthewnelson/encoding/core/internal/BitBuffer$Finalize {
+	public abstract fun invoke (BBLjava/lang/Number;)V
+}
+
+public abstract interface class io/matthewnelson/encoding/core/internal/BitBuffer$Flush {
+	public abstract fun invoke (Ljava/lang/Number;)V
+}
+
+public abstract interface class io/matthewnelson/encoding/core/internal/BitBuffer$Update {
+	public abstract fun invoke (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+}
+
 public final class io/matthewnelson/encoding/core/internal/EncodingTable$Companion {
 	public final fun from-T0v-vo0 (Ljava/lang/String;)[B
 }
