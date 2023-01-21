@@ -77,7 +77,7 @@ public class Base16ConfigBuilder {
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against RFC 4648).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.

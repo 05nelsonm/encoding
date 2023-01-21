@@ -155,7 +155,7 @@ public class Base32CrockfordConfigBuilder {
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against Crockford spec).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
@@ -262,7 +262,7 @@ public class Base32DefaultConfigBuilder {
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against RFC 4648).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
@@ -337,7 +337,7 @@ public class Base32HexConfigBuilder {
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against RFC 4648).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
