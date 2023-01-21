@@ -307,12 +307,12 @@ constructor(config: Config): Encoder(config) {
 
     final override fun hashCode(): Int {
         var result = 17
-        result = result * 31 + toString().hashCode()
+        result = result * 31 + name().hashCode()
         result = result * 31 + config.hashCode()
         return result
     }
 
     final override fun toString(): String {
-        return "EncoderDecoder[${name()}]"
+        return "EncoderDecoder[${name()}]@${hashCode()}"
     }
 }
