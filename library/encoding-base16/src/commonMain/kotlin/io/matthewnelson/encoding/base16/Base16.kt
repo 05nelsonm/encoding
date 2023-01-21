@@ -21,6 +21,7 @@ import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
+import io.matthewnelson.encoding.core.util.BitBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
 import io.matthewnelson.encoding.core.util.lowercaseCharByte
@@ -139,8 +140,8 @@ public class Base16(config: Config): EncoderDecoder(config) {
 
     override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
         return object : Decoder.Feed() {
-            private var count = 0
-            private var bitBuffer = 0
+
+            private val buffer = DecodingBuffer(out)
 
             @Throws(EncodingException::class)
             override fun updateProtected(input: Byte) {
@@ -168,24 +169,37 @@ public class Base16(config: Config): EncoderDecoder(config) {
                     }
                 }
 
-                bitBuffer = bitBuffer shl 4 or bits
-
-                if (++count % 2 == 0) {
-                    out.invoke(bitBuffer.toByte())
-                    count = 0
-                    bitBuffer = 0
-                }
+                buffer.update(bits)
             }
 
             @Throws(EncodingException::class)
             override fun doFinalProtected() {
-                // 4*1 = 4 bits. Truncated, fail.
-                val i = count % 2
-                if (i == 0) return
-                throw EncodingException("Truncated input. Count[$i] should have been 0")
+                buffer.finalize()
             }
         }
     }
 
     override fun name(): String = "Base16"
+
+    private inner class DecodingBuffer(out: OutFeed): BitBuffer<Int>(
+        blockSize = 2,
+        update = { buffer, bits ->
+            buffer shl 4 or bits
+        },
+        flush = { buffer ->
+            out.invoke(buffer.toByte())
+        },
+        finalize = { count, blockSize, _ ->
+            when (count % blockSize) {
+                0 -> {}
+                else -> {
+                    // 4*1 = 4 bits. Truncated, fail.
+                    throw truncatedInputEncodingException(count)
+                }
+            }
+        }
+    ) {
+        override var bitBuffer: Int = 0
+        override fun reset() { bitBuffer = 0 }
+    }
 }

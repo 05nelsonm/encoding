@@ -38,6 +38,7 @@ import kotlin.jvm.JvmStatic
  * @see [Flush]
  * @see [Finalize]
  * @see [truncatedInputEncodingException]
+ * @sample [io.matthewnelson.encoding.base16.Base16.DecodingBuffer]
  * @sample [io.matthewnelson.encoding.base32.Base32.DecodingBuffer]
  * */
 public abstract class BitBuffer<T: Number>(
