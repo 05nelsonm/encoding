@@ -70,14 +70,14 @@ public class Base16ConfigBuilder {
     public constructor()
     public constructor(config: Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
     }
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against RFC 4648).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.

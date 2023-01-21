@@ -147,7 +147,7 @@ public class Base32CrockfordConfigBuilder {
     public constructor()
     public constructor(config: Base32.Crockford.Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         encodeToLowercase = config.encodeToLowercase
         hyphenInterval = config.hyphenInterval
         checkByte = config.checkByte
@@ -155,7 +155,7 @@ public class Base32CrockfordConfigBuilder {
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against Crockford spec).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
@@ -254,7 +254,7 @@ public class Base32DefaultConfigBuilder {
     public constructor()
     public constructor(config: Base32.Default.Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
@@ -262,7 +262,7 @@ public class Base32DefaultConfigBuilder {
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against RFC 4648).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
@@ -329,7 +329,7 @@ public class Base32HexConfigBuilder {
     public constructor()
     public constructor(config: Base32.Hex.Config?): this() {
         if (config == null) return
-        isLenient = config.isLenient
+        isLenient = config.isLenient ?: true
         acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
@@ -337,7 +337,7 @@ public class Base32HexConfigBuilder {
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding.
+     * will be skipped over when decoding (against RFC 4648).
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.

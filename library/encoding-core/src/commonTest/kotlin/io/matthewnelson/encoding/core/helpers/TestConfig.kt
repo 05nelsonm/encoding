@@ -22,7 +22,7 @@ import io.matthewnelson.encoding.core.util.byte
 
 @OptIn(ExperimentalEncodingApi::class)
 class TestConfig(
-    isLenient: Boolean = false,
+    isLenient: Boolean? = false,
     paddingByte: Byte? = '='.byte,
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
