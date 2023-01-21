@@ -65,11 +65,10 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion {
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
-	public final field checkByte Ljava/lang/Byte;
+	public final field checkSymbol Ljava/lang/Character;
 	public final field encodeToLowercase Z
 	public final field hyphenInterval B
-	public synthetic fun <init> (ZZBLjava/lang/Byte;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun checkSymbol ()Ljava/lang/Character;
+	public synthetic fun <init> (ZZBLjava/lang/Character;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewnelson/encoding/base32/Base32 {
@@ -115,9 +114,8 @@ public final class io/matthewnelson/encoding/builders/Base32CrockfordConfigBuild
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
 	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;
-	public final fun checkByte ()Ljava/lang/Byte;
-	public final fun checkByte (Ljava/lang/Character;)Lio/matthewnelson/encoding/builders/Base32CrockfordConfigBuilder;
 	public final fun checkSymbol ()Ljava/lang/Character;
+	public final fun checkSymbol (Ljava/lang/Character;)Lio/matthewnelson/encoding/builders/Base32CrockfordConfigBuilder;
 	public final fun strict ()Lio/matthewnelson/encoding/builders/Base32CrockfordConfigBuilder;
 }
 
