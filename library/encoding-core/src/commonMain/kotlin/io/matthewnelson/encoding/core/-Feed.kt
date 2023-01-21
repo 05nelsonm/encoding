@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("KotlinRedundantDiagnosticSuppress")
+@file:Suppress("SpellCheckingInspection")
 
 package io.matthewnelson.encoding.core
 
@@ -21,11 +21,6 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import io.matthewnelson.encoding.core.EncoderDecoder.Feed
-
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun Feed.closedException(): EncodingException {
-    return EncodingException("$this is closed")
-}
 
 /**
  * Executes the given [block] function and then closes

@@ -20,14 +20,21 @@ package io.matthewnelson.encoding.core.internal
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.EncoderDecoder.Config
 import io.matthewnelson.encoding.core.util.DecoderInput
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 @Suppress("NOTHING_TO_INLINE")
 @Throws(EncodingException::class)
-@OptIn(ExperimentalEncodingApi::class)
+@OptIn(ExperimentalEncodingApi::class, ExperimentalContracts::class)
 internal inline fun Decoder.decode(
     input: DecoderInput,
     update: (feed: Decoder.Feed) -> Unit
 ): ByteArray {
+    contract {
+        callsInPlace(update, InvocationKind.EXACTLY_ONCE)
+    }
+
     val ba = ByteArray(input.decodeOutMaxSize)
 
     var i = 0
@@ -53,10 +60,15 @@ internal inline fun Decoder.decode(
  * Fails if the returned [Long] for [Config.encodeOutSize]
  * exceeds [Int.MAX_VALUE]
  * */
+@OptIn(ExperimentalContracts::class)
 @Throws(EncodingSizeException::class)
 internal inline fun <T: Any> Encoder.encodeOutSizeOrFail(
     size: Int, block: (outSize: Int) -> T
 ): T {
+    contract {
+        callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+    }
+
     val outSize = config.encodeOutSize(size.toLong())
     if (outSize > Int.MAX_VALUE.toLong()) {
         @OptIn(InternalEncodingApi::class)
@@ -78,19 +90,5 @@ internal inline fun Encoder.encode(
         for (byte in bytes) {
             feed.update(byte)
         }
-    }
-}
-
-/**
- * Helper for checking if a character is a space or
- * new line.
- *
- * @return true if the character matches '\n', '\r', ' ', or '\t'
- * */
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun Char.isSpaceOrNewLine(): Boolean {
-    return when(this) {
-        '\n', '\r', ' ', '\t' -> true
-        else -> false
     }
 }

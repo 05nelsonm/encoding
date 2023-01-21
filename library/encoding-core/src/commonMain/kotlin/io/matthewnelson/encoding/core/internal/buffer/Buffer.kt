@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.internal
+@file:Suppress("SpellCheckingInspection")
+
+package io.matthewnelson.encoding.core.internal.buffer
 
 import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.internal.Internal
+import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmStatic
 
 /**
  * An abstraction for performing bitwise operations during
- * the decoding process.
+ * the decoding/encoding process.
  *
  * Bit shifting does not change for the encoding, what does
- * is the bits which are dependent on the characters used and
- * what they translate to.
+ * is the bits.
  *
- * For example, Base32 has many specs that use different
+ * For example, Base32 has many variants that use different
  * encoding characters, but the bitwise operations are still
  * the same; the same is true for Base64.
  *
@@ -34,64 +37,50 @@ import kotlin.jvm.JvmStatic
  * such that they are reusable and only need to be written
  * once.
  *
+ * @see [EncodingBuffer]
+ * @see [DecodingBuffer]
  * @see [Update]
  * @see [Flush]
  * @see [Finalize]
  * @see [truncatedInputEncodingException]
- * @sample [io.matthewnelson.encoding.base16.Base16.DecodingBuffer]
- * @sample [io.matthewnelson.encoding.base32.Base32.DecodingBuffer]
  * */
 @InternalEncodingApi
-public abstract class BitBuffer<T: Number>(
-    public val blockSize: Byte,
+public sealed class Buffer<T: Number, V: Any>(
+    public val blockSize: Int,
     private val update: Update<T>,
     private val flush: Flush<T>,
-    private val finalize: Finalize<T>,
+    private val finalize: Finalize<T, V>,
 ) {
-    public var count: Byte = 0
-        private set
-
-    /**
-     * The buffer of bits.
-     *
-     * JS hates unchecked casting, so implementors of
-     * [BitBuffer] get to initialize this with a value
-     * of 0 for whatever type [T] is.
-     * */
-    protected abstract var bitBuffer: T
-
-    /**
-     * Resets the [bitBuffer] back to 0 when called.
-     * */
-    protected abstract fun reset()
-
-    /**
-     * Call to [Update] the [bitBuffer] with new [bits].
-     * */
-    public fun update(bits: T) {
-        bitBuffer = update.invoke(bitBuffer, bits)
-
-        if (++count % blockSize == 0) {
-            flush.invoke(bitBuffer)
-            count = 0
-            reset()
+    init {
+        require(blockSize > 0) {
+            "blockSize must be greater than 0"
         }
     }
 
+    public var count: Int = 0
+        private set
+
     /**
-     * Call to [Finalize] the remaining bits in the [bitBuffer].
+     * Call to [Finalize] the remaining bits in the [bitBuffer] and,
+     * if using the [EncodingBuffer], remaining bytes in the [byteBuffer].
      * */
     public fun finalize() {
-        finalize.invoke(count, blockSize, bitBuffer)
+        val internal = Internal.get()
+        val byteBuffer = byteBuffer(internal)
+
+        (byteBuffer as? ByteArray)?.fill(0, count)
+        finalize.invoke(count, blockSize, bitBuffer(internal), byteBuffer)
+        (byteBuffer as? ByteArray)?.fill(0, 0, count)
         count = 0
-        reset()
+        reset(internal)
     }
 
     /**
      * Perform a bitwise operation, and return the result to
      * update the [bitBuffer].
      *
-     * Will be invoked whenever [update] is called.
+     * Will be invoked whenever [EncodingBuffer.update] or
+     * [DecodingBuffer.update] is called.
      *
      * e.g.
      *
@@ -125,15 +114,14 @@ public abstract class BitBuffer<T: Number>(
     }
 
     /**
-     * When the [BitBuffer] is done being used, [finalize] should
-     * be called in order to process the remaining bits in the [bitBuffer].
+     * When the [Buffer] is done being used, [finalize] should
+     * be called in order to process the remaining bits in the
+     * [bitBuffer] (and bytes in the [byteBuffer] if encoding).
      *
-     * Will be invoked whenever [finalize] is called.
-     *
-     * e.g.
+     * e.g. (Decoding)
      *
      *     out: OutFeed,
-     *     finalize = { count, blockSize, buf ->
+     *     finalize = { count, blockSize, buf, _ ->
      *         var buffer = buf
      *
      *         when (count % blockSize) {
@@ -155,15 +143,44 @@ public abstract class BitBuffer<T: Number>(
      *         }
      *     },
      * */
-    public fun interface Finalize<in T: Number> {
-        public fun invoke(count: Byte, blockSize: Byte, buffer: T)
+    public fun interface Finalize<in T: Number, V: Any> {
+        public fun invoke(count: Int, blockSize: Int, bitBuffer: T, byteBuffer: V)
     }
 
     public companion object {
 
         @JvmStatic
-        public fun truncatedInputEncodingException(count: Byte): EncodingException {
+        public fun truncatedInputEncodingException(count: Int): EncodingException {
             return EncodingException("Truncate input. Illegal block size of count[$count]")
+        }
+    }
+
+    /* get */
+    protected open fun bitBuffer(internal: Internal): T {
+        throw NotImplementedError()
+    }
+
+    /* set */
+    protected open fun bitBuffer(internal: Internal, bits: T) {
+        throw NotImplementedError()
+    }
+
+    protected open fun reset(internal: Internal) {
+        throw NotImplementedError()
+    }
+
+    protected open fun byteBuffer(internal: Internal): V {
+        throw NotImplementedError()
+    }
+
+    protected open fun updateBits(bits: T) {
+        val internal = Internal.get()
+        bitBuffer(internal, update.invoke(bitBuffer(internal), bits))
+
+        if (++count % blockSize == 0) {
+            flush.invoke(bitBuffer(internal))
+            count = 0
+            reset(internal)
         }
     }
 }

@@ -15,10 +15,26 @@
  **/
 @file:Suppress("KotlinRedundantDiagnosticSuppress")
 
-package io.matthewnelson.encoding.core.util
+package io.matthewnelson.encoding.base32.internal
 
 @Suppress("NOTHING_TO_INLINE")
-public inline val Char.byte: Byte get() = code.toByte()
+internal inline fun Long.decodeOutMaxSize(): Long = (this * 5L / 8L)
 
 @Suppress("NOTHING_TO_INLINE")
-public inline val Byte.char: Char get() = toInt().toChar()
+internal inline fun Long.encodeOutSize(willBePadded: Boolean): Long {
+    var outSize: Long = ((this + 4L) / 5L) * 8L
+    if (willBePadded) return outSize
+
+    when (this - (this - this % 5)) {
+        0L -> { /* no-op */ }
+        1L -> outSize -= 6L
+        2L -> outSize -= 4L
+        3L -> outSize -= 3L
+        4L -> outSize -= 1L
+    }
+
+    return outSize
+}
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Byte.toBits(): Long = if (this < 0) this + 256L else toLong()

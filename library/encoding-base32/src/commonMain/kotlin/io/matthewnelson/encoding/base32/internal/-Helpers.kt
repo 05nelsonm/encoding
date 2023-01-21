@@ -15,10 +15,12 @@
  **/
 @file:Suppress("KotlinRedundantDiagnosticSuppress")
 
-package io.matthewnelson.encoding.core.util
+package io.matthewnelson.encoding.base32.internal
 
 @Suppress("NOTHING_TO_INLINE")
-public inline val Char.byte: Byte get() = code.toByte()
-
-@Suppress("NOTHING_TO_INLINE")
-public inline val Byte.char: Char get() = toInt().toChar()
+internal inline fun Char.isCheckSymbol(): Boolean {
+    return when (this) {
+        '*', '~', '$', '=', 'U', 'u' -> true
+        else -> false
+    }
+}

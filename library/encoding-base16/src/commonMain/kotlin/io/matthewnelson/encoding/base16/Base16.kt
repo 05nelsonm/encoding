@@ -21,10 +21,9 @@ import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.internal.BitBuffer
+import io.matthewnelson.encoding.core.internal.buffer.DecodingBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
-import io.matthewnelson.encoding.core.util.lowercaseCharByte
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
@@ -76,6 +75,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
             return encodedSize / 2L
         }
+
         @Throws(EncodingSizeException::class)
         override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             if (unEncodedSize > (Long.MAX_VALUE / 2)) {
@@ -115,23 +115,22 @@ public class Base16(config: Config): EncoderDecoder(config) {
          * */
         public const val CHARS: String = "0123456789ABCDEF"
         private val TABLE = EncodingTable.from(CHARS)
+        private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
     }
 
     override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
         return object : Encoder.Feed() {
 
+            private val table = if ((config as Config).encodeToLowercase) {
+                TABLE_LOWERCASE
+            } else {
+                TABLE
+            }
+
             override fun updateProtected(input: Byte) {
                 val bits = input.toInt() and 0xff
-                val b1 = TABLE[bits shr    4]
-                val b2 = TABLE[bits and 0x0f]
-
-                if ((config as Config).encodeToLowercase) {
-                    out.invoke(b1.lowercaseCharByte())
-                    out.invoke(b2.lowercaseCharByte())
-                } else {
-                    out.invoke(b1)
-                    out.invoke(b2)
-                }
+                out.invoke(table[bits shr    4])
+                out.invoke(table[bits and 0x0f])
             }
 
             override fun doFinalProtected() { /* no-op */ }
@@ -141,7 +140,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
     override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
         return object : Decoder.Feed() {
 
-            private val buffer = DecodingBuffer(out)
+            private val buffer = Base16DecodingBuffer(out)
 
             @Throws(EncodingException::class)
             override fun updateProtected(input: Byte) {
@@ -181,7 +180,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
 
     override fun name(): String = "Base16"
 
-    private inner class DecodingBuffer(out: OutFeed): BitBuffer<Int>(
+    private inner class Base16DecodingBuffer(out: OutFeed): DecodingBuffer.TypeInt(
         blockSize = 2,
         update = { buffer, bits ->
             buffer shl 4 or bits
@@ -189,7 +188,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         flush = { buffer ->
             out.invoke(buffer.toByte())
         },
-        finalize = { count, blockSize, _ ->
+        finalize = { count, blockSize, _ , _->
             when (count % blockSize) {
                 0 -> {}
                 else -> {
@@ -198,8 +197,5 @@ public class Base16(config: Config): EncoderDecoder(config) {
                 }
             }
         }
-    ) {
-        override var bitBuffer: Int = 0
-        override fun reset() { bitBuffer = 0 }
-    }
+    )
 }

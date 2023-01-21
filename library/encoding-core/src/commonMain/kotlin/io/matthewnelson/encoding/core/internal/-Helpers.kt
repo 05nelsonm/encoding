@@ -15,10 +15,26 @@
  **/
 @file:Suppress("KotlinRedundantDiagnosticSuppress")
 
-package io.matthewnelson.encoding.core.util
+package io.matthewnelson.encoding.core.internal
+
+import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.core.EncodingException
+
+/**
+ * Helper for checking if a character is a space or
+ * new line.
+ *
+ * @return true if the character matches '\n', '\r', ' ', or '\t'
+ * */
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Char.isSpaceOrNewLine(): Boolean {
+    return when(this) {
+        '\n', '\r', ' ', '\t' -> true
+        else -> false
+    }
+}
 
 @Suppress("NOTHING_TO_INLINE")
-public inline val Char.byte: Byte get() = code.toByte()
-
-@Suppress("NOTHING_TO_INLINE")
-public inline val Byte.char: Char get() = toInt().toChar()
+internal inline fun EncoderDecoder.Feed.closedException(): EncodingException {
+    return EncodingException("$this is closed")
+}

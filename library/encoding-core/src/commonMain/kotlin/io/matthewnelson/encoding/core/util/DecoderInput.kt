@@ -23,6 +23,7 @@ import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSynthetic
 
 /**
  * Helper class for analyzing encoded data in order to
@@ -123,6 +124,8 @@ private constructor(
 
     public companion object {
 
+        @JvmStatic
+        @JvmSynthetic
         internal fun isLenientFalseEncodingException(): EncodingException {
             return EncodingException("Spaces and new lines are forbidden when isLenient[false]")
         }
@@ -133,7 +136,7 @@ private constructor(
             inSize: Number,
             maxSize: Number,
         ): EncodingSizeException {
-            return EncodingSizeException("Size[$inSize] of data would exceed the maximum[$maxSize] for this operation")
+            return EncodingSizeException("Size[$inSize] of data would exceed the Maximum[$maxSize] for this operation")
         }
 
         @JvmStatic

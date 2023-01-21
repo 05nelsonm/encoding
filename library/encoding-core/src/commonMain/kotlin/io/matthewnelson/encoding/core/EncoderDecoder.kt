@@ -17,6 +17,7 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
@@ -69,8 +70,6 @@ constructor(config: Config): Encoder(config) {
          *
          * Will always return a value greater than or equal to 0.
          *
-         * TODO: Should accept Long and return Long
-         *
          * @param [unEncodedSize] The size of the data being encoded.
          * @throws [EncodingSizeException] if there was an error calculating
          *   the size, or [unEncodedSize] was negative.
@@ -97,8 +96,6 @@ constructor(config: Config): Encoder(config) {
          * set for the [Config] implementation.
          *
          * Will always return a value greater than or equal to 0.
-         *
-         * TODO: Should accept Long and return Long
          *
          * @param [encodedSize] The size of the encoded data being decoded.
          * @param [input] Optional paramater for [Config] implementation to
@@ -177,7 +174,7 @@ constructor(config: Config): Encoder(config) {
 
         final override fun toString(): String {
             return StringBuilder().apply {
-                append("EncoderDecoder.Configuration [")
+                append("EncoderDecoder.Config [")
                 appendLine()
                 append("    isLenient: ")
                 append(isLenient)
@@ -225,7 +222,7 @@ constructor(config: Config): Encoder(config) {
          * Updates the [Feed] with a new byte to encode/decode.
          *
          * @throws [EncodingException] if [isClosed] is true, or
-         *   there was an error decoding.
+         *   there was an error encoding/decoding.
          * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
@@ -272,7 +269,7 @@ constructor(config: Config): Encoder(config) {
          * to [OutFeed] (decoding).
          *
          * @throws [EncodingException] if [isClosed] is true, or
-         *   there was an error decoding.
+         *   there was an error encoding/decoding.
          * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
@@ -311,12 +308,12 @@ constructor(config: Config): Encoder(config) {
 
     final override fun hashCode(): Int {
         var result = 17
-        result = result * 31 + toString().hashCode()
+        result = result * 31 + name().hashCode()
         result = result * 31 + config.hashCode()
         return result
     }
 
     final override fun toString(): String {
-        return "EncoderDecoder[${name()}]"
+        return "EncoderDecoder[${name()}]@${hashCode()}"
     }
 }

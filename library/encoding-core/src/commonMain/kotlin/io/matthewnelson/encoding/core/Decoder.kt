@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("SpellCheckingInspection")
 
 package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.decode
-import io.matthewnelson.encoding.core.internal.BitBuffer
+import io.matthewnelson.encoding.core.internal.buffer.Buffer
 import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toDecoderInput
 import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic
@@ -58,7 +58,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
      * @see [newDecoderFeed]
      * @see [EncoderDecoder.Feed]
      * @see [use]
-     * @see [BitBuffer]
+     * @see [Buffer]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi

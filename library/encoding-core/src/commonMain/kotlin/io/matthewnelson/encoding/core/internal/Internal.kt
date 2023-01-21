@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("KotlinRedundantDiagnosticSuppress")
+package io.matthewnelson.encoding.core.internal
 
-package io.matthewnelson.encoding.core.util
+import kotlin.jvm.JvmSynthetic
 
-@Suppress("NOTHING_TO_INLINE")
-public inline val Char.byte: Byte get() = code.toByte()
-
-@Suppress("NOTHING_TO_INLINE")
-public inline val Byte.char: Char get() = toInt().toChar()
+/**
+ * Something to pass as an argument to public
+ * functions which only this module can access.
+ * */
+@InternalEncodingApi
+public class Internal private constructor() {
+    internal companion object {
+        private val instance = Internal()
+        @JvmSynthetic
+        internal fun get(): Internal = instance
+    }
+}

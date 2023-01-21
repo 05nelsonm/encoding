@@ -18,9 +18,8 @@
 package io.matthewnelson.encoding.builders
 
 import io.matthewnelson.encoding.base32.Base32
+import io.matthewnelson.encoding.base32.internal.isCheckSymbol
 import io.matthewnelson.encoding.core.EncodingException
-import io.matthewnelson.encoding.core.util.byte
-import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -150,7 +149,7 @@ public class Base32CrockfordConfigBuilder {
         isLenient = config.isLenient ?: true
         encodeToLowercase = config.encodeToLowercase
         hyphenInterval = config.hyphenInterval
-        checkByte = config.checkByte
+        checkSymbol = config.checkSymbol
     }
 
     /**
@@ -193,11 +192,9 @@ public class Base32CrockfordConfigBuilder {
     @JvmField
     public var hyphenInterval: Byte = 0
 
-    @get:JvmName("checkByte")
-    public var checkByte: Byte? = null
-        private set
     @get:JvmName("checkSymbol")
-    public val checkSymbol: Char? get() = checkByte?.char
+    public var checkSymbol: Char? = null
+        private set
 
     /**
      * Specify an optional check symbol to be appended to the encoded
@@ -210,14 +207,14 @@ public class Base32CrockfordConfigBuilder {
      * @throws [IllegalArgumentException] If not a valid check symbol.
      * */
     @Throws(IllegalArgumentException::class)
-    public fun checkByte(checkSymbol: Char?): Base32CrockfordConfigBuilder {
-        when (checkSymbol) {
-            null, '*', '~', '$', '=', 'U', 'u' -> {
-                checkByte = checkSymbol?.byte
+    public fun checkSymbol(symbol: Char?): Base32CrockfordConfigBuilder {
+        when {
+            symbol == null || symbol.isCheckSymbol() -> {
+                checkSymbol = symbol
             }
             else -> {
                 throw IllegalArgumentException(
-                    "checkSymbol[$checkSymbol] not recognized.\n" +
+                    "CheckSymbol[$symbol] not recognized.\n" +
                     "Must be one of the following characters: *, ~, \$, =, U, u\n" +
                     "OR null to omit"
                 )
