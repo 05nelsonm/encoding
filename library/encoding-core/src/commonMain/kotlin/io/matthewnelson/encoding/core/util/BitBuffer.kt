@@ -16,6 +16,7 @@
 package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.ExperimentalEncodingApi
 import kotlin.jvm.JvmStatic
 
 /**
@@ -41,6 +42,7 @@ import kotlin.jvm.JvmStatic
  * @sample [io.matthewnelson.encoding.base16.Base16.DecodingBuffer]
  * @sample [io.matthewnelson.encoding.base32.Base32.DecodingBuffer]
  * */
+@ExperimentalEncodingApi
 public abstract class BitBuffer<T: Number>(
     public val blockSize: Byte,
     private val update: Update<T>,
