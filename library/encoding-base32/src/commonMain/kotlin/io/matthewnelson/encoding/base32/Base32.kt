@@ -19,7 +19,7 @@ package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
-import io.matthewnelson.encoding.core.util.BitBuffer
+import io.matthewnelson.encoding.core.internal.BitBuffer
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.*

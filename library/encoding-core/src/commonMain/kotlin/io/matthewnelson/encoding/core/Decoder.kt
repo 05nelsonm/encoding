@@ -18,7 +18,7 @@
 package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.decode
-import io.matthewnelson.encoding.core.util.BitBuffer
+import io.matthewnelson.encoding.core.internal.BitBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toDecoderInput
 import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic

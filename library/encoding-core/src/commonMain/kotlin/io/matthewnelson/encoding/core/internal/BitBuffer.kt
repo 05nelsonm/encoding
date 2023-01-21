@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.util
+package io.matthewnelson.encoding.core.internal
 
 import io.matthewnelson.encoding.core.EncodingException
-import io.matthewnelson.encoding.core.ExperimentalEncodingApi
 import kotlin.jvm.JvmStatic
 
 /**
@@ -42,7 +41,7 @@ import kotlin.jvm.JvmStatic
  * @sample [io.matthewnelson.encoding.base16.Base16.DecodingBuffer]
  * @sample [io.matthewnelson.encoding.base32.Base32.DecodingBuffer]
  * */
-@ExperimentalEncodingApi
+@InternalEncodingApi
 public abstract class BitBuffer<T: Number>(
     public val blockSize: Byte,
     private val update: Update<T>,

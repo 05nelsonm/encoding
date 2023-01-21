@@ -21,7 +21,7 @@ import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.util.BitBuffer
+import io.matthewnelson.encoding.core.internal.BitBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.char
 import io.matthewnelson.encoding.core.util.lowercaseCharByte
