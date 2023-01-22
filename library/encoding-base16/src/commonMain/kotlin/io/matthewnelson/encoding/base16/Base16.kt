@@ -118,6 +118,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
     }
 
+    @ExperimentalEncodingApi
     override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
         return object : Encoder.Feed() {
 
@@ -137,6 +138,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
         }
     }
 
+    @ExperimentalEncodingApi
     override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
         return object : Decoder.Feed() {
 
