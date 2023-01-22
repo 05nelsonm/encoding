@@ -216,8 +216,9 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
     private inner class Base64DecodingBuffer(out: OutFeed): DecodingBuffer(
         blockSize = 4,
         flush = { buffer ->
-            // Append each char's 6 bits to the buffer.
             var bitBuffer = 0
+
+            // Append each char's 6 bits to the bitBuffer.
             for (bits in buffer) {
                 bitBuffer = bitBuffer shl 6 or bits
             }
@@ -234,11 +235,14 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
             }
 
             var bitBuffer = 0
+
+            // Append each char remaining in the buffer to the bitBuffer.
             for (i in 0 until modulus) {
                 bitBuffer = bitBuffer shl 6 or buffer[i]
             }
 
             when (modulus) {
+                0 -> { /* no-op */ }
                 2 -> {
                     // We read 2 chars followed by "==". Emit 1 byte with 8 of those 12 bits.
                     bitBuffer = bitBuffer shl 12

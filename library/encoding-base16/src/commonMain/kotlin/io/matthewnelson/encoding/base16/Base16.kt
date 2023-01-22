@@ -21,8 +21,8 @@ import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.internal.buffer.DecodingBuffer
 import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.core.util.buffer.DecodingBuffer
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
@@ -182,20 +182,22 @@ public class Base16(config: Config): EncoderDecoder(config) {
 
     override fun name(): String = "Base16"
 
-    private inner class Base16DecodingBuffer(out: OutFeed): DecodingBuffer.TypeInt(
+    private inner class Base16DecodingBuffer(out: OutFeed): DecodingBuffer(
         blockSize = 2,
-        update = { buffer, bits ->
-            buffer shl 4 or bits
-        },
         flush = { buffer ->
-            out.invoke(buffer.toByte())
+            var bitBuffer = 0
+            for (bits in buffer) {
+                bitBuffer = (bitBuffer shl 4) or bits
+            }
+
+            out.invoke(bitBuffer.toByte())
         },
-        finalize = { count, blockSize, _ , _->
-            when (count % blockSize) {
-                0 -> {}
+        finalize = { modulus, _->
+            when (modulus) {
+                0 -> { /* no-op */ }
                 else -> {
                     // 4*1 = 4 bits. Truncated, fail.
-                    throw truncatedInputEncodingException(count)
+                    throw truncatedInputEncodingException(modulus)
                 }
             }
         }

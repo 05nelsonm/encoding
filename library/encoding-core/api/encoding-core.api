@@ -108,58 +108,6 @@ public final class io/matthewnelson/encoding/core/internal/EncodingTable$Compani
 public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
 }
 
-public final class io/matthewnelson/encoding/core/internal/buffer/Buffer$Companion {
-	public final fun truncatedInputEncodingException (I)Lio/matthewnelson/encoding/core/EncodingException;
-}
-
-public abstract interface class io/matthewnelson/encoding/core/internal/buffer/Buffer$Finalize {
-	public abstract fun invoke (IILjava/lang/Number;Ljava/lang/Object;)V
-}
-
-public abstract interface class io/matthewnelson/encoding/core/internal/buffer/Buffer$Flush {
-	public abstract fun invoke (Ljava/lang/Number;)V
-}
-
-public abstract interface class io/matthewnelson/encoding/core/internal/buffer/Buffer$Update {
-	public abstract fun invoke (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
-}
-
-public abstract class io/matthewnelson/encoding/core/internal/buffer/DecodingBuffer$TypeInt : io/matthewnelson/encoding/core/internal/buffer/DecodingBuffer {
-	public fun <init> (ILio/matthewnelson/encoding/core/internal/buffer/Buffer$Update;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Flush;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Finalize;)V
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Integer;
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Number;
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;I)V
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;Ljava/lang/Number;)V
-	protected final fun reset (Lio/matthewnelson/encoding/core/internal/Internal;)V
-}
-
-public abstract class io/matthewnelson/encoding/core/internal/buffer/DecodingBuffer$TypeLong : io/matthewnelson/encoding/core/internal/buffer/DecodingBuffer {
-	public fun <init> (ILio/matthewnelson/encoding/core/internal/buffer/Buffer$Update;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Flush;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Finalize;)V
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Long;
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Number;
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;J)V
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;Ljava/lang/Number;)V
-	protected final fun reset (Lio/matthewnelson/encoding/core/internal/Internal;)V
-}
-
-public abstract class io/matthewnelson/encoding/core/internal/buffer/EncodingBuffer$TypeInt : io/matthewnelson/encoding/core/internal/buffer/EncodingBuffer {
-	public fun <init> (ILio/matthewnelson/encoding/core/internal/buffer/Buffer$Update;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Flush;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Finalize;)V
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Integer;
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Number;
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;I)V
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;Ljava/lang/Number;)V
-	protected final fun reset (Lio/matthewnelson/encoding/core/internal/Internal;)V
-}
-
-public abstract class io/matthewnelson/encoding/core/internal/buffer/EncodingBuffer$TypeLong : io/matthewnelson/encoding/core/internal/buffer/EncodingBuffer {
-	public fun <init> (ILio/matthewnelson/encoding/core/internal/buffer/Buffer$Update;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Flush;Lio/matthewnelson/encoding/core/internal/buffer/Buffer$Finalize;)V
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Long;
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;)Ljava/lang/Number;
-	protected final fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;J)V
-	public synthetic fun bitBuffer (Lio/matthewnelson/encoding/core/internal/Internal;Ljava/lang/Number;)V
-	protected final fun reset (Lio/matthewnelson/encoding/core/internal/Internal;)V
-}
-
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public static final field Companion Lio/matthewnelson/encoding/core/util/DecoderInput$Companion;
 	public final field lastRelevantCharacter I
