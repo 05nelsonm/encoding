@@ -19,6 +19,7 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutSizeOrFail
+import io.matthewnelson.encoding.core.util.buffer.EncodingBuffer
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmStatic
 
@@ -58,6 +59,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
      * @see [newEncoderFeed]
      * @see [EncoderDecoder.Feed]
      * @see [use]
+     * @see [EncodingBuffer]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi

@@ -28,8 +28,10 @@ import io.matthewnelson.encoding.core.internal.InternalEncodingApi
  * @see [FeedBuffer.Flush]
  * @see [FeedBuffer.Finalize]
  * @throws [IllegalArgumentException] if [blockSize] is less
- *   than or equal to 0
+ *   than or equal to 0.
  * @sample [io.matthewnelson.encoding.base64.Base64.newDecoderFeed]
+ * @sample [io.matthewnelson.encoding.base16.Base16.Base16DecodingBuffer]
+ * @sample [io.matthewnelson.encoding.base32.Base32.Base32DecodingBuffer]
  * @sample [io.matthewnelson.encoding.base64.Base64.Base64DecodingBuffer]
  * */
 public abstract class DecodingBuffer
