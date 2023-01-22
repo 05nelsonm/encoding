@@ -26,8 +26,8 @@ import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.internal.EncodingTable
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.*
-import io.matthewnelson.encoding.core.internal.buffer.DecodingBuffer
-import io.matthewnelson.encoding.core.internal.buffer.EncodingBuffer
+import io.matthewnelson.encoding.core.util.buffer.DecodingBuffer
+import io.matthewnelson.encoding.core.util.buffer.EncodingBuffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
@@ -217,56 +217,56 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         throw EncodingException("Checksymbol[$symbol] was set, but decoding is still being attempted.")
                     }
 
-                    val bits: Long = when (char) {
+                    val bits: Int = when (char) {
                         in '0'..'9' -> {
                             // char ASCII value
                             //  0    48    0
                             //  9    57    9 (ASCII - 48)
-                            char.code - 48L
+                            char.code - 48
                         }
                         in 'A'..'H' -> {
                             // char ASCII value
                             //  A    65    10
                             //  H    72    17 (ASCII - 55)
-                            char.code - 55L
+                            char.code - 55
                         }
                         'I', 'L' -> {
                             // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
 
                             // char ASCII value
                             //  1    49    1 (ASCII - 48)
-                            '1'.code - 48L
+                            '1'.code - 48
                         }
                         'J', 'K' -> {
                             // char ASCII value
                             //  J    74    18
                             //  K    75    19 (ASCII - 56)
-                            char.code - 56L
+                            char.code - 56
                         }
                         'M', 'N' -> {
                             // char ASCII value
                             //  M    77    20
                             //  N    78    21 (ASCII - 57)
-                            char.code - 57L
+                            char.code - 57
                         }
                         'O' -> {
                             // Crockford treats characters 'O' and 'o' as 0
 
                             // char ASCII value
                             //  0    48    0 (ASCII - 48)
-                            '0'.code - 48L
+                            '0'.code - 48
                         }
                         in 'P'..'T' -> {
                             // char ASCII value
                             //  P    80    22
                             //  T    84    26 (ASCII - 58)
-                            char.code - 58L
+                            char.code - 58
                         }
                         in 'V'..'Z' -> {
                             // char ASCII value
                             //  V    86    27
                             //  Z    90    31 (ASCII - 59)
-                            char.code - 59L
+                            char.code - 59
                         }
                         // We don't care about little u b/c
                         // everything is being uppercased.
@@ -463,18 +463,18 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         input.char
                     }
 
-                    val bits: Long = when (char) {
+                    val bits: Int = when (char) {
                         in '2'..'7' -> {
                             // char ASCII value
                             //  2    50    26
                             //  7    55    31 (ASCII - 24)
-                            char.code - 24L
+                            char.code - 24
                         }
                         in 'A'..'Z' -> {
                             // char ASCII value
                             //  A    65    0
                             //  Z    90    25 (ASCII - 65)
-                            char.code - 65L
+                            char.code - 65
                         }
                         else -> {
                             throw EncodingException("Char[${input.char}] is not a valid Base32 Default character")
@@ -628,18 +628,18 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         input.char
                     }
 
-                    val bits: Long = when (char) {
+                    val bits: Int = when (char) {
                         in '0'..'9' -> {
                             // char ASCII value
                             //  0    48    0
                             //  9    57    9 (ASCII - 48)
-                            char.code - 48L
+                            char.code - 48
                         }
                         in 'A'..'V' -> {
                             // char ASCII value
                             //  A    65    10
                             //  V    86    31 (ASCII - 55)
-                            char.code - 55L
+                            char.code - 55
                         }
                         else -> {
                             throw EncodingException("Char[${input.char}] is not a valid Base32 Hex character")
@@ -691,76 +691,70 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         out: OutFeed,
         table: EncodingTable,
         paddingByte: Byte?,
-    ): EncodingBuffer.TypeLong(
+    ): EncodingBuffer(
         blockSize = 5,
-        update = { buffer, bits ->
-            // Append the char's 8 bits to the buffer
-            (buffer shl 8) + bits
-        },
         flush = { buffer ->
+            var bitBuffer = 0L
+
+            // Append each char's 8 bits to the bitBuffer
+            for (byte in buffer) {
+                bitBuffer =  (bitBuffer shl  8) + byte.toBits()
+            }
+
             // For every 5 chars of input, we accumulate
             // 40 bits of output. Emit 8 bytes.
-            out.invoke(table[(buffer shr 35 and 0x1fL).toInt()]) // 40-1*5 = 35
-            out.invoke(table[(buffer shr 30 and 0x1fL).toInt()]) // 40-2*5 = 30
-            out.invoke(table[(buffer shr 25 and 0x1fL).toInt()]) // 40-3*5 = 25
-            out.invoke(table[(buffer shr 20 and 0x1fL).toInt()]) // 40-4*5 = 20
-            out.invoke(table[(buffer shr 15 and 0x1fL).toInt()]) // 40-5*5 = 15
-            out.invoke(table[(buffer shr 10 and 0x1fL).toInt()]) // 40-6*5 = 10
-            out.invoke(table[(buffer shr  5 and 0x1fL).toInt()]) // 40-7*5 =  5
-            out.invoke(table[(buffer        and 0x1fL).toInt()]) // 40-8*5 =  0
+            out.invoke(table[(bitBuffer shr 35 and 0x1fL).toInt()]) // 40-1*5 = 35
+            out.invoke(table[(bitBuffer shr 30 and 0x1fL).toInt()]) // 40-2*5 = 30
+            out.invoke(table[(bitBuffer shr 25 and 0x1fL).toInt()]) // 40-3*5 = 25
+            out.invoke(table[(bitBuffer shr 20 and 0x1fL).toInt()]) // 40-4*5 = 20
+            out.invoke(table[(bitBuffer shr 15 and 0x1fL).toInt()]) // 40-5*5 = 15
+            out.invoke(table[(bitBuffer shr 10 and 0x1fL).toInt()]) // 40-6*5 = 10
+            out.invoke(table[(bitBuffer shr  5 and 0x1fL).toInt()]) // 40-7*5 =  5
+            out.invoke(table[(bitBuffer        and 0x1fL).toInt()]) // 40-8*5 =  0
         },
-        finalize = { count, blockSize, buf, byteBuffer ->
-            var buffer = buf
+        finalize = { modulus, buffer ->
+            var bitBuffer = 0L
 
-            val padCount: Int = when (count % blockSize) {
+            // Append each char remaining in the buffer to the bitBuffer
+            for (i in 0 until modulus) {
+                bitBuffer =  (bitBuffer shl  8) + buffer[i].toBits()
+            }
+
+            val padCount: Int = when (modulus) {
                 0 -> { 0 }
                 1 -> {
                     // 8*1 = 8 bits
-                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
-
-                    out.invoke(table[(buffer shr  3 and 0x1fL).toInt()]) // 8-1*5 = 3
-                    out.invoke(table[(buffer shl  2 and 0x1fL).toInt()]) // 5-3 = 2
+                    out.invoke(table[(bitBuffer shr  3 and 0x1fL).toInt()]) // 8-1*5 = 3
+                    out.invoke(table[(bitBuffer shl  2 and 0x1fL).toInt()]) // 5-3 = 2
                     6
                 }
                 2 -> {
                     // 8*2 = 16 bits
-                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
-                    buffer =         (buffer shl  8) + byteBuffer[1].toBits()
-
-                    out.invoke(table[(buffer shr 11 and 0x1fL).toInt()]) // 16-1*5 = 11
-                    out.invoke(table[(buffer shr  6 and 0x1fL).toInt()]) // 16-2*5 = 6
-                    out.invoke(table[(buffer shr  1 and 0x1fL).toInt()]) // 16-3*5 = 1
-                    out.invoke(table[(buffer shl  4 and 0x1fL).toInt()]) // 5-1 = 4
+                    out.invoke(table[(bitBuffer shr 11 and 0x1fL).toInt()]) // 16-1*5 = 11
+                    out.invoke(table[(bitBuffer shr  6 and 0x1fL).toInt()]) // 16-2*5 = 6
+                    out.invoke(table[(bitBuffer shr  1 and 0x1fL).toInt()]) // 16-3*5 = 1
+                    out.invoke(table[(bitBuffer shl  4 and 0x1fL).toInt()]) // 5-1 = 4
                     4
                 }
                 3 -> {
                     // 8*3 = 24 bits
-                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
-                    buffer =         (buffer shl  8) + byteBuffer[1].toBits()
-                    buffer =         (buffer shl  8) + byteBuffer[2].toBits()
-
-                    out.invoke(table[(buffer shr 19 and 0x1fL).toInt()]) // 24-1*5 = 19
-                    out.invoke(table[(buffer shr 14 and 0x1fL).toInt()]) // 24-2*5 = 14
-                    out.invoke(table[(buffer shr  9 and 0x1fL).toInt()]) // 24-3*5 = 9
-                    out.invoke(table[(buffer shr  4 and 0x1fL).toInt()]) // 24-4*5 = 4
-                    out.invoke(table[(buffer shl  1 and 0x1fL).toInt()]) // 5-4 = 1
+                    out.invoke(table[(bitBuffer shr 19 and 0x1fL).toInt()]) // 24-1*5 = 19
+                    out.invoke(table[(bitBuffer shr 14 and 0x1fL).toInt()]) // 24-2*5 = 14
+                    out.invoke(table[(bitBuffer shr  9 and 0x1fL).toInt()]) // 24-3*5 = 9
+                    out.invoke(table[(bitBuffer shr  4 and 0x1fL).toInt()]) // 24-4*5 = 4
+                    out.invoke(table[(bitBuffer shl  1 and 0x1fL).toInt()]) // 5-4 = 1
                     3
                 }
                 // 4
                 else -> {
                     // 8*4 = 32 bits
-                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
-                    buffer =         (buffer shl  8) + byteBuffer[1].toBits()
-                    buffer =         (buffer shl  8) + byteBuffer[2].toBits()
-                    buffer =         (buffer shl  8) + byteBuffer[3].toBits()
-
-                    out.invoke(table[(buffer shr 27 and 0x1fL).toInt()]) // 32-1*5 = 27
-                    out.invoke(table[(buffer shr 22 and 0x1fL).toInt()]) // 32-2*5 = 22
-                    out.invoke(table[(buffer shr 17 and 0x1fL).toInt()]) // 32-3*5 = 17
-                    out.invoke(table[(buffer shr 12 and 0x1fL).toInt()]) // 32-4*5 = 12
-                    out.invoke(table[(buffer shr  7 and 0x1fL).toInt()]) // 32-5*5 = 7
-                    out.invoke(table[(buffer shr  2 and 0x1fL).toInt()]) // 32-6*5 = 2
-                    out.invoke(table[(buffer shl  3 and 0x1fL).toInt()]) // 5-2 = 3
+                    out.invoke(table[(bitBuffer shr 27 and 0x1fL).toInt()]) // 32-1*5 = 27
+                    out.invoke(table[(bitBuffer shr 22 and 0x1fL).toInt()]) // 32-2*5 = 22
+                    out.invoke(table[(bitBuffer shr 17 and 0x1fL).toInt()]) // 32-3*5 = 17
+                    out.invoke(table[(bitBuffer shr 12 and 0x1fL).toInt()]) // 32-4*5 = 12
+                    out.invoke(table[(bitBuffer shr  7 and 0x1fL).toInt()]) // 32-5*5 = 7
+                    out.invoke(table[(bitBuffer shr  2 and 0x1fL).toInt()]) // 32-6*5 = 2
+                    out.invoke(table[(bitBuffer shl  3 and 0x1fL).toInt()]) // 5-2 = 3
                     1
                 }
             }
@@ -770,70 +764,76 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     out.invoke(byte)
                 }
             }
-        }
-    ) {
-        override fun toBits(byte: Byte): Long = byte.toBits()
-    }
-
-    private inner class Base32DecodingBuffer(out: OutFeed): DecodingBuffer.TypeLong(
-        blockSize = 8,
-        update = { buffer, bits ->
-            // Append the char's 5 bits to the buffer
-            buffer shl 5 or bits
         },
+    )
+
+    private inner class Base32DecodingBuffer(out: OutFeed): DecodingBuffer(
+        blockSize = 8,
         flush = { buffer ->
+            // Append each char's 5 bits to the buffer
+            var bitBuffer = 0L
+            for (bits in buffer) {
+                bitBuffer = (bitBuffer shl 5) or bits.toLong()
+            }
+
             // For every 8 chars of input, we accumulate
             // 40 bits of output data. Emit 5 bytes.
-            out.invoke((buffer shr 32).toByte())
-            out.invoke((buffer shr 24).toByte())
-            out.invoke((buffer shr 16).toByte())
-            out.invoke((buffer shr  8).toByte())
-            out.invoke((buffer       ).toByte())
+            out.invoke((bitBuffer shr 32).toByte())
+            out.invoke((bitBuffer shr 24).toByte())
+            out.invoke((bitBuffer shr 16).toByte())
+            out.invoke((bitBuffer shr  8).toByte())
+            out.invoke((bitBuffer       ).toByte())
         },
-        finalize = { count, blockSize, buf, _ ->
-            var buffer = buf
-
-            when (count % blockSize) {
-                0 -> {}
+        finalize = { modulus, buffer ->
+            when (modulus) {
                 1, 3, 6 -> {
                     // 5*1 =  5 bits. Truncated, fail.
                     // 5*3 = 15 bits. Truncated, fail.
                     // 5*6 = 30 bits. Truncated, fail.
-                    throw truncatedInputEncodingException(count)
+                    throw truncatedInputEncodingException(modulus)
                 }
+            }
+
+            var bitBuffer = 0L
+            for (i in 0 until modulus) {
+                bitBuffer = (bitBuffer shl 5) or buffer[i].toLong()
+            }
+
+            when (modulus) {
+                0 -> { /* no-op */ }
                 2 -> {
                     // 5*2 = 10 bits. Drop 2
-                    buffer =    buffer shr  2
+                    bitBuffer = bitBuffer shr  2
 
                     // 8/8 = 1 byte
-                    out.invoke((buffer       ).toByte())
+                    out.invoke((bitBuffer       ).toByte())
                 }
                 4 -> {
                     // 5*4 = 20 bits. Drop 4
-                    buffer =    buffer shr  4
+                    bitBuffer = bitBuffer shr  4
 
                     // 16/8 = 2 bytes
-                    out.invoke((buffer shr  8).toByte())
-                    out.invoke((buffer       ).toByte())
+                    out.invoke((bitBuffer shr  8).toByte())
+                    out.invoke((bitBuffer       ).toByte())
                 }
                 5 -> {
                     // 5*5 = 25 bits. Drop 1
-                    buffer =    buffer shr  1
+                    bitBuffer = bitBuffer shr  1
 
                     // 24/8 = 3 bytes
-                    out.invoke((buffer shr 16).toByte())
-                    out.invoke((buffer shr  8).toByte())
-                    out.invoke((buffer       ).toByte())
+                    out.invoke((bitBuffer shr 16).toByte())
+                    out.invoke((bitBuffer shr  8).toByte())
+                    out.invoke((bitBuffer       ).toByte())
                 }
                 7 -> {
                     // 5*7 = 35 bits. Drop 3
-                    buffer =    buffer shr  3
+                    bitBuffer = bitBuffer shr  3
 
                     // 32/8 = 4 bytes
-                    out.invoke((buffer shr 24).toByte())
-                    out.invoke((buffer shr 16).toByte())
-                    out.invoke((buffer shr  8).toByte())
-                    out.invoke((buffer       ).toByte())
+                    out.invoke((bitBuffer shr 24).toByte())
+                    out.invoke((bitBuffer shr 16).toByte())
+                    out.invoke((bitBuffer shr  8).toByte())
+                    out.invoke((bitBuffer       ).toByte())
                 }
             }
         }
