@@ -29,6 +29,8 @@ import io.matthewnelson.encoding.core.internal.InternalEncodingApi
  * @see [FeedBuffer.Finalize]
  * @throws [IllegalArgumentException] if [blockSize] is less
  *   than or equal to 0
+ * @sample [io.matthewnelson.encoding.base64.Base64.newEncoderFeed]
+ * @sample [io.matthewnelson.encoding.base64.Base64.Base64EncodingBuffer]
  * */
 public abstract class EncodingBuffer
 @Throws(IllegalArgumentException::class)

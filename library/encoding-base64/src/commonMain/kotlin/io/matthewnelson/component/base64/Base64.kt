@@ -32,14 +32,21 @@
 
 package io.matthewnelson.component.base64
 
+import io.matthewnelson.encoding.builders.Base64
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
+import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmOverloads
-import kotlin.jvm.JvmSynthetic
-import kotlin.native.concurrent.SharedImmutable
 
-@SharedImmutable
-private val DEFAULT_TABLE = Base64.Default.CHARS.encodeToByteArray()
-@SharedImmutable
-private val URL_SAFE_TABLE = Base64.UrlSafe.CHARS.encodeToByteArray()
+@PublishedApi
+@InternalEncodingApi
+internal val COMPATIBILITY_DEFAULT: io.matthewnelson.encoding.base64.Base64 = Base64 {
+    isLenient = true
+    encodeToUrlSafe = false
+    padEncoded = true
+}
 
 /**
  * This is a derivative work from Okio's Base64 implementation which can
@@ -52,16 +59,12 @@ private val URL_SAFE_TABLE = Base64.UrlSafe.CHARS.encodeToByteArray()
  * */
 public sealed class Base64 {
 
-    @get:JvmSynthetic
-    internal abstract val encodingTable: ByteArray
-
     /**
      * Base64 encoding in accordance with RFC 4648 seciton 4
      * https://www.ietf.org/rfc/rfc4648.html#section-4
      * */
     public object Default: Base64() {
-        public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-        override val encodingTable: ByteArray get() = DEFAULT_TABLE
+        public const val CHARS: String = io.matthewnelson.encoding.base64.Base64.Default.CHARS
     }
 
     /**
@@ -74,174 +77,71 @@ public sealed class Base64 {
     public data class UrlSafe @JvmOverloads constructor(val pad: Boolean = true): Base64() {
 
         public companion object {
-            public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+            public const val CHARS: String = io.matthewnelson.encoding.base64.Base64.UrlSafe.CHARS
         }
-
-        override val encodingTable: ByteArray get() = URL_SAFE_TABLE
     }
 }
 
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase64ToArray(): ByteArray? {
-    return toCharArray().decodeBase64ToArray()
+    @OptIn(InternalEncodingApi::class)
+    return decodeToByteArrayOrNull(COMPATIBILITY_DEFAULT)
 }
 
 public fun CharArray.decodeBase64ToArray(): ByteArray? {
-    var limit = size
-
-    // Disregard padding and/or whitespace from end of input
-    while (limit > 0) {
-        val c = this[limit - 1]
-        if (c != '=' && c != '\n' && c != '\r' && c != ' ' && c != '\t') {
-            break
-        }
-        limit--
-    }
-
-    // Was all padding, whitespace, or otherwise ignorable characters
-    if (limit == 0) {
-        return ByteArray(0)
-    }
-
-    // If the input includes whitespace, this output array will be longer than necessary.
-    val out: ByteArray = ByteArray((limit * 6L / 8L).toInt())
-    var outCount: Int = 0
-    var inCount: Int = 0
-
-    var bitBuffer: Int = 0
-    for (i in 0 until limit) {
-        val c = this[i]
-
-        val bits: Int
-        if (c in 'A'..'Z') {
-            // char ASCII value
-            //  A    65    0
-            //  Z    90    25 (ASCII - 65)
-            bits = c.code - 65
-        } else if (c in 'a'..'z') {
-            // char ASCII value
-            //  a    97    26
-            //  z    122   51 (ASCII - 71)
-            bits = c.code - 71
-        } else if (c in '0'..'9') {
-            // char ASCII value
-            //  0    48    52
-            //  9    57    61 (ASCII + 4)
-            bits = c.code + 4
-        } else if (c == '+' || c == '-') {
-            bits = 62
-        } else if (c == '/' || c == '_') {
-            bits = 63
-        } else if (c == '\n' || c == '\r' || c == ' ' || c == '\t') {
-            continue
-        } else {
-            return null
-        }
-
-        // Append this char's 6 bits to the word.
-        bitBuffer = bitBuffer shl 6 or bits
-
-        // For every 4 chars of input, we accumulate 24 bits of output. Emit 3 bytes.
-        inCount++
-        if (inCount % 4 == 0) {
-            out[outCount++] = (bitBuffer shr 16).toByte()
-            out[outCount++] = (bitBuffer shr 8).toByte()
-            out[outCount++] = bitBuffer.toByte()
-        }
-    }
-
-    when (inCount % 4) {
-        1 -> {
-            // We read 1 char followed by "===". But 6 bits is a truncated byte! Fail.
-            return null
-        }
-        2 -> {
-            // We read 2 chars followed by "==". Emit 1 byte with 8 of those 12 bits.
-            bitBuffer = bitBuffer shl 12
-            out[outCount++] = (bitBuffer shr 16).toByte()
-        }
-        3 -> {
-            // We read 3 chars, followed by "=". Emit 2 bytes for 16 of those 18 bits.
-            bitBuffer = bitBuffer shl 6
-            out[outCount++] = (bitBuffer shr 16).toByte()
-            out[outCount++] = (bitBuffer shr 8).toByte()
-        }
-    }
-
-    return if (outCount == out.size) {
-        // If we sized our out array perfectly, we're done.
-        out
-    } else {
-        // Copy the decoded bytes to a new, right-sized array.
-        out.copyOf(outCount)
-    }
+    @OptIn(InternalEncodingApi::class)
+    return decodeToByteArrayOrNull(COMPATIBILITY_DEFAULT)
 }
 
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64 = Base64.Default): String {
-    return encodeBase64ToCharArray(base64).joinToString("")
+    @OptIn(InternalEncodingApi::class)
+    return when (base64) {
+        is Base64.Default -> {
+            encodeToString(COMPATIBILITY_DEFAULT)
+        }
+        is Base64.UrlSafe -> {
+            encodeToString(Base64 {
+                isLenient = true
+                encodeToUrlSafe = true
+                padEncoded = base64.pad
+            })
+        }
+    }
 }
 
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64 = Base64.Default): CharArray {
-    return encodeBase64ToByteArray(base64).let { bytes ->
-        val chars = CharArray(bytes.size)
-        for ((i, byte) in bytes.withIndex()) {
-            chars[i] = byte.toInt().toChar()
+    @OptIn(InternalEncodingApi::class)
+    return when (base64) {
+        is Base64.Default -> {
+            encodeToCharArray(COMPATIBILITY_DEFAULT)
         }
-        chars
+        is Base64.UrlSafe -> {
+            encodeToCharArray(Base64 {
+                isLenient = true
+                encodeToUrlSafe = true
+                padEncoded = base64.pad
+            })
+        }
     }
 }
 
 @JvmOverloads
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64 = Base64.Default): ByteArray {
-    val base64Lookup: ByteArray = base64.encodingTable
-
-    val out = ByteArray((size + 2) / 3 * 4)
-
-    var index = 0
-    val end = size - size % 3
-    var i = 0
-
-    while (i < end) {
-        val b0 = this[i++].toInt()
-        val b1 = this[i++].toInt()
-        val b2 = this[i++].toInt()
-        out[index++] = base64Lookup[(b0 and 0xff shr 2)]
-        out[index++] = base64Lookup[(b0 and 0x03 shl 4) or (b1 and 0xff shr 4)]
-        out[index++] = base64Lookup[(b1 and 0x0f shl 2) or (b2 and 0xff shr 6)]
-        out[index++] = base64Lookup[(b2 and 0x3f)]
-    }
-
-    val indicesLeftOver = size - end
-    when (indicesLeftOver) {
-        0 -> {}
-        1 -> {
-            val b0 = this[i].toInt()
-            out[index++] = base64Lookup[b0 and 0xff shr 2]
-            out[index++] = base64Lookup[b0 and 0x03 shl 4]
-            if (base64 is Base64.Default || (base64 is Base64.UrlSafe && base64.pad)) {
-                out[index++] = '='.code.toByte()
-                out[index]   = '='.code.toByte()
-            }
+    @OptIn(InternalEncodingApi::class)
+    return when (base64) {
+        is Base64.Default -> {
+            encodeToByteArray(COMPATIBILITY_DEFAULT)
         }
-        2 -> {
-            val b0 = this[i++].toInt()
-            val b1 = this[i].toInt()
-            out[index++] = base64Lookup[(b0 and 0xff shr 2)]
-            out[index++] = base64Lookup[(b0 and 0x03 shl 4) or (b1 and 0xff shr 4)]
-            out[index++] = base64Lookup[(b1 and 0x0f shl 2)]
-            if (base64 is Base64.Default || (base64 is Base64.UrlSafe && base64.pad)) {
-                out[index]  = '='.code.toByte()
-            }
+        is Base64.UrlSafe -> {
+            encodeToByteArray(Base64 {
+                isLenient = true
+                encodeToUrlSafe = true
+                padEncoded = base64.pad
+            })
         }
-    }
-
-    return if (base64 is Base64.UrlSafe && !base64.pad && indicesLeftOver != 0) {
-        out.copyOf(index)
-    } else {
-        out
     }
 }
