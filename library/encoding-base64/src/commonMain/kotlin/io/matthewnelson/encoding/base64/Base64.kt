@@ -31,7 +31,7 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
 /**
- * Base 64 encoding/decoding in accordance with
+ * Base64 encoding/decoding in accordance with
  * RFC 4648 section 4 & 5 (Default & UrlSafe)
  *
  * https://www.ietf.org/rfc/rfc4648.html#section-4
@@ -216,7 +216,7 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
     private inner class Base64DecodingBuffer(out: OutFeed): DecodingBuffer(
         blockSize = 4,
         flush = { buffer ->
-            // Append this char's 6 bits to the word.
+            // Append each char's 6 bits to the buffer.
             var bitBuffer = 0
             for (bits in buffer) {
                 bitBuffer = bitBuffer shl 6 or bits
