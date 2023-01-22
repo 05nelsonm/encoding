@@ -706,61 +706,61 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             out.invoke(table[(buffer shr 20 and 0x1fL).toInt()]) // 40-4*5 = 20
             out.invoke(table[(buffer shr 15 and 0x1fL).toInt()]) // 40-5*5 = 15
             out.invoke(table[(buffer shr 10 and 0x1fL).toInt()]) // 40-6*5 = 10
-            out.invoke(table[(buffer shr  5 and 0x1fL).toInt()]) // 40-7*5 = 5
-            out.invoke(table[(buffer        and 0x1fL).toInt()]) // 40-8*5 = 0
+            out.invoke(table[(buffer shr  5 and 0x1fL).toInt()]) // 40-7*5 =  5
+            out.invoke(table[(buffer        and 0x1fL).toInt()]) // 40-8*5 =  0
         },
         finalize = { count, blockSize, buf, byteBuffer ->
-            var bitBuffer = buf
+            var buffer = buf
 
             val padCount: Int = when (count % blockSize) {
                 0 -> { 0 }
                 1 -> {
                     // 8*1 = 8 bits
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[0].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
 
-                    out.invoke(table[(bitBuffer shr 3 and 0x1fL).toInt()]) // 8-1*5 = 3
-                    out.invoke(table[(bitBuffer shl 2 and 0x1fL).toInt()]) // 5-3 = 2
+                    out.invoke(table[(buffer shr  3 and 0x1fL).toInt()]) // 8-1*5 = 3
+                    out.invoke(table[(buffer shl  2 and 0x1fL).toInt()]) // 5-3 = 2
                     6
                 }
                 2 -> {
                     // 8*2 = 16 bits
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[0].toBits()
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[1].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[1].toBits()
 
-                    out.invoke(table[(bitBuffer shr 11 and 0x1fL).toInt()]) // 16-1*5 = 11
-                    out.invoke(table[(bitBuffer shr  6 and 0x1fL).toInt()]) // 16-2*5 = 6
-                    out.invoke(table[(bitBuffer shr  1 and 0x1fL).toInt()]) // 16-3*5 = 1
-                    out.invoke(table[(bitBuffer shl  4 and 0x1fL).toInt()]) // 5-1 = 4
+                    out.invoke(table[(buffer shr 11 and 0x1fL).toInt()]) // 16-1*5 = 11
+                    out.invoke(table[(buffer shr  6 and 0x1fL).toInt()]) // 16-2*5 = 6
+                    out.invoke(table[(buffer shr  1 and 0x1fL).toInt()]) // 16-3*5 = 1
+                    out.invoke(table[(buffer shl  4 and 0x1fL).toInt()]) // 5-1 = 4
                     4
                 }
                 3 -> {
                     // 8*3 = 24 bits
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[0].toBits()
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[1].toBits()
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[2].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[1].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[2].toBits()
 
-                    out.invoke(table[(bitBuffer shr 19 and 0x1fL).toInt()]) // 24-1*5 = 19
-                    out.invoke(table[(bitBuffer shr 14 and 0x1fL).toInt()]) // 24-2*5 = 14
-                    out.invoke(table[(bitBuffer shr  9 and 0x1fL).toInt()]) // 24-3*5 = 9
-                    out.invoke(table[(bitBuffer shr  4 and 0x1fL).toInt()]) // 24-4*5 = 4
-                    out.invoke(table[(bitBuffer shl  1 and 0x1fL).toInt()]) // 5-4 = 1
+                    out.invoke(table[(buffer shr 19 and 0x1fL).toInt()]) // 24-1*5 = 19
+                    out.invoke(table[(buffer shr 14 and 0x1fL).toInt()]) // 24-2*5 = 14
+                    out.invoke(table[(buffer shr  9 and 0x1fL).toInt()]) // 24-3*5 = 9
+                    out.invoke(table[(buffer shr  4 and 0x1fL).toInt()]) // 24-4*5 = 4
+                    out.invoke(table[(buffer shl  1 and 0x1fL).toInt()]) // 5-4 = 1
                     3
                 }
                 // 4
                 else -> {
                     // 8*4 = 32 bits
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[0].toBits()
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[1].toBits()
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[2].toBits()
-                    bitBuffer = (bitBuffer shl 8) + byteBuffer[3].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[0].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[1].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[2].toBits()
+                    buffer =         (buffer shl  8) + byteBuffer[3].toBits()
 
-                    out.invoke(table[(bitBuffer shr 27 and 0x1fL).toInt()]) // 32-1*5 = 27
-                    out.invoke(table[(bitBuffer shr 22 and 0x1fL).toInt()]) // 32-2*5 = 22
-                    out.invoke(table[(bitBuffer shr 17 and 0x1fL).toInt()]) // 32-3*5 = 17
-                    out.invoke(table[(bitBuffer shr 12 and 0x1fL).toInt()]) // 32-4*5 = 12
-                    out.invoke(table[(bitBuffer shr  7 and 0x1fL).toInt()]) // 32-5*5 = 7
-                    out.invoke(table[(bitBuffer shr  2 and 0x1fL).toInt()]) // 32-6*5 = 2
-                    out.invoke(table[(bitBuffer shl  3 and 0x1fL).toInt()]) // 5-2 = 3
+                    out.invoke(table[(buffer shr 27 and 0x1fL).toInt()]) // 32-1*5 = 27
+                    out.invoke(table[(buffer shr 22 and 0x1fL).toInt()]) // 32-2*5 = 22
+                    out.invoke(table[(buffer shr 17 and 0x1fL).toInt()]) // 32-3*5 = 17
+                    out.invoke(table[(buffer shr 12 and 0x1fL).toInt()]) // 32-4*5 = 12
+                    out.invoke(table[(buffer shr  7 and 0x1fL).toInt()]) // 32-5*5 = 7
+                    out.invoke(table[(buffer shr  2 and 0x1fL).toInt()]) // 32-6*5 = 2
+                    out.invoke(table[(buffer shl  3 and 0x1fL).toInt()]) // 5-2 = 3
                     1
                 }
             }
