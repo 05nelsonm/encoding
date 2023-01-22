@@ -183,3 +183,43 @@ public final class io/matthewnelson/encoding/core/util/_ConversionsKt {
 	public static final fun getChar (B)C
 }
 
+public abstract class io/matthewnelson/encoding/core/util/buffer/DecodingBuffer : io/matthewnelson/encoding/core/util/buffer/FeedBuffer {
+	public fun <init> (ILio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush;Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize;)V
+	protected final fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Integer;
+	public synthetic fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Number;
+	protected final fun zero ()Ljava/lang/Integer;
+	public synthetic fun zero ()Ljava/lang/Number;
+}
+
+public abstract class io/matthewnelson/encoding/core/util/buffer/EncodingBuffer : io/matthewnelson/encoding/core/util/buffer/FeedBuffer {
+	public fun <init> (ILio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush;Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize;)V
+	protected final fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Byte;
+	public synthetic fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Number;
+	protected final fun zero ()Ljava/lang/Byte;
+	public synthetic fun zero ()Ljava/lang/Number;
+}
+
+public abstract class io/matthewnelson/encoding/core/util/buffer/FeedBuffer {
+	public static final field Companion Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Companion;
+	public final field blockSize I
+	public synthetic fun <init> (ILio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush;Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected abstract fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Number;
+	public final fun count ()I
+	public final fun finalize ()V
+	public static final fun truncatedInputEncodingException (I)Lio/matthewnelson/encoding/core/EncodingException;
+	public final fun update (Ljava/lang/Number;)V
+	protected abstract fun zero ()Ljava/lang/Number;
+}
+
+public final class io/matthewnelson/encoding/core/util/buffer/FeedBuffer$Companion {
+	public final fun truncatedInputEncodingException (I)Lio/matthewnelson/encoding/core/EncodingException;
+}
+
+public abstract interface class io/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize {
+	public abstract fun invoke (I[Ljava/lang/Number;)V
+}
+
+public abstract interface class io/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush {
+	public abstract fun invoke ([Ljava/lang/Number;)V
+}
+
