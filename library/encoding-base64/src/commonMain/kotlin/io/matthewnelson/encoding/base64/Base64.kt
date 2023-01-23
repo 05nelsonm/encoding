@@ -80,9 +80,13 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
         public val padEncoded: Boolean,
     ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-        @Throws(EncodingException::class)
-        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
+        override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return (encodedSize * 6L / 8L)
+        }
+
+        @Throws(EncodingException::class)
+        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+            return decodeOutMaxSizeProtected(encodedSize.toLong()).toInt()
         }
 
         override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
