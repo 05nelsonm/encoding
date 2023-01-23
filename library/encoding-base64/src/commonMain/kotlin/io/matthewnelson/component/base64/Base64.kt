@@ -28,6 +28,8 @@
     "PrivatePropertyName",
     "RedundantExplicitType",
     "SpellCheckingInspection",
+    "DEPRECATION",
+    "UNUSED_PARAMETER",
 )
 
 package io.matthewnelson.component.base64
@@ -37,111 +39,236 @@ import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmOverloads
 
-@PublishedApi
-@InternalEncodingApi
-internal val COMPATIBILITY_DEFAULT: io.matthewnelson.encoding.base64.Base64 = Base64 {
-    isLenient = true
-    encodeToUrlSafe = false
-    padEncoded = true
-}
-
-/**
- * This is a derivative work from Okio's Base64 implementation which can
- * be found here:
- *
- *     https://github.com/square/okio/blob/master/okio/src/commonMain/kotlin/okio/-Base64.kt
- *
- * @author original: Alexander Y. Kleymenov
- * @suppress
- * */
+@Deprecated(
+    message = "Replaced by EncoderDecoder. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "Base64",
+        imports = [
+            "io.matthewnelson.encoding.base64.Base64",
+        ]
+    ),
+    level = DeprecationLevel.WARNING,
+)
 public sealed class Base64 {
 
-    /**
-     * Base64 encoding in accordance with RFC 4648 seciton 4
-     * https://www.ietf.org/rfc/rfc4648.html#section-4
-     * */
+    @Deprecated(
+        message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+        replaceWith = ReplaceWith(
+            expression = "Default",
+            imports = [
+                "io.matthewnelson.encoding.base64.Base64.Default",
+            ]
+        ),
+        level = DeprecationLevel.WARNING,
+    )
     public object Default: Base64() {
+        @Deprecated(
+            message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+            replaceWith = ReplaceWith(
+                expression = "Default.CHARS",
+                imports = [
+                    "io.matthewnelson.encoding.base64.Base64.Default",
+                ]
+            ),
+            level = DeprecationLevel.WARNING,
+        )
         public const val CHARS: String = io.matthewnelson.encoding.base64.Base64.Default.CHARS
     }
 
-    /**
-     * Base64UrlSafe encoding in accordance with RFC 4648 section 5
-     * https://www.ietf.org/rfc/rfc4648.html#section-5
-     *
-     * @param [pad] specify whether or not to add padding character '='
-     *  while encoding (true by default).
-     * */
-    public data class UrlSafe @JvmOverloads constructor(val pad: Boolean = true): Base64() {
+    @Deprecated(
+        message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+        replaceWith = ReplaceWith(
+            expression = "Base64.UrlSafe",
+            imports = [
+                "io.matthewnelson.encoding.base64.Base64",
+            ]
+        ),
+        level = DeprecationLevel.WARNING,
+    )
+    public data class UrlSafe @JvmOverloads constructor(
+
+        @Deprecated(
+            message = "Replaced by EncoderDecoders. Use io.matthewnelson.builders.Base64UrlSafe to set",
+            level = DeprecationLevel.WARNING,
+        )
+        val pad: Boolean = true
+    ): Base64() {
 
         public companion object {
+
+            @Deprecated(
+                message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+                replaceWith = ReplaceWith(
+                    expression = "UrlSafe.CHARS",
+                    imports = [
+                        "io.matthewnelson.encoding.base64.Base64.UrlSafe",
+                    ]
+                ),
+                level = DeprecationLevel.WARNING,
+            )
             public const val CHARS: String = io.matthewnelson.encoding.base64.Base64.UrlSafe.CHARS
         }
     }
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.decodeToByteArrayOrNull(Base64())",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase64ToArray(): ByteArray? {
-    @OptIn(InternalEncodingApi::class)
-    return decodeToByteArrayOrNull(COMPATIBILITY_DEFAULT)
+    return decodeToByteArrayOrNull(Base64 {
+        isLenient = true
+        encodeToUrlSafe = false // decodes both default and urlsafe
+        padEncoded = true
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.decodeToByteArrayOrNull(Base64())",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 public fun CharArray.decodeBase64ToArray(): ByteArray? {
-    @OptIn(InternalEncodingApi::class)
-    return decodeToByteArrayOrNull(COMPATIBILITY_DEFAULT)
+    return decodeToByteArrayOrNull(Base64 {
+        isLenient = true
+        encodeToUrlSafe = false // decodes both default and urlsafe
+        padEncoded = true
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToString(Base64())",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
-public inline fun ByteArray.encodeBase64(base64: Base64 = Base64.Default): String {
-    @OptIn(InternalEncodingApi::class)
-    return when (base64) {
-        is Base64.Default -> {
-            encodeToString(COMPATIBILITY_DEFAULT)
-        }
-        is Base64.UrlSafe -> {
-            encodeToString(Base64 {
-                isLenient = true
-                encodeToUrlSafe = true
-                padEncoded = base64.pad
-            })
-        }
-    }
+public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default): String {
+    return encodeToString(Base64 {
+        isLenient = true
+        encodeToUrlSafe = false
+        padEncoded = true
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToString(Base64 { encodeToUrlSafe = true; padEncoded = true/false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
+    return encodeToString(Base64 {
+        isLenient = true
+        encodeToUrlSafe = true
+        padEncoded = base64.pad
+    })
+}
+
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToCharArray(Base64())",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
-public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64 = Base64.Default): CharArray {
-    @OptIn(InternalEncodingApi::class)
-    return when (base64) {
-        is Base64.Default -> {
-            encodeToCharArray(COMPATIBILITY_DEFAULT)
-        }
-        is Base64.UrlSafe -> {
-            encodeToCharArray(Base64 {
-                isLenient = true
-                encodeToUrlSafe = true
-                padEncoded = base64.pad
-            })
-        }
-    }
+public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Base64.Default): CharArray {
+    return encodeToCharArray(Base64 {
+        isLenient = true
+        encodeToUrlSafe = false
+        padEncoded = true
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToCharArray(Base64 { encodeToUrlSafe = true; padEncoded = true/false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
+@Suppress("NOTHING_TO_INLINE")
+public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): CharArray {
+    return encodeToCharArray(Base64 {
+        isLenient = true
+        encodeToUrlSafe = true
+        padEncoded = base64.pad
+    })
+}
+
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToByteArray(Base64())",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 @JvmOverloads
-public fun ByteArray.encodeBase64ToByteArray(base64: Base64 = Base64.Default): ByteArray {
-    @OptIn(InternalEncodingApi::class)
-    return when (base64) {
-        is Base64.Default -> {
-            encodeToByteArray(COMPATIBILITY_DEFAULT)
-        }
-        is Base64.UrlSafe -> {
-            encodeToByteArray(Base64 {
-                isLenient = true
-                encodeToUrlSafe = true
-                padEncoded = base64.pad
-            })
-        }
-    }
+public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Default): ByteArray {
+    return encodeToByteArray(Base64 {
+        isLenient = true
+        encodeToUrlSafe = false
+        padEncoded = true
+    })
+}
+
+@Deprecated(
+    message = "Replaced by EncoderDecoders. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToByteArray(Base64 { encodeToUrlSafe = true; padEncoded = true/false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base64",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
+public fun ByteArray.encodeBase64ToByteArray(base64: Base64.UrlSafe): ByteArray {
+    return encodeToByteArray(Base64 {
+        isLenient = true
+        encodeToUrlSafe = true
+        padEncoded = base64.pad
+    })
 }

@@ -19,16 +19,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import by.kirich1409.viewbindingdelegate.viewBinding
-import io.matthewnelson.component.base64.Base64
-import io.matthewnelson.component.base64.encodeBase64
 import io.matthewnelson.component.encoding.app.databinding.ActivityMainBinding
-import io.matthewnelson.component.encoding.base16.encodeBase16
-import io.matthewnelson.component.encoding.base32.Base32
-import io.matthewnelson.component.encoding.base32.encodeBase32
-import io.matthewnelson.encoding.builders.Base16
-import io.matthewnelson.encoding.builders.Base32Crockford
-import io.matthewnelson.encoding.builders.Base32Default
-import io.matthewnelson.encoding.builders.Base32Hex
+import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 
 class MainActivity: AppCompatActivity(R.layout.activity_main) {
@@ -59,6 +51,18 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
             encodeToLowercase = true
             padEncoded = false
         }
+
+        private val base64DefaultEncoderDecoder = Base64 {
+            isLenient = true
+            encodeToUrlSafe = false
+            padEncoded = true
+        }
+
+        private val base64UrlSafeEncoderDecoder = Base64 {
+            isLenient = false
+            encodeToUrlSafe = true
+            padEncoded = false
+        }
     }
 
     private val binding: ActivityMainBinding by viewBinding(ActivityMainBinding::bind)
@@ -74,12 +78,12 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
         val default = bytes.encodeToString(base32DefaultEncoderDecoder)
         val hex = bytes.encodeToString(base32HexEncoderDecoder)
 
-        val base64 = bytes.encodeBase64(Base64.Default)
-        val base64UrlSafe = bytes.encodeBase64(Base64.UrlSafe(pad = true))
+        val base64 = bytes.encodeToString(base64DefaultEncoderDecoder)
+        val base64UrlSafe = bytes.encodeToString(base64UrlSafeEncoderDecoder)
 
         binding.textViewBase16.text = "Base16 (hex):\n$base16"
 
-        binding.textViewCrockford.text = "Base32 Crockford(checkSymbol = *, hyphenInterval = 5):\n$crockford"
+        binding.textViewCrockford.text = "Base32 Crockford[checkSymbol = *, hyphenInterval = 5]:\n$crockford"
         binding.textViewDefault.text = "Base32 Default:\n$default"
         binding.textViewHex.text = "Base32 Hex:\n$hex"
 

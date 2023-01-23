@@ -28,14 +28,17 @@ public final class io/matthewnelson/component/base64/Base64Kt {
 	public static final fun decodeBase64ToArray (Ljava/lang/String;)[B
 	public static final fun decodeBase64ToArray ([C)[B
 	public static final fun encodeBase64 ([B)Ljava/lang/String;
-	public static final fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64;)Ljava/lang/String;
-	public static synthetic fun encodeBase64$default ([BLio/matthewnelson/component/base64/Base64;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64$Default;)Ljava/lang/String;
+	public static final fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)Ljava/lang/String;
+	public static synthetic fun encodeBase64$default ([BLio/matthewnelson/component/base64/Base64$Default;ILjava/lang/Object;)Ljava/lang/String;
 	public static final fun encodeBase64ToByteArray ([B)[B
-	public static final fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64;)[B
-	public static synthetic fun encodeBase64ToByteArray$default ([BLio/matthewnelson/component/base64/Base64;ILjava/lang/Object;)[B
+	public static final fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64$Default;)[B
+	public static final fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)[B
+	public static synthetic fun encodeBase64ToByteArray$default ([BLio/matthewnelson/component/base64/Base64$Default;ILjava/lang/Object;)[B
 	public static final fun encodeBase64ToCharArray ([B)[C
-	public static final fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64;)[C
-	public static synthetic fun encodeBase64ToCharArray$default ([BLio/matthewnelson/component/base64/Base64;ILjava/lang/Object;)[C
+	public static final fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64$Default;)[C
+	public static final fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)[C
+	public static synthetic fun encodeBase64ToCharArray$default ([BLio/matthewnelson/component/base64/Base64$Default;ILjava/lang/Object;)[C
 }
 
 public final class io/matthewnelson/encoding/base64/Base64 : io/matthewnelson/encoding/core/EncoderDecoder {

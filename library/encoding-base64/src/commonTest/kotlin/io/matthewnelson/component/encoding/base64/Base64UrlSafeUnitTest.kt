@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection", "DEPRECATION")
+
 package io.matthewnelson.component.encoding.base64
 
 import io.matthewnelson.component.base64.Base64
