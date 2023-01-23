@@ -76,6 +76,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public final fun close ()V
 	public final fun doFinal ()V
 	protected abstract fun doFinalProtected ()V
+	public final fun getConfig ()Lio/matthewnelson/encoding/core/EncoderDecoder$Config;
 	public final fun isClosed ()Z
 	public final fun update (B)V
 	protected abstract fun updateProtected (B)V

@@ -273,7 +273,7 @@ constructor(config: Config): Encoder(config) {
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
      * */
-    public sealed class Feed(private val config: Config) {
+    public sealed class Feed(public val config: Config) {
         @get:JvmName("isClosed")
         public var isClosed: Boolean = false
             private set
