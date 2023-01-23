@@ -44,7 +44,7 @@ internal inline fun Decoder.decode(
             ba[i++] = byte
         } catch (e: IndexOutOfBoundsException) {
             // Something is wrong with the encoder's pre-calculation
-            throw EncodingSizeException("Encoder's pre-calculation of size[${size}] was incorrect", e)
+            throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", e)
         }
     }.use { feed ->
         update.invoke(feed)
