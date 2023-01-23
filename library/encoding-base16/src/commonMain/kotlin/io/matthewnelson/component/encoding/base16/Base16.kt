@@ -17,45 +17,101 @@
 
 package io.matthewnelson.component.encoding.base16
 
-import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.builders.Base16
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 
-@PublishedApi
-@InternalEncodingApi
-internal val COMPATIBILITY: Base16 = Base16 {
-    isLenient = true
-    encodeToLowercase = false
-}
-
+@Deprecated(
+    message = "Replaced by EncoderDecoder. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.decodeToByteArrayOrNull(Base16 { encodeToLowercase = false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase16ToArray(): ByteArray? {
-    @OptIn(InternalEncodingApi::class)
-    return decodeToByteArrayOrNull(COMPATIBILITY)
+    return decodeToByteArrayOrNull(Base16 {
+        isLenient = true
+        encodeToLowercase = false
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoder. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.decodeToByteArrayOrNull(Base16 { encodeToLowercase = false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 public fun CharArray.decodeBase16ToArray(): ByteArray? {
-    @OptIn(InternalEncodingApi::class)
-    return decodeToByteArrayOrNull(COMPATIBILITY)
+    return decodeToByteArrayOrNull(Base16 {
+        isLenient = true
+        encodeToLowercase = false
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoder. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToString(Base16 { encodeToLowercase = false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16(): String {
-    @OptIn(InternalEncodingApi::class)
-    return encodeToString(COMPATIBILITY)
+    return encodeToString(Base16 {
+        isLenient = true
+        encodeToLowercase = false
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoder. Will be removed in future versions.",
+    replaceWith = ReplaceWith(
+        expression = "this.encodeToCharArray(Base16 { encodeToLowercase = false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
-    @OptIn(InternalEncodingApi::class)
-    return encodeToCharArray(COMPATIBILITY)
+    return encodeToCharArray(Base16 {
+        isLenient = true
+        encodeToLowercase = false
+    })
 }
 
+@Deprecated(
+    message = "Replaced by EncoderDecoder. Will be removed in future versions.",
+    ReplaceWith(
+        expression = "this.encodeToByteArray(Base16 { encodeToLowercase = false })",
+        imports = [
+            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
+        ],
+    ),
+    level = DeprecationLevel.WARNING,
+)
 public fun ByteArray.encodeBase16ToByteArray(): ByteArray {
-    @OptIn(InternalEncodingApi::class)
-    return encodeToByteArray(COMPATIBILITY)
+    return encodeToByteArray(Base16 {
+        isLenient = true
+        encodeToLowercase = false
+    })
 }

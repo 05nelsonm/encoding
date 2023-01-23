@@ -47,6 +47,7 @@ class Base16UnitTest: BaseEncodingTestBase() {
     )
 
     override fun decode(data: String): ByteArray? {
+        @Suppress("DEPRECATION")
         return data.decodeBase16ToArray()
     }
 
@@ -122,6 +123,7 @@ class Base16UnitTest: BaseEncodingTestBase() {
     )
 
     override fun encode(data: ByteArray): String {
+        @Suppress("DEPRECATION")
         return data.encodeBase16()
     }
 

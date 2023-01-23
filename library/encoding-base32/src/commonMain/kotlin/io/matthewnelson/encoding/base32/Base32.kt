@@ -37,6 +37,11 @@ import kotlin.jvm.JvmSynthetic
  * @see [Crockford]
  * @see [Default]
  * @see [Hex]
+ * @see [Decoder.decodeToByteArray]
+ * @see [Decoder.decodeToByteArrayOrNull]
+ * @see [Encoder.encodeToString]
+ * @see [Encoder.encodeToCharArray]
+ * @see [Encoder.encodeToByteArray]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
 public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config) {

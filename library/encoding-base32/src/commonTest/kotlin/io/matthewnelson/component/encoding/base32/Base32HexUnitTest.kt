@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.component.encoding.base32
 
 import io.matthewnelson.component.encoding.test.BaseEncodingTestBase
@@ -98,9 +100,11 @@ class Base32HexUnitTest: BaseEncodingTestBase() {
     )
 
     override fun decode(data: String): ByteArray? {
+        @Suppress("DEPRECATION")
         return data.decodeBase32ToArray(Base32.Hex)
     }
     override fun encode(data: ByteArray): String {
+        @Suppress("DEPRECATION")
         return data.encodeBase32(Base32.Hex)
     }
 
