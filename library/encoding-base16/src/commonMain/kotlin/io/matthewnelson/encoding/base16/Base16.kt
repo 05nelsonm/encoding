@@ -52,6 +52,11 @@ import kotlin.jvm.JvmSynthetic
  * @see [Base16.Config]
  * @see [Base16.CHARS]
  * @see [EncoderDecoder]
+ * @see [Decoder.decodeToByteArray]
+ * @see [Decoder.decodeToByteArrayOrNull]
+ * @see [Encoder.encodeToString]
+ * @see [Encoder.encodeToCharArray]
+ * @see [Encoder.encodeToByteArray]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
 public class Base16(config: Config): EncoderDecoder(config) {

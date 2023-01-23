@@ -25,11 +25,18 @@ import io.matthewnelson.component.encoding.app.databinding.ActivityMainBinding
 import io.matthewnelson.component.encoding.base16.encodeBase16
 import io.matthewnelson.component.encoding.base32.Base32
 import io.matthewnelson.component.encoding.base32.encodeBase32
+import io.matthewnelson.encoding.builders.Base16
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 
 class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
     companion object {
         const val HELLO_WORLD = "Hello World!"
+
+        private val base16EncoderDecoder = Base16 {
+            isLenient = false
+            encodeToLowercase = true
+        }
     }
 
     private val binding: ActivityMainBinding by viewBinding(ActivityMainBinding::bind)
@@ -38,17 +45,22 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bytes = HELLO_WORLD.encodeToByteArray()
-        val base16 = bytes.encodeBase16()
+
+        val base16 = bytes.encodeToString(base16EncoderDecoder)
+
         val crockford = bytes.encodeBase32(Base32.Crockford('*'))
         val default = bytes.encodeBase32(Base32.Default)
         val hex = bytes.encodeBase32(Base32.Hex)
+
         val base64 = bytes.encodeBase64(Base64.Default)
         val base64UrlSafe = bytes.encodeBase64(Base64.UrlSafe(pad = true))
 
         binding.textViewBase16.text = "Base16 (hex):\n$base16"
+
         binding.textViewCrockford.text = "Base32 Crockford(checkSymbol = *):\n$crockford"
         binding.textViewDefault.text = "Base32 Default:\n$default"
         binding.textViewHex.text = "Base32 Hex:\n$hex"
+
         binding.textViewBase64.text = "Base64 Default:\n$base64"
         binding.textViewBase64UrlSafe.text = "Base64 UrlSafe:\n$base64UrlSafe"
     }
