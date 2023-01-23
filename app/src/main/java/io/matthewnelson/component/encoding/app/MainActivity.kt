@@ -115,11 +115,11 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
         // Read the encoded data from the file
         val sb = StringBuilder()
-        file.inputStream().use { stream ->
+        file.inputStream().use { iStream ->
 
             @OptIn(ExperimentalEncodingApi::class)
             base64DefaultEncoderDecoder.newDecoderFeed { decodedByte ->
-                // Update the StringBuffer with every decoded
+                // Update the StringBuilder with every decoded
                 // byte that is pushed out of the feed.
                 sb.append(decodedByte.toInt().toChar())
             }.use { feed ->
@@ -135,7 +135,7 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
                 val buffer = ByteArray(size)
                 while (true) {
-                    val read = stream.read(buffer)
+                    val read = iStream.read(buffer)
                     if (read == -1) break
 
                     for (i in 0 until read) {
