@@ -25,7 +25,6 @@ class Base32HexUnitTest: BaseEncodingTestBase() {
         Data(raw = "AX", expected = null, message = "Character 'X' should return null"),
         Data(raw = "AY", expected = null, message = "Character 'Y' should return null"),
         Data(raw = "AZ", expected = null, message = "Character 'Z' should return null"),
-        Data(raw = "91IMOR3F41BMUSJCCGGg====", expected = null, message = "Lowercase characters should return null"),
     )
 
     override val decodeSuccessHelloWorld: Data<String, ByteArray> =
@@ -63,6 +62,7 @@ class Base32HexUnitTest: BaseEncodingTestBase() {
         Data(raw = "A90K482F", expected = "RAB O".encodeToByteArray()),
         Data(raw = "A90K482F9S======", expected = "RAB OO".encodeToByteArray()),
         Data(raw = "A90K482F9T30====", expected = "RAB OOF".encodeToByteArray()),
+        Data(raw = "a90k482f9t30====", expected = "RAB OOF".encodeToByteArray()),
     )
 
     override val encodeSuccessDataSet: Set<Data<String, String>> = setOf(

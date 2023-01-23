@@ -38,7 +38,6 @@ import kotlin.jvm.JvmOverloads
 @InternalEncodingApi
 internal val COMPATIBILITY_DEFAULT: io.matthewnelson.encoding.base32.Base32.Default = Base32Default {
     isLenient = true
-    acceptLowercase = false
     encodeToLowercase = false
     padEncoded = true
 }
@@ -47,7 +46,6 @@ internal val COMPATIBILITY_DEFAULT: io.matthewnelson.encoding.base32.Base32.Defa
 @InternalEncodingApi
 internal val COMPATIBILITY_HEX: io.matthewnelson.encoding.base32.Base32.Hex = Base32Hex {
     isLenient = true
-    acceptLowercase = false
     encodeToLowercase = false
     padEncoded = true
 }
