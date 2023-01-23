@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.component.encoding.base32
 
 import io.matthewnelson.component.encoding.test.BaseEncodingTestBase
@@ -20,11 +22,13 @@ import kotlin.test.*
 
 class Base32CrockfordUnitTest: BaseEncodingTestBase() {
 
+    @Suppress("DEPRECATION")
     private var crockford: Base32.Crockford = Base32.Crockford(checkSymbol = null)
     private val validCheckSymbols = listOf('*', '~', '$', '=', 'U', 'u')
 
     @AfterTest
     fun after() {
+        @Suppress("DEPRECATION")
         crockford = Base32.Crockford(checkSymbol = null)
     }
 
@@ -235,19 +239,23 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
     }
 
     override fun decode(data: String): ByteArray? {
+        @Suppress("DEPRECATION")
         return data.decodeBase32ToArray(crockford)
     }
     override fun encode(data: ByteArray): String {
+        @Suppress("DEPRECATION")
         return data.encodeBase32(crockford)
     }
 
     @Test
     fun givenCheckSymbol_whenExpressed_hasCheckReturnsTrue() {
+        @Suppress("DEPRECATION")
         assertTrue(Base32.Crockford(checkSymbol = '=').hasCheckSymbol)
     }
 
     @Test
     fun givenCheckSymbol_whenNotExpressed_hasCheckReturnsFalse() {
+        @Suppress("DEPRECATION")
         assertFalse(Base32.Crockford(checkSymbol = null).hasCheckSymbol)
     }
 
@@ -255,6 +263,7 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
     fun givenCheckSymbol_whenNotAValidSymbol_throwsException() {
         var exception: IllegalArgumentException? = null
         try {
+            @Suppress("DEPRECATION")
             Base32.Crockford('0')
         } catch (e: IllegalArgumentException) {
             exception = e
@@ -283,6 +292,7 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
         val data = encodeSuccessDataSet.first()
 
         for (symbol in validCheckSymbols) {
+            @Suppress("DEPRECATION")
             val decoded = (data.expected + symbol)
                 .decodeBase32ToArray(Base32.Crockford(checkSymbol = null))
             assertNull(decoded)
@@ -292,6 +302,7 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
     @Test
     fun givenEncodedDataWithCheckSymbol_whenDecodedWithCheckSymbolExpressed_returnsExpected() {
         for (symbol in validCheckSymbols) {
+            @Suppress("DEPRECATION")
             crockford = Base32.Crockford(symbol)
             checkEncodeSuccessForDataSet(
                 getEncodeSuccessDataSetWithCheckSymbolExpected(symbol)
@@ -302,6 +313,7 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
     @Test
     fun givenString_whenEncodedWithCheckSymbolExpressed_returnsExpected() {
         for (symbol in validCheckSymbols) {
+            @Suppress("DEPRECATION")
             crockford = Base32.Crockford(symbol)
             checkDecodeSuccessForDataSet(
                 getDecodeSuccessDataSetWithCheckSymbolExpected(symbol)
@@ -318,6 +330,7 @@ class Base32CrockfordUnitTest: BaseEncodingTestBase() {
                 raw = data.raw,
                 expected = "${data.expected}$symbol$symbol"
             )
+            @Suppress("DEPRECATION")
             val decoded = newData.expected.decodeBase32ToArray(base32 = Base32.Crockford(symbol))
             assertNull(decoded)
         }

@@ -26,6 +26,9 @@ import io.matthewnelson.component.encoding.base16.encodeBase16
 import io.matthewnelson.component.encoding.base32.Base32
 import io.matthewnelson.component.encoding.base32.encodeBase32
 import io.matthewnelson.encoding.builders.Base16
+import io.matthewnelson.encoding.builders.Base32Crockford
+import io.matthewnelson.encoding.builders.Base32Default
+import io.matthewnelson.encoding.builders.Base32Hex
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 
 class MainActivity: AppCompatActivity(R.layout.activity_main) {
@@ -36,6 +39,25 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
         private val base16EncoderDecoder = Base16 {
             isLenient = false
             encodeToLowercase = true
+        }
+
+        private val base32CrockfordEncoderDecoder = Base32Crockford {
+            isLenient = false
+            encodeToLowercase = false
+            hyphenInterval = 5
+            checkSymbol('*')
+        }
+
+        private val base32DefaultEncoderDecoder = Base32Default {
+            isLenient = false
+            encodeToLowercase = true
+            padEncoded = false
+        }
+
+        private val base32HexEncoderDecoder = Base32Hex {
+            isLenient = false
+            encodeToLowercase = true
+            padEncoded = false
         }
     }
 
@@ -48,16 +70,16 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
         val base16 = bytes.encodeToString(base16EncoderDecoder)
 
-        val crockford = bytes.encodeBase32(Base32.Crockford('*'))
-        val default = bytes.encodeBase32(Base32.Default)
-        val hex = bytes.encodeBase32(Base32.Hex)
+        val crockford = bytes.encodeToString(base32CrockfordEncoderDecoder)
+        val default = bytes.encodeToString(base32DefaultEncoderDecoder)
+        val hex = bytes.encodeToString(base32HexEncoderDecoder)
 
         val base64 = bytes.encodeBase64(Base64.Default)
         val base64UrlSafe = bytes.encodeBase64(Base64.UrlSafe(pad = true))
 
         binding.textViewBase16.text = "Base16 (hex):\n$base16"
 
-        binding.textViewCrockford.text = "Base32 Crockford(checkSymbol = *):\n$crockford"
+        binding.textViewCrockford.text = "Base32 Crockford(checkSymbol = *, hyphenInterval = 5):\n$crockford"
         binding.textViewDefault.text = "Base32 Default:\n$default"
         binding.textViewHex.text = "Base32 Hex:\n$hex"
 
