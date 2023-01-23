@@ -86,50 +86,51 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val checkSymbol: Char?,
         ): EncoderDecoder.Config(isLenient, paddingByte = null) {
 
+            override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+                return encodedSize.decodeOutMaxSize()
+            }
+
             @Throws(EncodingException::class)
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
                 var outSize = encodedSize
 
-                if (input != null) {
-                    val check = checkSymbol
-                    val actual = input[input.lastRelevantCharacter - 1]
+                val actual = input[encodedSize - 1]
 
-                    if (check != null) {
-                        // Uppercase them so that little 'u' is always
-                        // compared as big 'U'.
-                        val checkUpper = check.uppercaseChar()
-                        val actualUpper = actual.uppercaseChar()
+                if (checkSymbol != null) {
+                    // Uppercase them so that little 'u' is always
+                    // compared as big 'U'.
+                    val checkUpper = checkSymbol.uppercaseChar()
+                    val actualUpper = actual.uppercaseChar()
 
-                        if (actualUpper != checkUpper) {
-                            // Must have a matching checkSymbol
+                    if (actualUpper != checkUpper) {
+                        // Must have a matching checkSymbol
 
-                            if (actual.isCheckSymbol()) {
-                                throw EncodingException(
-                                    "Check symbol did not match. Expected[$checkUpper], Actual[$actual]"
-                                )
-                            } else {
-                                throw EncodingException(
-                                    "Check symbol not found. Expected[$checkUpper]"
-                                )
-                            }
-                        } else {
-                            outSize--
-                        }
-                    } else {
-                        // Mine as well check it here before actually
-                        // decoding because otherwise it will fail on
-                        // the very last byte.
                         if (actual.isCheckSymbol()) {
                             throw EncodingException(
-                                "Decoder Misconfiguration.\n" +
-                                "Check symbol for encoded data was [$actual], but the " +
-                                "decoder is configured to reject check symbols."
+                                "Check symbol did not match. Expected[$checkUpper], Actual[$actual]"
+                            )
+                        } else {
+                            throw EncodingException(
+                                "Check symbol not found. Expected[$checkUpper]"
                             )
                         }
+                    } else {
+                        outSize--
+                    }
+                } else {
+                    // Mine as well check it here before actually
+                    // decoding because otherwise it will fail on
+                    // the very last byte.
+                    if (actual.isCheckSymbol()) {
+                        throw EncodingException(
+                            "Decoder Misconfiguration.\n" +
+                            "Check symbol for encoded data was [$actual], but the " +
+                            "decoder is configured to reject check symbols."
+                        )
                     }
                 }
 
-                return outSize.decodeOutMaxSize()
+                return outSize.toLong().decodeOutMaxSize().toInt()
             }
 
             override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
@@ -404,8 +405,12 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
+            override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
+            }
+
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+                return encodedSize.toLong().decodeOutMaxSize().toInt()
             }
 
             override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
@@ -569,8 +574,12 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
 
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
+            override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
+            }
+
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+                return encodedSize.toLong().decodeOutMaxSize().toInt()
             }
 
             override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
