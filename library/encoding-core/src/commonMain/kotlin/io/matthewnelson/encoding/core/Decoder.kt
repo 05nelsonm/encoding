@@ -79,7 +79,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
-            return decoder.decode(decoder.config, DecoderInput(this)) { feed ->
+            return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.update(c.byte)
                 }
@@ -106,7 +106,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharArray.decodeToByteArray(decoder: Decoder): ByteArray {
-            return decoder.decode(decoder.config, DecoderInput(this)) { feed ->
+            return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.update(c.byte)
                 }
@@ -133,7 +133,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun ByteArray.decodeToByteArray(decoder: Decoder): ByteArray {
-            return decoder.decode(decoder.config, DecoderInput(this)) { feed ->
+            return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
                     feed.update(b)
                 }

@@ -28,7 +28,6 @@ import kotlin.contracts.contract
 @Throws(EncodingException::class)
 @OptIn(ExperimentalEncodingApi::class, ExperimentalContracts::class)
 internal inline fun Decoder.decode(
-    config: Config,
     input: DecoderInput,
     update: (feed: Decoder.Feed) -> Unit
 ): ByteArray {
