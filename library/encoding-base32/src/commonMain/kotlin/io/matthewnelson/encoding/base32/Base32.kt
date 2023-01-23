@@ -124,8 +124,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     if (actual.isCheckSymbol()) {
                         throw EncodingException(
                             "Decoder Misconfiguration.\n" +
-                            "Check symbol for encoded data was [$actual], but the " +
-                            "decoder is configured to reject check symbols."
+                            "Encoded data had Checksymbol[$actual], but the " +
+                            "decoder is configured to reject."
                         )
                     }
                 }
@@ -279,7 +279,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                                 }
                                 else -> {
                                     throw EncodingException(
-                                        "Char[${input.char}] IS a checkSymbol, but did not match Config[$checkSymbol]"
+                                        "Char[${input.char}] IS a checkSymbol, but did not match config's Checksymbol[$checkSymbol]"
                                     )
                                 }
                             }
@@ -398,8 +398,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         public class Config private constructor(
             isLenient: Boolean,
             @JvmField
-            public val acceptLowercase: Boolean,
-            @JvmField
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
@@ -419,8 +417,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
             override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
-                    append("    acceptLowercase: ")
-                    append(acceptLowercase)
                     appendLine()
                     append("    encodeToLowercase: ")
                     append(encodeToLowercase)
@@ -436,7 +432,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 internal fun from(builder: Base32DefaultConfigBuilder): Config {
                     return Config(
                         isLenient = builder.isLenient,
-                        acceptLowercase = builder.acceptLowercase,
                         encodeToLowercase = builder.encodeToLowercase,
                         padEncoded = builder.padEncoded,
                     )
@@ -462,13 +457,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
-                    val char = if ((config as Default.Config).acceptLowercase) {
-                        input.char.uppercaseChar()
-                    } else {
-                        input.char
-                    }
-
-                    val bits: Int = when (char) {
+                    val bits: Int = when (val char = input.char.uppercaseChar()) {
                         in '2'..'7' -> {
                             // char ASCII value
                             //  2    50    26
@@ -567,8 +556,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         public class Config private constructor(
             isLenient: Boolean,
             @JvmField
-            public val acceptLowercase: Boolean,
-            @JvmField
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
@@ -588,9 +575,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
             override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
-                    append("    acceptLowercase: ")
-                    append(acceptLowercase)
-                    appendLine()
                     append("    encodeToLowercase: ")
                     append(encodeToLowercase)
                     appendLine()
@@ -605,7 +589,6 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 internal fun from(builder: Base32HexConfigBuilder): Config {
                     return Config(
                         isLenient = builder.isLenient,
-                        acceptLowercase = builder.acceptLowercase,
                         encodeToLowercase = builder.encodeToLowercase,
                         padEncoded = builder.padEncoded,
                     )
@@ -631,13 +614,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
                 @Throws(EncodingException::class)
                 override fun updateProtected(input: Byte) {
-                    val char = if ((config as Hex.Config).acceptLowercase) {
-                        input.char.uppercaseChar()
-                    } else {
-                        input.char
-                    }
-
-                    val bits: Int = when (char) {
+                    val bits: Int = when (val char = input.char.uppercaseChar()) {
                         in '0'..'9' -> {
                             // char ASCII value
                             //  0    48    0

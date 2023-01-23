@@ -252,7 +252,6 @@ public class Base32DefaultConfigBuilder {
     public constructor(config: Base32.Default.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
-        acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
     }
@@ -266,16 +265,6 @@ public class Base32DefaultConfigBuilder {
      * */
     @JvmField
     public var isLenient: Boolean = true
-
-    /**
-     * If true, will accept lowercase **AND** uppercase
-     * characters when decoding (against RFC 4648).
-     *
-     * If false, an [EncodingException] will be thrown if
-     * lowercase characters are encountered when decoding.
-     * */
-    @JvmField
-    public var acceptLowercase: Boolean = true
 
     /**
      * If true, will output lowercase characters when
@@ -303,7 +292,6 @@ public class Base32DefaultConfigBuilder {
      * */
     public fun strict(): Base32DefaultConfigBuilder {
         isLenient = false
-        acceptLowercase = false
         encodeToLowercase = false
         padEncoded = true
         return this
@@ -327,7 +315,6 @@ public class Base32HexConfigBuilder {
     public constructor(config: Base32.Hex.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
-        acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
     }
@@ -341,16 +328,6 @@ public class Base32HexConfigBuilder {
      * */
     @JvmField
     public var isLenient: Boolean = true
-
-    /**
-     * If true, will accept lowercase **AND** uppercase
-     * characters when decoding (against RFC 4648).
-     *
-     * If false, an [EncodingException] will be thrown if
-     * lowercase characters are encountered when decoding.
-     * */
-    @JvmField
-    public var acceptLowercase: Boolean = true
 
     /**
      * If true, will output lowercase characters when
@@ -378,7 +355,6 @@ public class Base32HexConfigBuilder {
      * */
     public fun strict(): Base32HexConfigBuilder {
         isLenient = false
-        acceptLowercase = false
         encodeToLowercase = false
         padEncoded = true
         return this

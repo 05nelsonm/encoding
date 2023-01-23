@@ -83,10 +83,9 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Companion {
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
-	public final field acceptLowercase Z
 	public final field encodeToLowercase Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
@@ -101,10 +100,9 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion {
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
-	public final field acceptLowercase Z
 	public final field encodeToLowercase Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/builders/Base32CrockfordConfigBuilder {
@@ -120,7 +118,6 @@ public final class io/matthewnelson/encoding/builders/Base32CrockfordConfigBuild
 }
 
 public final class io/matthewnelson/encoding/builders/Base32DefaultConfigBuilder {
-	public field acceptLowercase Z
 	public field encodeToLowercase Z
 	public field isLenient Z
 	public field padEncoded Z
@@ -131,7 +128,6 @@ public final class io/matthewnelson/encoding/builders/Base32DefaultConfigBuilder
 }
 
 public final class io/matthewnelson/encoding/builders/Base32HexConfigBuilder {
-	public field acceptLowercase Z
 	public field encodeToLowercase Z
 	public field isLenient Z
 	public field padEncoded Z
