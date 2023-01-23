@@ -209,7 +209,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 private var isCheckSymbolSet = false
 
                 @Throws(EncodingException::class)
-                override fun updateProtected(input: Byte) {
+                override fun consumeProtected(input: Byte) {
                     // Crockford requires that decoding accept both
                     // uppercase and lowercase. So, uppercase
                     // everything that comes in.
@@ -336,7 +336,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     paddingByte = null,
                 )
 
-                override fun updateProtected(input: Byte) {
+                override fun consumeProtected(input: Byte) {
                     buffer.update(input)
                 }
 
@@ -461,7 +461,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 private val buffer = Base32DecodingBuffer(out)
 
                 @Throws(EncodingException::class)
-                override fun updateProtected(input: Byte) {
+                override fun consumeProtected(input: Byte) {
                     val bits: Int = when (val char = input.char.uppercaseChar()) {
                         in '2'..'7' -> {
                             // char ASCII value
@@ -501,14 +501,14 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     } else {
                         TABLE
                     },
-                    paddingByte = if ((config as Default.Config).padEncoded) {
+                    paddingByte = if (config.padEncoded) {
                         config.paddingByte
                     } else {
                         null
                     },
                 )
 
-                override fun updateProtected(input: Byte) {
+                override fun consumeProtected(input: Byte) {
                     buffer.update(input)
                 }
 
@@ -618,7 +618,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 private val buffer = Base32DecodingBuffer(out)
 
                 @Throws(EncodingException::class)
-                override fun updateProtected(input: Byte) {
+                override fun consumeProtected(input: Byte) {
                     val bits: Int = when (val char = input.char.uppercaseChar()) {
                         in '0'..'9' -> {
                             // char ASCII value
@@ -658,14 +658,14 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     } else {
                         TABLE
                     },
-                    paddingByte = if ((config as Hex.Config).padEncoded) {
+                    paddingByte = if (config.padEncoded) {
                         config.paddingByte
                     } else {
                         null
                     },
                 )
 
-                override fun updateProtected(input: Byte) {
+                override fun consumeProtected(input: Byte) {
                     buffer.update(input)
                 }
 

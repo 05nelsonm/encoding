@@ -262,12 +262,12 @@ constructor(config: Config): Encoder(config) {
     /**
      * Base abstraction for encoding/decoding data.
      *
-     * After pushing all data through [update], call [doFinal]
+     * After pushing all data through [consume], call [doFinal]
      * to complete encoding/decoding.
      *
      * Alternatively, utilize the [use] extension function which
      * will call [doFinal] or [close] when you're done pushing
-     * data through [update].
+     * data through [consume].
      *
      * @see [use]
      * @see [Encoder.Feed]
@@ -282,7 +282,7 @@ constructor(config: Config): Encoder(config) {
 
         // Only throws exception if decoding
         @Throws(EncodingException::class)
-        protected abstract fun updateProtected(input: Byte)
+        protected abstract fun consumeProtected(input: Byte)
 
         // Only throws exception if decoding
         @Throws(EncodingException::class)
@@ -296,7 +296,7 @@ constructor(config: Config): Encoder(config) {
          * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
-        public fun update(input: Byte) {
+        public fun consume(input: Byte) {
             if (isClosed) throw closedException()
 
             try {
@@ -326,7 +326,7 @@ constructor(config: Config): Encoder(config) {
                     }
                 }
 
-                updateProtected(input)
+                consumeProtected(input)
             } catch (t: Throwable) {
                 close()
                 throw t

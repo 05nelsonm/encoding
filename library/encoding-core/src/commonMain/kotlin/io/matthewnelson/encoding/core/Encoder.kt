@@ -46,11 +46,11 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
     public abstract fun newEncoderFeed(out: OutFeed): Encoder.Feed
 
     /**
-     * Data goes into [update], and upon the [Encoder]
+     * Data goes into [consume], and upon the [Encoder]
      * implementation's buffer filling, encoded data is fed
      * to [OutFeed] allowing for a "lazy" encode and streaming.
      *
-     * Once all the data has been submitted via [update], call
+     * Once all the data has been submitted via [consume], call
      * [doFinal] to close the [Encoder.Feed] and perform
      * finalization for leftover data still in the [Encoder.Feed]
      * implementation's buffer. Alternatively, utilize the [use]
@@ -64,7 +64,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
     public abstract inner class Feed
     @ExperimentalEncodingApi
     constructor(): EncoderDecoder.Feed(config) {
-        protected abstract override fun updateProtected(input: Byte)
+        protected abstract override fun consumeProtected(input: Byte)
         protected abstract override fun doFinalProtected()
         final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
     }

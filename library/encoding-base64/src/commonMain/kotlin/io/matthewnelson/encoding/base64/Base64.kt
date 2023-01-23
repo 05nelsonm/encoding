@@ -152,7 +152,7 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
 
             private val buffer = Base64DecodingBuffer(out)
 
-            override fun updateProtected(input: Byte) {
+            override fun consumeProtected(input: Byte) {
                 val bits: Int = when (val c = input.char) {
                     in '0'..'9' -> {
                         // char ASCII value
@@ -203,14 +203,14 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
                 } else {
                     TABLE_DEFAULT
                 },
-                paddingByte = if ((config as Base64.Config).padEncoded) {
+                paddingByte = if (config.padEncoded) {
                     config.paddingByte
                 } else {
                     null
                 },
             )
 
-            override fun updateProtected(input: Byte) {
+            override fun consumeProtected(input: Byte) {
                 buffer.update(input)
             }
 

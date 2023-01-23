@@ -131,7 +131,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
                 TABLE
             }
 
-            override fun updateProtected(input: Byte) {
+            override fun consumeProtected(input: Byte) {
                 val bits = input.toInt() and 0xff
                 out.invoke(table[bits shr    4])
                 out.invoke(table[bits and 0x0f])
@@ -148,7 +148,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
             private val buffer = Base16DecodingBuffer(out)
 
             @Throws(EncodingException::class)
-            override fun updateProtected(input: Byte) {
+            override fun consumeProtected(input: Byte) {
                 val bits: Int = when (val char = input.char.uppercaseChar()) {
                     in '0'..'9' -> {
                         // char ASCII value

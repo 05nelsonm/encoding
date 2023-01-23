@@ -45,11 +45,11 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
     public abstract fun newDecoderFeed(out: OutFeed): Decoder.Feed
 
     /**
-     * Encoded data goes into [update], and upon the [Decoder]
+     * Encoded data goes into [consume], and upon the [Decoder]
      * implementation's buffer filling, decoded data is fed
      * to [OutFeed] allowing for a "lazy" decode and streaming.
      *
-     * Once all the data has been submitted via [update], call
+     * Once all the data has been submitted via [consume], call
      * [doFinal] to close the [Decoder.Feed] and perform
      * finalization for leftover data still in the [Decoder.Feed]
      * implementation's buffer. Alternatively, utilize the [use]
@@ -81,7 +81,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
-                    feed.update(c.byte)
+                    feed.consume(c.byte)
                 }
             }
         }
@@ -108,7 +108,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         public fun CharArray.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
-                    feed.update(c.byte)
+                    feed.consume(c.byte)
                 }
             }
         }
@@ -135,7 +135,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         public fun ByteArray.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
-                    feed.update(b)
+                    feed.consume(b)
                 }
             }
         }
