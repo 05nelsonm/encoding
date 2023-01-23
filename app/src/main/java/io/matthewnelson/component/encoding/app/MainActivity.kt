@@ -22,6 +22,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import io.matthewnelson.component.encoding.app.databinding.ActivityMainBinding
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
+import io.matthewnelson.encoding.core.ExperimentalEncodingApi
+import io.matthewnelson.encoding.core.use
+import java.io.File
 
 class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
@@ -89,5 +92,60 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
         binding.textViewBase64.text = "Base64 Default:\n$base64"
         binding.textViewBase64UrlSafe.text = "Base64 UrlSafe:\n$base64UrlSafe"
+
+        val file = File(applicationContext.applicationInfo.dataDir, "hello_world.txt")
+
+        // Stream encoded data to a File
+        file.outputStream().use { oStream ->
+
+            @OptIn(ExperimentalEncodingApi::class)
+            base64DefaultEncoderDecoder.newEncoderFeed { encodedByte ->
+                // Write to the stream with every encoded
+                // byte that is pushed out of the feed.
+                oStream.write(encodedByte.toInt())
+            }.use { feed ->
+
+                HELLO_WORLD.forEach { c ->
+                    // Update the feed with each character
+                    // of Hello World!
+                    feed.update(c.code.toByte())
+                }
+            }
+        }
+
+        // Read the encoded data from the file
+        val sb = StringBuilder()
+        file.inputStream().use { stream ->
+
+            @OptIn(ExperimentalEncodingApi::class)
+            base64DefaultEncoderDecoder.newDecoderFeed { decodedByte ->
+                // Update the StringBuffer with every decoded
+                // byte that is pushed out of the feed.
+                sb.append(decodedByte.toInt().toChar())
+            }.use { feed ->
+
+                // Acquire a perfectly sized buffer for the encoding config being used
+                val size: Int = feed.config.decodeOutMaxSize(file.length()).let { size ->
+                    if (size > 4096L) {
+                        4096
+                    } else {
+                        size.toInt()
+                    }
+                }
+
+                val buffer = ByteArray(size)
+                while (true) {
+                    val read = stream.read(buffer)
+                    if (read == -1) break
+
+                    for (i in 0 until read) {
+                        // Update the feed with each byte
+                        feed.update(buffer[i])
+                    }
+                }
+            }
+        }
+
+        println(sb.toString())
     }
 }
