@@ -15,61 +15,34 @@
  **/
 package io.matthewnelson.encoding.core.util
 
+import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
-import kotlin.jvm.JvmField
-import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
- * Helper class for analyzing encoded data in order to
- * determine the maximum output size based off of the
- * options set for provided [EncoderDecoder.Config].
- *
- * Will "strip" padding (if the config specifies it) and
- * spaces/new lines from the end in order to provide
- * [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
- * with the best guess of the last relevant character.
+ * Helper class that ensures there is a common input type for
+ * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] such that changes
+ * to the API (like adding a new type for [Decoder] extension
+ * functions) will not affect inheritors of [EncoderDecoder].
  *
  * @see [get]
- * @see [toDecoderInput]
  * @see [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
  * */
-@OptIn(InternalEncodingApi::class)
-public class DecoderInput
-@Throws(EncodingException::class)
-private constructor(
-    config: EncoderDecoder.Config,
+public class DecoderInput {
+
     private val input: Any
-) {
+    @get:JvmSynthetic
+    internal val size: Int
 
-    /**
-     * After [input] has its padding (if applicable)
-     * "stripped", this is set to indicate the size
-     * of the [input], up to the last relevant character.
-     *
-     * e.g.
-     *
-     *     for (i in 0 until lastRelevantCharacter) {
-     *         // retrieve character from input
-     *     }
-     * */
-    @JvmField
-    public val lastRelevantCharacter: Int
+    private constructor(input: Any, size: Int) { this.input = input; this.size = size }
+    public constructor(input: CharSequence): this(input, input.length)
+    public constructor(input: CharArray): this(input, input.size)
+    public constructor(input: ByteArray): this(input, input.size)
 
-    private var _decodeOutMaxSize: Int = 0
-    @get:JvmName("decodeOutMaxSize")
-    public val decodeOutMaxSize: Int get() = _decodeOutMaxSize
-
-    /**
-     * Can be utilized by [EncoderDecoder.Config]
-     * implementation to check [input] in order to fail
-     * early.
-     * */
     @Throws(EncodingException::class)
     public operator fun get(index: Int): Char {
         return try {
@@ -83,52 +56,7 @@ private constructor(
         }
     }
 
-    init {
-        var limit = when (input) {
-            is CharSequence -> input.length
-            is CharArray -> input.size
-            else -> (input as ByteArray).size
-        }
-
-        // Disregard any padding or spaces/new lines (if applicable)
-        while (limit > 0) {
-            val c = get(limit - 1)
-
-            if (config.isLenient != null && c.isSpaceOrNewLine()) {
-                if (!config.isLenient) {
-                    throw isLenientFalseEncodingException()
-                } else {
-                    limit--
-                    continue
-                }
-            }
-
-            if (c.byte == config.paddingByte) {
-                limit--
-                continue
-            }
-
-            break
-        }
-
-        lastRelevantCharacter = limit
-
-        val outSize = config.decodeOutMaxSizeOrFail(limit.toLong(), this)
-
-        if (outSize > Int.MAX_VALUE.toLong()) {
-            throw outSizeExceedsMaxEncodingSizeException(limit, Int.MAX_VALUE)
-        }
-
-        _decodeOutMaxSize = outSize.toInt()
-    }
-
     public companion object {
-
-        @JvmStatic
-        @JvmSynthetic
-        internal fun isLenientFalseEncodingException(): EncodingException {
-            return EncodingException("Spaces and new lines are forbidden when isLenient[false]")
-        }
 
         @JvmStatic
         @InternalEncodingApi // might move this somewhere else... don't use.
@@ -138,23 +66,5 @@ private constructor(
         ): EncodingSizeException {
             return EncodingSizeException("Size[$inSize] of data would exceed the Maximum[$maxSize] for this operation")
         }
-
-        @JvmStatic
-        @Throws(EncodingException::class)
-        public fun CharSequence.toDecoderInput(
-            config: EncoderDecoder.Config
-        ): DecoderInput = DecoderInput(config, this)
-
-        @JvmStatic
-        @Throws(EncodingException::class)
-        public fun CharArray.toDecoderInput(
-            config: EncoderDecoder.Config
-        ): DecoderInput = DecoderInput(config, this)
-
-        @JvmStatic
-        @Throws(EncodingException::class)
-        public fun ByteArray.toDecoderInput(
-            config: EncoderDecoder.Config
-        ): DecoderInput = DecoderInput(config, this)
     }
 }

@@ -16,6 +16,7 @@
 package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.helpers.TestConfig
+import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.test.Test
 import kotlin.test.fail
 
@@ -27,13 +28,16 @@ class EncoderDecoderConfigUnitTest {
             encodeReturn = {
                 fail("Should not make it here")
             },
+            decodeInputReturn = {
+                fail("Should not make it here")
+            },
             decodeReturn = {
                 fail("Should not make it here")
             }
         )
 
         try {
-            config.decodeOutMaxSizeOrFail(-1L, null)
+            config.decodeOutMaxSize(-1L)
             fail()
         } catch (_: EncodingSizeException) {
             // pass
@@ -51,11 +55,19 @@ class EncoderDecoderConfigUnitTest {
     fun givenConfig_whenNegativeValuesReturned_thenThrowsEncodingSizeException() {
         val config = TestConfig(
             encodeReturn = { -1L },
+            decodeInputReturn = { -1 },
             decodeReturn = { -1L }
         )
 
         try {
-            config.decodeOutMaxSizeOrFail(5, null)
+            config.decodeOutMaxSize(5)
+            fail()
+        } catch (_: EncodingSizeException) {
+            // pass
+        }
+
+        try {
+            config.decodeOutMaxSizeOrFail(DecoderInput("a"))
             fail()
         } catch (_: EncodingSizeException) {
             // pass
@@ -73,10 +85,12 @@ class EncoderDecoderConfigUnitTest {
     fun givenConfig_whenPositiveValuesSentAndReturned_thenDoseNotThrowException() {
         val config = TestConfig(
             encodeReturn = { 1L },
+            decodeInputReturn = { 1 },
             decodeReturn = { 1L },
         )
 
-        config.decodeOutMaxSizeOrFail(1L, null)
+        config.decodeOutMaxSizeOrFail(DecoderInput("a"))
+        config.decodeOutMaxSize(1L)
         config.encodeOutSize(1L)
     }
 
@@ -84,10 +98,12 @@ class EncoderDecoderConfigUnitTest {
     fun givenConfig_whenZeroPassed_thenReturns0Immediately() {
         val config = TestConfig(
             encodeReturn = { fail("Should not make it here") },
+            decodeInputReturn = { fail("Should not make it here") },
             decodeReturn = { fail("Should not make it here") },
         )
 
-        config.decodeOutMaxSizeOrFail(0L, null)
+        config.decodeOutMaxSizeOrFail(DecoderInput(""))
+        config.decodeOutMaxSize(0L)
         config.encodeOutSize(0L)
     }
 
@@ -95,10 +111,12 @@ class EncoderDecoderConfigUnitTest {
     fun givenConfig_whenZeroReturned_thenDoesNotThrowException() {
         val config = TestConfig(
             encodeReturn = { 0L },
+            decodeInputReturn = { 0 },
             decodeReturn = { 0L },
         )
 
-        config.decodeOutMaxSizeOrFail(1L, null)
+        config.decodeOutMaxSizeOrFail(DecoderInput("a"))
+        config.decodeOutMaxSize(1L)
         config.encodeOutSize(1L)
     }
 }

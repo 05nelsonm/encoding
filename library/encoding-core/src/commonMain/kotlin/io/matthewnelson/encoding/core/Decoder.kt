@@ -18,8 +18,8 @@
 package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.decode
+import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.buffer.DecodingBuffer
-import io.matthewnelson.encoding.core.util.DecoderInput.Companion.toDecoderInput
 import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic
 
@@ -79,11 +79,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
-            val input = toDecoderInput(decoder.config)
-
-            return decoder.decode(input) { feed ->
-                for (i in 0 until input.lastRelevantCharacter) {
-                    feed.update(this[i].byte)
+            return decoder.decode(decoder.config, DecoderInput(this)) { feed ->
+                forEach { c ->
+                    feed.update(c.byte)
                 }
             }
         }
@@ -108,11 +106,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun CharArray.decodeToByteArray(decoder: Decoder): ByteArray {
-            val input = toDecoderInput(decoder.config)
-
-            return decoder.decode(input) { feed ->
-                for (i in 0 until input.lastRelevantCharacter) {
-                    feed.update(this[i].byte)
+            return decoder.decode(decoder.config, DecoderInput(this)) { feed ->
+                forEach { c ->
+                    feed.update(c.byte)
                 }
             }
         }
@@ -137,11 +133,9 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
         public fun ByteArray.decodeToByteArray(decoder: Decoder): ByteArray {
-            val input = toDecoderInput(decoder.config)
-
-            return decoder.decode(input) { feed ->
-                for (i in 0 until input.lastRelevantCharacter) {
-                    feed.update(this[i])
+            return decoder.decode(decoder.config, DecoderInput(this)) { feed ->
+                forEach { b ->
+                    feed.update(b)
                 }
             }
         }

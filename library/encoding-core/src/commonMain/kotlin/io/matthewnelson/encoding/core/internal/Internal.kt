@@ -18,8 +18,9 @@ package io.matthewnelson.encoding.core.internal
 import kotlin.jvm.JvmSynthetic
 
 /**
- * Something to pass as an argument to public
- * functions which only this module can access.
+ * Something to pass as an argument to protected
+ * functions which only this module can access, so
+ * inheritors cannot.
  * */
 @InternalEncodingApi
 public class Internal private constructor() {

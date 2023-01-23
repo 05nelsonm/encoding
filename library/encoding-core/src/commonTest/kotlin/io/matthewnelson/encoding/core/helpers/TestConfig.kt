@@ -25,10 +25,14 @@ class TestConfig(
     isLenient: Boolean? = false,
     paddingByte: Byte? = '='.byte,
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
+    private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
 ): EncoderDecoder.Config(isLenient, paddingByte) {
-    override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
+    override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
         return decodeReturn.invoke(encodedSize)
+    }
+    override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+        return decodeInputReturn.invoke(encodedSize)
     }
     override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
         return encodeReturn.invoke(unEncodedSize)

@@ -28,6 +28,7 @@ import kotlin.contracts.contract
 @Throws(EncodingException::class)
 @OptIn(ExperimentalEncodingApi::class, ExperimentalContracts::class)
 internal inline fun Decoder.decode(
+    config: Config,
     input: DecoderInput,
     update: (feed: Decoder.Feed) -> Unit
 ): ByteArray {
@@ -35,7 +36,8 @@ internal inline fun Decoder.decode(
         callsInPlace(update, InvocationKind.EXACTLY_ONCE)
     }
 
-    val ba = ByteArray(input.decodeOutMaxSize)
+    val size = config.decodeOutMaxSizeOrFail(input)
+    val ba = ByteArray(size)
 
     var i = 0
     newDecoderFeed { byte ->
@@ -43,13 +45,13 @@ internal inline fun Decoder.decode(
             ba[i++] = byte
         } catch (e: IndexOutOfBoundsException) {
             // Something is wrong with the encoder's pre-calculation
-            throw EncodingSizeException("Encoder's pre-calculation of size[${input.decodeOutMaxSize}] was incorrect", e)
+            throw EncodingSizeException("Encoder's pre-calculation of size[${size}] was incorrect", e)
         }
     }.use { feed ->
         update.invoke(feed)
     }
 
-    return if (i == input.decodeOutMaxSize) {
+    return if (i == size) {
         ba
     } else {
         ba.copyOf(i)
@@ -63,7 +65,8 @@ internal inline fun Decoder.decode(
 @OptIn(ExperimentalContracts::class)
 @Throws(EncodingSizeException::class)
 internal inline fun <T: Any> Encoder.encodeOutSizeOrFail(
-    size: Int, block: (outSize: Int) -> T
+    size: Int,
+    block: (outSize: Int) -> T
 ): T {
     contract {
         callsInPlace(block, InvocationKind.AT_MOST_ONCE)
@@ -91,4 +94,9 @@ internal inline fun Encoder.encode(
             feed.update(byte)
         }
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun EncoderDecoder.Feed.closedException(): EncodingException {
+    return EncodingException("$this is closed")
 }

@@ -59,8 +59,10 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field isLenient Ljava/lang/Boolean;
 	public final field paddingByte Ljava/lang/Byte;
 	public fun <init> (Ljava/lang/Boolean;Ljava/lang/Byte;)V
-	public final fun decodeOutMaxSizeOrFail (JLio/matthewnelson/encoding/core/util/DecoderInput;)J
-	protected abstract fun decodeOutMaxSizeOrFailProtected (JLio/matthewnelson/encoding/core/util/DecoderInput;)J
+	public final fun decodeOutMaxSize (J)J
+	public final fun decodeOutMaxSizeOrFail (Lio/matthewnelson/encoding/core/util/DecoderInput;)I
+	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
+	protected abstract fun decodeOutMaxSizeProtected (J)J
 	public final fun encodeOutSize (J)J
 	protected abstract fun encodeOutSizeProtected (J)J
 	public final fun equals (Ljava/lang/Object;)Z
@@ -110,20 +112,13 @@ public abstract interface annotation class io/matthewnelson/encoding/core/intern
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public static final field Companion Lio/matthewnelson/encoding/core/util/DecoderInput$Companion;
-	public final field lastRelevantCharacter I
-	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun decodeOutMaxSize ()I
+	public fun <init> (Ljava/lang/CharSequence;)V
+	public fun <init> ([B)V
+	public fun <init> ([C)V
 	public final fun get (I)C
-	public static final synthetic fun isLenientFalseEncodingException$encoding_core ()Lio/matthewnelson/encoding/core/EncodingException;
-	public static final fun toDecoderInput (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
-	public static final fun toDecoderInput ([BLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
-	public static final fun toDecoderInput ([CLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 }
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput$Companion {
-	public final fun toDecoderInput (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
-	public final fun toDecoderInput ([BLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
-	public final fun toDecoderInput ([CLio/matthewnelson/encoding/core/EncoderDecoder$Config;)Lio/matthewnelson/encoding/core/util/DecoderInput;
 }
 
 public final class io/matthewnelson/encoding/core/util/_ConversionsKt {
