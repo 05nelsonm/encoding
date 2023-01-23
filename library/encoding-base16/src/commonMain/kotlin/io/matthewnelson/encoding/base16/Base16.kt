@@ -72,8 +72,12 @@ public class Base16(config: Config): EncoderDecoder(config) {
         public val encodeToLowercase: Boolean,
     ): EncoderDecoder.Config(isLenient, paddingByte = null) {
 
-        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long {
+        override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L
+        }
+
+        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+            return encodedSize / 2
         }
 
         @Throws(EncodingSizeException::class)
