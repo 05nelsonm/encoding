@@ -20,7 +20,8 @@
     "RedundantExplicitType",
     "SpellCheckingInspection",
     "DEPRECATION",
-    "DeprecatedCallableAddReplaceWith", "UNUSED_PARAMETER",
+    "DeprecatedCallableAddReplaceWith",
+    "UNUSED_PARAMETER",
 )
 
 package io.matthewnelson.component.encoding.base32
@@ -81,9 +82,9 @@ public sealed class Base32 {
             @Deprecated(
                 message = "Replaced by EncoderDecoder. Will be removed in future versions.",
                 replaceWith = ReplaceWith(
-                    expression = "CHARS",
+                    expression = "Crockford.CHARS",
                     imports = [
-                        "io.matthewnelson.encoding.base32.Base32.Crockford.CHARS"
+                        "io.matthewnelson.encoding.base32.Base32.Crockford"
                     ],
                 ),
                 level = DeprecationLevel.WARNING
@@ -119,9 +120,9 @@ public sealed class Base32 {
         @Deprecated(
             message = "Replaced by EncoderDecoder. Will be removed in future versions.",
             replaceWith = ReplaceWith(
-                expression = "CHARS",
+                expression = "Default.CHARS",
                 imports = [
-                    "io.matthewnelson.encoding.base32.Base32.Default.CHARS"
+                    "io.matthewnelson.encoding.base32.Base32.Default"
                 ],
             ),
             level = DeprecationLevel.WARNING
@@ -144,9 +145,9 @@ public sealed class Base32 {
         @Deprecated(
             message = "Replaced by EncoderDecoder. Will be removed in future versions.",
             replaceWith = ReplaceWith(
-                expression = "CHARS",
+                expression = "Hex.CHARS",
                 imports = [
-                    "io.matthewnelson.encoding.base32.Base32.Hex.CHARS"
+                    "io.matthewnelson.encoding.base32.Base32.Hex"
                 ],
             ),
             level = DeprecationLevel.WARNING
