@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.core.util.byte
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
@@ -92,21 +93,25 @@ constructor(config: Config): Encoder(config) {
 
         /**
          * Calculates and returns the maximum size of the output after
-         * decoding would occur, based off of the configuration options
-         * set for the [Config] implementation.
+         * decoding would occur, based off of the [Config] options set
+         * for the implementation.
+         *
+         * The encoded data may contain spaces or new lines which are
+         * ignored if [isLenient] is set to **true**, or the encoding spec
+         * may allow for certain characters which are to be ignored (Base32
+         * Crockford ignores hyphens). The output of this function can be
+         * incorrect in those instances and the actual decoded output size
+         * may be different from the value returned here; this is a "best
+         * guess".
          *
          * Will always return a value greater than or equal to 0.
          *
          * @param [encodedSize] The size of the encoded data being decoded.
-         * @param [input] Optional paramater for [Config] implementation to
-         *   check to fail quickly (if it has a check).
          * @throws [EncodingSizeException] if there was an error calculating
          *   the size, or [encodedSize] was negative.
-         * @throws [EncodingException] if the [Config] implementation's check
-         *   of [input] (if it has one) failed.
          * */
-        @Throws(EncodingException::class)
-        public fun decodeOutMaxSizeOrFail(encodedSize: Long, input: DecoderInput?): Long {
+        @Throws(EncodingSizeException::class)
+        public fun decodeOutMaxSize(encodedSize: Long): Long {
             if (encodedSize < 0L) {
                 throw EncodingSizeException("encodedSize cannot be negative")
             }
@@ -114,7 +119,66 @@ constructor(config: Config): Encoder(config) {
             // return early
             if (encodedSize == 0L) return 0L
 
-            val outSize = decodeOutMaxSizeOrFailProtected(encodedSize, input)
+            val outSize = decodeOutMaxSizeProtected(encodedSize)
+            if (outSize < 0L) {
+                throw EncodingSizeException("Calculated size was negative")
+            }
+            return outSize
+        }
+
+        /**
+         * Calculates and returns the maximum size of the output after
+         * decoding would occur, based off of the [Config] options set
+         * for the implementation.
+         *
+         * The encoded data may contain spaces or new lines which are
+         * ignored if [isLenient] is set to **true**, or the encoding spec
+         * may allow for certain characters which are to be ignored (Base32
+         * Crockford ignores hyphens). The output of this function can be
+         * incorrect in those instances and the actual decoded output size
+         * may be different from the value returned here; this is a "best
+         * guess".
+         *
+         * Will always return a value greater than or equal to 0.
+         *
+         * @param [input] Common input of the data which is to be decoded.
+         * @see [DecoderInput]
+         * @throws [EncodingSizeException] If there was an error calculating
+         *   the size or [decodeOutMaxSizeOrFailProtected] returned a negative
+         *   number.
+         * @throws [EncodingException] If the implementation has checks to faiil
+         *   quickly, and the [input] verification failed (e.g. Base32 Crockford)
+         * */
+        @Throws(EncodingException::class)
+        public fun decodeOutMaxSizeOrFail(input: DecoderInput): Int {
+            var lastRelevantChar = input.size
+
+            while (lastRelevantChar > 0) {
+                val c = input[lastRelevantChar - 1]
+
+                if (isLenient != null && c.isSpaceOrNewLine()) {
+                    if (isLenient) {
+                        lastRelevantChar--
+                        continue
+                    } else {
+                        throw EncodingException("Spaces and new lines are forbidden when isLenient[false]")
+                    }
+                }
+
+                if (c.byte == paddingByte) {
+                    lastRelevantChar--
+                    continue
+                }
+
+                // Found our last relevant character
+                // that is not a space, new line, or padding.
+                break
+            }
+
+            // return early
+            if (lastRelevantChar == 0) return 0
+
+            val outSize = decodeOutMaxSizeOrFailProtected(lastRelevantChar, input)
             if (outSize < 0L) {
                 throw EncodingSizeException("Calculated size was negative")
             }
@@ -131,7 +195,13 @@ constructor(config: Config): Encoder(config) {
          * Will only receive values greater than 0.
          * */
         @Throws(EncodingException::class)
-        protected abstract fun decodeOutMaxSizeOrFailProtected(encodedSize: Long, input: DecoderInput?): Long
+        protected abstract fun decodeOutMaxSizeProtected(encodedSize: Long): Long
+
+        /**
+         * Will only receive values greater than 0.
+         * */
+        @Throws(EncodingException::class)
+        protected abstract fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int
 
         /**
          * Will be called whenever [toString] is invoked, allowing
@@ -235,7 +305,7 @@ constructor(config: Config): Encoder(config) {
                         if (config.isLenient) {
                             return
                         } else {
-                            throw DecoderInput.isLenientFalseEncodingException()
+                            throw EncodingException("Spaces and new lines are forbidden when isLenient[false]")
                         }
                     }
 
