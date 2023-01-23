@@ -73,7 +73,6 @@ public class Base16ConfigBuilder {
     public constructor(config: Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
-        acceptLowercase = config.acceptLowercase
         encodeToLowercase = config.encodeToLowercase
     }
 
@@ -86,16 +85,6 @@ public class Base16ConfigBuilder {
      * */
     @JvmField
     public var isLenient: Boolean = true
-
-    /**
-     * If true, will accept lowercase **AND** uppercase
-     * characters when decoding (against RFC 4648).
-     *
-     * If false, an [EncodingException] will be thrown if
-     * lowercase characters are encountered when decoding.
-     * */
-    @JvmField
-    public var acceptLowercase: Boolean = true
 
     /**
      * If true, will output lowercase characters when
@@ -113,7 +102,6 @@ public class Base16ConfigBuilder {
      * */
     public fun strict(): Base16ConfigBuilder {
         isLenient = false
-        acceptLowercase = false
         encodeToLowercase = false
         return this
     }

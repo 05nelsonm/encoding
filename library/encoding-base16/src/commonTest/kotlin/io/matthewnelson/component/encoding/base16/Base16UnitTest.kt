@@ -22,7 +22,6 @@ class Base16UnitTest: BaseEncodingTestBase() {
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data(raw = "A=", expected = null, message = "Typical padding character '=' should return null"),
-        Data(raw = "666f" /* fo */, expected = null, message = "Lower case character should return null"),
         Data(raw = "666", expected = null, message = "Truncated value should return null"),
         Data(raw = "6", expected = null, message = "Truncated value should return null"),
         Data(raw = "AG", expected = null, message = "Character 'G' should return null"),
@@ -86,6 +85,7 @@ class Base16UnitTest: BaseEncodingTestBase() {
         Data(raw = "524142204F", expected = "RAB O".encodeToByteArray()),
         Data(raw = "524142204F4F", expected = "RAB OO".encodeToByteArray()),
         Data(raw = "524142204F4F46", expected = "RAB OOF".encodeToByteArray()),
+        Data(raw = "524142204f4f46", expected = "RAB OOF".encodeToByteArray()),
     )
 
     override val encodeSuccessDataSet: Set<Data<String, String>> = setOf(

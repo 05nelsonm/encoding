@@ -67,8 +67,6 @@ public class Base16(config: Config): EncoderDecoder(config) {
     public class Config private constructor(
         isLenient: Boolean,
         @JvmField
-        public val acceptLowercase: Boolean,
-        @JvmField
         public val encodeToLowercase: Boolean,
     ): EncoderDecoder.Config(isLenient, paddingByte = null) {
 
@@ -91,9 +89,6 @@ public class Base16(config: Config): EncoderDecoder(config) {
 
         override fun toStringAddSettings(sb: StringBuilder) {
             with(sb) {
-                append("    acceptLowercase: ")
-                append(acceptLowercase)
-                appendLine()
                 append("    encodeToLowercase: ")
                 append(encodeToLowercase)
             }
@@ -105,7 +100,6 @@ public class Base16(config: Config): EncoderDecoder(config) {
             internal fun from(builder: Base16ConfigBuilder): Config {
                 return Config(
                     isLenient = builder.isLenient,
-                    acceptLowercase = builder.acceptLowercase,
                     encodeToLowercase = builder.encodeToLowercase,
                 )
             }
@@ -150,13 +144,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
 
             @Throws(EncodingException::class)
             override fun updateProtected(input: Byte) {
-                val char = if ((config as Config).acceptLowercase) {
-                    input.char.uppercaseChar()
-                } else {
-                    input.char
-                }
-
-                val bits: Int = when (char) {
+                val bits: Int = when (val char = input.char.uppercaseChar()) {
                     in '0'..'9' -> {
                         // char ASCII value
                         // 0     48    0
