@@ -90,7 +90,7 @@ public sealed class Base64 {
     public data class UrlSafe @JvmOverloads constructor(
 
         @Deprecated(
-            message = "Replaced by EncoderDecoders. Use io.matthewnelson.builders.Base64UrlSafe to set",
+            message = "Replaced by EncoderDecoders. Use io.matthewnelson.builders.Base64 { encodeToUrlSafe = true; padEncoded = true/false } to set",
             level = DeprecationLevel.WARNING,
         )
         val pad: Boolean = true
