@@ -32,7 +32,7 @@ class DecoderInputUnitTest {
         val expectedOutSize = 2
 
         val config = TestConfig(
-            paddingByte = pad.byte,
+            paddingChar = pad,
             decodeInputReturn = { encodedSize ->
                 assertEquals(expectedEncodedSize, encodedSize)
                 expectedOutSize // return
@@ -127,7 +127,7 @@ class DecoderInputUnitTest {
     fun givenDecoderInput_whenInputIsByteArray_thenSuccess() {
         // Include spaces and set isLenient = true (so they are
         // skipped) in order to exercise DecoderInput.get
-        val validInput = ByteArray(5) { ' '.byte }.apply { set(0, 'D'.byte) }
+        val validInput = ByteArray(5) { ' '.code.toByte() }.apply { set(0, 'D'.code.toByte()) }
         val config = TestConfig(isLenient = true, decodeInputReturn = { inputSize ->
             assertEquals(1, inputSize)
             inputSize// pass

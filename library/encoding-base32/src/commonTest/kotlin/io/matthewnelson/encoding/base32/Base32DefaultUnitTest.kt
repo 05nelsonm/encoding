@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("KotlinRedundantDiagnosticSuppress")
+package io.matthewnelson.encoding.base32
 
-package io.matthewnelson.encoding.core.util
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@Suppress("NOTHING_TO_INLINE")
-public inline val Char.byte: Byte get() = code.toByte()
+class Base32DefaultUnitTest {
 
-@Suppress("NOTHING_TO_INLINE")
-public inline val Byte.char: Char get() = toInt().toChar()
+    @Test
+    fun givenBase32Default_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base32.Default.CHARS_UPPER, Base32.Default.CHARS_LOWER.uppercase())
+        assertEquals(Base32.Default.CHARS_LOWER, Base32.Default.CHARS_UPPER.lowercase())
+    }
+}

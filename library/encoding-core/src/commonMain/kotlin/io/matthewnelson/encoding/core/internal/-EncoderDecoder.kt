@@ -39,9 +39,9 @@ internal inline fun <C: Config> Decoder<C>.decode(
     val ba = ByteArray(size)
 
     var i = 0
-    newDecoderFeed { byte ->
+    newDecoderFeed { decodedByte ->
         try {
-            ba[i++] = byte
+            ba[i++] = decodedByte
         } catch (e: IndexOutOfBoundsException) {
             // Something is wrong with the encoder's pre-calculation
             throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", e)
@@ -73,8 +73,7 @@ internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
 
     val outSize = config.encodeOutSize(size.toLong())
     if (outSize > Int.MAX_VALUE.toLong()) {
-        @OptIn(InternalEncodingApi::class)
-        throw DecoderInput.outSizeExceedsMaxEncodingSizeException(outSize, Int.MAX_VALUE)
+        throw Config.outSizeExceedsMaxEncodingSizeException(outSize, Int.MAX_VALUE)
     }
 
     return block.invoke(outSize.toInt())
@@ -82,9 +81,9 @@ internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
 
 @Suppress("NOTHING_TO_INLINE")
 @OptIn(ExperimentalEncodingApi::class)
-internal inline fun <C: EncoderDecoder.Config> Encoder<C>.encode(
+internal inline fun <C: Config> Encoder<C>.encode(
     data: ByteArray,
-    out: OutFeed,
+    out: Encoder.OutFeed,
 ) {
     if (data.isEmpty()) return
 
@@ -98,4 +97,11 @@ internal inline fun <C: EncoderDecoder.Config> Encoder<C>.encode(
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
     return EncodingException("$this is closed")
+}
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun EncoderDecoder.Config.calculatedOutputNegativeEncodingSizeException(
+    outSize: Number
+): EncodingSizeException {
+    return EncodingSizeException("Calculated output of Size[$outSize] was negative")
 }

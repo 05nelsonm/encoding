@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.util.buffer
+package io.matthewnelson.encoding.core.util
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -23,9 +23,9 @@ class FeedBufferUnitTest {
 
     private inner class TestBuffer(
         blockSize: Int,
-        flush: Flush<Byte> = Flush { _ -> },
-        finalize: Finalize<Byte> = Finalize { _, _ -> },
-    ): EncodingBuffer(
+        flush: Flush = Flush { _ -> },
+        finalize: Finalize = Finalize { _, _ -> },
+    ): FeedBuffer(
         blockSize, flush, finalize
     )
 
@@ -46,13 +46,13 @@ class FeedBufferUnitTest {
             val buffer = TestBuffer(i, flush = { buffer ->
                 invokedCount++
                 assertEquals(i, buffer.size)
-                for (byte in buffer) {
-                    assertEquals(i.toByte(), byte)
+                for (int in buffer) {
+                    assertEquals(i, int)
                 }
             })
 
             for (j in 0 until i) {
-                buffer.update(i.toByte())
+                buffer.update(i)
             }
 
             assertEquals(1, invokedCount)
@@ -65,8 +65,8 @@ class FeedBufferUnitTest {
             assertEquals(5, modulus)
             assertEquals(15, buffer.size)
 
-            for ((i, v) in (5 downTo 1).withIndex()) {
-                assertEquals(v.toByte(), buffer[i])
+            for ((i, value) in (5 downTo 1).withIndex()) {
+                assertEquals(value, buffer[i])
             }
 
             for (i in 5..buffer.lastIndex) {
@@ -81,7 +81,7 @@ class FeedBufferUnitTest {
 
         // Update with 5 more
         for (i in 5 downTo 1) {
-            buffer.update(i.toByte())
+            buffer.update(i)
         }
 
         buffer.finalize()

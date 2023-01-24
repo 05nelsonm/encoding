@@ -7,11 +7,12 @@ public final class io/matthewnelson/component/encoding/base16/Base16Kt {
 }
 
 public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/encoding/core/EncoderDecoder {
-	public static final field CHARS Ljava/lang/String;
+	public static final field CHARS_LOWER Ljava/lang/String;
+	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base16/Base16$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
-	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
-	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Companion {

@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection")
+@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.calculatedOutputNegativeEncodingSizeException
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.byte
-import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmName
+import kotlin.jvm.JvmStatic
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
@@ -48,7 +47,7 @@ constructor(config: C): Encoder<C>(config) {
      *   [EncodingException] will be thrown when encountering those
      *   characters. See [isSpaceOrNewLine]. If null, those bytes
      *   are sent to the [EncoderDecoder].
-     * @param [paddingByte] The byte used when padding the output for
+     * @param [paddingChar] The byte used when padding the output for
      *   the given encoding; NOT "if padding should be
      *   used". (e.g. '='.code.toByte()).
      *   If the encoding specification does not ues padding, pass `null`.
@@ -61,7 +60,7 @@ constructor(config: C): Encoder<C>(config) {
         @JvmField
         public val isLenient: Boolean?,
         @JvmField
-        public val paddingByte: Byte?,
+        public val paddingChar: Char?,
     ) {
 
         /**
@@ -86,7 +85,7 @@ constructor(config: C): Encoder<C>(config) {
 
             val outSize = encodeOutSizeProtected(unEncodedSize)
             if (outSize < 0L) {
-                throw EncodingSizeException("Calculated size was negative")
+                throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -94,7 +93,8 @@ constructor(config: C): Encoder<C>(config) {
         /**
          * Calculates and returns the maximum size of the output after
          * decoding would occur, based off of the [Config] options set
-         * for the implementation.
+         * for the implementation. Should always prefer using
+         * [decodeOutMaxSizeOrFail] if input data is already known.
          *
          * The encoded data may contain spaces or new lines which are
          * ignored if [isLenient] is set to **true**, or the encoding spec
@@ -106,6 +106,7 @@ constructor(config: C): Encoder<C>(config) {
          *
          * Will always return a value greater than or equal to 0.
          *
+         * @see [decodeOutMaxSizeOrFail]
          * @param [encodedSize] The size of the encoded data being decoded.
          * @throws [EncodingSizeException] if there was an error calculating
          *   the size, or [encodedSize] was negative.
@@ -121,7 +122,7 @@ constructor(config: C): Encoder<C>(config) {
 
             val outSize = decodeOutMaxSizeProtected(encodedSize)
             if (outSize < 0L) {
-                throw EncodingSizeException("Calculated size was negative")
+                throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -165,7 +166,7 @@ constructor(config: C): Encoder<C>(config) {
                     }
                 }
 
-                if (c.byte == paddingByte) {
+                if (c == paddingChar) {
                     lastRelevantChar--
                     continue
                 }
@@ -179,8 +180,8 @@ constructor(config: C): Encoder<C>(config) {
             if (lastRelevantChar == 0) return 0
 
             val outSize = decodeOutMaxSizeOrFailProtected(lastRelevantChar, input)
-            if (outSize < 0L) {
-                throw EncodingSizeException("Calculated size was negative")
+            if (outSize < 0) {
+                throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -208,7 +209,7 @@ constructor(config: C): Encoder<C>(config) {
          * inheritors of [Config] to add their settings to
          * the output.
          *
-         * [isLenient] and [paddingByte] are automatically added.
+         * [isLenient] and [paddingChar] are automatically added.
          *
          * Output of [toString] is used in [equals] and [hashCode], so
          * this affects their outcome.
@@ -250,23 +251,41 @@ constructor(config: C): Encoder<C>(config) {
                 append(isLenient)
                 appendLine()
                 append("    paddingChar: ")
-                append(paddingByte?.char)
+                append(paddingChar)
                 appendLine()
                 toStringAddSettings(this)
                 appendLine()
                 append(']')
             }.toString()
         }
+
+        public companion object {
+
+            /**
+             * Helper for generating an [EncodingSizeException] when the
+             * pre-calculated encoded/decoded output size exceeds the maximum for
+             * the given encoding/decoding specification.
+             * */
+            @JvmStatic
+            public fun outSizeExceedsMaxEncodingSizeException(
+                inputSize: Number,
+                maxSize: Number
+            ): EncodingSizeException {
+                return EncodingSizeException(
+                    "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
+                )
+            }
+        }
     }
 
     /**
      * Base abstraction for encoding/decoding of data.
      *
-     * After feeding all data through [consume], call [doFinal]
-     * to complete encoding/decoding. Alternatively, utilize the
-     * [use] extension function which will call [doFinal] for you
-     * when you're done feeding data through [consume], or will
-     * call [close] in the event there is an error while
+     * After feeding all data through [Decoder.Feed.consume] or
+     * [Encoder.Feed.consume], call [doFinal] to complete encoding/decoding.
+     * Alternatively, utilize the [use] extension function which will
+     * call [doFinal] for you when you're done feeding data through,
+     * or will call [close] in the event there is an error while
      * encoding/decoding.
      *
      * @see [use]
@@ -274,98 +293,50 @@ constructor(config: C): Encoder<C>(config) {
      * @see [Decoder.Feed]
      * */
     public sealed class Feed<C: EncoderDecoder.Config>(public val config: C) {
-        @get:JvmName("isClosed")
-        public var isClosed: Boolean = false
-            private set
-
-        private var isPaddingSet = false
-
-        // Only throws exception if decoding
-        @Throws(EncodingException::class)
-        protected abstract fun consumeProtected(input: Byte)
-
-        // Only throws exception if decoding
-        @Throws(EncodingException::class)
-        protected abstract fun doFinalProtected()
 
         /**
-         * Updates the [Feed] with a new byte to encode/decode.
+         * [close]s the [Decoder.Feed]/[Encoder.Feed] and finalizes the
+         * encoding/decoding, such as applying padding (encoding), or
+         * processing remaining data in its buffer before dumping them
+         * to [Decoder.OutFeed]/[Encoder.OutFeed].
          *
-         * @throws [EncodingException] if [isClosed] is true, or
-         *   there was an error encoding/decoding.
-         * */
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun consume(input: Byte) {
-            if (isClosed) throw closedException()
-
-            try {
-                if (this is Decoder<*>.Feed) {
-                    if (config.isLenient != null && input.char.isSpaceOrNewLine()) {
-                        if (config.isLenient) {
-                            return
-                        } else {
-                            throw EncodingException("Spaces and new lines are forbidden when isLenient[false]")
-                        }
-                    }
-
-                    // if paddingByte is null, it will never equal
-                    // input, thus never set isPaddingSet
-                    if (config.paddingByte == input) {
-                        isPaddingSet = true
-                        return
-                    }
-
-                    if (isPaddingSet) {
-                        // Trying to decode something else that is not
-                        // a space, new line, or padding. Fail
-                        throw EncodingException(
-                            "Padding[${config.paddingByte?.char}] was previously passed, " +
-                            "but decoding operations are still being attempted."
-                        )
-                    }
-                }
-
-                consumeProtected(input)
-            } catch (t: Throwable) {
-                close()
-                throw t
-            }
-        }
-
-        /**
-         * Closes the [Feed] and finalizes the encoding/decoding, such
-         * as applying padding (encoding) or processing remaining bytes
-         * in its buffer before dumping them to [OutFeed].
-         *
-         * Can only be called once. Any sucessive calls will be considered
-         * an error and throw an [EncodingException].
+         * Can only be called once. Any sucessive calls to [doFinal],
+         * [Decoder.Feed.consume], or [Encoder.Feed.consume] will be
+         * considered an error and throw an [EncodingException].
          *
          * @see [use]
+         * @see [close]
          * @throws [EncodingException] if [isClosed] is true, or
          *   there was an error encoding/decoding.
          * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public fun doFinal() {
-            if (isClosed) throw closedException()
+            if (isClosed()) throw closedException()
             close()
             doFinalProtected()
         }
 
         /**
-         * Closes the feed, rendering it useless.
+         * Closes the feed rendering it useless.
          *
-         * After [close] has been called, any invocation of [consume]
+         * After [close] has been called, any invocation of
+         * [Decoder.Feed.consume], [Encoder.Feed.consume],
          * or [doFinal] will be considered an error and throw an
          * [EncodingException].
+         *
+         * [close] can be called as many times as desired and
+         * will not be considered an error if already closed.
          *
          * @see [use]
          * */
         @ExperimentalEncodingApi
-        public fun close() {
-            isClosed = true
-        }
+        public abstract fun close()
+
+        public abstract fun isClosed(): Boolean
+
+        @Throws(EncodingException::class)
+        protected abstract fun doFinalProtected()
     }
 
     /**
@@ -373,9 +344,10 @@ constructor(config: C): Encoder<C>(config) {
      * output of [toString], [equals], and [hashCode].
      *
      * e.g.
-     *   Base16
-     *   Base32.Crockford
-     *   Base64
+     *
+     *     override fun name() = "Base16"
+     *     override fun name() = "Base32.Crockford"
+     *     override fun name() = "Base64"
      * */
     protected abstract fun name(): String
 

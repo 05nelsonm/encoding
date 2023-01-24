@@ -89,7 +89,7 @@ public sealed class Base32 {
                 ),
                 level = DeprecationLevel.WARNING
             )
-            public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Crockford.CHARS
+            public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Crockford.CHARS_UPPER
         }
 
         @Deprecated(
@@ -127,7 +127,7 @@ public sealed class Base32 {
             ),
             level = DeprecationLevel.WARNING
         )
-        public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Default.CHARS
+        public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Default.CHARS_UPPER
     }
 
     @Deprecated(
@@ -152,7 +152,7 @@ public sealed class Base32 {
             ),
             level = DeprecationLevel.WARNING
         )
-        public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Hex.CHARS
+        public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Hex.CHARS_UPPER
     }
 }
 

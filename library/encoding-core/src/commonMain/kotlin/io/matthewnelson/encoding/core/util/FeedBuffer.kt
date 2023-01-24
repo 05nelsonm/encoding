@@ -13,39 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.util.buffer
+package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncodingException
-import io.matthewnelson.encoding.core.OutFeed
-import io.matthewnelson.encoding.core.internal.Internal
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 /**
- * Helper class for [Decoder.Feed] and [Encoder.Feed]s
+ * Helper class for [Decoder.Feed] and [Encoder.Feed]
  * to buffer their input until they are ready to output
- * data to their [OutFeed]s.
+ * data to their [Decoder.OutFeed] or [Encoder.OutFeed].
  *
- * @see [DecodingBuffer]
- * @see [EncodingBuffer]
  * @see [Flush]
  * @see [Finalize]
  * @see [truncatedInputEncodingException]
  * @throws [IllegalArgumentException] if [blockSize] is less
  *   than or equal to 0
  * */
-@OptIn(InternalEncodingApi::class)
-public sealed class FeedBuffer<T: Number>
+public abstract class FeedBuffer
 @Throws(IllegalArgumentException::class)
 constructor(
     @JvmField
     public val blockSize: Int,
-    private val flush: Flush<T>,
-    private val finalize: Finalize<T>,
+    private val flush: Flush,
+    private val finalize: Finalize,
 ) {
 
     init {
@@ -58,14 +52,15 @@ constructor(
     public var count: Int = 0
         private set
 
+    private val buffer = IntArray(blockSize)
+
     /**
      * Update the [buffer] with new input.
      *
      * Will automatically invoke [flush] in order
      * to output data once the [buffer] fills.
      * */
-    public fun update(input: T) {
-        val buffer = buffer(Internal.get())
+    public fun update(input: Int) {
         buffer[count] = input
 
         if (++count % blockSize == 0) {
@@ -80,10 +75,9 @@ constructor(
      * process the remaining input in the [buffer].
      * */
     public fun finalize() {
-        val buffer = buffer(Internal.get())
-        buffer.fill(zero(), count)
+        buffer.fill(0, count)
         finalize.invoke(count % blockSize, buffer)
-        buffer.fill(zero(), 0, count)
+        buffer.fill(0, 0, count)
         count = 0
     }
 
@@ -94,8 +88,8 @@ constructor(
      *
      * @see [update]
      * */
-    public fun interface Flush<T: Number> {
-        public fun invoke(buffer: Array<T>)
+    public fun interface Flush {
+        public fun invoke(buffer: IntArray)
     }
 
     /**
@@ -104,8 +98,8 @@ constructor(
      *
      * @see [finalize]
      * */
-    public fun interface Finalize<T: Number> {
-        public fun invoke(modulus: Int, buffer: Array<T>)
+    public fun interface Finalize {
+        public fun invoke(modulus: Int, buffer: IntArray)
     }
 
     public companion object {
@@ -119,7 +113,4 @@ constructor(
             return EncodingException("Truncated input. Illegal Modulus[$modulus]")
         }
     }
-
-    protected abstract fun buffer(internal: Internal): Array<T>
-    protected abstract fun zero(): T
 }

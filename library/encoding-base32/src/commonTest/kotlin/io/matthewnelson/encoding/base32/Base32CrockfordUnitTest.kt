@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.internal
+@file:Suppress("SpellCheckingInspection")
 
-import kotlin.jvm.JvmSynthetic
+package io.matthewnelson.encoding.base32
 
-/**
- * Something to pass as an argument to protected
- * functions which only this module can access, so
- * inheritors cannot.
- * */
-@InternalEncodingApi
-public class Internal private constructor() {
-    internal companion object {
-        private val instance = Internal()
-        @JvmSynthetic
-        internal fun get(): Internal = instance
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class Base32CrockfordUnitTest {
+
+    @Test
+    fun givenBase32Crockford_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base32.Crockford.CHARS_UPPER, Base32.Crockford.CHARS_LOWER.uppercase())
+        assertEquals(Base32.Crockford.CHARS_LOWER, Base32.Crockford.CHARS_UPPER.lowercase())
     }
 }

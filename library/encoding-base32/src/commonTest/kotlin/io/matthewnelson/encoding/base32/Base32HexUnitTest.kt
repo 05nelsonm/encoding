@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core
+package io.matthewnelson.encoding.base32
 
-/**
- * A callback for returning encoded/decoded data.
- *
- * @see [Encoder.newEncoderFeed]
- * @see [Decoder.newDecoderFeed]
- * */
-public fun interface OutFeed {
-    public fun output(byte: Byte)
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class Base32HexUnitTest {
+
+    @Test
+    fun givenBase32Hex_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base32.Hex.CHARS_UPPER, Base32.Hex.CHARS_LOWER.uppercase())
+        assertEquals(Base32.Hex.CHARS_LOWER, Base32.Hex.CHARS_UPPER.lowercase())
+    }
 }

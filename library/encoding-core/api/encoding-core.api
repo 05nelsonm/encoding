@@ -8,7 +8,7 @@ public abstract class io/matthewnelson/encoding/core/Decoder {
 	public static final fun decodeToByteArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
 	public static final fun decodeToByteArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
 	public final fun getConfig ()Lio/matthewnelson/encoding/core/EncoderDecoder$Config;
-	public abstract fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public abstract fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/core/Decoder$Companion {
@@ -22,7 +22,15 @@ public final class io/matthewnelson/encoding/core/Decoder$Companion {
 
 public abstract class io/matthewnelson/encoding/core/Decoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public fun <init> (Lio/matthewnelson/encoding/core/Decoder;)V
+	public final fun close ()V
+	public final fun consume (C)V
+	protected abstract fun consumeProtected (C)V
+	public final fun isClosed ()Z
 	public final fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class io/matthewnelson/encoding/core/Decoder$OutFeed {
+	public abstract fun output (B)V
 }
 
 public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/encoding/core/Decoder {
@@ -31,7 +39,7 @@ public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/
 	public static final fun encodeToByteArray ([BLio/matthewnelson/encoding/core/Encoder;)[B
 	public static final fun encodeToCharArray ([BLio/matthewnelson/encoding/core/Encoder;)[C
 	public static final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
-	public abstract fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	public abstract fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/core/Encoder$Companion {
@@ -42,9 +50,16 @@ public final class io/matthewnelson/encoding/core/Encoder$Companion {
 
 public abstract class io/matthewnelson/encoding/core/Encoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public fun <init> (Lio/matthewnelson/encoding/core/Encoder;)V
+	public final fun close ()V
+	public final fun consume (B)V
 	protected abstract fun consumeProtected (B)V
 	protected abstract fun doFinalProtected ()V
+	public final fun isClosed ()Z
 	public final fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class io/matthewnelson/encoding/core/Encoder$OutFeed {
+	public abstract fun output (C)V
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthewnelson/encoding/core/Encoder {
@@ -56,9 +71,10 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthew
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public static final field Companion Lio/matthewnelson/encoding/core/EncoderDecoder$Config$Companion;
 	public final field isLenient Ljava/lang/Boolean;
-	public final field paddingByte Ljava/lang/Byte;
-	public fun <init> (Ljava/lang/Boolean;Ljava/lang/Byte;)V
+	public final field paddingChar Ljava/lang/Character;
+	public fun <init> (Ljava/lang/Boolean;Ljava/lang/Character;)V
 	public final fun decodeOutMaxSize (J)J
 	public final fun decodeOutMaxSizeOrFail (Lio/matthewnelson/encoding/core/util/DecoderInput;)I
 	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
@@ -67,19 +83,22 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	protected abstract fun encodeOutSizeProtected (J)J
 	public final fun equals (Ljava/lang/Object;)Z
 	public final fun hashCode ()I
+	public static final fun outSizeExceedsMaxEncodingSizeException (Ljava/lang/Number;Ljava/lang/Number;)Lio/matthewnelson/encoding/core/EncodingSizeException;
 	public final fun toString ()Ljava/lang/String;
 	protected abstract fun toStringAddSettings (Ljava/lang/StringBuilder;)V
 }
 
+public final class io/matthewnelson/encoding/core/EncoderDecoder$Config$Companion {
+	public final fun outSizeExceedsMaxEncodingSizeException (Ljava/lang/Number;Ljava/lang/Number;)Lio/matthewnelson/encoding/core/EncodingSizeException;
+}
+
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun close ()V
-	public final fun consume (B)V
-	protected abstract fun consumeProtected (B)V
+	public abstract fun close ()V
 	public final fun doFinal ()V
 	protected abstract fun doFinalProtected ()V
 	public final fun getConfig ()Lio/matthewnelson/encoding/core/EncoderDecoder$Config;
-	public final fun isClosed ()Z
+	public abstract fun isClosed ()Z
 }
 
 public class io/matthewnelson/encoding/core/EncodingException : java/lang/RuntimeException {
@@ -96,74 +115,39 @@ public class io/matthewnelson/encoding/core/EncodingSizeException : io/matthewne
 public abstract interface annotation class io/matthewnelson/encoding/core/ExperimentalEncodingApi : java/lang/annotation/Annotation {
 }
 
-public abstract interface class io/matthewnelson/encoding/core/OutFeed {
-	public abstract fun output (B)V
-}
-
 public final class io/matthewnelson/encoding/core/_FeedKt {
 	public static final fun use (Lio/matthewnelson/encoding/core/EncoderDecoder$Feed;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-}
-
-public final class io/matthewnelson/encoding/core/internal/EncodingTable$Companion {
-	public final fun from-T0v-vo0 (Ljava/lang/String;)[B
 }
 
 public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
 }
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
-	public static final field Companion Lio/matthewnelson/encoding/core/util/DecoderInput$Companion;
 	public fun <init> (Ljava/lang/CharSequence;)V
 	public fun <init> ([B)V
 	public fun <init> ([C)V
 	public final fun get (I)C
 }
 
-public final class io/matthewnelson/encoding/core/util/DecoderInput$Companion {
-}
-
-public final class io/matthewnelson/encoding/core/util/_ConversionsKt {
-	public static final fun getByte (C)B
-	public static final fun getChar (B)C
-}
-
-public abstract class io/matthewnelson/encoding/core/util/buffer/DecodingBuffer : io/matthewnelson/encoding/core/util/buffer/FeedBuffer {
-	public fun <init> (ILio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush;Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize;)V
-	protected final fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Integer;
-	public synthetic fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Number;
-	protected final fun zero ()Ljava/lang/Integer;
-	public synthetic fun zero ()Ljava/lang/Number;
-}
-
-public abstract class io/matthewnelson/encoding/core/util/buffer/EncodingBuffer : io/matthewnelson/encoding/core/util/buffer/FeedBuffer {
-	public fun <init> (ILio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush;Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize;)V
-	protected final fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Byte;
-	public synthetic fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Number;
-	protected final fun zero ()Ljava/lang/Byte;
-	public synthetic fun zero ()Ljava/lang/Number;
-}
-
-public abstract class io/matthewnelson/encoding/core/util/buffer/FeedBuffer {
-	public static final field Companion Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Companion;
+public abstract class io/matthewnelson/encoding/core/util/FeedBuffer {
+	public static final field Companion Lio/matthewnelson/encoding/core/util/FeedBuffer$Companion;
 	public final field blockSize I
-	public synthetic fun <init> (ILio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush;Lio/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	protected abstract fun buffer (Lio/matthewnelson/encoding/core/internal/Internal;)[Ljava/lang/Number;
+	public fun <init> (ILio/matthewnelson/encoding/core/util/FeedBuffer$Flush;Lio/matthewnelson/encoding/core/util/FeedBuffer$Finalize;)V
 	public final fun count ()I
 	public final fun finalize ()V
 	public static final fun truncatedInputEncodingException (I)Lio/matthewnelson/encoding/core/EncodingException;
-	public final fun update (Ljava/lang/Number;)V
-	protected abstract fun zero ()Ljava/lang/Number;
+	public final fun update (I)V
 }
 
-public final class io/matthewnelson/encoding/core/util/buffer/FeedBuffer$Companion {
+public final class io/matthewnelson/encoding/core/util/FeedBuffer$Companion {
 	public final fun truncatedInputEncodingException (I)Lio/matthewnelson/encoding/core/EncodingException;
 }
 
-public abstract interface class io/matthewnelson/encoding/core/util/buffer/FeedBuffer$Finalize {
-	public abstract fun invoke (I[Ljava/lang/Number;)V
+public abstract interface class io/matthewnelson/encoding/core/util/FeedBuffer$Finalize {
+	public abstract fun invoke (I[I)V
 }
 
-public abstract interface class io/matthewnelson/encoding/core/util/buffer/FeedBuffer$Flush {
-	public abstract fun invoke ([Ljava/lang/Number;)V
+public abstract interface class io/matthewnelson/encoding/core/util/FeedBuffer$Flush {
+	public abstract fun invoke ([I)V
 }
 

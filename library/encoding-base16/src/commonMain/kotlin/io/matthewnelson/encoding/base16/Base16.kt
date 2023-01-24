@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection")
+@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.base16
 
 import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
-import io.matthewnelson.encoding.core.internal.EncodingTable
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.buffer.DecodingBuffer
-import io.matthewnelson.encoding.core.util.char
+import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
@@ -50,7 +47,8 @@ import kotlin.jvm.JvmSynthetic
  *
  * @see [io.matthewnelson.encoding.builders.Base16]
  * @see [Base16.Config]
- * @see [Base16.CHARS]
+ * @see [Base16.CHARS_UPPER]
+ * @see [Base16.CHARS_LOWER]
  * @see [EncoderDecoder]
  * @see [Decoder.decodeToByteArray]
  * @see [Decoder.decodeToByteArrayOrNull]
@@ -58,7 +56,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToCharArray]
  * @see [Encoder.encodeToByteArray]
  * */
-@OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
+@OptIn(ExperimentalEncodingApi::class)
 public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config) {
 
     /**
@@ -73,7 +71,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         isLenient: Boolean,
         @JvmField
         public val encodeToLowercase: Boolean,
-    ): EncoderDecoder.Config(isLenient, paddingByte = null) {
+    ): EncoderDecoder.Config(isLenient, paddingChar = null) {
 
         override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L
@@ -86,7 +84,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         @Throws(EncodingSizeException::class)
         override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             if (unEncodedSize > (Long.MAX_VALUE / 2)) {
-                throw DecoderInput.outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
+                throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
             }
 
             return unEncodedSize * 2L
@@ -114,11 +112,14 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
     public companion object {
 
         /**
-         * Base16 encoding characters.
+         * Uppercase Base16 encoding characters.
          * */
-        public const val CHARS: String = "0123456789ABCDEF"
-        private val TABLE = EncodingTable.from(CHARS)
-        private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
+        public const val CHARS_UPPER: String = "0123456789ABCDEF"
+
+        /**
+         * Lowercase Base16 encoding characters.
+         * */
+        public const val CHARS_LOWER: String = "0123456789abcdef"
     }
 
     @ExperimentalEncodingApi
@@ -126,9 +127,9 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         return object : Encoder<Config>.Feed() {
 
             private val table = if (config.encodeToLowercase) {
-                TABLE_LOWERCASE
+                CHARS_LOWER
             } else {
-                TABLE
+                CHARS_UPPER
             }
 
             override fun consumeProtected(input: Byte) {
@@ -144,28 +145,31 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
     }
 
     @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: OutFeed): Decoder<Config>.Feed {
+    override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Config>.Feed {
         return object : Decoder<Config>.Feed() {
 
-            private val buffer = Base16DecodingBuffer(out)
+            private val buffer = DecodingBuffer(out)
 
             @Throws(EncodingException::class)
-            override fun consumeProtected(input: Byte) {
-                val bits: Int = when (val char = input.char.uppercaseChar()) {
+            override fun consumeProtected(input: Char) {
+                val bits: Int = when (input) {
                     in '0'..'9' -> {
                         // char ASCII value
                         // 0     48    0
                         // 9     57    9 (ASCII - 48)
-                        char.code - 48
+                        input.code - 48
+                    }
+                    in 'a'..'f' -> {
+                        input.uppercaseChar().code - 55
                     }
                     in 'A'..'F' -> {
                         // char ASCII value
                         //   A   65    10
                         //   F   70    15 (ASCII - 55)
-                        char.code - 55
+                        input.code - 55
                     }
                     else -> {
-                        throw EncodingException("Char[${input.char}] is not a valid Base16 character")
+                        throw EncodingException("Char[${input}] is not a valid Base16 character")
                     }
                 }
 
@@ -181,7 +185,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
 
     override fun name(): String = "Base16"
 
-    private inner class Base16DecodingBuffer(out: OutFeed): DecodingBuffer(
+    private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 2,
         flush = { buffer ->
             var bitBuffer = 0

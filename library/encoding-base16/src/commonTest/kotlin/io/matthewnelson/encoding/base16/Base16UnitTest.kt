@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.internal
+package io.matthewnelson.encoding.base16
 
-import kotlin.jvm.JvmInline
-import kotlin.jvm.JvmStatic
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@JvmInline
-@InternalEncodingApi
-public value class EncodingTable private constructor(private val value: ByteArray) {
+class Base16UnitTest {
 
-    @Throws(IndexOutOfBoundsException::class)
-    public operator fun get(index: Int): Byte = value[index]
-
-    public companion object {
-        @JvmStatic
-        public fun from(chars: String): EncodingTable = EncodingTable(chars.encodeToByteArray())
+    @Test
+    fun givenBase16_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base16.CHARS_UPPER, Base16.CHARS_LOWER.uppercase())
+        assertEquals(Base16.CHARS_LOWER, Base16.CHARS_UPPER.lowercase())
     }
 }

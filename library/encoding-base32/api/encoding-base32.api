@@ -64,11 +64,12 @@ public abstract class io/matthewnelson/encoding/base32/Base32 : io/matthewnelson
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthewnelson/encoding/base32/Base32 {
-	public static final field CHARS Ljava/lang/String;
+	public static final field CHARS_LOWER Ljava/lang/String;
+	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Crockford$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
-	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
-	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion {
@@ -82,11 +83,12 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewnelson/encoding/base32/Base32 {
-	public static final field CHARS Ljava/lang/String;
+	public static final field CHARS_LOWER Ljava/lang/String;
+	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Default$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
-	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
-	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Companion {
@@ -99,11 +101,12 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/m
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
-	public static final field CHARS Ljava/lang/String;
+	public static final field CHARS_LOWER Ljava/lang/String;
+	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Hex$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
-	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
-	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion {

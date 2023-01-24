@@ -102,10 +102,10 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
         file.outputStream().use { oStream ->
 
             @OptIn(ExperimentalEncodingApi::class)
-            base64DefaultEncoderDecoder.newEncoderFeed { encodedByte ->
-                // Write to the stream with every encoded
-                // byte that is pushed out of the feed.
-                oStream.write(encodedByte.toInt())
+            base64DefaultEncoderDecoder.newEncoderFeed { encodedChar ->
+                // Write to the stream with every character
+                // that is pushed out of the feed.
+                oStream.write(encodedChar.code)
             }.use { feed ->
 
                 HELLO_WORLD.forEach { c ->
@@ -118,7 +118,7 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
         // Read the encoded data from the file
         val sb = StringBuilder()
-        file.inputStream().use { iStream ->
+        file.inputStream().reader().use { iStream ->
 
             @OptIn(ExperimentalEncodingApi::class)
             base64DefaultEncoderDecoder.newDecoderFeed { decodedByte ->
@@ -136,13 +136,13 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
                     }
                 }
 
-                val buffer = ByteArray(size)
+                val buffer = CharArray(size)
                 while (true) {
                     val read = iStream.read(buffer)
                     if (read == -1) break
 
                     for (i in 0 until read) {
-                        // Update the feed with each byte
+                        // Update the feed with each character from the file
                         feed.consume(buffer[i])
                     }
                 }
