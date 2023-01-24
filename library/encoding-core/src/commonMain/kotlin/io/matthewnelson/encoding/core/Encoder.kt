@@ -52,7 +52,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      *     }
      *
      * @see [Encoder.Feed]
-     * @sample [io.matthewnelson.encoding.base16.Base16.newEncoderFeed]
      * */
     @ExperimentalEncodingApi
     public abstract fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed

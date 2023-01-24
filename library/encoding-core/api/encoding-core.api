@@ -71,6 +71,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthew
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public static final field Companion Lio/matthewnelson/encoding/core/EncoderDecoder$Config$Companion;
 	public final field isLenient Ljava/lang/Boolean;
 	public final field paddingChar Ljava/lang/Character;
 	public fun <init> (Ljava/lang/Boolean;Ljava/lang/Character;)V
@@ -82,8 +83,13 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	protected abstract fun encodeOutSizeProtected (J)J
 	public final fun equals (Ljava/lang/Object;)Z
 	public final fun hashCode ()I
+	public static final fun outSizeExceedsMaxEncodingSizeException (Ljava/lang/Number;Ljava/lang/Number;)Lio/matthewnelson/encoding/core/EncodingSizeException;
 	public final fun toString ()Ljava/lang/String;
 	protected abstract fun toStringAddSettings (Ljava/lang/StringBuilder;)V
+}
+
+public final class io/matthewnelson/encoding/core/EncoderDecoder$Config$Companion {
+	public final fun outSizeExceedsMaxEncodingSizeException (Ljava/lang/Number;Ljava/lang/Number;)Lio/matthewnelson/encoding/core/EncodingSizeException;
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
@@ -117,14 +123,10 @@ public abstract interface annotation class io/matthewnelson/encoding/core/intern
 }
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
-	public static final field Companion Lio/matthewnelson/encoding/core/util/DecoderInput$Companion;
 	public fun <init> (Ljava/lang/CharSequence;)V
 	public fun <init> ([B)V
 	public fun <init> ([C)V
 	public final fun get (I)C
-}
-
-public final class io/matthewnelson/encoding/core/util/DecoderInput$Companion {
 }
 
 public abstract class io/matthewnelson/encoding/core/util/FeedBuffer {

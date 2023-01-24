@@ -73,8 +73,7 @@ internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
 
     val outSize = config.encodeOutSize(size.toLong())
     if (outSize > Int.MAX_VALUE.toLong()) {
-        @OptIn(InternalEncodingApi::class)
-        throw DecoderInput.outSizeExceedsMaxEncodingSizeException(outSize, Int.MAX_VALUE)
+        throw Config.outSizeExceedsMaxEncodingSizeException(outSize, Int.MAX_VALUE)
     }
 
     return block.invoke(outSize.toInt())

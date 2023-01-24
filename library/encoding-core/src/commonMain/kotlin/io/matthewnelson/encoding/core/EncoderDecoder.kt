@@ -20,9 +20,8 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.byte
-import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
@@ -255,6 +254,24 @@ constructor(config: C): Encoder<C>(config) {
                 appendLine()
                 append(']')
             }.toString()
+        }
+
+        public companion object {
+
+            /**
+             * Helper for generating an [EncodingSizeException] when the
+             * pre-calculated encoded/decoded output size exceeds the maximum for
+             * the given encoding/decoding specification.
+             * */
+            @JvmStatic
+            public fun outSizeExceedsMaxEncodingSizeException(
+                inputSize: Number,
+                maxSize: Number
+            ): EncodingSizeException {
+                return EncodingSizeException(
+                    "Size[$inputSize] of input would exceed the Maximum[$maxSize] for this operation."
+                )
+            }
         }
     }
 

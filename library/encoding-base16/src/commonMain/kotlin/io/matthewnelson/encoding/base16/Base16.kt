@@ -19,7 +19,6 @@ package io.matthewnelson.encoding.base16
 
 import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
@@ -85,8 +84,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         @Throws(EncodingSizeException::class)
         override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             if (unEncodedSize > (Long.MAX_VALUE / 2)) {
-                @OptIn(InternalEncodingApi::class)
-                throw DecoderInput.outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
+                throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
             }
 
             return unEncodedSize * 2L

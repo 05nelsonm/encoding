@@ -52,7 +52,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      *     println(sb.toString())
      *
      * @see [Decoder.Feed]
-     * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
      * */
     @ExperimentalEncodingApi
     public abstract fun newDecoderFeed(out: Decoder.OutFeed): Decoder<C>.Feed

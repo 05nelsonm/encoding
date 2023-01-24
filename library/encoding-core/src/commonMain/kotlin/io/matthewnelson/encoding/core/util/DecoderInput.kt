@@ -18,9 +18,6 @@ package io.matthewnelson.encoding.core.util
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
-import io.matthewnelson.encoding.core.EncodingSizeException
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
-import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -53,18 +50,6 @@ public class DecoderInput {
             }
         } catch (e: IndexOutOfBoundsException) {
             throw EncodingException("Index out of bounds", e)
-        }
-    }
-
-    public companion object {
-
-        @JvmStatic
-        @InternalEncodingApi // might move this somewhere else... don't use.
-        public fun outSizeExceedsMaxEncodingSizeException(
-            inSize: Number,
-            maxSize: Number,
-        ): EncodingSizeException {
-            return EncodingSizeException("Size[$inSize] of data would exceed the Maximum[$maxSize] for this operation")
         }
     }
 }
