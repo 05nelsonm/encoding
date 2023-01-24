@@ -152,18 +152,21 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
 
             @Throws(EncodingException::class)
             override fun consumeProtected(input: Char) {
-                val bits: Int = when (val char = input.uppercaseChar()) {
+                val bits: Int = when (input) {
                     in '0'..'9' -> {
                         // char ASCII value
                         // 0     48    0
                         // 9     57    9 (ASCII - 48)
-                        char.code - 48
+                        input.code - 48
+                    }
+                    in 'a'..'f' -> {
+                        input.uppercaseChar().code - 55
                     }
                     in 'A'..'F' -> {
                         // char ASCII value
                         //   A   65    10
                         //   F   70    15 (ASCII - 55)
-                        char.code - 55
+                        input.code - 55
                     }
                     else -> {
                         throw EncodingException("Char[${input}] is not a valid Base16 character")

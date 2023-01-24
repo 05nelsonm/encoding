@@ -222,62 +222,75 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     // Crockford requires that decoding accept both
                     // uppercase and lowercase. So, uppercase
                     // everything that comes in.
-                    val bits: Int = when (val char = input.uppercaseChar()) {
+                    val bits: Int = when (input) {
                         in '0'..'9' -> {
                             // char ASCII value
                             //  0    48    0
                             //  9    57    9 (ASCII - 48)
-                            char.code - 48
+                            input.code - 48
+                        }
+                        in 'a'..'h' -> {
+                            input.uppercaseChar().code - 55
                         }
                         in 'A'..'H' -> {
                             // char ASCII value
                             //  A    65    10
                             //  H    72    17 (ASCII - 55)
-                            char.code - 55
+                            input.code - 55
                         }
-                        'I', 'L' -> {
+                        'I', 'i', 'L', 'l' -> {
                             // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
 
                             // char ASCII value
                             //  1    49    1 (ASCII - 48)
                             '1'.code - 48
                         }
+                        'j', 'k' -> {
+                            input.uppercaseChar().code - 56
+                        }
                         'J', 'K' -> {
                             // char ASCII value
                             //  J    74    18
                             //  K    75    19 (ASCII - 56)
-                            char.code - 56
+                            input.code - 56
+                        }
+                        'm', 'n' -> {
+                            input.uppercaseChar().code - 57
                         }
                         'M', 'N' -> {
                             // char ASCII value
                             //  M    77    20
                             //  N    78    21 (ASCII - 57)
-                            char.code - 57
+                            input.code - 57
                         }
-                        'O' -> {
+                        'O', 'o' -> {
                             // Crockford treats characters 'O' and 'o' as 0
 
                             // char ASCII value
                             //  0    48    0 (ASCII - 48)
                             '0'.code - 48
                         }
+                        in 'p'..'t' -> {
+                            input.uppercaseChar().code - 58
+                        }
                         in 'P'..'T' -> {
                             // char ASCII value
                             //  P    80    22
                             //  T    84    26 (ASCII - 58)
-                            char.code - 58
+                            input.code - 58
+                        }
+                        in 'v'..'z' -> {
+                            input.uppercaseChar().code - 59
                         }
                         in 'V'..'Z' -> {
                             // char ASCII value
                             //  V    86    27
                             //  Z    90    31 (ASCII - 59)
-                            char.code - 59
+                            input.code - 59
                         }
-                        // We don't care about little u b/c
-                        // everything is being uppercased.
-                        '*', '~', '$', '=', 'U'/*, 'u'*/ -> {
+                        '*', '~', '$', '=', 'U', 'u' -> {
                             when (val checkSymbol = config.checkSymbol?.uppercaseChar()) {
-                                char -> {
+                                input.uppercaseChar() -> {
                                     isCheckSymbolSet = true
                                     return
                                 }
@@ -463,18 +476,21 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
-                    val bits: Int = when (val char = input.uppercaseChar()) {
+                    val bits: Int = when (input) {
                         in '2'..'7' -> {
                             // char ASCII value
                             //  2    50    26
                             //  7    55    31 (ASCII - 24)
-                            char.code - 24
+                            input.code - 24
+                        }
+                        in 'a'..'z' -> {
+                            input.uppercaseChar().code - 65
                         }
                         in 'A'..'Z' -> {
                             // char ASCII value
                             //  A    65    0
                             //  Z    90    25 (ASCII - 65)
-                            char.code - 65
+                            input.code - 65
                         }
                         else -> {
                             throw EncodingException("Char[${input}] is not a valid Base32 Default character")
@@ -624,18 +640,21 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
-                    val bits: Int = when (val char = input.uppercaseChar()) {
+                    val bits: Int = when (input) {
                         in '0'..'9' -> {
                             // char ASCII value
                             //  0    48    0
                             //  9    57    9 (ASCII - 48)
-                            char.code - 48
+                            input.code - 48
+                        }
+                        in 'a'..'v' -> {
+                            input.uppercaseChar().code - 55
                         }
                         in 'A'..'V' -> {
                             // char ASCII value
                             //  A    65    10
                             //  V    86    31 (ASCII - 55)
-                            char.code - 55
+                            input.code - 55
                         }
                         else -> {
                             throw EncodingException("Char[${input}] is not a valid Base32 Hex character")
