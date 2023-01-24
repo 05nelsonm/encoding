@@ -67,7 +67,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToByteArray]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
-public class Base64(config: Base64.Config): EncoderDecoder(config) {
+public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config) {
 
     /**
      * Configuration for [Base64] encoding/decoding.
@@ -147,8 +147,8 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
     }
 
     @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
-        return object : Decoder.Feed() {
+    override fun newDecoderFeed(out: OutFeed): Decoder<Base64.Config>.Feed {
+        return object : Decoder<Base64.Config>.Feed() {
 
             private val buffer = Base64DecodingBuffer(out)
 
@@ -193,12 +193,12 @@ public class Base64(config: Base64.Config): EncoderDecoder(config) {
     }
 
     @ExperimentalEncodingApi
-    override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
-        return object : Encoder.Feed() {
+    override fun newEncoderFeed(out: OutFeed): Encoder<Base64.Config>.Feed {
+        return object : Encoder<Base64.Config>.Feed() {
 
             private val buffer = Base64EncodingBuffer(
                 out = out,
-                table = if ((config as Base64.Config).encodeToUrlSafe) {
+                table = if (config.encodeToUrlSafe) {
                     TABLE_URL_SAFE
                 } else {
                     TABLE_DEFAULT

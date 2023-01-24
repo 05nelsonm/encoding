@@ -27,9 +27,9 @@ import kotlin.contracts.contract
 @Suppress("NOTHING_TO_INLINE")
 @Throws(EncodingException::class)
 @OptIn(ExperimentalEncodingApi::class, ExperimentalContracts::class)
-internal inline fun Decoder.decode(
+internal inline fun <C: Config> Decoder<C>.decode(
     input: DecoderInput,
-    action: (feed: Decoder.Feed) -> Unit
+    action: (feed: Decoder<*>.Feed) -> Unit
 ): ByteArray {
     contract {
         callsInPlace(action, InvocationKind.EXACTLY_ONCE)
@@ -63,7 +63,7 @@ internal inline fun Decoder.decode(
  * */
 @OptIn(ExperimentalContracts::class)
 @Throws(EncodingSizeException::class)
-internal inline fun <T: Any> Encoder.encodeOutSizeOrFail(
+internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
     size: Int,
     block: (outSize: Int) -> T
 ): T {
@@ -82,7 +82,7 @@ internal inline fun <T: Any> Encoder.encodeOutSizeOrFail(
 
 @Suppress("NOTHING_TO_INLINE")
 @OptIn(ExperimentalEncodingApi::class)
-internal inline fun Encoder.encode(
+internal inline fun <C: EncoderDecoder.Config> Encoder<C>.encode(
     data: ByteArray,
     out: OutFeed,
 ) {
@@ -96,6 +96,6 @@ internal inline fun Encoder.encode(
 }
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun EncoderDecoder.Feed.closedException(): EncodingException {
+internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
     return EncodingException("$this is closed")
 }

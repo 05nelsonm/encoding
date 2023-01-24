@@ -35,7 +35,7 @@ import io.matthewnelson.encoding.core.EncoderDecoder.Feed
  * */
 @ExperimentalEncodingApi
 @OptIn(ExperimentalContracts::class)
-public inline fun <T: Feed?, V> T.use(block: (T) -> V): V {
+public inline fun <C: EncoderDecoder.Config, T: Feed<C>?, V> T.use(block: (T) -> V): V {
     contract {
         callsInPlace(block, InvocationKind.EXACTLY_ONCE)
     }

@@ -32,7 +32,7 @@ import kotlin.jvm.JvmStatic
  * @see [Decoder.Feed]
  * @see [newDecoderFeed]
  * */
-public sealed class Decoder(public val config: EncoderDecoder.Config) {
+public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
     /**
      * Creates a new [Decoder.Feed] for the [Decoder], outputting
@@ -54,7 +54,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
      * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
      * */
     @ExperimentalEncodingApi
-    public abstract fun newDecoderFeed(out: OutFeed): Decoder.Feed
+    public abstract fun newDecoderFeed(out: OutFeed): Decoder<C>.Feed
 
     /**
      * Encoded data is fed into [consume], and upon the [Decoder.Feed]'s
@@ -75,7 +75,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed(config) {
+    constructor(): EncoderDecoder.Feed<C>(config) {
         final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
     }
 
@@ -91,7 +91,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @JvmStatic
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
+        public fun CharSequence.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.consume(c.byte)
@@ -100,7 +100,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         }
 
         @JvmStatic
-        public fun CharSequence.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
+        public fun CharSequence.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
             return try {
                 decodeToByteArray(decoder)
             } catch (_: EncodingException) {
@@ -118,7 +118,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @JvmStatic
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        public fun CharArray.decodeToByteArray(decoder: Decoder): ByteArray {
+        public fun CharArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.consume(c.byte)
@@ -127,7 +127,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         }
 
         @JvmStatic
-        public fun CharArray.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
+        public fun CharArray.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
             return try {
                 decodeToByteArray(decoder)
             } catch (_: EncodingException) {
@@ -145,7 +145,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         @JvmStatic
         @Throws(EncodingException::class)
         @OptIn(ExperimentalEncodingApi::class)
-        public fun ByteArray.decodeToByteArray(decoder: Decoder): ByteArray {
+        public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
                     feed.consume(b)
@@ -154,7 +154,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         }
 
         @JvmStatic
-        public fun ByteArray.decodeToByteArrayOrNull(decoder: Decoder): ByteArray? {
+        public fun ByteArray.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
             return try {
                 decodeToByteArray(decoder)
             } catch (_: EncodingException) {

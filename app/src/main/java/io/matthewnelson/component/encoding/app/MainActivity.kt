@@ -13,6 +13,8 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 * */
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.component.encoding.app
 
 import android.annotation.SuppressLint
@@ -93,6 +95,7 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
         binding.textViewBase64.text = "Base64 Default:\n$base64"
         binding.textViewBase64UrlSafe.text = "Base64 UrlSafe:\n$base64UrlSafe"
 
+        // NOTE: This should not be done on the Main thread or in onCreate...
         val file = File(applicationContext.applicationInfo.dataDir, "hello_world.txt")
 
         // Stream encoded data to a File

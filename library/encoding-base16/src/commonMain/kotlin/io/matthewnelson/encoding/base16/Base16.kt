@@ -59,7 +59,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToByteArray]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
-public class Base16(config: Config): EncoderDecoder(config) {
+public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config) {
 
     /**
      * Configuration for [Base16] encoding/decoding.
@@ -122,10 +122,10 @@ public class Base16(config: Config): EncoderDecoder(config) {
     }
 
     @ExperimentalEncodingApi
-    override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
-        return object : Encoder.Feed() {
+    override fun newEncoderFeed(out: OutFeed): Encoder<Config>.Feed {
+        return object : Encoder<Config>.Feed() {
 
-            private val table = if ((config as Config).encodeToLowercase) {
+            private val table = if (config.encodeToLowercase) {
                 TABLE_LOWERCASE
             } else {
                 TABLE
@@ -144,8 +144,8 @@ public class Base16(config: Config): EncoderDecoder(config) {
     }
 
     @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
-        return object : Decoder.Feed() {
+    override fun newDecoderFeed(out: OutFeed): Decoder<Config>.Feed {
+        return object : Decoder<Config>.Feed() {
 
             private val buffer = Base16DecodingBuffer(out)
 

@@ -41,7 +41,7 @@ class DecoderInputUnitTest {
 
         val actual = config.decodeOutMaxSizeOrFail(DecoderInput(encoded))
 
-        assertEquals(expectedOutSize.toInt(), actual)
+        assertEquals(expectedOutSize, actual)
     }
 
     @Test
