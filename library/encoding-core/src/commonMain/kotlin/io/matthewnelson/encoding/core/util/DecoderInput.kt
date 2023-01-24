@@ -23,8 +23,8 @@ import kotlin.jvm.JvmSynthetic
 /**
  * Helper class that ensures there is a common input type for
  * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] such that changes
- * to the API (like adding a new type for [Decoder] extension
- * functions) will not affect inheritors of [EncoderDecoder].
+ * to the API (like adding support for a new type in [Decoder]
+ * extension functions) will not affect inheritors of [EncoderDecoder].
  *
  * @see [get]
  * @see [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
@@ -46,7 +46,8 @@ public class DecoderInput {
             when (input) {
                 is CharSequence -> input[index]
                 is CharArray -> input[index]
-                else -> (input as ByteArray)[index].char
+                is ByteArray -> input[index].char
+                else -> throw EncodingException("DecoderInput type not known")
             }
         } catch (e: IndexOutOfBoundsException) {
             throw EncodingException("Index out of bounds", e)
