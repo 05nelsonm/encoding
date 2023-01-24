@@ -17,7 +17,6 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.helpers.TestConfig
 import io.matthewnelson.encoding.core.helpers.TestEncoderDecoder
-import io.matthewnelson.encoding.core.util.byte
 import kotlin.test.*
 
 @OptIn(ExperimentalEncodingApi::class)

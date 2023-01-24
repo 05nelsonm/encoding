@@ -17,6 +17,7 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.calculatedOutputNegativeEncodingSizeException
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
@@ -84,7 +85,7 @@ constructor(config: C): Encoder<C>(config) {
 
             val outSize = encodeOutSizeProtected(unEncodedSize)
             if (outSize < 0L) {
-                throw EncodingSizeException("Calculated size was negative")
+                throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -92,7 +93,8 @@ constructor(config: C): Encoder<C>(config) {
         /**
          * Calculates and returns the maximum size of the output after
          * decoding would occur, based off of the [Config] options set
-         * for the implementation.
+         * for the implementation. Should always prefer using
+         * [decodeOutMaxSizeOrFail] if input data is already known.
          *
          * The encoded data may contain spaces or new lines which are
          * ignored if [isLenient] is set to **true**, or the encoding spec
@@ -104,6 +106,7 @@ constructor(config: C): Encoder<C>(config) {
          *
          * Will always return a value greater than or equal to 0.
          *
+         * @see [decodeOutMaxSizeOrFail]
          * @param [encodedSize] The size of the encoded data being decoded.
          * @throws [EncodingSizeException] if there was an error calculating
          *   the size, or [encodedSize] was negative.
@@ -119,7 +122,7 @@ constructor(config: C): Encoder<C>(config) {
 
             val outSize = decodeOutMaxSizeProtected(encodedSize)
             if (outSize < 0L) {
-                throw EncodingSizeException("Calculated size was negative")
+                throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -177,8 +180,8 @@ constructor(config: C): Encoder<C>(config) {
             if (lastRelevantChar == 0) return 0
 
             val outSize = decodeOutMaxSizeOrFailProtected(lastRelevantChar, input)
-            if (outSize < 0L) {
-                throw EncodingSizeException("Calculated size was negative")
+            if (outSize < 0) {
+                throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -269,7 +272,7 @@ constructor(config: C): Encoder<C>(config) {
                 maxSize: Number
             ): EncodingSizeException {
                 return EncodingSizeException(
-                    "Size[$inputSize] of input would exceed the Maximum[$maxSize] for this operation."
+                    "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
                 )
             }
         }
@@ -292,9 +295,9 @@ constructor(config: C): Encoder<C>(config) {
     public sealed class Feed<C: EncoderDecoder.Config>(public val config: C) {
 
         /**
-         * Closes the [Decoder.Feed]/[Encoder.Feed] and finalizes the
+         * [close]s the [Decoder.Feed]/[Encoder.Feed] and finalizes the
          * encoding/decoding, such as applying padding (encoding), or
-         * processing remaining items in its buffer before dumping them
+         * processing remaining data in its buffer before dumping them
          * to [Decoder.OutFeed]/[Encoder.OutFeed].
          *
          * Can only be called once. Any sucessive calls to [doFinal],
@@ -302,7 +305,7 @@ constructor(config: C): Encoder<C>(config) {
          * considered an error and throw an [EncodingException].
          *
          * @see [use]
-         * @sss [close]
+         * @see [close]
          * @throws [EncodingException] if [isClosed] is true, or
          *   there was an error encoding/decoding.
          * */
@@ -315,12 +318,15 @@ constructor(config: C): Encoder<C>(config) {
         }
 
         /**
-         * Closes the feed, rendering it useless.
+         * Closes the feed rendering it useless.
          *
          * After [close] has been called, any invocation of
          * [Decoder.Feed.consume], [Encoder.Feed.consume],
          * or [doFinal] will be considered an error and throw an
          * [EncodingException].
+         *
+         * [close] can be called as many times as desired and
+         * will not be considered an error if already closed.
          *
          * @see [use]
          * */
@@ -338,9 +344,10 @@ constructor(config: C): Encoder<C>(config) {
      * output of [toString], [equals], and [hashCode].
      *
      * e.g.
-     *   Base16
-     *   Base32.Crockford
-     *   Base64
+     *
+     *     override fun name() = "Base16"
+     *     override fun name() = "Base32.Crockford"
+     *     override fun name() = "Base64"
      * */
     protected abstract fun name(): String
 

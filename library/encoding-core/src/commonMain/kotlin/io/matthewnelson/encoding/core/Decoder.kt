@@ -21,7 +21,6 @@ import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.decode
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmStatic
 
 /**
@@ -39,14 +38,21 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * Creates a new [Decoder.Feed] for the [Decoder], outputting
      * decoded bytes to the provided [OutFeed].
      *
-     * e.g.
+     * e.g. (Reading a file of encoded data)
      *
      *     val sb = StringBuilder()
-     *     myDecoder.newDecoderFeed { decodedByte ->
-     *         sb.append(decodedByte.toInt().toChar())
-     *     }.use { feed ->
-     *         "ENCODED TEXT".forEach { c ->
-     *             feed.consume(c)
+     *     file.inputStream().reader().use { iStream ->
+     *         myDecoder.newDecoderFeed { decodedByte ->
+     *             sb.append(decodedByte.toInt().toChar())
+     *         }.use { feed ->
+     *             val buffer = CharArray(4096)
+     *             while (true) {
+     *                 val read = iStream.read(buffer)
+     *                 if (read == -1) break
+     *                 for (i in 0 until read) {
+     *                     feed.consume(buffer[i])
+     *                 }
+     *             }
      *         }
      *     }
      *     println(sb.toString())
@@ -210,7 +216,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
-                    feed.consume(b.char)
+                    feed.consume(b.toInt().toChar())
                 }
             }
         }

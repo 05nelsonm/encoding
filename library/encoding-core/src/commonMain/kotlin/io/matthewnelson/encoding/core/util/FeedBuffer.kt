@@ -23,7 +23,7 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 /**
- * Helper class for [Decoder.Feed] and [Encoder.Feed]s
+ * Helper class for [Decoder.Feed] and [Encoder.Feed]
  * to buffer their input until they are ready to output
  * data to their [Decoder.OutFeed] or [Encoder.OutFeed].
  *

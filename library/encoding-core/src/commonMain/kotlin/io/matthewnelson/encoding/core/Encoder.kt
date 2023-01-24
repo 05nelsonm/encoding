@@ -20,7 +20,6 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutSizeOrFail
-import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic
 
 /**
@@ -39,7 +38,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * Creates a new [Encoder.Feed] for the [Encoder], outputting
      * encoded bytes to the provided [OutFeed].
      *
-     * e.g.
+     * e.g. (Writing encoded data to a file)
      *
      *     file.outputStream().use { oStream ->
      *         myEncoder.newEncoderFeed { encodedChar ->
@@ -82,7 +81,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * Updates the [Encoder.Feed] with a new byte to encode.
          *
          * @throws [EncodingException] if [isClosed] is true.
-         * @throws [EncodingSizeException]
          * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
@@ -188,7 +186,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
                 var i = 0
                 encoder.encode(this) { char ->
-                    ba[i++] = char.byte
+                    ba[i++] = char.code.toByte()
                 }
 
                 ba

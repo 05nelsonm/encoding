@@ -151,8 +151,3 @@ public abstract interface class io/matthewnelson/encoding/core/util/FeedBuffer$F
 	public abstract fun invoke ([I)V
 }
 
-public final class io/matthewnelson/encoding/core/util/_ConversionsKt {
-	public static final fun getByte (C)B
-	public static final fun getChar (B)C
-}
-

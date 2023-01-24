@@ -162,7 +162,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
             override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
-                    appendLine()
                     append("    encodeToLowercase: ")
                     append(encodeToLowercase)
                     appendLine()

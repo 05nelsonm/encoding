@@ -98,3 +98,10 @@ internal inline fun <C: Config> Encoder<C>.encode(
 internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
     return EncodingException("$this is closed")
 }
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun EncoderDecoder.Config.calculatedOutputNegativeEncodingSizeException(
+    outSize: Number
+): EncodingSizeException {
+    return EncodingSizeException("Calculated output of Size[$outSize] was negative")
+}

@@ -46,7 +46,7 @@ public class DecoderInput {
             when (input) {
                 is CharSequence -> input[index]
                 is CharArray -> input[index]
-                is ByteArray -> input[index].char
+                is ByteArray -> input[index].toInt().toChar()
                 else -> throw EncodingException("DecoderInput type not known")
             }
         } catch (e: IndexOutOfBoundsException) {
