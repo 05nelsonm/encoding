@@ -133,8 +133,8 @@ public class Base16(config: Config): EncoderDecoder(config) {
 
             override fun consumeProtected(input: Byte) {
                 val bits = input.toInt() and 0xff
-                out.invoke(table[bits shr    4])
-                out.invoke(table[bits and 0x0f])
+                out.output(table[bits shr    4])
+                out.output(table[bits and 0x0f])
             }
 
             override fun doFinalProtected() { /* no-op */ }
@@ -187,7 +187,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
                 bitBuffer = (bitBuffer shl 4) or bits
             }
 
-            out.invoke(bitBuffer.toByte())
+            out.output(bitBuffer.toByte())
         },
         finalize = { modulus, _->
             when (modulus) {

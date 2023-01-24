@@ -97,7 +97,7 @@ public abstract interface annotation class io/matthewnelson/encoding/core/Experi
 }
 
 public abstract interface class io/matthewnelson/encoding/core/OutFeed {
-	public abstract fun invoke (B)V
+	public abstract fun output (B)V
 }
 
 public final class io/matthewnelson/encoding/core/_FeedKt {

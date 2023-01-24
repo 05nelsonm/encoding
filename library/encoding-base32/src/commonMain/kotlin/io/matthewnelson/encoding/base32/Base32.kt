@@ -320,12 +320,12 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 private val buffer = Base32EncodingBuffer(
                     out = { byte ->
                         if (outputHyphenOnNext) {
-                            out.invoke('-'.byte)
+                            out.output('-'.byte)
                             outCount = 0
                             outputHyphenOnNext = false
                         }
 
-                        out.invoke(byte)
+                        out.output(byte)
                         outputHyphenOnNext = hyphenInterval > 0 && ++outCount == hyphenInterval
                     },
                     table = if ((config as Crockford.Config).encodeToLowercase) {
@@ -347,13 +347,13 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     config.checkSymbol?.let { char ->
 
                         if (outputHyphenOnNext) {
-                            out.invoke('-'.byte)
+                            out.output('-'.byte)
                         }
 
                         if (config.encodeToLowercase) {
-                            out.invoke(char.lowercaseChar().byte)
+                            out.output(char.lowercaseChar().byte)
                         } else {
-                            out.invoke(char.uppercaseChar().byte)
+                            out.output(char.uppercaseChar().byte)
                         }
                     }
                 }
@@ -694,14 +694,14 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
             // For every 5 chars of input, we accumulate
             // 40 bits of output. Emit 8 bytes.
-            out.invoke(table[(bitBuffer shr 35 and 0x1fL).toInt()]) // 40-1*5 = 35
-            out.invoke(table[(bitBuffer shr 30 and 0x1fL).toInt()]) // 40-2*5 = 30
-            out.invoke(table[(bitBuffer shr 25 and 0x1fL).toInt()]) // 40-3*5 = 25
-            out.invoke(table[(bitBuffer shr 20 and 0x1fL).toInt()]) // 40-4*5 = 20
-            out.invoke(table[(bitBuffer shr 15 and 0x1fL).toInt()]) // 40-5*5 = 15
-            out.invoke(table[(bitBuffer shr 10 and 0x1fL).toInt()]) // 40-6*5 = 10
-            out.invoke(table[(bitBuffer shr  5 and 0x1fL).toInt()]) // 40-7*5 =  5
-            out.invoke(table[(bitBuffer        and 0x1fL).toInt()]) // 40-8*5 =  0
+            out.output(table[(bitBuffer shr 35 and 0x1fL).toInt()]) // 40-1*5 = 35
+            out.output(table[(bitBuffer shr 30 and 0x1fL).toInt()]) // 40-2*5 = 30
+            out.output(table[(bitBuffer shr 25 and 0x1fL).toInt()]) // 40-3*5 = 25
+            out.output(table[(bitBuffer shr 20 and 0x1fL).toInt()]) // 40-4*5 = 20
+            out.output(table[(bitBuffer shr 15 and 0x1fL).toInt()]) // 40-5*5 = 15
+            out.output(table[(bitBuffer shr 10 and 0x1fL).toInt()]) // 40-6*5 = 10
+            out.output(table[(bitBuffer shr  5 and 0x1fL).toInt()]) // 40-7*5 =  5
+            out.output(table[(bitBuffer        and 0x1fL).toInt()]) // 40-8*5 =  0
         },
         finalize = { modulus, buffer ->
             var bitBuffer = 0L
@@ -715,44 +715,44 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 0 -> { 0 }
                 1 -> {
                     // 8*1 = 8 bits
-                    out.invoke(table[(bitBuffer shr  3 and 0x1fL).toInt()]) // 8-1*5 = 3
-                    out.invoke(table[(bitBuffer shl  2 and 0x1fL).toInt()]) // 5-3 = 2
+                    out.output(table[(bitBuffer shr  3 and 0x1fL).toInt()]) // 8-1*5 = 3
+                    out.output(table[(bitBuffer shl  2 and 0x1fL).toInt()]) // 5-3 = 2
                     6
                 }
                 2 -> {
                     // 8*2 = 16 bits
-                    out.invoke(table[(bitBuffer shr 11 and 0x1fL).toInt()]) // 16-1*5 = 11
-                    out.invoke(table[(bitBuffer shr  6 and 0x1fL).toInt()]) // 16-2*5 = 6
-                    out.invoke(table[(bitBuffer shr  1 and 0x1fL).toInt()]) // 16-3*5 = 1
-                    out.invoke(table[(bitBuffer shl  4 and 0x1fL).toInt()]) // 5-1 = 4
+                    out.output(table[(bitBuffer shr 11 and 0x1fL).toInt()]) // 16-1*5 = 11
+                    out.output(table[(bitBuffer shr  6 and 0x1fL).toInt()]) // 16-2*5 = 6
+                    out.output(table[(bitBuffer shr  1 and 0x1fL).toInt()]) // 16-3*5 = 1
+                    out.output(table[(bitBuffer shl  4 and 0x1fL).toInt()]) // 5-1 = 4
                     4
                 }
                 3 -> {
                     // 8*3 = 24 bits
-                    out.invoke(table[(bitBuffer shr 19 and 0x1fL).toInt()]) // 24-1*5 = 19
-                    out.invoke(table[(bitBuffer shr 14 and 0x1fL).toInt()]) // 24-2*5 = 14
-                    out.invoke(table[(bitBuffer shr  9 and 0x1fL).toInt()]) // 24-3*5 = 9
-                    out.invoke(table[(bitBuffer shr  4 and 0x1fL).toInt()]) // 24-4*5 = 4
-                    out.invoke(table[(bitBuffer shl  1 and 0x1fL).toInt()]) // 5-4 = 1
+                    out.output(table[(bitBuffer shr 19 and 0x1fL).toInt()]) // 24-1*5 = 19
+                    out.output(table[(bitBuffer shr 14 and 0x1fL).toInt()]) // 24-2*5 = 14
+                    out.output(table[(bitBuffer shr  9 and 0x1fL).toInt()]) // 24-3*5 = 9
+                    out.output(table[(bitBuffer shr  4 and 0x1fL).toInt()]) // 24-4*5 = 4
+                    out.output(table[(bitBuffer shl  1 and 0x1fL).toInt()]) // 5-4 = 1
                     3
                 }
                 // 4
                 else -> {
                     // 8*4 = 32 bits
-                    out.invoke(table[(bitBuffer shr 27 and 0x1fL).toInt()]) // 32-1*5 = 27
-                    out.invoke(table[(bitBuffer shr 22 and 0x1fL).toInt()]) // 32-2*5 = 22
-                    out.invoke(table[(bitBuffer shr 17 and 0x1fL).toInt()]) // 32-3*5 = 17
-                    out.invoke(table[(bitBuffer shr 12 and 0x1fL).toInt()]) // 32-4*5 = 12
-                    out.invoke(table[(bitBuffer shr  7 and 0x1fL).toInt()]) // 32-5*5 = 7
-                    out.invoke(table[(bitBuffer shr  2 and 0x1fL).toInt()]) // 32-6*5 = 2
-                    out.invoke(table[(bitBuffer shl  3 and 0x1fL).toInt()]) // 5-2 = 3
+                    out.output(table[(bitBuffer shr 27 and 0x1fL).toInt()]) // 32-1*5 = 27
+                    out.output(table[(bitBuffer shr 22 and 0x1fL).toInt()]) // 32-2*5 = 22
+                    out.output(table[(bitBuffer shr 17 and 0x1fL).toInt()]) // 32-3*5 = 17
+                    out.output(table[(bitBuffer shr 12 and 0x1fL).toInt()]) // 32-4*5 = 12
+                    out.output(table[(bitBuffer shr  7 and 0x1fL).toInt()]) // 32-5*5 = 7
+                    out.output(table[(bitBuffer shr  2 and 0x1fL).toInt()]) // 32-6*5 = 2
+                    out.output(table[(bitBuffer shl  3 and 0x1fL).toInt()]) // 5-2 = 3
                     1
                 }
             }
 
             paddingByte?.let { byte ->
                 repeat(padCount) {
-                    out.invoke(byte)
+                    out.output(byte)
                 }
             }
         },
@@ -769,11 +769,11 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
 
             // For every 8 chars of input, we accumulate
             // 40 bits of output data. Emit 5 bytes.
-            out.invoke((bitBuffer shr 32).toByte())
-            out.invoke((bitBuffer shr 24).toByte())
-            out.invoke((bitBuffer shr 16).toByte())
-            out.invoke((bitBuffer shr  8).toByte())
-            out.invoke((bitBuffer       ).toByte())
+            out.output((bitBuffer shr 32).toByte())
+            out.output((bitBuffer shr 24).toByte())
+            out.output((bitBuffer shr 16).toByte())
+            out.output((bitBuffer shr  8).toByte())
+            out.output((bitBuffer       ).toByte())
         },
         finalize = { modulus, buffer ->
             when (modulus) {
@@ -797,34 +797,34 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     bitBuffer = bitBuffer shr  2
 
                     // 8/8 = 1 byte
-                    out.invoke((bitBuffer       ).toByte())
+                    out.output((bitBuffer       ).toByte())
                 }
                 4 -> {
                     // 5*4 = 20 bits. Drop 4
                     bitBuffer = bitBuffer shr  4
 
                     // 16/8 = 2 bytes
-                    out.invoke((bitBuffer shr  8).toByte())
-                    out.invoke((bitBuffer       ).toByte())
+                    out.output((bitBuffer shr  8).toByte())
+                    out.output((bitBuffer       ).toByte())
                 }
                 5 -> {
                     // 5*5 = 25 bits. Drop 1
                     bitBuffer = bitBuffer shr  1
 
                     // 24/8 = 3 bytes
-                    out.invoke((bitBuffer shr 16).toByte())
-                    out.invoke((bitBuffer shr  8).toByte())
-                    out.invoke((bitBuffer       ).toByte())
+                    out.output((bitBuffer shr 16).toByte())
+                    out.output((bitBuffer shr  8).toByte())
+                    out.output((bitBuffer       ).toByte())
                 }
                 7 -> {
                     // 5*7 = 35 bits. Drop 3
                     bitBuffer = bitBuffer shr  3
 
                     // 32/8 = 4 bytes
-                    out.invoke((bitBuffer shr 24).toByte())
-                    out.invoke((bitBuffer shr 16).toByte())
-                    out.invoke((bitBuffer shr  8).toByte())
-                    out.invoke((bitBuffer       ).toByte())
+                    out.output((bitBuffer shr 24).toByte())
+                    out.output((bitBuffer shr 16).toByte())
+                    out.output((bitBuffer shr  8).toByte())
+                    out.output((bitBuffer       ).toByte())
                 }
             }
         }
