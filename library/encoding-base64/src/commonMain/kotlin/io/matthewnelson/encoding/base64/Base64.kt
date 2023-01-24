@@ -20,13 +20,8 @@ package io.matthewnelson.encoding.base64
 import io.matthewnelson.encoding.base64.Base64.Default
 import io.matthewnelson.encoding.builders.Base64ConfigBuilder
 import io.matthewnelson.encoding.core.*
-import io.matthewnelson.encoding.core.internal.EncodingTable
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.buffer.DecodingBuffer
-import io.matthewnelson.encoding.core.util.buffer.EncodingBuffer
-import io.matthewnelson.encoding.core.util.byte
-import io.matthewnelson.encoding.core.util.char
+import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
@@ -66,7 +61,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToCharArray]
  * @see [Encoder.encodeToByteArray]
  * */
-@OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
+@OptIn(ExperimentalEncodingApi::class)
 public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config) {
 
     /**
@@ -83,7 +78,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         public val encodeToUrlSafe: Boolean,
         @JvmField
         public val padEncoded: Boolean,
-    ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
+    ): EncoderDecoder.Config(isLenient, paddingChar = '=') {
 
         override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return (encodedSize * 6L / 8L)
@@ -147,30 +142,30 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
     }
 
     @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: OutFeed): Decoder<Base64.Config>.Feed {
+    override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
         return object : Decoder<Base64.Config>.Feed() {
 
-            private val buffer = Base64DecodingBuffer(out)
+            private val buffer = DecodingBuffer(out)
 
-            override fun consumeProtected(input: Byte) {
-                val bits: Int = when (val c = input.char) {
+            override fun consumeProtected(input: Char) {
+                val bits: Int = when (input) {
                     in '0'..'9' -> {
                         // char ASCII value
                         //  0    48    52
                         //  9    57    61 (ASCII + 4)
-                        c.code + 4
+                        input.code + 4
                     }
                     in 'A'..'Z' -> {
                         // char ASCII value
                         //  A    65    0
                         //  Z    90    25 (ASCII - 65)
-                        c.code - 65
+                        input.code - 65
                     }
                     in 'a'..'z' -> {
                         // char ASCII value
                         //  a    97    26
                         //  z    122   51 (ASCII - 71)
-                        c.code - 71
+                        input.code - 71
                     }
                     '+', '-' -> {
                         62
@@ -179,7 +174,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                         63
                     }
                     else -> {
-                        throw EncodingException("Char[$c] is not a valid Base64 character")
+                        throw EncodingException("Char[$input] is not a valid Base64 character")
                     }
                 }
 
@@ -196,22 +191,22 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
     override fun newEncoderFeed(out: OutFeed): Encoder<Base64.Config>.Feed {
         return object : Encoder<Base64.Config>.Feed() {
 
-            private val buffer = Base64EncodingBuffer(
+            private val buffer = EncodingBuffer(
                 out = out,
                 table = if (config.encodeToUrlSafe) {
-                    TABLE_URL_SAFE
+                    UrlSafe.CHARS
                 } else {
-                    TABLE_DEFAULT
+                    Default.CHARS
                 },
-                paddingByte = if (config.padEncoded) {
-                    config.paddingByte
+                paddingChar = if (config.padEncoded) {
+                    config.paddingChar
                 } else {
                     null
                 },
             )
 
             override fun consumeProtected(input: Byte) {
-                buffer.update(input)
+                buffer.update(input.toInt())
             }
 
             override fun doFinalProtected() {
@@ -222,7 +217,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
 
     override fun name(): String = "Base64"
 
-    private inner class Base64DecodingBuffer(out: OutFeed): DecodingBuffer(
+    private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 4,
         flush = { buffer ->
             var bitBuffer = 0
@@ -267,18 +262,18 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         },
     )
 
-    private inner class Base64EncodingBuffer(
-        out: OutFeed,
-        table: EncodingTable,
-        paddingByte: Byte?,
-    ): EncodingBuffer(
+    private inner class EncodingBuffer(
+        out: Encoder.OutFeed,
+        table: CharSequence,
+        paddingChar: Char?,
+    ): FeedBuffer(
         blockSize = 3,
         flush = { buffer ->
             // For every 3 chars of input, we accumulate
             // 24 bits of output. Emit 4 bytes.
-            val b0 = buffer[0].toInt()
-            val b1 = buffer[1].toInt()
-            val b2 = buffer[2].toInt()
+            val b0 = buffer[0]
+            val b1 = buffer[1]
+            val b2 = buffer[2]
             out.output(table[(b0 and 0xff shr 2)])
             out.output(table[(b0 and 0x03 shl 4) or (b1 and 0xff shr 4)])
             out.output(table[(b1 and 0x0f shl 2) or (b2 and 0xff shr 6)])
@@ -288,15 +283,15 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             val padCount: Int = when (modulus) {
                 0 -> { 0 }
                 1 -> {
-                    val b0 = buffer[0].toInt()
+                    val b0 = buffer[0]
                     out.output(table[b0 and 0xff shr 2])
                     out.output(table[b0 and 0x03 shl 4])
                     2
                 }
                 // 2
                 else -> {
-                    val b0 = buffer[0].toInt()
-                    val b1 = buffer[1].toInt()
+                    val b0 = buffer[0]
+                    val b1 = buffer[1]
                     out.output(table[(b0 and 0xff shr 2)])
                     out.output(table[(b0 and 0x03 shl 4) or (b1 and 0xff shr 4)])
                     out.output(table[(b1 and 0x0f shl 2)])
@@ -304,16 +299,11 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                 }
             }
 
-            paddingByte?.let { byte ->
+            if (paddingChar != null) {
                 repeat(padCount) {
-                    out.output(byte)
+                    out.output(paddingChar)
                 }
             }
         }
     )
-
-    private companion object {
-        private val TABLE_DEFAULT = EncodingTable.from(Default.CHARS)
-        private val TABLE_URL_SAFE = EncodingTable.from(UrlSafe.CHARS)
-    }
 }

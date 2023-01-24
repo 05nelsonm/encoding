@@ -39,9 +39,9 @@ internal inline fun <C: Config> Decoder<C>.decode(
     val ba = ByteArray(size)
 
     var i = 0
-    newDecoderFeed { byte ->
+    newDecoderFeed { decodedByte ->
         try {
-            ba[i++] = byte
+            ba[i++] = decodedByte
         } catch (e: IndexOutOfBoundsException) {
             // Something is wrong with the encoder's pre-calculation
             throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", e)
@@ -82,9 +82,9 @@ internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
 
 @Suppress("NOTHING_TO_INLINE")
 @OptIn(ExperimentalEncodingApi::class)
-internal inline fun <C: EncoderDecoder.Config> Encoder<C>.encode(
+internal inline fun <C: Config> Encoder<C>.encode(
     data: ByteArray,
-    out: OutFeed,
+    out: Encoder.OutFeed,
 ) {
     if (data.isEmpty()) return
 

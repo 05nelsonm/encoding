@@ -18,16 +18,15 @@ package io.matthewnelson.encoding.core.helpers
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.ExperimentalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.byte
 
 @OptIn(ExperimentalEncodingApi::class)
 class TestConfig(
     isLenient: Boolean? = false,
-    paddingByte: Byte? = '='.byte,
+    paddingChar: Char? = '=',
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
     private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
-): EncoderDecoder.Config(isLenient, paddingByte) {
+): EncoderDecoder.Config(isLenient, paddingChar) {
     override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
         return decodeReturn.invoke(encodedSize)
     }

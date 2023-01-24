@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core
+@file:Suppress("SpellCheckingInspection")
 
-/**
- * A callback for returning encoded/decoded data.
- *
- * @see [Encoder.newEncoderFeed]
- * @see [Decoder.newDecoderFeed]
- * */
-public fun interface OutFeed {
-    public fun output(byte: Byte)
+package io.matthewnelson.encoding.base32
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class Base32CrockfordUnitTest {
+
+    @Test
+    fun givenBase32Crockford_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base32.Crockford.CHARS_UPPER, Base32.Crockford.CHARS_LOWER.uppercase())
+        assertEquals(Base32.Crockford.CHARS_LOWER, Base32.Crockford.CHARS_UPPER.lowercase())
+    }
 }

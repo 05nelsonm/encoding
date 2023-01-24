@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.internal
+package io.matthewnelson.encoding.base32
 
-import kotlin.jvm.JvmSynthetic
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-/**
- * Something to pass as an argument to protected
- * functions which only this module can access, so
- * inheritors cannot.
- * */
-@InternalEncodingApi
-public class Internal private constructor() {
-    internal companion object {
-        private val instance = Internal()
-        @JvmSynthetic
-        internal fun get(): Internal = instance
+class Base32DefaultUnitTest {
+
+    @Test
+    fun givenBase32Default_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base32.Default.CHARS_UPPER, Base32.Default.CHARS_LOWER.uppercase())
+        assertEquals(Base32.Default.CHARS_LOWER, Base32.Default.CHARS_UPPER.lowercase())
     }
 }

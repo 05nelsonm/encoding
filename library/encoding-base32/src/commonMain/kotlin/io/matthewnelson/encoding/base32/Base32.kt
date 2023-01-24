@@ -20,14 +20,10 @@ package io.matthewnelson.encoding.base32
 import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize
 import io.matthewnelson.encoding.base32.internal.encodeOutSize
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
-import io.matthewnelson.encoding.base32.internal.toBits
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
-import io.matthewnelson.encoding.core.internal.EncodingTable
-import io.matthewnelson.encoding.core.internal.InternalEncodingApi
 import io.matthewnelson.encoding.core.util.*
-import io.matthewnelson.encoding.core.util.buffer.DecodingBuffer
-import io.matthewnelson.encoding.core.util.buffer.EncodingBuffer
+import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
 
@@ -43,7 +39,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToCharArray]
  * @see [Encoder.encodeToByteArray]
  * */
-@OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
+@OptIn(ExperimentalEncodingApi::class)
 public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<C>(config) {
 
     /**
@@ -68,7 +64,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *
      * @see [Base32Crockford]
      * @see [Crockford.Config]
-     * @see [Crockford.CHARS]
+     * @see [Crockford.CHARS_UPPER]
+     * @see [Crockford.CHARS_LOWER]
      * @see [EncoderDecoder]
      * */
     public class Crockford(config: Crockford.Config): Base32<Crockford.Config>(config) {
@@ -89,7 +86,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val hyphenInterval: Byte,
             @JvmField
             public val checkSymbol: Char?,
-        ): EncoderDecoder.Config(isLenient, paddingByte = null) {
+        ): EncoderDecoder.Config(isLenient, paddingChar = null) {
 
             override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
@@ -104,19 +101,19 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 if (checkSymbol != null) {
                     // Uppercase them so that little 'u' is always
                     // compared as big 'U'.
-                    val checkUpper = checkSymbol.uppercaseChar()
+                    val expectedUpper = checkSymbol.uppercaseChar()
                     val actualUpper = actual.uppercaseChar()
 
-                    if (actualUpper != checkUpper) {
+                    if (actualUpper != expectedUpper) {
                         // Must have a matching checkSymbol
 
                         if (actual.isCheckSymbol()) {
                             throw EncodingException(
-                                "Check symbol did not match. Expected[$checkUpper], Actual[$actual]"
+                                "Check symbol did not match. Expected[$expectedUpper], Actual[$actual]"
                             )
                         } else {
                             throw EncodingException(
-                                "Check symbol not found. Expected[$checkUpper]"
+                                "Check symbol not found. Expected[$expectedUpper]"
                             )
                         }
                     } else {
@@ -194,27 +191,25 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         public companion object {
 
             /**
-             * Base32 Crockford encoding characters.
+             * Uppercase Base32 Crockford encoding characters.
              * */
-            public const val CHARS: String = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
-            private val TABLE = EncodingTable.from(CHARS)
-            private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
+            public const val CHARS_UPPER: String = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
+
+            /**
+             * Lowercase Base32 Crockford encoding characters.
+             * */
+            public const val CHARS_LOWER: String = "0123456789abcdefghjkmnpqrstvwxyz"
         }
 
         @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: OutFeed): Decoder<Crockford.Config>.Feed {
+        override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
             return object : Decoder<Crockford.Config>.Feed() {
 
-                private val buffer = Base32DecodingBuffer(out)
+                private val buffer = DecodingBuffer(out)
                 private var isCheckSymbolSet = false
 
                 @Throws(EncodingException::class)
-                override fun consumeProtected(input: Byte) {
-                    // Crockford requires that decoding accept both
-                    // uppercase and lowercase. So, uppercase
-                    // everything that comes in.
-                    val char = input.char.uppercaseChar()
-
+                override fun consumeProtected(input: Char) {
                     if (isCheckSymbolSet) {
                         // If the set checkByte was not intended, it's only a valid
                         // as the very last character and the previous update call
@@ -224,7 +219,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         )
                     }
 
-                    val bits: Int = when (char) {
+                    // Crockford requires that decoding accept both
+                    // uppercase and lowercase. So, uppercase
+                    // everything that comes in.
+                    val bits: Int = when (val char = input.uppercaseChar()) {
                         in '0'..'9' -> {
                             // char ASCII value
                             //  0    48    0
@@ -285,7 +283,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                                 }
                                 else -> {
                                     throw EncodingException(
-                                        "Char[${input.char}] IS a checkSymbol, but did not match config's Checksymbol[$checkSymbol]"
+                                        "Char[${input}] IS a checkSymbol, but did not match config's Checksymbol[$checkSymbol]"
                                     )
                                 }
                             }
@@ -296,7 +294,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             return
                         }
                         else -> {
-                            throw EncodingException("Char[${input.char}] is not a valid Base32 Crockford character")
+                            throw EncodingException("Char[${input}] is not a valid Base32 Crockford character")
                         }
                     }
 
@@ -311,16 +309,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder<Crockford.Config>.Feed {
+        override fun newEncoderFeed(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
             return object : Encoder<Crockford.Config>.Feed() {
 
                 private var outCount: Byte = 0
                 private var outputHyphenOnNext = false
 
-                private val buffer = Base32EncodingBuffer(
+                private val buffer = EncodingBuffer(
                     out = { byte ->
                         if (outputHyphenOnNext) {
-                            out.output('-'.byte)
+                            out.output('-')
                             outCount = 0
                             outputHyphenOnNext = false
                         }
@@ -329,15 +327,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         outputHyphenOnNext = config.hyphenInterval > 0 && ++outCount == config.hyphenInterval
                     },
                     table = if (config.encodeToLowercase) {
-                        TABLE_LOWERCASE
+                        CHARS_LOWER
                     } else {
-                        TABLE
+                        CHARS_UPPER
                     },
-                    paddingByte = null,
+                    paddingChar = null,
                 )
 
                 override fun consumeProtected(input: Byte) {
-                    buffer.update(input)
+                    buffer.update(input.toInt())
                 }
 
                 override fun doFinalProtected() {
@@ -346,13 +344,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     config.checkSymbol?.let { symbol ->
 
                         if (outputHyphenOnNext) {
-                            out.output('-'.byte)
+                            out.output('-')
                         }
 
                         if (config.encodeToLowercase) {
-                            out.output(symbol.lowercaseChar().byte)
+                            out.output(symbol.lowercaseChar())
                         } else {
-                            out.output(symbol.uppercaseChar().byte)
+                            out.output(symbol.uppercaseChar())
                         }
                     }
                 }
@@ -386,7 +384,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *
      * @see [Base32Default]
      * @see [Default.Config]
-     * @see [Default.CHARS]
+     * @see [Default.CHARS_UPPER]
+     * @see [Default.CHARS_LOWER]
      * @see [EncoderDecoder]
      * */
     public class Default(config: Default.Config): Base32<Default.Config>(config) {
@@ -405,7 +404,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
+        ): EncoderDecoder.Config(isLenient, paddingChar = '=') {
 
             override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
@@ -446,22 +445,25 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         public companion object {
 
             /**
-             * Base32 Default encoding characters.
+             * Uppercase Base32 Default encoding characters.
              * */
-            public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
-            private val TABLE = EncodingTable.from(CHARS)
-            private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
+            public const val CHARS_UPPER: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+
+            /**
+             * Lowercase Base32 Default encoding characters.
+             * */
+            public const val CHARS_LOWER: String = "abcdefghijklmnopqrstuvwxyz234567"
         }
 
         @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: OutFeed): Decoder<Default.Config>.Feed {
+        override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
             return object : Decoder<Default.Config>.Feed() {
 
-                private val buffer = Base32DecodingBuffer(out)
+                private val buffer = DecodingBuffer(out)
 
                 @Throws(EncodingException::class)
-                override fun consumeProtected(input: Byte) {
-                    val bits: Int = when (val char = input.char.uppercaseChar()) {
+                override fun consumeProtected(input: Char) {
+                    val bits: Int = when (val char = input.uppercaseChar()) {
                         in '2'..'7' -> {
                             // char ASCII value
                             //  2    50    26
@@ -475,7 +477,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             char.code - 65
                         }
                         else -> {
-                            throw EncodingException("Char[${input.char}] is not a valid Base32 Default character")
+                            throw EncodingException("Char[${input}] is not a valid Base32 Default character")
                         }
                     }
 
@@ -493,22 +495,22 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun newEncoderFeed(out: OutFeed): Encoder<Default.Config>.Feed {
             return object : Encoder<Default.Config>.Feed() {
 
-                private val buffer = Base32EncodingBuffer(
+                private val buffer = EncodingBuffer(
                     out = out,
                     table = if (config.encodeToLowercase) {
-                        TABLE_LOWERCASE
+                        CHARS_LOWER
                     } else {
-                        TABLE
+                        CHARS_UPPER
                     },
-                    paddingByte = if (config.padEncoded) {
-                        config.paddingByte
+                    paddingChar = if (config.padEncoded) {
+                        config.paddingChar
                     } else {
                         null
                     },
                 )
 
                 override fun consumeProtected(input: Byte) {
-                    buffer.update(input)
+                    buffer.update(input.toInt())
                 }
 
                 override fun doFinalProtected() {
@@ -544,7 +546,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *
      * @see [Base32Hex]
      * @see [Hex.Config]
-     * @see [Hex.CHARS]
+     * @see [Hex.CHARS_UPPER]
+     * @see [Hex.CHARS_LOWER]
      * @see [EncoderDecoder]
      * */
     public class Hex(config: Hex.Config): Base32<Hex.Config>(config) {
@@ -563,7 +566,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, paddingByte = '='.byte) {
+        ): EncoderDecoder.Config(isLenient, paddingChar = '=') {
 
             override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
@@ -603,22 +606,25 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         public companion object {
 
             /**
-             * Base32 Hex encoding characters.
+             * Uppercase Base32 Hex encoding characters.
              * */
-            public const val CHARS: String = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
-            private val TABLE = EncodingTable.from(CHARS)
-            private val TABLE_LOWERCASE = EncodingTable.from(CHARS.lowercase())
+            public const val CHARS_UPPER: String = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
+
+            /**
+             * Lowercase Base32 Hex encoding characters.
+             * */
+            public const val CHARS_LOWER: String = "0123456789abcdefghijklmnopqrstuv"
         }
 
         @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: OutFeed): Decoder<Hex.Config>.Feed {
+        override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
             return object : Decoder<Hex.Config>.Feed() {
 
-                private val buffer = Base32DecodingBuffer(out)
+                private val buffer = DecodingBuffer(out)
 
                 @Throws(EncodingException::class)
-                override fun consumeProtected(input: Byte) {
-                    val bits: Int = when (val char = input.char.uppercaseChar()) {
+                override fun consumeProtected(input: Char) {
+                    val bits: Int = when (val char = input.uppercaseChar()) {
                         in '0'..'9' -> {
                             // char ASCII value
                             //  0    48    0
@@ -632,7 +638,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             char.code - 55
                         }
                         else -> {
-                            throw EncodingException("Char[${input.char}] is not a valid Base32 Hex character")
+                            throw EncodingException("Char[${input}] is not a valid Base32 Hex character")
                         }
                     }
 
@@ -650,22 +656,22 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun newEncoderFeed(out: OutFeed): Encoder<Hex.Config>.Feed {
             return object : Encoder<Hex.Config>.Feed() {
 
-                private val buffer = Base32EncodingBuffer(
+                private val buffer = EncodingBuffer(
                     out = out,
                     table = if (config.encodeToLowercase) {
-                        TABLE_LOWERCASE
+                        CHARS_LOWER
                     } else {
-                        TABLE
+                        CHARS_UPPER
                     },
-                    paddingByte = if (config.padEncoded) {
-                        config.paddingByte
+                    paddingChar = if (config.padEncoded) {
+                        config.paddingChar
                     } else {
                         null
                     },
                 )
 
                 override fun consumeProtected(input: Byte) {
-                    buffer.update(input)
+                    buffer.update(input.toInt())
                 }
 
                 override fun doFinalProtected() {
@@ -677,18 +683,18 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun name(): String = "Base32.Hex"
     }
 
-    private inner class Base32EncodingBuffer(
-        out: OutFeed,
-        table: EncodingTable,
-        paddingByte: Byte?,
-    ): EncodingBuffer(
+    private inner class EncodingBuffer(
+        out: Encoder.OutFeed,
+        table: CharSequence,
+        paddingChar: Char?,
+    ): FeedBuffer(
         blockSize = 5,
         flush = { buffer ->
             var bitBuffer = 0L
 
             // Append each char's 8 bits to the bitBuffer
-            for (byte in buffer) {
-                bitBuffer =  (bitBuffer shl  8) + byte.toBits()
+            for (bits in buffer) {
+                bitBuffer =  (bitBuffer shl  8) + bits
             }
 
             // For every 5 chars of input, we accumulate
@@ -707,7 +713,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
             // Append each char remaining in the buffer to the bitBuffer
             for (i in 0 until modulus) {
-                bitBuffer =  (bitBuffer shl  8) + buffer[i].toBits()
+                bitBuffer =  (bitBuffer shl  8) + buffer[i]
             }
 
             val padCount: Int = when (modulus) {
@@ -749,15 +755,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 }
             }
 
-            paddingByte?.let { byte ->
+            if (paddingChar != null) {
                 repeat(padCount) {
-                    out.output(byte)
+                    out.output(paddingChar)
                 }
             }
         },
     )
 
-    private inner class Base32DecodingBuffer(out: OutFeed): DecodingBuffer(
+    private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 8,
         flush = { buffer ->
             // Append each char's 5 bits to the buffer

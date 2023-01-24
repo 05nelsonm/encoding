@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection")
+@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutSizeOrFail
-import io.matthewnelson.encoding.core.util.buffer.EncodingBuffer
-import io.matthewnelson.encoding.core.util.char
+import io.matthewnelson.encoding.core.util.byte
 import kotlin.jvm.JvmStatic
 
 /**
@@ -42,8 +42,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * e.g.
      *
      *     file.outputStream().use { oStream ->
-     *         myEncoder.newEncoderFeed { encodedByte ->
-     *             oStream.write(encodedByte.toInt())
+     *         myEncoder.newEncoderFeed { encodedChar ->
+     *             oStream.write(encodedChar.code)
      *         }.use { feed ->
      *             "Hello World!".forEach { c ->
      *                 feed.consume(c.code.toByte())
@@ -55,7 +55,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @sample [io.matthewnelson.encoding.base16.Base16.newEncoderFeed]
      * */
     @ExperimentalEncodingApi
-    public abstract fun newEncoderFeed(out: OutFeed): Encoder<C>.Feed
+    public abstract fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed
 
     /**
      * Data to encode is fed into [consume], and upon the [Encoder.Feed]'s
@@ -71,15 +71,50 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      *
      * @see [newEncoderFeed]
      * @see [EncoderDecoder.Feed]
+     * @see [EncoderDecoder.Feed.doFinal]
      * @see [use]
-     * @see [EncodingBuffer]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
     constructor(): EncoderDecoder.Feed<C>(config) {
-        protected abstract override fun consumeProtected(input: Byte)
-        protected abstract override fun doFinalProtected()
+        private var isClosed = false
+
+        /**
+         * Updates the [Encoder.Feed] with a new byte to encode.
+         *
+         * @throws [EncodingException] if [isClosed] is true.
+         * @throws [EncodingSizeException]
+         * */
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public fun consume(input: Byte) {
+            if (isClosed) throw closedException()
+
+            try {
+                consumeProtected(input)
+            } catch (t: Throwable) {
+                close()
+                throw t
+            }
+        }
+
+        @ExperimentalEncodingApi
+        final override fun close() { isClosed = true }
+        final override fun isClosed(): Boolean = isClosed
         final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
+
+        protected abstract fun consumeProtected(input: Byte)
+        protected abstract override fun doFinalProtected()
+    }
+
+    /**
+     * A callback for returning encoded characters as they
+     * are produced by [Encoder.Feed].
+     *
+     * @see [newEncoderFeed]
+     * */
+    public fun interface OutFeed {
+        public fun output(encoded: Char)
     }
 
     public companion object {
@@ -101,8 +136,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 val sb = StringBuilder(outSize)
 
-                encoder.encode(this) { encodedByte ->
-                    sb.append(encodedByte.char)
+                encoder.encode(this) { char ->
+                    sb.append(char)
                 }
 
                 sb.toString()
@@ -127,8 +162,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 val ca = CharArray(outSize)
 
                 var i = 0
-                encoder.encode(this) { encodedByte ->
-                    ca[i++] = encodedByte.char
+                encoder.encode(this) { char ->
+                    ca[i++] = char
                 }
 
                 ca
@@ -153,8 +188,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 val ba = ByteArray(outSize)
 
                 var i = 0
-                encoder.encode(this) { encodedByte ->
-                    ba[i++] = encodedByte
+                encoder.encode(this) { char ->
+                    ba[i++] = char.byte
                 }
 
                 ba

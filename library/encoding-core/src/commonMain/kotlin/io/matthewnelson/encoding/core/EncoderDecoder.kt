@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection")
+@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
@@ -23,7 +23,6 @@ import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.byte
 import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmName
 
 /**
  * Base abstraction which expose [Encoder] and [Decoder] (sealed
@@ -48,7 +47,7 @@ constructor(config: C): Encoder<C>(config) {
      *   [EncodingException] will be thrown when encountering those
      *   characters. See [isSpaceOrNewLine]. If null, those bytes
      *   are sent to the [EncoderDecoder].
-     * @param [paddingByte] The byte used when padding the output for
+     * @param [paddingChar] The byte used when padding the output for
      *   the given encoding; NOT "if padding should be
      *   used". (e.g. '='.code.toByte()).
      *   If the encoding specification does not ues padding, pass `null`.
@@ -61,7 +60,7 @@ constructor(config: C): Encoder<C>(config) {
         @JvmField
         public val isLenient: Boolean?,
         @JvmField
-        public val paddingByte: Byte?,
+        public val paddingChar: Char?,
     ) {
 
         /**
@@ -165,7 +164,7 @@ constructor(config: C): Encoder<C>(config) {
                     }
                 }
 
-                if (c.byte == paddingByte) {
+                if (c == paddingChar) {
                     lastRelevantChar--
                     continue
                 }
@@ -208,7 +207,7 @@ constructor(config: C): Encoder<C>(config) {
          * inheritors of [Config] to add their settings to
          * the output.
          *
-         * [isLenient] and [paddingByte] are automatically added.
+         * [isLenient] and [paddingChar] are automatically added.
          *
          * Output of [toString] is used in [equals] and [hashCode], so
          * this affects their outcome.
@@ -250,7 +249,7 @@ constructor(config: C): Encoder<C>(config) {
                 append(isLenient)
                 appendLine()
                 append("    paddingChar: ")
-                append(paddingByte?.char)
+                append(paddingChar)
                 appendLine()
                 toStringAddSettings(this)
                 appendLine()
@@ -262,11 +261,11 @@ constructor(config: C): Encoder<C>(config) {
     /**
      * Base abstraction for encoding/decoding of data.
      *
-     * After feeding all data through [consume], call [doFinal]
-     * to complete encoding/decoding. Alternatively, utilize the
-     * [use] extension function which will call [doFinal] for you
-     * when you're done feeding data through [consume], or will
-     * call [close] in the event there is an error while
+     * After feeding all data through [Decoder.Feed.consume] or
+     * [Encoder.Feed.consume], call [doFinal] to complete encoding/decoding.
+     * Alternatively, utilize the [use] extension function which will
+     * call [doFinal] for you when you're done feeding data through,
+     * or will call [close] in the event there is an error while
      * encoding/decoding.
      *
      * @see [use]
@@ -274,81 +273,26 @@ constructor(config: C): Encoder<C>(config) {
      * @see [Decoder.Feed]
      * */
     public sealed class Feed<C: EncoderDecoder.Config>(public val config: C) {
-        @get:JvmName("isClosed")
-        public var isClosed: Boolean = false
-            private set
-
-        private var isPaddingSet = false
-
-        // Only throws exception if decoding
-        @Throws(EncodingException::class)
-        protected abstract fun consumeProtected(input: Byte)
-
-        // Only throws exception if decoding
-        @Throws(EncodingException::class)
-        protected abstract fun doFinalProtected()
 
         /**
-         * Updates the [Feed] with a new byte to encode/decode.
+         * Closes the [Decoder.Feed]/[Encoder.Feed] and finalizes the
+         * encoding/decoding, such as applying padding (encoding), or
+         * processing remaining items in its buffer before dumping them
+         * to [Decoder.OutFeed]/[Encoder.OutFeed].
          *
-         * @throws [EncodingException] if [isClosed] is true, or
-         *   there was an error encoding/decoding.
-         * */
-        @ExperimentalEncodingApi
-        @Throws(EncodingException::class)
-        public fun consume(input: Byte) {
-            if (isClosed) throw closedException()
-
-            try {
-                if (this is Decoder<*>.Feed) {
-                    if (config.isLenient != null && input.char.isSpaceOrNewLine()) {
-                        if (config.isLenient) {
-                            return
-                        } else {
-                            throw EncodingException("Spaces and new lines are forbidden when isLenient[false]")
-                        }
-                    }
-
-                    // if paddingByte is null, it will never equal
-                    // input, thus never set isPaddingSet
-                    if (config.paddingByte == input) {
-                        isPaddingSet = true
-                        return
-                    }
-
-                    if (isPaddingSet) {
-                        // Trying to decode something else that is not
-                        // a space, new line, or padding. Fail
-                        throw EncodingException(
-                            "Padding[${config.paddingByte?.char}] was previously passed, " +
-                            "but decoding operations are still being attempted."
-                        )
-                    }
-                }
-
-                consumeProtected(input)
-            } catch (t: Throwable) {
-                close()
-                throw t
-            }
-        }
-
-        /**
-         * Closes the [Feed] and finalizes the encoding/decoding, such
-         * as applying padding (encoding) or processing remaining bytes
-         * in its buffer before dumping them to [OutFeed].
-         *
-         * Can only be called once. Any sucessive calls will be considered
-         * an error and throw an [EncodingException].
+         * Can only be called once. Any sucessive calls to [doFinal],
+         * [Decoder.Feed.consume], or [Encoder.Feed.consume] will be
+         * considered an error and throw an [EncodingException].
          *
          * @see [use]
+         * @sss [close]
          * @throws [EncodingException] if [isClosed] is true, or
          *   there was an error encoding/decoding.
          * */
         @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public fun doFinal() {
-            if (isClosed) throw closedException()
+            if (isClosed()) throw closedException()
             close()
             doFinalProtected()
         }
@@ -356,16 +300,20 @@ constructor(config: C): Encoder<C>(config) {
         /**
          * Closes the feed, rendering it useless.
          *
-         * After [close] has been called, any invocation of [consume]
+         * After [close] has been called, any invocation of
+         * [Decoder.Feed.consume], [Encoder.Feed.consume],
          * or [doFinal] will be considered an error and throw an
          * [EncodingException].
          *
          * @see [use]
          * */
         @ExperimentalEncodingApi
-        public fun close() {
-            isClosed = true
-        }
+        public abstract fun close()
+
+        public abstract fun isClosed(): Boolean
+
+        @Throws(EncodingException::class)
+        protected abstract fun doFinalProtected()
     }
 
     /**

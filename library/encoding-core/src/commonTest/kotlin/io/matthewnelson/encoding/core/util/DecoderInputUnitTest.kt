@@ -32,7 +32,7 @@ class DecoderInputUnitTest {
         val expectedOutSize = 2
 
         val config = TestConfig(
-            paddingByte = pad.byte,
+            paddingChar = pad,
             decodeInputReturn = { encodedSize ->
                 assertEquals(expectedEncodedSize, encodedSize)
                 expectedOutSize // return

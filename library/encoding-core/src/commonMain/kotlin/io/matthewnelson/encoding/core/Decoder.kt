@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection")
+@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.decode
+import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.core.util.buffer.DecodingBuffer
-import io.matthewnelson.encoding.core.util.byte
+import io.matthewnelson.encoding.core.util.char
 import kotlin.jvm.JvmStatic
 
 /**
@@ -45,7 +46,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      *         sb.append(decodedByte.toInt().toChar())
      *     }.use { feed ->
      *         "ENCODED TEXT".forEach { c ->
-     *             feed.consume(c.code.toByte())
+     *             feed.consume(c)
      *         }
      *     }
      *     println(sb.toString())
@@ -54,7 +55,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
      * */
     @ExperimentalEncodingApi
-    public abstract fun newDecoderFeed(out: OutFeed): Decoder<C>.Feed
+    public abstract fun newDecoderFeed(out: Decoder.OutFeed): Decoder<C>.Feed
 
     /**
      * Encoded data is fed into [consume], and upon the [Decoder.Feed]'s
@@ -70,13 +71,75 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      *
      * @see [newDecoderFeed]
      * @see [EncoderDecoder.Feed]
+     * @see [EncoderDecoder.Feed.doFinal]
      * @see [use]
-     * @see [DecodingBuffer]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
     constructor(): EncoderDecoder.Feed<C>(config) {
+        private var isClosed = false
+        private var isPaddingSet = false
+
+        /**
+         * Updates the [Decoder.Feed] with a new character to decode.
+         *
+         * @throws [EncodingException] if [isClosed] is true, or if
+         *   there was an error decoding.
+         * */
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public fun consume(input: Char) {
+            if (isClosed) throw closedException()
+
+            try {
+                if (config.isLenient != null && input.isSpaceOrNewLine()) {
+                    if (config.isLenient) {
+                        return
+                    } else {
+                        throw EncodingException("Spaces and new lines are forbidden when isLenient[false]")
+                    }
+                }
+
+                // if paddingChar is null, it will never equal
+                // input, thus never set isPaddingSet
+                if (config.paddingChar == input) {
+                    isPaddingSet = true
+                    return
+                }
+
+                if (isPaddingSet) {
+                    // Trying to decode something else that is not
+                    // a space, new line, or padding. Fail.
+                    throw EncodingException(
+                        "Padding[${config.paddingChar}] was previously passed, " +
+                        "but decoding operations are still being attempted."
+                    )
+                }
+
+                consumeProtected(input)
+            } catch (t: Throwable) {
+                close()
+                throw t
+            }
+        }
+
+        @ExperimentalEncodingApi
+        final override fun close() { isClosed = true }
+        final override fun isClosed(): Boolean = isClosed
         final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
+
+        @Throws(EncodingException::class)
+        protected abstract fun consumeProtected(input: Char)
+    }
+
+    /**
+     * A callback for returning decoded bytes as they
+     * are produced by [Decoder.Feed].
+     *
+     * @see [newDecoderFeed]
+     * */
+    public fun interface OutFeed {
+        public fun output(decoded: Byte)
     }
 
     public companion object {
@@ -94,7 +157,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         public fun CharSequence.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
-                    feed.consume(c.byte)
+                    feed.consume(c)
                 }
             }
         }
@@ -121,7 +184,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         public fun CharArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
-                    feed.consume(c.byte)
+                    feed.consume(c)
                 }
             }
         }
@@ -148,7 +211,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
-                    feed.consume(b)
+                    feed.consume(b.char)
                 }
             }
         }

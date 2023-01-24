@@ -13,25 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("KotlinRedundantDiagnosticSuppress")
+package io.matthewnelson.encoding.base16
 
-package io.matthewnelson.encoding.base32.internal
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun Long.decodeOutMaxSize(): Long = (this * 5L / 8L)
+class Base16UnitTest {
 
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun Long.encodeOutSize(willBePadded: Boolean): Long {
-    var outSize: Long = ((this + 4L) / 5L) * 8L
-    if (willBePadded) return outSize
-
-    when (this - (this - this % 5)) {
-        0L -> { /* no-op */ }
-        1L -> outSize -= 6L
-        2L -> outSize -= 4L
-        3L -> outSize -= 3L
-        4L -> outSize -= 1L
+    @Test
+    fun givenBase16_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base16.CHARS_UPPER, Base16.CHARS_LOWER.uppercase())
+        assertEquals(Base16.CHARS_LOWER, Base16.CHARS_UPPER.lowercase())
     }
-
-    return outSize
 }

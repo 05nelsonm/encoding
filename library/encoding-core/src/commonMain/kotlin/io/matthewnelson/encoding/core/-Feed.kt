@@ -49,7 +49,7 @@ public inline fun <C: EncoderDecoder.Config, T: Feed<C>?, V> T.use(block: (T) ->
     } finally {
         when {
             this == null -> {}
-            !threw && !isClosed -> doFinal()
+            !threw && !isClosed() -> doFinal()
             else -> close()
         }
     }

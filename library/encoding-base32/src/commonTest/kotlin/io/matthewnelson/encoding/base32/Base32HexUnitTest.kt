@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.encoding.core.internal
+package io.matthewnelson.encoding.base32
 
-import kotlin.jvm.JvmInline
-import kotlin.jvm.JvmStatic
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-@JvmInline
-@InternalEncodingApi
-public value class EncodingTable private constructor(private val value: ByteArray) {
+class Base32HexUnitTest {
 
-    @Throws(IndexOutOfBoundsException::class)
-    public operator fun get(index: Int): Byte = value[index]
-
-    public companion object {
-        @JvmStatic
-        public fun from(chars: String): EncodingTable = EncodingTable(chars.encodeToByteArray())
+    @Test
+    fun givenBase32Hex_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base32.Hex.CHARS_UPPER, Base32.Hex.CHARS_LOWER.uppercase())
+        assertEquals(Base32.Hex.CHARS_LOWER, Base32.Hex.CHARS_UPPER.lowercase())
     }
 }
