@@ -131,10 +131,12 @@ public class Base16(config: Config): EncoderDecoder(config) {
                 TABLE
             }
 
-            override fun updateProtected(input: Byte) {
+            override fun consumeProtected(input: Byte) {
+                // A DecodingBuffer is not necessary here as for
+                // every 1 byte of input, 2 bytes are output.
                 val bits = input.toInt() and 0xff
-                out.invoke(table[bits shr    4])
-                out.invoke(table[bits and 0x0f])
+                out.output(table[bits shr    4])
+                out.output(table[bits and 0x0f])
             }
 
             override fun doFinalProtected() { /* no-op */ }
@@ -148,7 +150,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
             private val buffer = Base16DecodingBuffer(out)
 
             @Throws(EncodingException::class)
-            override fun updateProtected(input: Byte) {
+            override fun consumeProtected(input: Byte) {
                 val bits: Int = when (val char = input.char.uppercaseChar()) {
                     in '0'..'9' -> {
                         // char ASCII value
@@ -187,7 +189,7 @@ public class Base16(config: Config): EncoderDecoder(config) {
                 bitBuffer = (bitBuffer shl 4) or bits
             }
 
-            out.invoke(bitBuffer.toByte())
+            out.output(bitBuffer.toByte())
         },
         finalize = { modulus, _->
             when (modulus) {

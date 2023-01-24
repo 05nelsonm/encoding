@@ -116,7 +116,7 @@ constructor(
          * */
         @JvmStatic
         public fun truncatedInputEncodingException(modulus: Int): EncodingException {
-            return EncodingException("Truncate input. Illegal Modulus[$modulus]")
+            return EncodingException("Truncated input. Illegal Modulus[$modulus]")
         }
     }
 

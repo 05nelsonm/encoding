@@ -29,10 +29,10 @@ import kotlin.contracts.contract
 @OptIn(ExperimentalEncodingApi::class, ExperimentalContracts::class)
 internal inline fun Decoder.decode(
     input: DecoderInput,
-    update: (feed: Decoder.Feed) -> Unit
+    action: (feed: Decoder.Feed) -> Unit
 ): ByteArray {
     contract {
-        callsInPlace(update, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
     }
 
     val size = config.decodeOutMaxSizeOrFail(input)
@@ -47,7 +47,7 @@ internal inline fun Decoder.decode(
             throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", e)
         }
     }.use { feed ->
-        update.invoke(feed)
+        action.invoke(feed)
     }
 
     return if (i == size) {
@@ -90,7 +90,7 @@ internal inline fun Encoder.encode(
 
     newEncoderFeed(out).use { feed ->
         for (byte in bytes) {
-            feed.update(byte)
+            feed.consume(byte)
         }
     }
 }

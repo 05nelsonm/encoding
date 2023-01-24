@@ -29,7 +29,7 @@ import kotlin.jvm.JvmStatic
  * @see [EncoderDecoder]
  * @see [decodeToByteArray]
  * @see [decodeToByteArrayOrNull]
- * @see [Feed]
+ * @see [Decoder.Feed]
  * @see [newDecoderFeed]
  * */
 public sealed class Decoder(public val config: EncoderDecoder.Config) {
@@ -38,6 +38,18 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
      * Creates a new [Decoder.Feed] for the [Decoder], outputting
      * decoded bytes to the provided [OutFeed].
      *
+     * e.g.
+     *
+     *     val sb = StringBuilder()
+     *     myDecoder.newDecoderFeed { decodedByte ->
+     *         sb.append(decodedByte.toInt().toChar())
+     *     }.use { feed ->
+     *         "ENCODED TEXT".forEach { c ->
+     *             feed.consume(c.code.toByte())
+     *         }
+     *     }
+     *     println(sb.toString())
+     *
      * @see [Decoder.Feed]
      * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
      * */
@@ -45,15 +57,16 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
     public abstract fun newDecoderFeed(out: OutFeed): Decoder.Feed
 
     /**
-     * Encoded data goes into [update], and upon the [Decoder]
-     * implementation's buffer filling, decoded data is fed
-     * to [OutFeed] allowing for a "lazy" decode and streaming.
+     * Encoded data is fed into [consume], and upon the [Decoder.Feed]'s
+     * buffer filling, decoded data is pushed to the supplied [OutFeed].
+     * This allows for a "lazy" decode, or streaming.
      *
-     * Once all the data has been submitted via [update], call
-     * [doFinal] to close the [Decoder.Feed] and perform
-     * finalization for leftover data still in the [Decoder.Feed]
-     * implementation's buffer. Alternatively, utilize the [use]
-     * extension function.
+     * Once all the data has been fed through [consume], call
+     * [doFinal] to close the [Decoder.Feed] and perform encoding
+     * finalization for leftover data still in the [Decoder.Feed]'s
+     * buffer. Alternatively, utilize the [use] extension function
+     * which will call [doFinal] for you, or [close] if there was a
+     * decoding error.
      *
      * @see [newDecoderFeed]
      * @see [EncoderDecoder.Feed]
@@ -81,7 +94,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         public fun CharSequence.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
-                    feed.update(c.byte)
+                    feed.consume(c.byte)
                 }
             }
         }
@@ -108,7 +121,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         public fun CharArray.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
-                    feed.update(c.byte)
+                    feed.consume(c.byte)
                 }
             }
         }
@@ -135,7 +148,7 @@ public sealed class Decoder(public val config: EncoderDecoder.Config) {
         public fun ByteArray.decodeToByteArray(decoder: Decoder): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
-                    feed.update(b)
+                    feed.consume(b)
                 }
             }
         }

@@ -108,7 +108,7 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
                 HELLO_WORLD.forEach { c ->
                     // Update the feed with each character
                     // of Hello World!
-                    feed.update(c.code.toByte())
+                    feed.consume(c.code.toByte())
                 }
             }
         }
@@ -140,7 +140,7 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
                     for (i in 0 until read) {
                         // Update the feed with each byte
-                        feed.update(buffer[i])
+                        feed.consume(buffer[i])
                     }
                 }
             }

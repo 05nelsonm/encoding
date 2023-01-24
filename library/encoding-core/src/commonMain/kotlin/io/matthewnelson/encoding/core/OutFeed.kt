@@ -16,11 +16,11 @@
 package io.matthewnelson.encoding.core
 
 /**
- * A callback
+ * A callback for returning encoded/decoded data.
  *
  * @see [Encoder.newEncoderFeed]
  * @see [Decoder.newDecoderFeed]
  * */
 public fun interface OutFeed {
-    public fun invoke(byte: Byte)
+    public fun output(byte: Byte)
 }
