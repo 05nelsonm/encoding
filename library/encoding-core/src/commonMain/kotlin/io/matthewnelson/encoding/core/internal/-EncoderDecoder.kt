@@ -83,13 +83,13 @@ internal inline fun <T: Any> Encoder.encodeOutSizeOrFail(
 @Suppress("NOTHING_TO_INLINE")
 @OptIn(ExperimentalEncodingApi::class)
 internal inline fun Encoder.encode(
-    bytes: ByteArray,
+    data: ByteArray,
     out: OutFeed,
 ) {
-    if (bytes.isEmpty()) return
+    if (data.isEmpty()) return
 
     newEncoderFeed(out).use { feed ->
-        for (byte in bytes) {
+        for (byte in data) {
             feed.consume(byte)
         }
     }
