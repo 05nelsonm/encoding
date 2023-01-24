@@ -33,7 +33,7 @@ import kotlin.jvm.JvmStatic
  * @see [Feed]
  * @see [newEncoderFeed]
  * */
-public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
+public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(config) {
 
     /**
      * Creates a new [Encoder.Feed] for the [Encoder], outputting
@@ -55,7 +55,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
      * @sample [io.matthewnelson.encoding.base16.Base16.newEncoderFeed]
      * */
     @ExperimentalEncodingApi
-    public abstract fun newEncoderFeed(out: OutFeed): Encoder.Feed
+    public abstract fun newEncoderFeed(out: OutFeed): Encoder<C>.Feed
 
     /**
      * Data to encode is fed into [consume], and upon the [Encoder.Feed]'s
@@ -76,7 +76,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed(config) {
+    constructor(): EncoderDecoder.Feed<C>(config) {
         protected abstract override fun consumeProtected(input: Byte)
         protected abstract override fun doFinalProtected()
         final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
@@ -97,7 +97,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
-        public fun ByteArray.encodeToString(encoder: Encoder): String {
+        public fun ByteArray.encodeToString(encoder: Encoder<*>): String {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 val sb = StringBuilder(outSize)
 
@@ -122,7 +122,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
-        public fun ByteArray.encodeToCharArray(encoder: Encoder): CharArray {
+        public fun ByteArray.encodeToCharArray(encoder: Encoder<*>): CharArray {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 val ca = CharArray(outSize)
 
@@ -148,7 +148,7 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
-        public fun ByteArray.encodeToByteArray(encoder: Encoder): ByteArray {
+        public fun ByteArray.encodeToByteArray(encoder: Encoder<*>): ByteArray {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 val ba = ByteArray(outSize)
 

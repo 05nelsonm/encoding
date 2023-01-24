@@ -35,9 +35,9 @@ import kotlin.jvm.JvmName
  * @see [Decoder]
  * @sample [io.matthewnelson.encoding.base16.Base16]
  * */
-public abstract class EncoderDecoder
+public abstract class EncoderDecoder<C: EncoderDecoder.Config>
 @ExperimentalEncodingApi
-constructor(config: Config): Encoder(config) {
+constructor(config: C): Encoder<C>(config) {
 
     /**
      * Base configuration for an [EncoderDecoder]. More options
@@ -273,7 +273,7 @@ constructor(config: Config): Encoder(config) {
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
      * */
-    public sealed class Feed(public val config: Config) {
+    public sealed class Feed<C: EncoderDecoder.Config>(public val config: C) {
         @get:JvmName("isClosed")
         public var isClosed: Boolean = false
             private set
@@ -300,7 +300,7 @@ constructor(config: Config): Encoder(config) {
             if (isClosed) throw closedException()
 
             try {
-                if (this is Decoder.Feed) {
+                if (this is Decoder<*>.Feed) {
                     if (config.isLenient != null && input.char.isSpaceOrNewLine()) {
                         if (config.isLenient) {
                             return
@@ -380,7 +380,7 @@ constructor(config: Config): Encoder(config) {
     protected abstract fun name(): String
 
     final override fun equals(other: Any?): Boolean {
-        return  other is EncoderDecoder
+        return  other is EncoderDecoder<*>
                 && other::class == this::class
                 && other.name() == name()
                 && other.config.hashCode() == config.hashCode()

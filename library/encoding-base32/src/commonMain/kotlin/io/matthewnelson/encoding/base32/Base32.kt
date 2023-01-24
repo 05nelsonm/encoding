@@ -44,7 +44,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToByteArray]
  * */
 @OptIn(ExperimentalEncodingApi::class, InternalEncodingApi::class)
-public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config) {
+public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<C>(config) {
 
     /**
      * Base32 Crockford encoding/decoding in accordance with
@@ -71,7 +71,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      * @see [Crockford.CHARS]
      * @see [EncoderDecoder]
      * */
-    public class Crockford(config: Crockford.Config): Base32(config) {
+    public class Crockford(config: Crockford.Config): Base32<Crockford.Config>(config) {
 
         /**
          * Configuration for [Base32.Crockford] encoding/decoding.
@@ -202,8 +202,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
 
         @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
-            return object : Decoder.Feed() {
+        override fun newDecoderFeed(out: OutFeed): Decoder<Crockford.Config>.Feed {
+            return object : Decoder<Crockford.Config>.Feed() {
 
                 private val buffer = Base32DecodingBuffer(out)
                 private var isCheckSymbolSet = false
@@ -216,11 +216,12 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                     val char = input.char.uppercaseChar()
 
                     if (isCheckSymbolSet) {
-                        val symbol = (config as Crockford.Config).checkSymbol
                         // If the set checkByte was not intended, it's only a valid
                         // as the very last character and the previous update call
                         // was invalid.
-                        throw EncodingException("Checksymbol[$symbol] was set, but decoding is still being attempted.")
+                        throw EncodingException(
+                            "Checksymbol[${config.checkSymbol}] was set, but decoding is still being attempted."
+                        )
                     }
 
                     val bits: Int = when (char) {
@@ -277,7 +278,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         // We don't care about little u b/c
                         // everything is being uppercased.
                         '*', '~', '$', '=', 'U'/*, 'u'*/ -> {
-                            when (val checkSymbol = (config as Crockford.Config).checkSymbol?.uppercaseChar()) {
+                            when (val checkSymbol = config.checkSymbol?.uppercaseChar()) {
                                 char -> {
                                     isCheckSymbolSet = true
                                     return
@@ -310,10 +311,9 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
 
         @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
-            return object : Encoder.Feed() {
+        override fun newEncoderFeed(out: OutFeed): Encoder<Crockford.Config>.Feed {
+            return object : Encoder<Crockford.Config>.Feed() {
 
-                private val hyphenInterval = (config as Crockford.Config).hyphenInterval
                 private var outCount: Byte = 0
                 private var outputHyphenOnNext = false
 
@@ -326,9 +326,9 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                         }
 
                         out.output(byte)
-                        outputHyphenOnNext = hyphenInterval > 0 && ++outCount == hyphenInterval
+                        outputHyphenOnNext = config.hyphenInterval > 0 && ++outCount == config.hyphenInterval
                     },
-                    table = if ((config as Crockford.Config).encodeToLowercase) {
+                    table = if (config.encodeToLowercase) {
                         TABLE_LOWERCASE
                     } else {
                         TABLE
@@ -343,17 +343,16 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
                 override fun doFinalProtected() {
                     buffer.finalize()
 
-                    val config = (config as Crockford.Config)
-                    config.checkSymbol?.let { char ->
+                    config.checkSymbol?.let { symbol ->
 
                         if (outputHyphenOnNext) {
                             out.output('-'.byte)
                         }
 
                         if (config.encodeToLowercase) {
-                            out.output(char.lowercaseChar().byte)
+                            out.output(symbol.lowercaseChar().byte)
                         } else {
-                            out.output(char.uppercaseChar().byte)
+                            out.output(symbol.uppercaseChar().byte)
                         }
                     }
                 }
@@ -390,7 +389,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      * @see [Default.CHARS]
      * @see [EncoderDecoder]
      * */
-    public class Default(config: Default.Config): Base32(config) {
+    public class Default(config: Default.Config): Base32<Default.Config>(config) {
 
         /**
          * Configuration for [Base32.Default] encoding/decoding.
@@ -455,8 +454,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
 
         @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
-            return object : Decoder.Feed() {
+        override fun newDecoderFeed(out: OutFeed): Decoder<Default.Config>.Feed {
+            return object : Decoder<Default.Config>.Feed() {
 
                 private val buffer = Base32DecodingBuffer(out)
 
@@ -491,12 +490,12 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
 
         @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
-            return object : Encoder.Feed() {
+        override fun newEncoderFeed(out: OutFeed): Encoder<Default.Config>.Feed {
+            return object : Encoder<Default.Config>.Feed() {
 
                 private val buffer = Base32EncodingBuffer(
                     out = out,
-                    table = if ((config as Default.Config).encodeToLowercase) {
+                    table = if (config.encodeToLowercase) {
                         TABLE_LOWERCASE
                     } else {
                         TABLE
@@ -548,7 +547,7 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
      * @see [Hex.CHARS]
      * @see [EncoderDecoder]
      * */
-    public class Hex(config: Hex.Config): Base32(config) {
+    public class Hex(config: Hex.Config): Base32<Hex.Config>(config) {
 
         /**
          * Configuration for [Base32.Hex] encoding/decoding.
@@ -612,8 +611,8 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
 
         @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
-            return object : Decoder.Feed() {
+        override fun newDecoderFeed(out: OutFeed): Decoder<Hex.Config>.Feed {
+            return object : Decoder<Hex.Config>.Feed() {
 
                 private val buffer = Base32DecodingBuffer(out)
 
@@ -648,12 +647,12 @@ public sealed class Base32(config: EncoderDecoder.Config): EncoderDecoder(config
         }
 
         @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
-            return object : Encoder.Feed() {
+        override fun newEncoderFeed(out: OutFeed): Encoder<Hex.Config>.Feed {
+            return object : Encoder<Hex.Config>.Feed() {
 
                 private val buffer = Base32EncodingBuffer(
                     out = out,
-                    table = if ((config as Hex.Config).encodeToLowercase) {
+                    table = if (config.encodeToLowercase) {
                         TABLE_LOWERCASE
                     } else {
                         TABLE

@@ -18,20 +18,20 @@ package io.matthewnelson.encoding.core.helpers
 import io.matthewnelson.encoding.core.*
 
 @OptIn(ExperimentalEncodingApi::class)
-class TestEncoderDecoder(config: TestConfig): EncoderDecoder(config) {
+class TestEncoderDecoder(config: TestConfig): EncoderDecoder<TestConfig>(config) {
     override fun name(): String = "Test"
 
     @ExperimentalEncodingApi
-    override fun newEncoderFeed(out: OutFeed): Encoder.Feed {
-        return object : Encoder.Feed() {
+    override fun newEncoderFeed(out: OutFeed): Encoder<TestConfig>.Feed {
+        return object : Encoder<TestConfig>.Feed() {
             override fun consumeProtected(input: Byte) { out.output(Byte.MAX_VALUE) }
             override fun doFinalProtected() { out.output(Byte.MIN_VALUE) }
         }
     }
 
     @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: OutFeed): Decoder.Feed {
-        return object : Decoder.Feed() {
+    override fun newDecoderFeed(out: OutFeed): Decoder<TestConfig>.Feed {
+        return object : Decoder<TestConfig>.Feed() {
             override fun consumeProtected(input: Byte) { out.output(Byte.MAX_VALUE) }
             override fun doFinalProtected() { out.output(Byte.MIN_VALUE) }
         }
