@@ -260,14 +260,14 @@ constructor(config: Config): Encoder(config) {
     }
 
     /**
-     * Base abstraction for encoding/decoding data.
+     * Base abstraction for encoding/decoding of data.
      *
-     * After pushing all data through [consume], call [doFinal]
-     * to complete encoding/decoding.
-     *
-     * Alternatively, utilize the [use] extension function which
-     * will call [doFinal] or [close] when you're done pushing
-     * data through [consume].
+     * After feeding all data through [consume], call [doFinal]
+     * to complete encoding/decoding. Alternatively, utilize the
+     * [use] extension function which will call [doFinal] for you
+     * when you're done feeding data through [consume], or will
+     * call [close] in the event there is an error while
+     * encoding/decoding.
      *
      * @see [use]
      * @see [Encoder.Feed]
@@ -335,9 +335,13 @@ constructor(config: Config): Encoder(config) {
 
         /**
          * Closes the [Feed] and finalizes the encoding/decoding, such
-         * as applying padding (encoding), or dumping it's buffer
-         * to [OutFeed] (decoding).
+         * as applying padding (encoding) or processing remaining bytes
+         * in its buffer before dumping them to [OutFeed].
          *
+         * Can only be called once. Any sucessive calls will be considered
+         * an error and throw an [EncodingException].
+         *
+         * @see [use]
          * @throws [EncodingException] if [isClosed] is true, or
          *   there was an error encoding/decoding.
          * */
@@ -351,6 +355,12 @@ constructor(config: Config): Encoder(config) {
 
         /**
          * Closes the feed, rendering it useless.
+         *
+         * After [close] has been called, any invocation of [consume]
+         * or [doFinal] will be considered an error and throw an
+         * [EncodingException].
+         *
+         * @see [use]
          * */
         @ExperimentalEncodingApi
         public fun close() {
@@ -364,8 +374,8 @@ constructor(config: Config): Encoder(config) {
      *
      * e.g.
      *   Base16
-     *   Base32.Hex
-     *   Base64.UrlSafe
+     *   Base32.Crockford
+     *   Base64
      * */
     protected abstract fun name(): String
 

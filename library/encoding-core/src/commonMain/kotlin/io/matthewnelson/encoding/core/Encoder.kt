@@ -39,6 +39,18 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
      * Creates a new [Encoder.Feed] for the [Encoder], outputting
      * encoded bytes to the provided [OutFeed].
      *
+     * e.g.
+     *
+     *     file.outputStream().use { oStream ->
+     *         myEncoder.newEncoderFeed { encodedByte ->
+     *             oStream.write(encodedByte.toInt())
+     *         }.use { feed ->
+     *             "Hello World!".forEach { c ->
+     *                 feed.consume(c.code.toByte())
+     *             }
+     *         }
+     *     }
+     *
      * @see [Encoder.Feed]
      * @sample [io.matthewnelson.encoding.base16.Base16.newEncoderFeed]
      * */
@@ -46,15 +58,16 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
     public abstract fun newEncoderFeed(out: OutFeed): Encoder.Feed
 
     /**
-     * Data goes into [consume], and upon the [Encoder]
-     * implementation's buffer filling, encoded data is fed
-     * to [OutFeed] allowing for a "lazy" encode and streaming.
+     * Data to encode is fed into [consume], and upon the [Encoder.Feed]'s
+     * buffer filling, encoded data is pushed to the supplied [OutFeed].
+     * This allows for a "lazy" encode, or streaming.
      *
-     * Once all the data has been submitted via [consume], call
-     * [doFinal] to close the [Encoder.Feed] and perform
-     * finalization for leftover data still in the [Encoder.Feed]
-     * implementation's buffer. Alternatively, utilize the [use]
-     * extension function.
+     * Once all the data has been fed through [consume], call
+     * [doFinal] to close the [Encoder.Feed] and perform decoding
+     * finalization for leftover data still in the [Encoder.Feed]'s
+     * buffer. Alternatively, utilize the [use] extension function
+     * which will call [doFinal] for you, or [close] if there was an
+     * encoding error.
      *
      * @see [newEncoderFeed]
      * @see [EncoderDecoder.Feed]
