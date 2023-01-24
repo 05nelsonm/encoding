@@ -89,10 +89,11 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
          * returns the encoded data in the form of a [String].
          *
          * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE]. This is not applicable for
+         *   exceeds [Int.MAX_VALUE]. This is **not applicable** for
          *   most encoding specifications as the majority compress
          *   data, but is something that can occur with Base16 (hex)
-         *   which produces 2 characters for every 1 byte of input.
+         *   as it produces 2 characters of output for every 1 byte
+         *   of input.
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
@@ -100,8 +101,8 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 val sb = StringBuilder(outSize)
 
-                encoder.encode(this) { byte ->
-                    sb.append(byte.char)
+                encoder.encode(this) { encodedByte ->
+                    sb.append(encodedByte.char)
                 }
 
                 sb.toString()
@@ -113,10 +114,11 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
          * returns the encoded data in the form of a [CharArray].
          *
          * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE]. This is not applicable for
+         *   exceeds [Int.MAX_VALUE]. This is **not applicable** for
          *   most encoding specifications as the majority compress
          *   data, but is something that can occur with Base16 (hex)
-         *   which produces 2 characters for every 1 byte of input.
+         *   as it produces 2 characters of output for every 1 byte
+         *   of input.
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
@@ -125,8 +127,8 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
                 val ca = CharArray(outSize)
 
                 var i = 0
-                encoder.encode(this) { byte ->
-                    ca[i++] = byte.char
+                encoder.encode(this) { encodedByte ->
+                    ca[i++] = encodedByte.char
                 }
 
                 ca
@@ -138,10 +140,11 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
          * returns the encoded data in the form of a [ByteArray].
          *
          * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE]. This is not applicable for
+         *   exceeds [Int.MAX_VALUE]. This is **not applicable** for
          *   most encoding specifications as the majority compress
          *   data, but is something that can occur with Base16 (hex)
-         *   which produces 2 characters for every 1 byte of input.
+         *   as it produces 2 characters of output for every 1 byte
+         *   of input.
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
@@ -150,8 +153,8 @@ public sealed class Encoder(config: EncoderDecoder.Config): Decoder(config) {
                 val ba = ByteArray(outSize)
 
                 var i = 0
-                encoder.encode(this) { byte ->
-                    ba[i++] = byte
+                encoder.encode(this) { encodedByte ->
+                    ba[i++] = encodedByte
                 }
 
                 ba
