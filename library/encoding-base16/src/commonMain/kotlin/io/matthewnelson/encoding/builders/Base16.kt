@@ -87,10 +87,10 @@ public class Base16ConfigBuilder {
     public var isLenient: Boolean = true
 
     /**
-     * For every [lineBreakInterval] of encoded output, a
-     * line break will be inserted.
+     * For every [lineBreakInterval] of encoded data, a
+     * line break will be output.
      *
-     * Will **ONLY** insert line breaks if [isLenient] is
+     * Will **ONLY** output line breaks if [isLenient] is
      * set to **true**.
      *
      * e.g.

@@ -206,7 +206,7 @@ class EncoderDecoderFeedUnitTest {
         )
         
         var count = 0
-        val feed = encoder.newEncoderFeed { char ->
+        val feed = encoder.newEncoderFeed { _ ->
             count++
         }
         

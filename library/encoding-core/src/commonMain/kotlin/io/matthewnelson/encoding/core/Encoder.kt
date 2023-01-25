@@ -204,7 +204,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
     /**
      * A wrapper around [Encoder.OutFeed] to hijack the
-     * output and insert new line characters every at
+     * output and output new line characters at every
      * expressed [interval].
      * */
     private class LineBreakOutFeed(
@@ -219,17 +219,15 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         }
 
         private var count: Byte = 0
-        private var outputNewLineOnNext = false
 
         override fun output(encoded: Char) {
-            if (outputNewLineOnNext) {
+            if (count == interval) {
                 out.output('\n')
                 count = 0
-                outputNewLineOnNext = false
             }
 
             out.output(encoded)
-            outputNewLineOnNext = ++count == interval
+            count++
         }
     }
 }
