@@ -126,11 +126,7 @@ public sealed class Base64 {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase64ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(Base64 {
-        isLenient = true
-        encodeToUrlSafe = false // decodes both default and urlsafe
-        padEncoded = true
-    })
+    return decodeToByteArrayOrNull(Base64())
 }
 
 @Deprecated(
@@ -145,11 +141,7 @@ public inline fun String.decodeBase64ToArray(): ByteArray? {
     level = DeprecationLevel.WARNING,
 )
 public fun CharArray.decodeBase64ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(Base64 {
-        isLenient = true
-        encodeToUrlSafe = false // decodes both default and urlsafe
-        padEncoded = true
-    })
+    return decodeToByteArrayOrNull(Base64())
 }
 
 @Deprecated(
@@ -166,11 +158,7 @@ public fun CharArray.decodeBase64ToArray(): ByteArray? {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default): String {
-    return encodeToString(Base64 {
-        isLenient = true
-        encodeToUrlSafe = false
-        padEncoded = true
-    })
+    return encodeToString(Base64())
 }
 
 @Deprecated(
@@ -187,7 +175,6 @@ public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
     return encodeToString(Base64 {
-        isLenient = true
         encodeToUrlSafe = true
         padEncoded = base64.pad
     })
@@ -207,11 +194,7 @@ public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Base64.Default): CharArray {
-    return encodeToCharArray(Base64 {
-        isLenient = true
-        encodeToUrlSafe = false
-        padEncoded = true
-    })
+    return encodeToCharArray(Base64())
 }
 
 @Deprecated(
@@ -228,7 +211,6 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Bas
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): CharArray {
     return encodeToCharArray(Base64 {
-        isLenient = true
         encodeToUrlSafe = true
         padEncoded = base64.pad
     })
@@ -247,11 +229,7 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): Cha
 )
 @JvmOverloads
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Default): ByteArray {
-    return encodeToByteArray(Base64 {
-        isLenient = true
-        encodeToUrlSafe = false
-        padEncoded = true
-    })
+    return encodeToByteArray(Base64())
 }
 
 @Deprecated(
@@ -267,7 +245,6 @@ public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Def
 )
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.UrlSafe): ByteArray {
     return encodeToByteArray(Base64 {
-        isLenient = true
         encodeToUrlSafe = true
         padEncoded = base64.pad
     })

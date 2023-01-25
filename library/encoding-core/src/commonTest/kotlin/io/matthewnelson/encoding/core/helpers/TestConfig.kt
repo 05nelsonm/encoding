@@ -22,11 +22,12 @@ import io.matthewnelson.encoding.core.util.DecoderInput
 @OptIn(ExperimentalEncodingApi::class)
 class TestConfig(
     isLenient: Boolean? = false,
+    lineBreakInterval: Byte = 0,
     paddingChar: Char? = '=',
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
     private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
-): EncoderDecoder.Config(isLenient, paddingChar) {
+): EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar) {
     override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
         return decodeReturn.invoke(encodedSize)
     }

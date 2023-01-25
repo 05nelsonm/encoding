@@ -47,6 +47,9 @@ constructor(config: C): Encoder<C>(config) {
      *   [EncodingException] will be thrown when encountering those
      *   characters. See [isSpaceOrNewLine]. If null, those bytes
      *   are sent to the [EncoderDecoder].
+     * @param [lineBreakInterval] If greater than 0 and [isLenient]
+     *   is not **false** (i.e. null or true), line breaks will be
+     *   output at the expressed [lineBreakInterval].
      * @param [paddingChar] The byte used when padding the output for
      *   the given encoding; NOT "if padding should be
      *   used". (e.g. '='.code.toByte()).
@@ -59,9 +62,17 @@ constructor(config: C): Encoder<C>(config) {
     constructor(
         @JvmField
         public val isLenient: Boolean?,
+        lineBreakInterval: Byte,
         @JvmField
         public val paddingChar: Char?,
     ) {
+
+        @JvmField
+        public val lineBreakInterval: Byte = if (isLenient != false && lineBreakInterval > 0) {
+            lineBreakInterval
+        } else {
+            0
+        }
 
         /**
          * Calculates and returns the size of the output after encoding
@@ -249,6 +260,9 @@ constructor(config: C): Encoder<C>(config) {
                 appendLine()
                 append("    isLenient: ")
                 append(isLenient)
+                appendLine()
+                append("    lineBreakInterval: ")
+                append(lineBreakInterval)
                 appendLine()
                 append("    paddingChar: ")
                 append(paddingChar)

@@ -18,6 +18,7 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.helpers.TestConfig
 import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.fail
 
 class EncoderDecoderConfigUnitTest {
@@ -119,4 +120,35 @@ class EncoderDecoderConfigUnitTest {
         config.decodeOutMaxSize(1L)
         config.encodeOutSize(1L)
     }
+
+    @Test
+    fun givenLineBreakInterval_whenIsLenientFalse_thenIsZero() {
+        val config = TestConfig(isLenient = false, lineBreakInterval = 20)
+
+        assertEquals(0, config.lineBreakInterval)
+    }
+
+    @Test
+    fun givenLineBreakInterval_whenIsLenientTrue_thenIsExpected() {
+        val expected: Byte = 20
+        val config = TestConfig(isLenient = true, lineBreakInterval = expected)
+
+        assertEquals(expected, config.lineBreakInterval)
+    }
+
+    @Test
+    fun givenLineBreakInterval_whenIsLenientNull_thenIsExpected() {
+        val expected: Byte = 20
+        val config = TestConfig(isLenient = null, lineBreakInterval = expected)
+
+        assertEquals(expected, config.lineBreakInterval)
+    }
+
+    @Test
+    fun givenConfig_whenLineBreakIntervalNegative_thenIsZero() {
+        val config = TestConfig(isLenient = true, lineBreakInterval = -5)
+
+        assertEquals(0, config.lineBreakInterval)
+    }
+
 }

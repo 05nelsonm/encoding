@@ -73,8 +73,9 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthew
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public static final field Companion Lio/matthewnelson/encoding/core/EncoderDecoder$Config$Companion;
 	public final field isLenient Ljava/lang/Boolean;
+	public final field lineBreakInterval B
 	public final field paddingChar Ljava/lang/Character;
-	public fun <init> (Ljava/lang/Boolean;Ljava/lang/Character;)V
+	public fun <init> (Ljava/lang/Boolean;BLjava/lang/Character;)V
 	public final fun decodeOutMaxSize (J)J
 	public final fun decodeOutMaxSizeOrFail (Lio/matthewnelson/encoding/core/util/DecoderInput;)I
 	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I

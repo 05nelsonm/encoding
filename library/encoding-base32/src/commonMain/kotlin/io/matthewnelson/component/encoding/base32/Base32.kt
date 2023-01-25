@@ -170,7 +170,7 @@ public sealed class Base32 {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Default): ByteArray? {
-    return decodeToByteArrayOrNull(Base32Default { encodeToLowercase = false })
+    return decodeToByteArrayOrNull(Base32Default())
 }
 
 @Deprecated(
@@ -186,7 +186,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Def
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
-    return decodeToByteArrayOrNull(Base32Hex { encodeToLowercase = false })
+    return decodeToByteArrayOrNull(Base32Hex())
 }
 
 @Deprecated(
@@ -202,12 +202,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
-    return decodeToByteArrayOrNull(Base32Crockford {
-        isLenient = true
-        encodeToLowercase = false
-        hyphenInterval = 0
-        checkSymbol(base32.checkSymbol)
-    })
+    return decodeToByteArrayOrNull(Base32Crockford { checkSymbol(base32.checkSymbol) })
 }
 
 @Deprecated(
@@ -223,7 +218,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArra
 )
 @JvmOverloads
 public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default): ByteArray? {
-    return decodeToByteArrayOrNull(Base32Default { encodeToLowercase = false })
+    return decodeToByteArrayOrNull(Base32Default())
 }
 
 @Deprecated(
@@ -238,7 +233,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default
     level = DeprecationLevel.WARNING,
 )
 public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
-    return decodeToByteArrayOrNull(Base32Hex { encodeToLowercase = false })
+    return decodeToByteArrayOrNull(Base32Hex())
 }
 
 @Deprecated(
@@ -253,12 +248,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     level = DeprecationLevel.WARNING,
 )
 public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
-    return decodeToByteArrayOrNull(Base32Crockford {
-        isLenient = true
-        encodeToLowercase = false
-        hyphenInterval = 0
-        checkSymbol(base32.checkSymbol)
-    })
+    return decodeToByteArrayOrNull(Base32Crockford { checkSymbol(base32.checkSymbol) })
 }
 
 @Deprecated(
@@ -308,9 +298,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
     return encodeToString(Base32Crockford {
-        isLenient = true
         encodeToLowercase = false
-        hyphenInterval = 0
         checkSymbol(base32.checkSymbol)
     })
 }
@@ -362,9 +350,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArr
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): CharArray {
     return encodeToCharArray(Base32Crockford {
-        isLenient = true
         encodeToLowercase = false
-        hyphenInterval = 0
         checkSymbol(base32.checkSymbol)
     })
 }
@@ -413,9 +399,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Crockford): ByteArray {
     return encodeToByteArray(Base32Crockford {
-        isLenient = true
         encodeToLowercase = false
-        hyphenInterval = 0
         checkSymbol(base32.checkSymbol)
     })
 }

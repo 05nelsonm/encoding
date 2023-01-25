@@ -173,7 +173,7 @@ public class Base32CrockfordConfigBuilder {
     public var encodeToLowercase: Boolean = true
 
     /**
-     * For every [hyphenInterval] of decoded output, a
+     * For every [hyphenInterval] of encoded output, a
      * hyphen ("-") will be inserted.
      *
      * e.g.
@@ -267,6 +267,36 @@ public class Base32DefaultConfigBuilder {
     public var isLenient: Boolean = true
 
     /**
+     * For every [lineBreakInterval] of encoded output, a
+     * line break will be inserted.
+     *
+     * Will **ONLY** insert line breaks if [isLenient] is
+     * set to **true**.
+     *
+     * e.g.
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 0
+     *     // JBSWY3DPEBLW64TMMQQQ====
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 16
+     *     // JBSWY3DPEBLW64TM
+     *     // MQQQ====
+     *
+     *     isLenient = false
+     *     lineBreakInterval = 16
+     *     // JBSWY3DPEBLW64TMMQQQ====
+     *
+     * Enable by setting to a value between 1 and 127, and
+     * setting [isLenient] to true.
+     *
+     * A great value is 64
+     * */
+    @JvmField
+    public var lineBreakInterval: Byte = 0
+
+    /**
      * If true, will output lowercase characters when
      * encoding (against RFC 4648).
      *
@@ -292,6 +322,7 @@ public class Base32DefaultConfigBuilder {
      * */
     public fun strict(): Base32DefaultConfigBuilder {
         isLenient = false
+        lineBreakInterval = 0
         encodeToLowercase = false
         padEncoded = true
         return this
@@ -330,6 +361,36 @@ public class Base32HexConfigBuilder {
     public var isLenient: Boolean = true
 
     /**
+     * For every [lineBreakInterval] of encoded output, a
+     * line break will be inserted.
+     *
+     * Will **ONLY** insert line breaks if [isLenient] is
+     * set to **true**.
+     *
+     * e.g.
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 0
+     *     // 91IMOR3F41BMUSJCCGGG====
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 16
+     *     // 91IMOR3F41BMUSJC
+     *     // CGGG====
+     *
+     *     isLenient = false
+     *     lineBreakInterval = 16
+     *     // 91IMOR3F41BMUSJCCGGG====
+     *
+     * Enable by setting to a value between 1 and 127, and
+     * setting [isLenient] to true.
+     *
+     * A great value is 64
+     * */
+    @JvmField
+    public var lineBreakInterval: Byte = 0
+
+    /**
      * If true, will output lowercase characters when
      * encoding (against RFC 4648).
      *
@@ -355,6 +416,7 @@ public class Base32HexConfigBuilder {
      * */
     public fun strict(): Base32HexConfigBuilder {
         isLenient = false
+        lineBreakInterval = 0
         encodeToLowercase = false
         padEncoded = true
         return this

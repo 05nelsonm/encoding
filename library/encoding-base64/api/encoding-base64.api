@@ -50,7 +50,7 @@ public final class io/matthewnelson/encoding/base64/Base64 : io/matthewnelson/en
 public final class io/matthewnelson/encoding/base64/Base64$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field encodeToUrlSafe Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base64/Base64$Default {
@@ -74,6 +74,7 @@ public final class io/matthewnelson/encoding/builders/Base64BuildersKt {
 public final class io/matthewnelson/encoding/builders/Base64ConfigBuilder {
 	public field encodeToUrlSafe Z
 	public field isLenient Z
+	public field lineBreakInterval B
 	public field padEncoded Z
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;)V

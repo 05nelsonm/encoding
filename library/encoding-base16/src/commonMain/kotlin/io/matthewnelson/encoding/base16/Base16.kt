@@ -34,14 +34,14 @@ import kotlin.jvm.JvmSynthetic
  *
  *     val base16 = Base16 {
  *         isLenient = true
- *         acceptLowercase = true
- *         encodeToLowercase = false
+ *         lineBreakInterval = 64
+ *         encodeToLowercase = true
  *     }
  *
  *     val text = "Hello World!"
  *     val bytes = text.encodeToByteArray()
  *     val encoded = bytes.encodeToString(base16)
- *     println(encoded) // 48656C6C6F20576F726C6421
+ *     println(encoded) // 48656c6c6f20576f726c6421
  *     val decoded = encoded.decodeToByteArray(base16).decodeToString()
  *     assertEquals(text, decoded)
  *
@@ -69,9 +69,14 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
      * */
     public class Config private constructor(
         isLenient: Boolean,
+        lineBreakInterval: Byte,
         @JvmField
         public val encodeToLowercase: Boolean,
-    ): EncoderDecoder.Config(isLenient, paddingChar = null) {
+    ): EncoderDecoder.Config(
+        isLenient = isLenient,
+        lineBreakInterval = lineBreakInterval,
+        paddingChar = null
+    ) {
 
         override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L
@@ -103,6 +108,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             internal fun from(builder: Base16ConfigBuilder): Config {
                 return Config(
                     isLenient = builder.isLenient,
+                    lineBreakInterval = builder.lineBreakInterval,
                     encodeToLowercase = builder.encodeToLowercase,
                 )
             }
