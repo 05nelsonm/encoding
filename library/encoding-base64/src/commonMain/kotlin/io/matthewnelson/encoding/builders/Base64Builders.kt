@@ -69,6 +69,7 @@ public class Base64ConfigBuilder {
     public constructor(config: Base64.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
+        lineBreakInterval = config.lineBreakInterval
         encodeToUrlSafe = config.encodeToUrlSafe
         padEncoded = config.padEncoded
     }

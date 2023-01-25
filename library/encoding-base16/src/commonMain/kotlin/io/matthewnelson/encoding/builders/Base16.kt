@@ -73,6 +73,7 @@ public class Base16ConfigBuilder {
     public constructor(config: Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
+        lineBreakInterval = config.lineBreakInterval
         encodeToLowercase = config.encodeToLowercase
     }
 

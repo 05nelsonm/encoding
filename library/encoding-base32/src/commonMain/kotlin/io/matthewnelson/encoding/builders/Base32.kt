@@ -252,6 +252,7 @@ public class Base32DefaultConfigBuilder {
     public constructor(config: Base32.Default.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
+        lineBreakInterval = config.lineBreakInterval
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
     }
@@ -346,6 +347,7 @@ public class Base32HexConfigBuilder {
     public constructor(config: Base32.Hex.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
+        lineBreakInterval = config.lineBreakInterval
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
     }
