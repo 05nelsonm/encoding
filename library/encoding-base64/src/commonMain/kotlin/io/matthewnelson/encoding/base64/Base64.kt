@@ -194,8 +194,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         }
     }
 
-    @ExperimentalEncodingApi
-    override fun newEncoderFeed(out: OutFeed): Encoder<Base64.Config>.Feed {
+    protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base64.Config>.Feed {
         return object : Encoder<Base64.Config>.Feed() {
 
             private val buffer = EncodingBuffer(

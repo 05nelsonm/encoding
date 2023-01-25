@@ -39,7 +39,8 @@ public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/
 	public static final fun encodeToByteArray ([BLio/matthewnelson/encoding/core/Encoder;)[B
 	public static final fun encodeToCharArray ([BLio/matthewnelson/encoding/core/Encoder;)[C
 	public static final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
-	public abstract fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	public final fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+	protected abstract fun newEncoderFeedProtected (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/core/Encoder$Companion {

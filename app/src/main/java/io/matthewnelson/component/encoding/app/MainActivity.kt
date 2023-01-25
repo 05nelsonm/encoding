@@ -27,6 +27,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.core.ExperimentalEncodingApi
 import io.matthewnelson.encoding.core.use
 import java.io.File
+import java.security.SecureRandom
 
 class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
@@ -35,6 +36,7 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
         private val base16EncoderDecoder = Base16 {
             isLenient = false
+            lineBreakInterval = 64
             encodeToLowercase = true
         }
 
@@ -47,24 +49,28 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
 
         private val base32DefaultEncoderDecoder = Base32Default {
             isLenient = false
+            lineBreakInterval = 64
             encodeToLowercase = true
             padEncoded = false
         }
 
         private val base32HexEncoderDecoder = Base32Hex {
             isLenient = false
+            lineBreakInterval = 64
             encodeToLowercase = true
             padEncoded = false
         }
 
         private val base64DefaultEncoderDecoder = Base64 {
             isLenient = true
+            lineBreakInterval = 64
             encodeToUrlSafe = false
             padEncoded = true
         }
 
         private val base64UrlSafeEncoderDecoder = Base64 {
             isLenient = false
+            lineBreakInterval = 64
             encodeToUrlSafe = true
             padEncoded = false
         }
@@ -108,10 +114,10 @@ class MainActivity: AppCompatActivity(R.layout.activity_main) {
                 oStream.write(encodedChar.code)
             }.use { feed ->
 
-                HELLO_WORLD.forEach { c ->
-                    // Update the feed with each character
-                    // of Hello World!
-                    feed.consume(c.code.toByte())
+                val random = ByteArray(256)
+                SecureRandom().nextBytes(random)
+                random.forEach { b ->
+                    feed.consume(b)
                 }
             }
         }

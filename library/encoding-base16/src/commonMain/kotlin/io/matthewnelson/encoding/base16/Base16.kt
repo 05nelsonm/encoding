@@ -128,8 +128,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         public const val CHARS_LOWER: String = "0123456789abcdef"
     }
 
-    @ExperimentalEncodingApi
-    override fun newEncoderFeed(out: OutFeed): Encoder<Config>.Feed {
+    protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Config>.Feed {
         return object : Encoder<Config>.Feed() {
 
             private val table = if (config.encodeToLowercase) {

@@ -22,7 +22,7 @@ class TestEncoderDecoder(config: TestConfig): EncoderDecoder<TestConfig>(config)
     override fun name(): String = "Test"
 
     @ExperimentalEncodingApi
-    override fun newEncoderFeed(out: Encoder.OutFeed): Encoder<TestConfig>.Feed {
+    protected override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<TestConfig>.Feed {
         return object : Encoder<TestConfig>.Feed() {
             override fun consumeProtected(input: Byte) { out.output(Char.MAX_VALUE) }
             override fun doFinalProtected() { out.output(Char.MIN_VALUE) }

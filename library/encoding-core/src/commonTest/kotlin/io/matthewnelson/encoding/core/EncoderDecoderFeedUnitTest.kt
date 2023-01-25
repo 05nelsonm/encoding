@@ -194,4 +194,38 @@ class EncoderDecoderFeedUnitTest {
             assertTrue(feed.isClosed())
         }
     }
+
+    @Test
+    fun givenEncoderFeed_whenLineBreakExpressedInConfig_then() {
+        val encoder = TestEncoderDecoder(
+            config = TestConfig(
+                isLenient = true,
+                lineBreakInterval = 2,
+                encodeReturn = { it }
+            )
+        )
+        
+        var count = 0
+        val feed = encoder.newEncoderFeed { char ->
+            count++
+        }
+        
+        feed.consume(0)
+        feed.consume(0)
+        assertEquals(2, count)
+        feed.consume(0)
+        assertEquals(4, count)
+        feed.consume(0)
+        assertEquals(5, count)
+        feed.consume(0)
+        assertEquals(7, count)
+        feed.consume(0)
+        assertEquals(8, count)
+        feed.consume(0)
+        assertEquals(10, count)
+        feed.consume(0)
+        assertEquals(11, count)
+
+        feed.doFinal()
+    }
 }

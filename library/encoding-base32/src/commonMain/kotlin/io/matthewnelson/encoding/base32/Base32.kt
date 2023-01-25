@@ -324,8 +324,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
+        protected override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
             return object : Encoder<Crockford.Config>.Feed() {
 
                 private var outCount: Byte = 0
@@ -516,8 +515,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder<Default.Config>.Feed {
+        protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Default.Config>.Feed {
             return object : Encoder<Default.Config>.Feed() {
 
                 private val buffer = EncodingBuffer(
@@ -686,8 +684,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder<Hex.Config>.Feed {
+        protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Hex.Config>.Feed {
             return object : Encoder<Hex.Config>.Feed() {
 
                 private val buffer = EncodingBuffer(

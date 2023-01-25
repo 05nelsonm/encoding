@@ -53,7 +53,15 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [Encoder.Feed]
      * */
     @ExperimentalEncodingApi
-    public abstract fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed
+    public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
+        return if (config.lineBreakInterval > 0) {
+            newEncoderFeedProtected(LineBreakOutFeed(config.lineBreakInterval, out))
+        } else {
+            newEncoderFeedProtected(out)
+        }
+    }
+
+    protected abstract fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<C>.Feed
 
     /**
      * Data to encode is fed into [consume], and upon the [Encoder.Feed]'s
@@ -191,6 +199,37 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
                 ba
             }
+        }
+    }
+
+    /**
+     * A wrapper around [Encoder.OutFeed] to hijack the
+     * output and insert new line characters every at
+     * expressed [interval].
+     * */
+    private class LineBreakOutFeed(
+        private val interval: Byte,
+        private val out: Encoder.OutFeed,
+    ): Encoder.OutFeed {
+
+        init {
+            require(interval > 0) {
+                "interval must be greater than 0"
+            }
+        }
+
+        private var count: Byte = 0
+        private var outputNewLineOnNext = false
+
+        override fun output(encoded: Char) {
+            if (outputNewLineOnNext) {
+                out.output('\n')
+                count = 0
+                outputNewLineOnNext = false
+            }
+
+            out.output(encoded)
+            outputNewLineOnNext = ++count == interval
         }
     }
 }
