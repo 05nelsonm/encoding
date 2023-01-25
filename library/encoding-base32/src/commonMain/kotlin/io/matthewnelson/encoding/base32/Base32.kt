@@ -306,25 +306,26 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             //  Z    90    31 (ASCII - 59)
                             input.code - 59
                         }
-                        '*', '~', '$', '=', 'U', 'u' -> {
-                            when (val checkSymbol = config.checkSymbol?.uppercaseChar()) {
-                                input.uppercaseChar() -> {
-                                    isCheckSymbolSet = true
-                                    return
-                                }
-                                else -> {
-                                    throw EncodingException(
-                                        "Char[${input}] IS a checkSymbol, but did not match config's Checksymbol[$checkSymbol]"
-                                    )
-                                }
-                            }
-                        }
                         '-' -> {
                             // Crockford allows for insertion of hyphens,
                             // which are to be ignored when decoding.
                             return
                         }
                         else -> {
+                            if (input.isCheckSymbol()) {
+                                when (val checkSymbol = config.checkSymbol?.uppercaseChar()) {
+                                    input.uppercaseChar() -> {
+                                        isCheckSymbolSet = true
+                                        return
+                                    }
+                                    else -> {
+                                        throw EncodingException(
+                                            "Char[${input}] IS a checkSymbol, but did not match config's Checksymbol[$checkSymbol]"
+                                        )
+                                    }
+                                }
+                            }
+
                             throw EncodingException("Char[${input}] is not a valid Base32 Crockford character")
                         }
                     }
