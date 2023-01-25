@@ -159,7 +159,7 @@ public sealed class Base32 {
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32Default { encodeToLowercase = false })",
+        expression = "this.decodeToByteArrayOrNull(Base32Default())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Default",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -176,7 +176,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Def
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32Hex { encodeToLowercase = false })",
+        expression = "this.decodeToByteArrayOrNull(Base32Hex())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Hex",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -192,7 +192,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32Crockford { encodeToLowercase = false; checkSymbol('value') })",
+        expression = "this.decodeToByteArrayOrNull(Base32Crockford { checkSymbol('value') })",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Crockford",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -208,7 +208,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArra
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32Default { encodeToLowercase = false })",
+        expression = "this.decodeToByteArrayOrNull(Base32Default())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Default",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -224,7 +224,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32Hex { encodeToLowercase = false })",
+        expression = "this.decodeToByteArrayOrNull(Base32Hex())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Hex",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -239,7 +239,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32Crockford { encodeToLowercase = false; checkSymbol('value') })",
+        expression = "this.decodeToByteArrayOrNull(Base32Crockford { checkSymbol('value') })",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Crockford",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -254,7 +254,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base32Default { encodeToLowercase = false })",
+        expression = "this.encodeToString(Base32Default())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Default",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -265,13 +265,13 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Default = Base32.Default): String {
-    return encodeToString(Base32Default { encodeToLowercase = false })
+    return encodeToString(Base32Default())
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base32Hex { encodeToLowercase = false })",
+        expression = "this.encodeToString(Base32Hex())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Hex",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -281,13 +281,13 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Default = Base32.Default
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
-    return encodeToString(Base32Hex { encodeToLowercase = false })
+    return encodeToString(Base32Hex())
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base32Crockford { encodeToLowercase = false; checkSymbol('value') })",
+        expression = "this.encodeToString(Base32Crockford { checkSymbol('value') })",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Crockford",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -297,16 +297,13 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
-    return encodeToString(Base32Crockford {
-        encodeToLowercase = false
-        checkSymbol(base32.checkSymbol)
-    })
+    return encodeToString(Base32Crockford { checkSymbol(base32.checkSymbol) })
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToCharArray(Base32Default { encodeToLowercase = false })",
+        expression = "this.encodeToCharArray(Base32Default())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Default",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
@@ -317,13 +314,13 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Default = Base32.Default): CharArray {
-    return encodeToCharArray(Base32Default { encodeToLowercase = false })
+    return encodeToCharArray(Base32Default())
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToCharArray(Base32Hex { encodeToLowercase = false })",
+        expression = "this.encodeToCharArray(Base32Hex())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Hex",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
@@ -333,13 +330,13 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Default = Bas
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArray {
-    return encodeToCharArray(Base32Hex { encodeToLowercase = false })
+    return encodeToCharArray(Base32Hex())
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToCharArray(Base32Crockford { encodeToLowercase = false; checkSymbol('value') })",
+        expression = "this.encodeToCharArray(Base32Crockford { checkSymbol('value') })",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Crockford",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
@@ -349,16 +346,13 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArr
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): CharArray {
-    return encodeToCharArray(Base32Crockford {
-        encodeToLowercase = false
-        checkSymbol(base32.checkSymbol)
-    })
+    return encodeToCharArray(Base32Crockford { checkSymbol(base32.checkSymbol) })
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToByteArray(Base32Default { encodeToLowercase = false })",
+        expression = "this.encodeToByteArray(Base32Default())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Default",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
@@ -368,13 +362,13 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): C
 )
 @JvmOverloads
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Default): ByteArray {
-    return encodeToByteArray(Base32Default { encodeToLowercase = false })
+    return encodeToByteArray(Base32Default())
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToByteArray(Base32Hex { encodeToLowercase = false })",
+        expression = "this.encodeToByteArray(Base32Hex())",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Hex",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
@@ -383,13 +377,13 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Def
     level = DeprecationLevel.WARNING,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
-    return encodeToByteArray(Base32Hex { encodeToLowercase = false })
+    return encodeToByteArray(Base32Hex())
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToByteArray(Base32Crockford { encodeToLowercase = false; checkSymbol('value') })",
+        expression = "this.encodeToByteArray(Base32Crockford { checkSymbol('value') })",
         imports = [
             "io.matthewnelson.encoding.builders.Base32Crockford",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
@@ -398,8 +392,5 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
     level = DeprecationLevel.WARNING,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Crockford): ByteArray {
-    return encodeToByteArray(Base32Crockford {
-        encodeToLowercase = false
-        checkSymbol(base32.checkSymbol)
-    })
+    return encodeToByteArray(Base32Crockford { checkSymbol(base32.checkSymbol) })
 }
