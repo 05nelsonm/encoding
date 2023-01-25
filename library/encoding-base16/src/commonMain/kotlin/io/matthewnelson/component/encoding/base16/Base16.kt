@@ -36,10 +36,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase16ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(Base16 {
-        isLenient = true
-        encodeToLowercase = false
-    })
+    return decodeToByteArrayOrNull(Base16())
 }
 
 @Deprecated(
@@ -54,10 +51,7 @@ public inline fun String.decodeBase16ToArray(): ByteArray? {
     level = DeprecationLevel.WARNING,
 )
 public fun CharArray.decodeBase16ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(Base16 {
-        isLenient = true
-        encodeToLowercase = false
-    })
+    return decodeToByteArrayOrNull(Base16())
 }
 
 @Deprecated(
@@ -73,10 +67,7 @@ public fun CharArray.decodeBase16ToArray(): ByteArray? {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16(): String {
-    return encodeToString(Base16 {
-        isLenient = true
-        encodeToLowercase = false
-    })
+    return encodeToString(Base16 { encodeToLowercase = false })
 }
 
 @Deprecated(
@@ -92,10 +83,7 @@ public inline fun ByteArray.encodeBase16(): String {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
-    return encodeToCharArray(Base16 {
-        isLenient = true
-        encodeToLowercase = false
-    })
+    return encodeToCharArray(Base16 { encodeToLowercase = false })
 }
 
 @Deprecated(
@@ -110,8 +98,5 @@ public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
     level = DeprecationLevel.WARNING,
 )
 public fun ByteArray.encodeBase16ToByteArray(): ByteArray {
-    return encodeToByteArray(Base16 {
-        isLenient = true
-        encodeToLowercase = false
-    })
+    return encodeToByteArray(Base16 { encodeToLowercase = false })
 }

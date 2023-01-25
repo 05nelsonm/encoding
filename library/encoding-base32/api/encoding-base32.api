@@ -69,7 +69,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthe
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Crockford$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
 	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
-	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion {
@@ -88,7 +87,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewn
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Default$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
 	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
-	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Companion {
@@ -97,7 +95,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Companion {
 public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field encodeToLowercase Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
@@ -106,7 +104,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelso
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Hex$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
 	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
-	public fun newEncoderFeed (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion {
@@ -115,7 +112,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion {
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field encodeToLowercase Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/builders/Base32CrockfordConfigBuilder {
@@ -133,6 +130,7 @@ public final class io/matthewnelson/encoding/builders/Base32CrockfordConfigBuild
 public final class io/matthewnelson/encoding/builders/Base32DefaultConfigBuilder {
 	public field encodeToLowercase Z
 	public field isLenient Z
+	public field lineBreakInterval B
 	public field padEncoded Z
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
@@ -143,6 +141,7 @@ public final class io/matthewnelson/encoding/builders/Base32DefaultConfigBuilder
 public final class io/matthewnelson/encoding/builders/Base32HexConfigBuilder {
 	public field encodeToLowercase Z
 	public field isLenient Z
+	public field lineBreakInterval B
 	public field padEncoded Z
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V

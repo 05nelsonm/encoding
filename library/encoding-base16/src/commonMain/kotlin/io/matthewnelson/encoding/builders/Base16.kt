@@ -73,6 +73,7 @@ public class Base16ConfigBuilder {
     public constructor(config: Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
+        lineBreakInterval = config.lineBreakInterval
         encodeToLowercase = config.encodeToLowercase
     }
 
@@ -85,6 +86,36 @@ public class Base16ConfigBuilder {
      * */
     @JvmField
     public var isLenient: Boolean = true
+
+    /**
+     * For every [lineBreakInterval] of encoded data, a
+     * line break will be output.
+     *
+     * Will **ONLY** output line breaks if [isLenient] is
+     * set to **true**.
+     *
+     * e.g.
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 0
+     *     // 48656C6C6F20576F726C6421
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 16
+     *     // 48656C6C6F20576F
+     *     // 726C6421
+     *
+     *     isLenient = false
+     *     lineBreakInterval = 16
+     *     // 48656C6C6F20576F726C6421
+     *
+     * Enable by setting to a value between 1 and 127, and
+     * setting [isLenient] to true.
+     *
+     * A great value is 64
+     * */
+    @JvmField
+    public var lineBreakInterval: Byte = 0
 
     /**
      * If true, will output lowercase characters when
@@ -102,6 +133,7 @@ public class Base16ConfigBuilder {
      * */
     public fun strict(): Base16ConfigBuilder {
         isLenient = false
+        lineBreakInterval = 0
         encodeToLowercase = false
         return this
     }

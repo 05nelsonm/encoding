@@ -86,7 +86,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val hyphenInterval: Byte,
             @JvmField
             public val checkSymbol: Char?,
-        ): EncoderDecoder.Config(isLenient, paddingChar = null) {
+        ): EncoderDecoder.Config(
+            isLenient = isLenient,
+            lineBreakInterval = 0,
+            paddingChar = null,
+        ) {
 
             override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
@@ -180,7 +184,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     return Config(
                         isLenient = builder.isLenient,
                         encodeToLowercase = builder.encodeToLowercase,
-                        hyphenInterval = builder.hyphenInterval,
+                        hyphenInterval = if (builder.hyphenInterval > 0) builder.hyphenInterval else 0,
                         checkSymbol = builder.checkSymbol
                     )
                 }
@@ -320,8 +324,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
+        protected override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
             return object : Encoder<Crockford.Config>.Feed() {
 
                 private var outCount: Byte = 0
@@ -382,7 +385,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *
      *     val base32Default = Base32Default {
      *         isLenient = true
-     *         acceptLowercase = true
+     *         lineBreakInterval = 64
      *         encodeToLowercase = false
      *         padEncoded = true
      *     }
@@ -412,11 +415,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
          * */
         public class Config private constructor(
             isLenient: Boolean,
+            lineBreakInterval: Byte,
             @JvmField
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, paddingChar = '=') {
+        ): EncoderDecoder.Config(
+            isLenient = isLenient,
+            lineBreakInterval = lineBreakInterval,
+            paddingChar = '=',
+        ) {
 
             override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
@@ -447,6 +455,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 internal fun from(builder: Base32DefaultConfigBuilder): Config {
                     return Config(
                         isLenient = builder.isLenient,
+                        lineBreakInterval = builder.lineBreakInterval,
                         encodeToLowercase = builder.encodeToLowercase,
                         padEncoded = builder.padEncoded,
                     )
@@ -506,8 +515,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder<Default.Config>.Feed {
+        protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Default.Config>.Feed {
             return object : Encoder<Default.Config>.Feed() {
 
                 private val buffer = EncodingBuffer(
@@ -547,7 +555,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *
      *     val base32Hex = Base32Hex {
      *         isLenient = true
-     *         acceptLowercase = true
+     *         lineBreakInterval = 64
      *         encodeToLowercase = false
      *         padEncoded = true
      *     }
@@ -577,11 +585,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
          * */
         public class Config private constructor(
             isLenient: Boolean,
+            lineBreakInterval: Byte,
             @JvmField
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, paddingChar = '=') {
+        ): EncoderDecoder.Config(
+            isLenient = isLenient,
+            lineBreakInterval = lineBreakInterval,
+            paddingChar = '=',
+        ) {
 
             override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
@@ -611,6 +624,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 internal fun from(builder: Base32HexConfigBuilder): Config {
                     return Config(
                         isLenient = builder.isLenient,
+                        lineBreakInterval = builder.lineBreakInterval,
                         encodeToLowercase = builder.encodeToLowercase,
                         padEncoded = builder.padEncoded,
                     )
@@ -670,8 +684,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        @ExperimentalEncodingApi
-        override fun newEncoderFeed(out: OutFeed): Encoder<Hex.Config>.Feed {
+        protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Hex.Config>.Feed {
             return object : Encoder<Hex.Config>.Feed() {
 
                 private val buffer = EncodingBuffer(

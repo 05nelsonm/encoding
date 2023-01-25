@@ -69,6 +69,7 @@ public class Base64ConfigBuilder {
     public constructor(config: Base64.Config?): this() {
         if (config == null) return
         isLenient = config.isLenient ?: true
+        lineBreakInterval = config.lineBreakInterval
         encodeToUrlSafe = config.encodeToUrlSafe
         padEncoded = config.padEncoded
     }
@@ -82,6 +83,36 @@ public class Base64ConfigBuilder {
      * */
     @JvmField
     public var isLenient: Boolean = true
+
+    /**
+     * For every [lineBreakInterval] of encoded data, a
+     * line break will be output.
+     *
+     * Will **ONLY** output line breaks if [isLenient] is
+     * set to **true**.
+     *
+     * e.g.
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 0
+     *     // SGVsbG8gV29ybGQh
+     *
+     *     isLenient = true
+     *     lineBreakInterval = 10
+     *     // SGVsbG8gV2
+     *     // 9ybGQh
+     *
+     *     isLenient = false
+     *     lineBreakInterval = 10
+     *     // SGVsbG8gV29ybGQh
+     *
+     * Enable by setting to a value between 1 and 127, and
+     * setting [isLenient] to true.
+     *
+     * A great value is 64
+     * */
+    @JvmField
+    public var lineBreakInterval: Byte = 0
 
     /**
      * If true, will output Base64 UrlSafe characters

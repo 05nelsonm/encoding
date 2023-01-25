@@ -39,6 +39,7 @@ import kotlin.jvm.JvmSynthetic
  *
  *     val base64 = Base64 {
  *         isLenient = true
+ *         lineBreakInterval = 64
  *         encodeToUrlSafe = false
  *         padEncoded = true
  *     }
@@ -74,11 +75,16 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
      * */
     public class Config private constructor(
         isLenient: Boolean,
+        lineBreakInterval: Byte,
         @JvmField
         public val encodeToUrlSafe: Boolean,
         @JvmField
         public val padEncoded: Boolean,
-    ): EncoderDecoder.Config(isLenient, paddingChar = '=') {
+    ): EncoderDecoder.Config(
+        isLenient = isLenient,
+        lineBreakInterval = lineBreakInterval,
+        paddingChar = '=',
+    ) {
 
         override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return (encodedSize * 6L / 8L)
@@ -118,6 +124,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             internal fun from(builder: Base64ConfigBuilder): Config {
                 return Config(
                     isLenient = builder.isLenient,
+                    lineBreakInterval = builder.lineBreakInterval,
                     encodeToUrlSafe = builder.encodeToUrlSafe,
                     padEncoded = builder.padEncoded,
                 )
@@ -187,8 +194,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         }
     }
 
-    @ExperimentalEncodingApi
-    override fun newEncoderFeed(out: OutFeed): Encoder<Base64.Config>.Feed {
+    protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base64.Config>.Feed {
         return object : Encoder<Base64.Config>.Feed() {
 
             private val buffer = EncodingBuffer(
