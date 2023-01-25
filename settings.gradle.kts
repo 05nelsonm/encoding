@@ -21,7 +21,6 @@ if (CHECK_PUBLICATION != null) {
         "encoding-base64",
         "encoding-core",
         "encoding-test",
-        "encoding-test-legacy",
     ).forEach { name ->
         include(":library:$name")
     }

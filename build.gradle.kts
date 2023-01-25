@@ -100,7 +100,7 @@ apiValidation {
         val JVM = TARGETS?.contains("JVM") != false
         val ANDROID = TARGETS?.contains("ANDROID") != false
 
-        ignoredProjects.add("encoding-test-legacy")
+        ignoredProjects.add("encoding-test")
 
         if (KMP_TARGETS_ALL || (ANDROID && JVM)) {
             ignoredProjects.add("app")

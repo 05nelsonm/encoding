@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Matthew Nelson
+ * Copyright (c) 2021 Matthew Nelson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ import io.matthewnelson.kotlin.components.kmp.KmpTarget
 
 plugins {
     id(pluginId.kmp.configuration)
-    id(pluginId.kmp.publish)
 }
 
 kmpConfiguration {
@@ -48,19 +47,8 @@ kmpConfiguration {
 
         commonMainSourceSet = {
             dependencies {
-                implementation(project(":library:encoding-core"))
-                compileOnly(kotlin("test"))
+                implementation(kotlin("test"))
             }
-        },
-
-        kotlin = {
-            explicitApi()
         }
-    )
-}
-
-kmpPublish {
-    setupModule(
-        pomDescription = "Kotlin Components' Encoding Test Library",
     )
 }
