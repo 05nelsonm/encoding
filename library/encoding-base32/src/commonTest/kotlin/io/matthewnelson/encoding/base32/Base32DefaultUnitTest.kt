@@ -26,6 +26,8 @@ import kotlin.test.assertEquals
 
 class Base32DefaultUnitTest: BaseNEncodingTest() {
 
+    private var base32Default = Base32Default()
+
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data(raw = "A1", expected = null, message = "Character '1' should return null"),
         Data(raw = "A8", expected = null, message = "Character '8' should return null"),
@@ -103,10 +105,10 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        return data.decodeToByteArrayOrNull(Base32Default())
+        return data.decodeToByteArrayOrNull(base32Default)
     }
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(Base32Default())
+        return data.encodeToString(base32Default)
     }
 
     @Test
@@ -132,6 +134,38 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
         checkUniversalEncoderParameters()
+    }
+
+    @Test
+    fun givenBase32Default_whenPadEncodedFalse_thenDoesNotPadOutput() {
+        base32Default = Base32Default {
+            padEncoded = false
+        }
+
+        val noPadData = buildSet {
+            encodeSuccessDataSet.forEach { data ->
+                val noPadding = data.expected.replace("=", "")
+                add(data.copy(expected = noPadding))
+            }
+        }
+
+        checkEncodeSuccessForDataSet(noPadData)
+    }
+
+    @Test
+    fun givenBase32Default_whenEncodeToLowercase_thenOutputIsLowercase() {
+        base32Default = Base32Default {
+            encodeToLowercase = true
+        }
+
+        val lowercaseData = buildSet {
+            encodeSuccessDataSet.forEach { data ->
+                val lowercase = data.expected.lowercase()
+                add(data.copy(expected = lowercase))
+            }
+        }
+
+        checkEncodeSuccessForDataSet(lowercaseData)
     }
 
     @Test

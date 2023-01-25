@@ -22,17 +22,11 @@ import io.matthewnelson.encoding.base64.Base64DefaultUnitTest.Companion.decodeHe
 import io.matthewnelson.encoding.builders.Base64
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
-import kotlin.test.AfterTest
 import kotlin.test.Test
 
 class Base64UrlSafeUnitTest: BaseNEncodingTest() {
 
     private var base64UrlSafe: Base64 = Base64 { encodeToUrlSafe = true }
-
-    @AfterTest
-    fun after() {
-        base64UrlSafe = Base64 { encodeToUrlSafe = true }
-    }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data("SGVsbG8gV29ybGQ^", expected = null, message = "Character '^' should return null")

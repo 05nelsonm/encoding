@@ -24,6 +24,8 @@ import kotlin.test.assertEquals
 
 class Base16UnitTest: BaseNEncodingTest() {
 
+    private var base16 = Base16()
+
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data(raw = "A=", expected = null, message = "Typical padding character '=' should return null"),
         Data(raw = "666", expected = null, message = "Truncated value should return null"),
@@ -49,10 +51,6 @@ class Base16UnitTest: BaseNEncodingTest() {
         Data(raw = "AY", expected = null, message = "Character 'Y' should return null"),
         Data(raw = "AZ", expected = null, message = "Character 'Z' should return null"),
     )
-
-    override fun decode(data: String): ByteArray? {
-        return data.decodeToByteArrayOrNull(Base16())
-    }
 
     override val decodeSuccessHelloWorld: Data<String, ByteArray> =
         Data(raw = "48656C6C6F20576F726C6421", expected = "Hello World!".encodeToByteArray())
@@ -125,8 +123,12 @@ class Base16UnitTest: BaseNEncodingTest() {
         Data(raw = "RAB OOF", expected = "524142204F4F46"),
     )
 
+    override fun decode(data: String): ByteArray? {
+        return data.decodeToByteArrayOrNull(base16)
+    }
+
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(Base16())
+        return data.encodeToString(base16)
     }
 
     @Test
@@ -152,6 +154,22 @@ class Base16UnitTest: BaseNEncodingTest() {
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
         checkUniversalEncoderParameters()
+    }
+
+    @Test
+    fun givenBase16_whenEncodeToLowercase_thenOutputIsLowercase() {
+        base16 = Base16 {
+            encodeToLowercase = true
+        }
+
+        val lowercaseData = buildSet {
+            encodeSuccessDataSet.forEach { data ->
+                val lowercase = data.expected.lowercase()
+                add(data.copy(expected = lowercase))
+            }
+        }
+
+        checkEncodeSuccessForDataSet(lowercaseData)
     }
 
     @Test

@@ -28,11 +28,6 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     private var crockford: Base32.Crockford = Base32Crockford { checkSymbol(null) }
     private val validCheckSymbols = listOf('*', '~', '$', '=', 'U', 'u')
 
-    @AfterTest
-    fun after() {
-        crockford = Base32Crockford { checkSymbol(null) }
-    }
-
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data(raw = "91JPRV3F41BPYWKCCGGG====", expected = null, message = "Typical padding character '=' should return null"),
         Data(raw = "AUU", expected = null, message = "Character 'U' should return null"),
@@ -326,6 +321,22 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
         checkUniversalEncoderParameters()
+    }
+
+    @Test
+    fun givenBase32Crockford_whenEncodeToLowercase_thenOutputIsLowercase() {
+        crockford = Base32Crockford {
+            encodeToLowercase = true
+        }
+
+        val lowercaseData = buildSet {
+            encodeSuccessDataSet.forEach { data ->
+                val lowercase = data.expected.lowercase()
+                add(data.copy(expected = lowercase))
+            }
+        }
+
+        checkEncodeSuccessForDataSet(lowercaseData)
     }
 
     @Test
