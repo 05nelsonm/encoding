@@ -151,4 +151,46 @@ class EncoderDecoderConfigUnitTest {
         assertEquals(0, config.lineBreakInterval)
     }
 
+    @Test
+    fun givenConfig_whenLineBreakIntervalExpressed_thenIncreasesEncodeOutSize() {
+        val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeReturn = { it })
+        listOf(
+            Pair(5L, 5L),
+            Pair(10L, 10L),
+            Pair(21L, 20L),
+            Pair(32L, 30L),
+            Pair(43L, 40L),
+        ).forEach { (expected, actual) ->
+            assertEquals(expected, config.encodeOutSize(actual))
+        }
+    }
+
+    @Test
+    fun givenLineBreakInterval_whenSizeIncreaseWouldExceedMaxValue_thenThrowsEncodingSizeException() {
+        val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeReturn = { it })
+
+        try {
+            config.encodeOutSize(Long.MAX_VALUE - 10L)
+            fail()
+        } catch (_: EncodingSizeException) {
+            // pass
+        }
+    }
+
+    @Test
+    fun givenConfig_whenLineBreakIntervalZero_thenDoesNotAffectEncodeOutSize() {
+        val config = TestConfig(encodeReturn = { it })
+        assertEquals(0, config.lineBreakInterval)
+
+        listOf(
+            5L,
+            10L,
+            20L,
+            30L,
+            40L,
+        ).forEach { size ->
+            assertEquals(size, config.encodeOutSize(size))
+        }
+    }
+
 }

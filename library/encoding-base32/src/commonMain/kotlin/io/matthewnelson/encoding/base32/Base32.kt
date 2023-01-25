@@ -184,7 +184,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     return Config(
                         isLenient = builder.isLenient,
                         encodeToLowercase = builder.encodeToLowercase,
-                        hyphenInterval = builder.hyphenInterval,
+                        hyphenInterval = if (builder.hyphenInterval > 0) builder.hyphenInterval else 0,
                         checkSymbol = builder.checkSymbol
                     )
                 }

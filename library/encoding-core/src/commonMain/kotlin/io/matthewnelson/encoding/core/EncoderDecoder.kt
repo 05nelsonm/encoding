@@ -48,7 +48,7 @@ constructor(config: C): Encoder<C>(config) {
      *   characters. See [isSpaceOrNewLine]. If null, those bytes
      *   are sent to the [EncoderDecoder].
      * @param [lineBreakInterval] If greater than 0 and [isLenient]
-     *   is not **false** (i.e. null or true), line breaks will be
+     *   is not **false** (i.e. is null or true), line breaks will be
      *   output at the expressed [lineBreakInterval].
      * @param [paddingChar] The byte used when padding the output for
      *   the given encoding; NOT "if padding should be
@@ -94,10 +94,27 @@ constructor(config: C): Encoder<C>(config) {
             // return early
             if (unEncodedSize == 0L) return 0L
 
-            val outSize = encodeOutSizeProtected(unEncodedSize)
+            var outSize = encodeOutSizeProtected(unEncodedSize)
             if (outSize < 0L) {
                 throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
+
+            if (lineBreakInterval > 0) {
+                var lineBreakCount: Float = (outSize / lineBreakInterval) - 1F
+
+                if (lineBreakCount > 0F) {
+                    if (lineBreakCount.rem(1) > 0F) {
+                        lineBreakCount++
+                    }
+
+                    if (outSize > (Long.MAX_VALUE - lineBreakCount)) {
+                        throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
+                    }
+
+                    outSize += lineBreakCount.toLong()
+                }
+            }
+
             return outSize
         }
 
