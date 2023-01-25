@@ -15,10 +15,12 @@
  **/
 package io.matthewnelson.encoding.base16
 
-import io.matthewnelson.component.encoding.base16.decodeBase16ToArray
-import io.matthewnelson.component.encoding.base16.encodeBase16
+import io.matthewnelson.encoding.builders.Base16
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Base16UnitTest: BaseNEncodingTest() {
 
@@ -49,8 +51,7 @@ class Base16UnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        @Suppress("DEPRECATION")
-        return data.decodeBase16ToArray()
+        return data.decodeToByteArrayOrNull(Base16())
     }
 
     override val decodeSuccessHelloWorld: Data<String, ByteArray> =
@@ -125,8 +126,7 @@ class Base16UnitTest: BaseNEncodingTest() {
     )
 
     override fun encode(data: ByteArray): String {
-        @Suppress("DEPRECATION")
-        return data.encodeBase16()
+        return data.encodeToString(Base16())
     }
 
     @Test
@@ -152,5 +152,11 @@ class Base16UnitTest: BaseNEncodingTest() {
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
         checkUniversalEncoderParameters()
+    }
+
+    @Test
+    fun givenBase16_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base16.CHARS_UPPER, Base16.CHARS_LOWER.uppercase())
+        assertEquals(Base16.CHARS_LOWER, Base16.CHARS_UPPER.lowercase())
     }
 }

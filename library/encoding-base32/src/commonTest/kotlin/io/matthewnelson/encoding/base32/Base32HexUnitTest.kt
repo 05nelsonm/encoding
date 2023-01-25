@@ -17,11 +17,12 @@
 
 package io.matthewnelson.encoding.base32
 
-import io.matthewnelson.component.encoding.base32.Base32
-import io.matthewnelson.component.encoding.base32.decodeBase32ToArray
-import io.matthewnelson.component.encoding.base32.encodeBase32
+import io.matthewnelson.encoding.builders.Base32Hex
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Base32HexUnitTest: BaseNEncodingTest() {
 
@@ -103,12 +104,10 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        @Suppress("DEPRECATION")
-        return data.decodeBase32ToArray(Base32.Hex)
+        return data.decodeToByteArrayOrNull(Base32Hex())
     }
     override fun encode(data: ByteArray): String {
-        @Suppress("DEPRECATION")
-        return data.encodeBase32(Base32.Hex)
+        return data.encodeToString(Base32Hex())
     }
 
     @Test
@@ -136,4 +135,9 @@ class Base32HexUnitTest: BaseNEncodingTest() {
         checkUniversalEncoderParameters()
     }
 
+    @Test
+    fun givenBase32Hex_whenLowercaseAndUppercaseChars_thenMatch() {
+        assertEquals(Base32.Hex.CHARS_UPPER, Base32.Hex.CHARS_LOWER.uppercase())
+        assertEquals(Base32.Hex.CHARS_LOWER, Base32.Hex.CHARS_UPPER.lowercase())
+    }
 }

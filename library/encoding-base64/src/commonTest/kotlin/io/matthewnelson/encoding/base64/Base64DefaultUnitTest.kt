@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection", "DEPRECATION")
+@file:Suppress("SpellCheckingInspection")
 
 package io.matthewnelson.encoding.base64
 
-import io.matthewnelson.component.base64.Base64
-import io.matthewnelson.component.base64.decodeBase64ToArray
-import io.matthewnelson.component.base64.encodeBase64
+import io.matthewnelson.encoding.builders.Base64
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.Test
 
@@ -126,11 +126,11 @@ class Base64DefaultUnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        return data.decodeBase64ToArray()
+        return data.decodeToByteArrayOrNull(Base64())
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeBase64(base64 = Base64.Default)
+        return data.encodeToString(Base64())
     }
 
     @Test
