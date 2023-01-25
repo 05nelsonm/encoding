@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Matthew Nelson
+ * Copyright (c) 2023 Matthew Nelson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,23 @@
  **/
 @file:Suppress("SpellCheckingInspection", "DEPRECATION")
 
-package io.matthewnelson.component.encoding.base64
+package io.matthewnelson.encoding.base64
 
 import io.matthewnelson.component.base64.Base64
 import io.matthewnelson.component.base64.decodeBase64ToArray
 import io.matthewnelson.component.base64.encodeBase64
-import io.matthewnelson.component.encoding.test.BaseEncodingTestBase
+import io.matthewnelson.encoding.test.BaseNEncodingTest
+import io.matthewnelson.encoding.base64.Base64DefaultUnitTest.Companion.decodeHexToByteArray
+import kotlin.test.AfterTest
 import kotlin.test.Test
 
-class Base64DefaultUnitTest: BaseEncodingTestBase() {
+class Base64UrlSafeUnitTest: BaseNEncodingTest() {
 
-    companion object {
-        fun String.decodeHexToByteArray(): ByteArray {
-            val newString = replace(" ", "")
-            check(newString.length % 2 == 0) { "Hex must have an even length" }
+    private var base64UrlSafe: Base64.UrlSafe = Base64.UrlSafe(pad = true)
 
-            return newString.chunked(2)
-                .map { it.toInt(16).toByte() }
-                .toByteArray()
-        }
+    @AfterTest
+    fun after() {
+        base64UrlSafe = Base64.UrlSafe(pad = true)
     }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
@@ -46,19 +44,19 @@ class Base64DefaultUnitTest: BaseEncodingTestBase() {
     override val decodeSuccessDataSet: Set<Data<String, ByteArray>> = setOf(
         decodeSuccessHelloWorld,
         Data(
-            raw = "U2FsdGVkX1/4ZC61vUIS40oz3+re25V1W1fBbNbK/mnRgdvTyYP0kbNMJx7ud1YTXThgcgceR08A/p/NsaNTZQ==",
+            raw = "U2FsdGVkX1_4ZC61vUIS40oz3-re25V1W1fBbNbK_mnRgdvTyYP0kbNMJx7ud1YTXThgcgceR08A_p_NsaNTZQ==",
             expected = ("53 61 6c 74 65 64 5f 5f f8 64 2e b5 bd 42 12 e3 4a 33 df ea de db 95 " +
                     "75 5b 57 c1 6c d6 ca fe 69 d1 81 db d3 c9 83 f4 91 b3 4c 27 1e ee 77 56 " +
                     "13 5d 38 60 72 07 1e 47 4f 00 fe 9f cd b1 a3 53 65").decodeHexToByteArray()
         ),
         Data(
-            raw = "U2FsdGVkX1/G+ROS6e4Z2orBGMlsnqVt2692l90V0tpcV311HF5pr6WOZcDHPqCH",
+            raw = "U2FsdGVkX1_G-ROS6e4Z2orBGMlsnqVt2692l90V0tpcV311HF5pr6WOZcDHPqCH",
             expected = ("53 61 6c 74 65 64 5f 5f c6 f9 13 92 e9 ee 19 da 8a c1 18 c9 6c 9e a5 " +
                     "6d db af 76 97 dd 15 d2 da 5c 57 7d 75 1c 5e 69 af a5 8e 65 c0 c7 3e a0 " +
                     "87").decodeHexToByteArray()
         ),
         Data(
-            raw = "U2FsdGVkX1/zlJBu+p0Q8bHf4A9AFQE6l+wfSLp2rak=",
+            raw = "U2FsdGVkX1_zlJBu-p0Q8bHf4A9AFQE6l-wfSLp2rak=",
             expected = ("53 61 6c 74 65 64 5f 5f f3 94 90 6e fa 9d 10 f1 b1 df e0 0f 40 15 01 " +
                     "3a 97 ec 1f 48 ba 76 ad a9").decodeHexToByteArray()
         ),
@@ -92,6 +90,21 @@ class Base64DefaultUnitTest: BaseEncodingTestBase() {
         Data(raw = "UkFCIE9P", expected = "RAB OO".encodeToByteArray()),
         Data(raw = "UkFCIE9PRg==", expected = "RAB OOF".encodeToByteArray()),
     )
+
+    private fun getDecodeSuccessDataSetWithoutPadding(): Set<Data<String, ByteArray>> {
+        val newSet: MutableSet<Data<String, ByteArray>> = LinkedHashSet(decodeSuccessDataSet.size)
+
+        for (data in decodeSuccessDataSet) {
+            newSet.add(
+                Data(
+                    raw = data.raw.dropLastWhile { it == '=' },
+                    expected = data.expected
+                )
+            )
+        }
+
+        return newSet
+    }
 
     override val encodeSuccessDataSet: Set<Data<String, String>> = setOf(
         Data(raw = "Hello World!", expected = "SGVsbG8gV29ybGQh"),
@@ -130,7 +143,7 @@ class Base64DefaultUnitTest: BaseEncodingTestBase() {
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeBase64(base64 = Base64.Default)
+        return data.encodeBase64(base64 = base64UrlSafe)
     }
 
     @Test
@@ -146,6 +159,15 @@ class Base64DefaultUnitTest: BaseEncodingTestBase() {
     @Test
     fun givenEncodedData_whenDecoded_MatchesRfc4648Spec() {
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
+    }
+
+    @Test
+    fun givenString_whenEncodedWithoutPaddingExpressed_returnsExpected() {
+        base64UrlSafe = Base64.UrlSafe(pad = false)
+
+        checkDecodeSuccessForDataSet(
+            getDecodeSuccessDataSetWithoutPadding()
+        )
     }
 
     @Test
