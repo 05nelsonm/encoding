@@ -55,6 +55,7 @@ kmpConfiguration {
         commonTestSourceSet = {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(project(":library:encoding-test"))
                 implementation(project(":library:encoding-test-legacy"))
             }
         },

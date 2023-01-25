@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Matthew Nelson
+ * Copyright (c) 2023 Matthew Nelson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,15 +48,8 @@ kmpConfiguration {
 
         commonMainSourceSet = {
             dependencies {
-                api(project(":library:encoding-core"))
-            }
-        },
-
-        commonTestSourceSet = {
-            dependencies {
-                implementation(kotlin("test"))
-                implementation(project(":library:encoding-test"))
-                implementation(project(":library:encoding-test-legacy"))
+                implementation(project(":library:encoding-core"))
+                compileOnly(kotlin("test"))
             }
         },
 
@@ -68,6 +61,6 @@ kmpConfiguration {
 
 kmpPublish {
     setupModule(
-        pomDescription = "Kotlin Components' Base64 Encoding Component",
+        pomDescription = "Kotlin Components' Encoding Test Library",
     )
 }
