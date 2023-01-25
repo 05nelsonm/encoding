@@ -233,6 +233,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             input.code - 48
                         }
                         in 'a'..'h' -> {
+                            // char ASCII value
+                            //  A    65    10
+                            //  H    72    17 (ASCII - 55)
                             input.uppercaseChar().code - 55
                         }
                         in 'A'..'H' -> {
@@ -249,6 +252,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             '1'.code - 48
                         }
                         'j', 'k' -> {
+                            // char ASCII value
+                            //  J    74    18
+                            //  K    75    19 (ASCII - 56)
                             input.uppercaseChar().code - 56
                         }
                         'J', 'K' -> {
@@ -258,6 +264,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             input.code - 56
                         }
                         'm', 'n' -> {
+                            // char ASCII value
+                            //  M    77    20
+                            //  N    78    21 (ASCII - 57)
                             input.uppercaseChar().code - 57
                         }
                         'M', 'N' -> {
@@ -274,6 +283,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             '0'.code - 48
                         }
                         in 'p'..'t' -> {
+                            // char ASCII value
+                            //  P    80    22
+                            //  T    84    26 (ASCII - 58)
                             input.uppercaseChar().code - 58
                         }
                         in 'P'..'T' -> {
@@ -283,6 +295,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             input.code - 58
                         }
                         in 'v'..'z' -> {
+                            // char ASCII value
+                            //  V    86    27
+                            //  Z    90    31 (ASCII - 59)
                             input.uppercaseChar().code - 59
                         }
                         in 'V'..'Z' -> {
@@ -492,6 +507,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             input.code - 24
                         }
                         in 'a'..'z' -> {
+                            // char ASCII value
+                            //  A    65    0
+                            //  Z    90    25 (ASCII - 65)
                             input.uppercaseChar().code - 65
                         }
                         in 'A'..'Z' -> {
@@ -661,6 +679,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             input.code - 48
                         }
                         in 'a'..'v' -> {
+                            // char ASCII value
+                            //  A    65    10
+                            //  V    86    31 (ASCII - 55)
                             input.uppercaseChar().code - 55
                         }
                         in 'A'..'V' -> {
