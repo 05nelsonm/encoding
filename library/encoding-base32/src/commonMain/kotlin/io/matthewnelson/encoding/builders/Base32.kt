@@ -170,7 +170,7 @@ public class Base32CrockfordConfigBuilder {
      * encoding.
      * */
     @JvmField
-    public var encodeToLowercase: Boolean = true
+    public var encodeToLowercase: Boolean = false
 
     /**
      * For every [hyphenInterval] of encoded output, a
@@ -305,7 +305,7 @@ public class Base32DefaultConfigBuilder {
      * encoding.
      * */
     @JvmField
-    public var encodeToLowercase: Boolean = true
+    public var encodeToLowercase: Boolean = false
 
     /**
      * If true, padding **WILL** be applied to the encoded
@@ -400,7 +400,7 @@ public class Base32HexConfigBuilder {
      * encoding.
      * */
     @JvmField
-    public var encodeToLowercase: Boolean = true
+    public var encodeToLowercase: Boolean = false
 
     /**
      * If true, padding **WILL** be applied to the encoded

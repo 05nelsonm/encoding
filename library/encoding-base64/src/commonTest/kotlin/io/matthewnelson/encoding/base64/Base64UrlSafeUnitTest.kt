@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Matthew Nelson
+ * Copyright (c) 2023 Matthew Nelson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection", "DEPRECATION")
+@file:Suppress("SpellCheckingInspection")
 
-package io.matthewnelson.component.encoding.base64
+package io.matthewnelson.encoding.base64
 
-import io.matthewnelson.component.base64.Base64
-import io.matthewnelson.component.base64.decodeBase64ToArray
-import io.matthewnelson.component.base64.encodeBase64
-import io.matthewnelson.component.encoding.base64.Base64DefaultUnitTest.Companion.decodeHexToByteArray
-import io.matthewnelson.component.encoding.test.BaseEncodingTestBase
-import kotlin.test.AfterTest
+import io.matthewnelson.encoding.test.BaseNEncodingTest
+import io.matthewnelson.encoding.base64.Base64DefaultUnitTest.Companion.decodeHexToByteArray
+import io.matthewnelson.encoding.builders.Base64
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.test.Test
 
-class Base64UrlSafeUnitTest: BaseEncodingTestBase() {
+class Base64UrlSafeUnitTest: BaseNEncodingTest() {
 
-    private var base64UrlSafe: Base64.UrlSafe = Base64.UrlSafe(pad = true)
-
-    @AfterTest
-    fun after() {
-        base64UrlSafe = Base64.UrlSafe(pad = true)
-    }
+    private var base64UrlSafe: Base64 = Base64 { encodeToUrlSafe = true }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data("SGVsbG8gV29ybGQ^", expected = null, message = "Character '^' should return null")
@@ -139,11 +133,11 @@ class Base64UrlSafeUnitTest: BaseEncodingTestBase() {
     )
 
     override fun decode(data: String): ByteArray? {
-        return data.decodeBase64ToArray()
+        return data.decodeToByteArrayOrNull(base64UrlSafe)
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeBase64(base64 = base64UrlSafe)
+        return data.encodeToString(base64UrlSafe)
     }
 
     @Test
@@ -163,7 +157,10 @@ class Base64UrlSafeUnitTest: BaseEncodingTestBase() {
 
     @Test
     fun givenString_whenEncodedWithoutPaddingExpressed_returnsExpected() {
-        base64UrlSafe = Base64.UrlSafe(pad = false)
+        base64UrlSafe = Base64 {
+            encodeToUrlSafe = true
+            padEncoded = false
+        }
 
         checkDecodeSuccessForDataSet(
             getDecodeSuccessDataSetWithoutPadding()

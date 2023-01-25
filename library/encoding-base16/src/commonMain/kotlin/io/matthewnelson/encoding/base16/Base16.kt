@@ -165,6 +165,9 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                         input.code - 48
                     }
                     in 'a'..'f' -> {
+                        // char ASCII value
+                        //   A   65    10
+                        //   F   70    15 (ASCII - 55)
                         input.uppercaseChar().code - 55
                     }
                     in 'A'..'F' -> {

@@ -125,7 +125,7 @@ public class Base16ConfigBuilder {
      * encoding.
      * */
     @JvmField
-    public var encodeToLowercase: Boolean = true
+    public var encodeToLowercase: Boolean = false
 
     /**
      * A shortcut for configuring things to be in strict

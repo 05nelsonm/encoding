@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Matthew Nelson
+ * Copyright (c) 2023 Matthew Nelson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-package io.matthewnelson.component.encoding.test
+package io.matthewnelson.encoding.test
 
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-abstract class BaseEncodingTestBase {
+abstract class BaseNEncodingTest {
 
     protected data class Data<Data: Any, Expected: Any?>(
         val raw: Data,
