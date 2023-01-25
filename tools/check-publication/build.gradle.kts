@@ -61,7 +61,6 @@ kmpConfiguration {
                 implementation("${pConfig.group}:encoding-base32:${pConfig.versionName}")
                 implementation("${pConfig.group}:encoding-base64:${pConfig.versionName}")
                 implementation("${pConfig.group}:encoding-core:${pConfig.versionName}")
-                implementation("${pConfig.group}:encoding-test:${pConfig.versionName}")
             }
         },
     )
