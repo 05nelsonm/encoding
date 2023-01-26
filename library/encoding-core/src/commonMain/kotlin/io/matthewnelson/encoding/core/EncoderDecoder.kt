@@ -348,13 +348,13 @@ constructor(config: C): Encoder<C>(config) {
      * [Feed]s are meant to be single use disposables for the
      * given encoding/decoding operation.
      *
+     * TLDR; [Feed]s only care about [Byte]s and [Char]s, not the medium
+     * for which they come from or are going to.
+     *
      * Their primary use case is for breaking the process of encoding
      * and decoding into their individual parts. This allows for input
      * and output type transformations to occur at the call site, instead
      * of within the encoding/decoding process.
-     *
-     * TLDR; [Feed]s only care about [Byte]s and [Char]s, not the medium
-     * for which they come from or are going to.
      *
      * After a [Feed] consumes all the data you have for it via
      * [Decoder.Feed.consume]/[Encoder.Feed.consume], call [doFinal] to
