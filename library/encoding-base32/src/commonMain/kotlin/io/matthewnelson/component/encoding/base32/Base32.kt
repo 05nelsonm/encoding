@@ -82,7 +82,7 @@ public sealed class Base32 {
             @Deprecated(
                 message = "Replaced by EncoderDecoder. Will be removed in future versions.",
                 replaceWith = ReplaceWith(
-                    expression = "Crockford.CHARS",
+                    expression = "Crockford.CHARS_UPPER",
                     imports = [
                         "io.matthewnelson.encoding.base32.Base32.Crockford"
                     ],
@@ -120,7 +120,7 @@ public sealed class Base32 {
         @Deprecated(
             message = "Replaced by EncoderDecoder. Will be removed in future versions.",
             replaceWith = ReplaceWith(
-                expression = "Default.CHARS",
+                expression = "Default.CHARS_UPPER",
                 imports = [
                     "io.matthewnelson.encoding.base32.Base32.Default"
                 ],
@@ -145,7 +145,7 @@ public sealed class Base32 {
         @Deprecated(
             message = "Replaced by EncoderDecoder. Will be removed in future versions.",
             replaceWith = ReplaceWith(
-                expression = "Hex.CHARS",
+                expression = "Hex.CHARS_UPPER",
                 imports = [
                     "io.matthewnelson.encoding.base32.Base32.Hex"
                 ],
