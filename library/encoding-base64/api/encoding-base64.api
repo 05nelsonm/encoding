@@ -43,7 +43,6 @@ public final class io/matthewnelson/component/base64/Base64Kt {
 
 public final class io/matthewnelson/encoding/base64/Base64 : io/matthewnelson/encoding/core/EncoderDecoder {
 	public fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;)V
-	public fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/base64/Base64$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {

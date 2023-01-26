@@ -21,16 +21,14 @@ import io.matthewnelson.encoding.core.*
 class TestEncoderDecoder(config: TestConfig): EncoderDecoder<TestConfig>(config) {
     override fun name(): String = "Test"
 
-    @ExperimentalEncodingApi
-    protected override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<TestConfig>.Feed {
+    override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<TestConfig>.Feed {
         return object : Encoder<TestConfig>.Feed() {
             override fun consumeProtected(input: Byte) { out.output(Char.MAX_VALUE) }
             override fun doFinalProtected() { out.output(Char.MIN_VALUE) }
         }
     }
 
-    @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<TestConfig>.Feed {
+    override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<TestConfig>.Feed {
         return object : Decoder<TestConfig>.Feed() {
             override fun consumeProtected(input: Char) { out.output(Byte.MAX_VALUE) }
             override fun doFinalProtected() { out.output(Byte.MIN_VALUE) }

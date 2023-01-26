@@ -8,7 +8,8 @@ public abstract class io/matthewnelson/encoding/core/Decoder {
 	public static final fun decodeToByteArrayOrNull ([BLio/matthewnelson/encoding/core/Decoder;)[B
 	public static final fun decodeToByteArrayOrNull ([CLio/matthewnelson/encoding/core/Decoder;)[B
 	public final fun getConfig ()Lio/matthewnelson/encoding/core/EncoderDecoder$Config;
-	public abstract fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	public final fun newDecoderFeed (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	protected abstract fun newDecoderFeedProtected (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
 }
 
 public final class io/matthewnelson/encoding/core/Decoder$Companion {
