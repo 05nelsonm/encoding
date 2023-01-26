@@ -88,11 +88,20 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final fun hashCode ()I
 	public static final fun outSizeExceedsMaxEncodingSizeException (Ljava/lang/Number;Ljava/lang/Number;)Lio/matthewnelson/encoding/core/EncodingSizeException;
 	public final fun toString ()Ljava/lang/String;
-	protected abstract fun toStringAddSettings (Ljava/lang/StringBuilder;)V
+	protected abstract fun toStringAddSettings ()Ljava/util/Set;
 }
 
 public final class io/matthewnelson/encoding/core/EncoderDecoder$Config$Companion {
 	public final fun outSizeExceedsMaxEncodingSizeException (Ljava/lang/Number;Ljava/lang/Number;)Lio/matthewnelson/encoding/core/EncodingSizeException;
+}
+
+protected final class io/matthewnelson/encoding/core/EncoderDecoder$Config$Setting {
+	public final field name Ljava/lang/String;
+	public final field value Ljava/lang/Object;
+	public fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Ljava/lang/String;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
