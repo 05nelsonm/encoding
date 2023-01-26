@@ -349,7 +349,8 @@ constructor(config: C): Encoder<C>(config) {
      * given encoding/decoding operation.
      *
      * TLDR; [Feed]s only care about [Byte]s and [Char]s, not the medium
-     * for which they come from or are going to.
+     * for which they come from or are going to. Use the [use] extension
+     * function.
      *
      * Their primary use case is for breaking the process of encoding
      * and decoding into their individual parts. This allows for input
