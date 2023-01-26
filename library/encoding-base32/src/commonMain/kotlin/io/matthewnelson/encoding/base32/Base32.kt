@@ -52,7 +52,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *         isLenient = true
      *         encodeToLowercase = false
      *         hyphenInterval = 5
-     *         checkByte(checkSymbol = '~')
+     *         checkSymbol(symbol = '~')
      *     }
      *
      *     val text = "Hello World!"

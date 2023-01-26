@@ -45,17 +45,16 @@ constructor(config: C): Encoder<C>(config) {
      * @param [isLenient] If true, decoding will skip over spaces
      *   and new lines ('\n', '\r', ' ', '\t'). If false, an
      *   [EncodingException] will be thrown when encountering those
-     *   characters. See [isSpaceOrNewLine]. If null, those bytes
-     *   are sent to the [EncoderDecoder].
+     *   characters. If null, those characters are passed along to
+     *   [Decoder.Feed.consumeProtected].
      * @param [lineBreakInterval] If greater than 0 and [isLenient]
-     *   is not **false** (i.e. is null or true), line breaks will be
+     *   is not **false** (i.e. is null or true), new lines will be
      *   output at the expressed [lineBreakInterval].
-     * @param [paddingChar] The byte used when padding the output for
-     *   the given encoding; NOT "if padding should be
-     *   used". (e.g. '='.code.toByte()).
-     *   If the encoding specification does not ues padding, pass `null`.
+     * @param [paddingChar] The character that would be used when
+     *   padding the encoded output; **NOT** "if padding should be
+     *   used". If the encoding specification does not use padding,
+     *   pass `null`.
      * @sample [io.matthewnelson.encoding.base16.Base16.Config]
-     * @sample [io.matthewnelson.encoding.base32.Base32.Default.Config]
      * */
     public abstract class Config
     @ExperimentalEncodingApi
@@ -75,15 +74,14 @@ constructor(config: C): Encoder<C>(config) {
         }
 
         /**
-         * Calculates and returns the size of the output after encoding
-         * would occur, based off of the configuration options set for the
-         * [Config] implementation.
+         * Pre-calculates and returns the size of the output, after encoding
+         * would occur, based off of the [Config] options set.
          *
          * Will always return a value greater than or equal to 0.
          *
-         * @param [unEncodedSize] The size of the data being encoded.
-         * @throws [EncodingSizeException] if there was an error calculating
-         *   the size, or [unEncodedSize] was negative.
+         * @param [unEncodedSize] The size of the data which is to be encoded.
+         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or
+         *   the calculated size exceeded [Long.MAX_VALUE].
          * */
         @Throws(EncodingSizeException::class)
         public fun encodeOutSize(unEncodedSize: Long): Long {
@@ -96,6 +94,8 @@ constructor(config: C): Encoder<C>(config) {
 
             var outSize = encodeOutSizeProtected(unEncodedSize)
             if (outSize < 0L) {
+                // Long.MAX_VALUE was exceeded and encodeOutSizeProtected
+                // did not implement checks to throw an exception.
                 throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
 
@@ -119,25 +119,34 @@ constructor(config: C): Encoder<C>(config) {
         }
 
         /**
-         * Calculates and returns the maximum size of the output after
-         * decoding would occur, based off of the [Config] options set
-         * for the implementation. Should always prefer using
-         * [decodeOutMaxSizeOrFail] if input data is already known.
+         * Pre-calculates and returns the maximum size of the output, after
+         * decoding would occur, for input that is not yet known (i.e.
+         * cannot be wrapped in [DecoderInput], such as the contents of a
+         * File where only the file size is known) based off of the [Config]
+         * options set for the implementation.
          *
-         * The encoded data may contain spaces or new lines which are
+         * [decodeOutMaxSizeOrFail] should always be preferred when:
+         *  - Input data is known
+         *  - Decoded output will be stored in a medium that
+         *    has a maximum capacity of Int.MAX_VALUE, such as
+         *    an Array.
+         *
+         * Encoded data may contain spaces or new lines which are
          * ignored if [isLenient] is set to **true**, or the encoding spec
          * may allow for certain characters which are to be ignored (Base32
          * Crockford ignores hyphens). The output of this function can be
          * incorrect in those instances and the actual decoded output size
-         * may be different from the value returned here; this is a "best
-         * guess".
+         * may be smaller than the value returned here.
+         *
+         * This is a "best guess" and assumes that every character for
+         * [encodedSize] will be decoded.
          *
          * Will always return a value greater than or equal to 0.
          *
          * @see [decodeOutMaxSizeOrFail]
          * @param [encodedSize] The size of the encoded data being decoded.
-         * @throws [EncodingSizeException] if there was an error calculating
-         *   the size, or [encodedSize] was negative.
+         * @throws [EncodingSizeException] If [encodedSize] is negative, or
+         *   the calculated size exceeded [Long.MAX_VALUE].
          * */
         @Throws(EncodingSizeException::class)
         public fun decodeOutMaxSize(encodedSize: Long): Long {
@@ -150,33 +159,37 @@ constructor(config: C): Encoder<C>(config) {
 
             val outSize = decodeOutMaxSizeProtected(encodedSize)
             if (outSize < 0L) {
+                // Long.MAX_VALUE was exceeded and decodeOutMaxSizeProtected
+                // did not implement checks to throw an exception.
                 throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
         }
 
         /**
-         * Calculates and returns the maximum size of the output after
-         * decoding would occur, based off of the [Config] options set
-         * for the implementation.
+         * Pre-calculates and returns the maximum size of the output, after
+         * decoding would occur, for input that is known based off of the
+         * [Config] options set for the implementation.
          *
-         * The encoded data may contain spaces or new lines which are
+         * Encoded data may contain spaces or new lines which are
          * ignored if [isLenient] is set to **true**, or the encoding spec
          * may allow for certain characters which are to be ignored (Base32
          * Crockford ignores hyphens). The output of this function can be
          * incorrect in those instances and the actual decoded output size
-         * may be different from the value returned here; this is a "best
-         * guess".
+         * may be smaller than the value returned here.
+         *
+         * This is a "best guess" and assumes that every character for
+         * [input] will be decoded.
          *
          * Will always return a value greater than or equal to 0.
          *
-         * @param [input] Common input of the data which is to be decoded.
+         * @param [input] The data which is to be decoded.
          * @see [DecoderInput]
-         * @throws [EncodingSizeException] If there was an error calculating
-         *   the size or [decodeOutMaxSizeOrFailProtected] returned a negative
-         *   number.
-         * @throws [EncodingException] If the implementation has checks to faiil
-         *   quickly, and the [input] verification failed (e.g. Base32 Crockford)
+         * @throws [EncodingSizeException] If the calculates size exceeded
+         *   [Int.MAX_VALUE].
+         * @throws [EncodingException] If the implementation has integrity
+         *   checks to fail quickly and verification of the [input]
+         *   failed (e.g. Base32 Crockford's checkSymbol).
          * */
         @Throws(EncodingException::class)
         public fun decodeOutMaxSizeOrFail(input: DecoderInput): Int {
@@ -209,6 +222,8 @@ constructor(config: C): Encoder<C>(config) {
 
             val outSize = decodeOutMaxSizeOrFailProtected(lastRelevantChar, input)
             if (outSize < 0) {
+                // Long.MAX_VALUE was exceeded and decodeOutMaxSizeOrFailProtected
+                // did not implement checks to throw an exception.
                 throw calculatedOutputNegativeEncodingSizeException(outSize)
             }
             return outSize
@@ -216,44 +231,62 @@ constructor(config: C): Encoder<C>(config) {
 
         /**
          * Will only receive values greater than 0.
+         *
+         * Implementations of this function **should not** take [lineBreakInterval]
+         * into consideration when pre-calculating the output size; that is already
+         * handled by [encodeOutSize] based off of the return value for this function.
+         *
+         * @see [encodeOutSize]
          * */
         @Throws(EncodingSizeException::class)
         protected abstract fun encodeOutSizeProtected(unEncodedSize: Long): Long
 
         /**
          * Will only receive values greater than 0.
+         *
+         * Implementations of this function **should not** take [lineBreakInterval]
+         * into consideration when pre-calculating the output size. Data being
+         * decoded may not have been encoded using this [EncoderDecoder].
+         *
+         * @see [decodeOutMaxSize]
          * */
         @Throws(EncodingException::class)
         protected abstract fun decodeOutMaxSizeProtected(encodedSize: Long): Long
 
         /**
          * Will only receive values greater than 0.
+         *
+         * Implementations of this function **should not** take [lineBreakInterval]
+         * into consideration when pre-calculating the output size. Data being
+         * decoded may not have been encoded using this [EncoderDecoder].
+         *
+         * @see [decodeOutMaxSizeOrFail]
          * */
         @Throws(EncodingException::class)
         protected abstract fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int
 
         /**
          * Will be called whenever [toString] is invoked, allowing
-         * inheritors of [Config] to add their settings to
-         * the output.
+         * inheritors of [Config] to add their settings to the output.
          *
-         * [isLenient] and [paddingChar] are automatically added.
-         *
-         * Output of [toString] is used in [equals] and [hashCode], so
-         * this affects their outcome.
+         * The output of [toString] is used in [equals] and [hashCode],
+         * so this affects their results. That said, calling [toString]
+         * or [hashCode] from [toStringAddSettings] should not be done
+         * as it will result in a recursive loop.
          *
          * e.g.
-         *   override fun toStringAddSettings(sb: StringBuilder) {
-         *       with(sb) {
-         *           // already starting on a new line
-         *           append("    setting1: ") // 4 space indent + colon + single space
-         *           append(setting1)
-         *           appendLine()             // Add new line if multiple settings
-         *           append("    setting2: ")
-         *           append(setting2)
-         *           // a new line is automatically added after
-         *       }
-         *   }
+         *
+         *     override fun toStringAddSettings(sb: StringBuilder) {
+         *         with(sb) {
+         *             // already starting on a new line
+         *             append("    setting1: ") // 4 space indent + colon + single space
+         *             append(setting1)
+         *             appendLine()             // Add new line if multiple settings
+         *             append("    setting2: ")
+         *             append(setting2)
+         *             // a new line is automatically added after
+         *         }
+         *     }
          *
          * @see [toString]
          * @sample [io.matthewnelson.encoding.base16.Base16.Config.toStringAddSettings]
@@ -310,14 +343,26 @@ constructor(config: C): Encoder<C>(config) {
     }
 
     /**
-     * Base abstraction for encoding/decoding of data.
+     * The base abstraction for [Decoder.Feed] and [Encoder.Feed].
      *
-     * After feeding all data through [Decoder.Feed.consume] or
-     * [Encoder.Feed.consume], call [doFinal] to complete encoding/decoding.
-     * Alternatively, utilize the [use] extension function which will
-     * call [doFinal] for you when you're done feeding data through,
-     * or will call [close] in the event there is an error while
-     * encoding/decoding.
+     * [Feed]s are meant to be single use disposables for the
+     * given encoding/decoding operation.
+     *
+     * Their primary use case is for breaking the process of encoding
+     * and decoding into their individual parts. This allows for input
+     * and output type transformations to occur at the call site, instead
+     * of within the encoding/decoding process.
+     *
+     * TLDR; [Feed]s only care about [Byte]s and [Char]s, not the medium
+     * for which they come from or are going to.
+     *
+     * After a [Feed] consumes all the data you have for it via
+     * [Decoder.Feed.consume]/[Encoder.Feed.consume], call [doFinal] to
+     * complete the encoding/decoding operation.
+     *
+     * Alternatively, utilize the [use] extension function (highly
+     * recommended) which will call [doFinal] (or [close] if there was
+     * an error with the operation) for you.
      *
      * @see [use]
      * @see [Encoder.Feed]
@@ -351,13 +396,13 @@ constructor(config: C): Encoder<C>(config) {
         /**
          * Closes the feed rendering it useless.
          *
+         * [close] can be called as many times as desired and
+         * will not be considered an error if already closed.
+         *
          * After [close] has been called, any invocation of
          * [Decoder.Feed.consume], [Encoder.Feed.consume],
          * or [doFinal] will be considered an error and throw an
          * [EncodingException].
-         *
-         * [close] can be called as many times as desired and
-         * will not be considered an error if already closed.
          *
          * @see [use]
          * */

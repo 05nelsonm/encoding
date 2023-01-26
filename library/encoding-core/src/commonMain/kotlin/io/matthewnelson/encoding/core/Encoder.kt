@@ -29,14 +29,13 @@ import kotlin.jvm.JvmStatic
  * @see [encodeToString]
  * @see [encodeToCharArray]
  * @see [encodeToByteArray]
- * @see [Feed]
- * @see [newEncoderFeed]
+ * @see [Encoder.Feed]
  * */
 public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(config) {
 
     /**
-     * Creates a new [Encoder.Feed] for the [Encoder], outputting
-     * encoded bytes to the provided [OutFeed].
+     * Creates a new [Encoder.Feed], outputting encoded data to
+     * the supplied [Encoder.OutFeed].
      *
      * e.g. (Writing encoded data to a file)
      *
@@ -64,21 +63,21 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
     protected abstract fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<C>.Feed
 
     /**
-     * Data to encode is fed into [consume], and upon the [Encoder.Feed]'s
-     * buffer filling, encoded data is pushed to the supplied [OutFeed].
-     * This allows for a "lazy" encode, or streaming.
+     * Data to encode is fed into [consume] and, as the [Encoder.Feed]'s
+     * buffer fills, encoded data is output to the supplied
+     * [Encoder.OutFeed]. This allows for a "lazy" encode, or streaming
+     * of encoded data.
      *
-     * Once all the data has been fed through [consume], call
-     * [doFinal] to close the [Encoder.Feed] and perform decoding
-     * finalization for leftover data still in the [Encoder.Feed]'s
-     * buffer. Alternatively, utilize the [use] extension function
-     * which will call [doFinal] for you, or [close] if there was an
-     * encoding error.
+     * Once all data has been fed through [consume], call [doFinal] to
+     * process remaining data in the [Encoder.Feed] buffer. Alternatively,
+     * utilize the [use] extension function (highly recommended)
+     * which will call [doFinal] (or [close] if there was an error with
+     * encoding) for you.
      *
      * @see [newEncoderFeed]
+     * @see [use]
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
-     * @see [use]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
@@ -204,10 +203,10 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
     /**
      * A wrapper around [Encoder.OutFeed] to hijack the
-     * output and output new line characters at every
+     * output and insert new line characters at every
      * expressed [interval].
      * */
-    private class LineBreakOutFeed(
+    private inner class LineBreakOutFeed(
         private val interval: Byte,
         private val out: Encoder.OutFeed,
     ): Encoder.OutFeed {

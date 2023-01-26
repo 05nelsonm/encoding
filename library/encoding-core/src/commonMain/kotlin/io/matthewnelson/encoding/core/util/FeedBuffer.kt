@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("SpellCheckingInspection")
+
 package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.Decoder
@@ -23,15 +25,16 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 
 /**
- * Helper class for [Decoder.Feed] and [Encoder.Feed]
- * to buffer their input until they are ready to output
- * data to their [Decoder.OutFeed] or [Encoder.OutFeed].
+ * Helper class for [Decoder.Feed] and [Encoder.Feed] to
+ * buffer their input until ready to output data via their
+ * supplied [Decoder.OutFeed]/[Encoder.OutFeed].
  *
  * @see [Flush]
  * @see [Finalize]
  * @see [truncatedInputEncodingException]
  * @throws [IllegalArgumentException] if [blockSize] is less
  *   than or equal to 0
+ * @sample [io.matthewnelson.encoding.base16.Base16.DecodingBuffer]
  * */
 public abstract class FeedBuffer
 @Throws(IllegalArgumentException::class)
@@ -72,7 +75,7 @@ constructor(
     /**
      * Call whenever [Encoder.Feed.doFinalProtected] or
      * [Decoder.Feed.doFinalProtected] is invoked to
-     * process the remaining input in the [buffer].
+     * process the remaining input held in [buffer].
      * */
     public fun finalize() {
         buffer.fill(0, count)
@@ -84,7 +87,8 @@ constructor(
     /**
      * [Flush.invoke] will be called once the [buffer]
      * fills up, and pass it along to perform bitwise
-     * operations before outputting data.
+     * operations on it before outputting results to
+     * the supplied [Decoder.OutFeed]/[Encoder.OutFeed].
      *
      * @see [update]
      * */
@@ -94,7 +98,7 @@ constructor(
 
     /**
      * [Finalize.invoke] will be called whenever [finalize]
-     * is called to process remaining data in the [buffer]
+     * is called to process remaining input held in [buffer].
      *
      * @see [finalize]
      * */
