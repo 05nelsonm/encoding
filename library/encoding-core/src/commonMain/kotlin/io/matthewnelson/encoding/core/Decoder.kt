@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
+@file:Suppress("RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
@@ -30,13 +30,12 @@ import kotlin.jvm.JvmStatic
  * @see [decodeToByteArray]
  * @see [decodeToByteArrayOrNull]
  * @see [Decoder.Feed]
- * @see [newDecoderFeed]
  * */
 public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
     /**
-     * Creates a new [Decoder.Feed] for the [Decoder], outputting
-     * decoded bytes to the provided [OutFeed].
+     * Creates a new [Decoder.Feed], outputting decoded data to
+     * the supplied [Decoder.OutFeed].
      *
      * e.g. (Reading a file of encoded data)
      *
@@ -63,21 +62,22 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
     public abstract fun newDecoderFeed(out: Decoder.OutFeed): Decoder<C>.Feed
 
     /**
-     * Encoded data is fed into [consume], and upon the [Decoder.Feed]'s
-     * buffer filling, decoded data is pushed to the supplied [OutFeed].
-     * This allows for a "lazy" decode, or streaming.
+     * Encoded data is fed into [consume] and, as the [Decoder.Feed]'s
+     * buffer fills, decoded data is output to the supplied
+     * [Decoder.OutFeed]. This allows for a "lazy" decode, or streaming
+     * of decoded data.
      *
-     * Once all the data has been fed through [consume], call
-     * [doFinal] to close the [Decoder.Feed] and perform encoding
-     * finalization for leftover data still in the [Decoder.Feed]'s
-     * buffer. Alternatively, utilize the [use] extension function
-     * which will call [doFinal] for you, or [close] if there was a
-     * decoding error.
+     * Once all data has been fed through [consume], call [doFinal] to
+     * process remaining data in the [Decoder.Feed] buffer. Alternatively,
+     * utilize the [use] extension function (highly recommended)
+     * which will call [doFinal] (or [close] if there was an error with
+     * decoding) for you.
      *
      * @see [newDecoderFeed]
+     * @see [use]
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
-     * @see [use]
+     * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
@@ -158,8 +158,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * */
         @JvmStatic
         @Throws(EncodingException::class)
-        @OptIn(ExperimentalEncodingApi::class)
         public fun CharSequence.decodeToByteArray(decoder: Decoder<*>): ByteArray {
+            @OptIn(ExperimentalEncodingApi::class)
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.consume(c)
@@ -185,8 +185,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * */
         @JvmStatic
         @Throws(EncodingException::class)
-        @OptIn(ExperimentalEncodingApi::class)
         public fun CharArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
+            @OptIn(ExperimentalEncodingApi::class)
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.consume(c)
@@ -212,8 +212,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * */
         @JvmStatic
         @Throws(EncodingException::class)
-        @OptIn(ExperimentalEncodingApi::class)
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
+            @OptIn(ExperimentalEncodingApi::class)
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
                     feed.consume(b.toInt().toChar())

@@ -138,8 +138,8 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             }
 
             override fun consumeProtected(input: Byte) {
-                // A DecodingBuffer is not necessary here as for
-                // every 1 byte of input, 2 bytes are output.
+                // A FeedBuffer is not necessary here as every 1
+                // byte of input, 2 characters are output.
                 val bits = input.toInt() and 0xff
                 out.output(table[bits shr    4])
                 out.output(table[bits and 0x0f])
