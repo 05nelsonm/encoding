@@ -78,16 +78,16 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         paddingChar = null
     ) {
 
-        override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+        protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L
         }
 
-        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+        protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
             return encodedSize / 2
         }
 
         @Throws(EncodingSizeException::class)
-        override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
+        protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             if (unEncodedSize > (Long.MAX_VALUE / 2)) {
                 throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
             }
@@ -95,7 +95,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             return unEncodedSize * 2L
         }
 
-        override fun toStringAddSettings(sb: StringBuilder) {
+        protected override fun toStringAddSettings(sb: StringBuilder) {
             with(sb) {
                 append("    encodeToLowercase: ")
                 append(encodeToLowercase)
@@ -128,29 +128,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         public const val CHARS_LOWER: String = "0123456789abcdef"
     }
 
-    protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Config>.Feed {
-        return object : Encoder<Config>.Feed() {
-
-            private val table = if (config.encodeToLowercase) {
-                CHARS_LOWER
-            } else {
-                CHARS_UPPER
-            }
-
-            override fun consumeProtected(input: Byte) {
-                // A FeedBuffer is not necessary here as every 1
-                // byte of input, 2 characters are output.
-                val bits = input.toInt() and 0xff
-                out.output(table[bits shr    4])
-                out.output(table[bits and 0x0f])
-            }
-
-            override fun doFinalProtected() { /* no-op */ }
-        }
-    }
-
-    @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Config>.Feed {
+    protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
         return object : Decoder<Config>.Feed() {
 
             private val buffer = DecodingBuffer(out)
@@ -191,7 +169,28 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         }
     }
 
-    override fun name(): String = "Base16"
+    protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Config>.Feed {
+        return object : Encoder<Config>.Feed() {
+
+            private val table = if (config.encodeToLowercase) {
+                CHARS_LOWER
+            } else {
+                CHARS_UPPER
+            }
+
+            override fun consumeProtected(input: Byte) {
+                // A FeedBuffer is not necessary here as every 1
+                // byte of input, 2 characters are output.
+                val bits = input.toInt() and 0xff
+                out.output(table[bits shr    4])
+                out.output(table[bits and 0x0f])
+            }
+
+            override fun doFinalProtected() { /* no-op */ }
+        }
+    }
+
+    protected override fun name(): String = "Base16"
 
     private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 2,

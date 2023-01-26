@@ -49,7 +49,7 @@ constructor(config: C): Encoder<C>(config) {
      *   [Decoder.Feed.consumeProtected].
      * @param [lineBreakInterval] If greater than 0 and [isLenient]
      *   is not **false** (i.e. is null or true), new lines will be
-     *   output at the expressed [lineBreakInterval].
+     *   output at the expressed [lineBreakInterval] when encoding.
      * @param [paddingChar] The character that would be used when
      *   padding the encoded output; **NOT** "if padding should be
      *   used". If the encoding specification does not use padding,

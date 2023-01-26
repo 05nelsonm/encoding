@@ -92,12 +92,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             paddingChar = null,
         ) {
 
-            override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+            protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
             }
 
             @Throws(EncodingException::class)
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+            protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
                 var outSize = encodedSize
 
                 val actual = input[encodedSize - 1]
@@ -139,7 +139,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return outSize.toLong().decodeOutMaxSize().toInt()
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
+            protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
                 var outSize = unEncodedSize.encodeOutSize(willBePadded = false)
 
                 // checkByte will be appended if present
@@ -164,7 +164,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return outSize
             }
 
-            override fun toStringAddSettings(sb: StringBuilder) {
+            protected override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
                     append("    encodeToLowercase: ")
                     append(encodeToLowercase)
@@ -204,8 +204,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public const val CHARS_LOWER: String = "0123456789abcdefghjkmnpqrstvwxyz"
         }
 
-        @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
+        protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
             return object : Decoder<Crockford.Config>.Feed() {
 
                 private val buffer = DecodingBuffer(out)
@@ -388,7 +387,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        override fun name(): String = "Base32.Crockford"
+        protected override fun name(): String = "Base32.Crockford"
     }
 
     /**
@@ -442,19 +441,19 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             paddingChar = '=',
         ) {
 
-            override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+            protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
             }
 
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+            protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
                 return encodedSize.toLong().decodeOutMaxSize().toInt()
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
+            protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
                 return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
             }
 
-            override fun toStringAddSettings(sb: StringBuilder) {
+            protected override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
                     appendLine()
                     append("    encodeToLowercase: ")
@@ -492,8 +491,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public const val CHARS_LOWER: String = "abcdefghijklmnopqrstuvwxyz234567"
         }
 
-        @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
+        protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
             return object : Decoder<Default.Config>.Feed() {
 
                 private val buffer = DecodingBuffer(out)
@@ -561,7 +559,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        override fun name(): String = "Base32.Default"
+        protected override fun name(): String = "Base32.Default"
     }
 
     /**
@@ -615,19 +613,19 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             paddingChar = '=',
         ) {
 
-            override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+            protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return encodedSize.decodeOutMaxSize()
             }
 
-            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+            protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
                 return encodedSize.toLong().decodeOutMaxSize().toInt()
             }
 
-            override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
+            protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
                 return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
             }
 
-            override fun toStringAddSettings(sb: StringBuilder) {
+            protected override fun toStringAddSettings(sb: StringBuilder) {
                 with(sb) {
                     append("    encodeToLowercase: ")
                     append(encodeToLowercase)
@@ -664,8 +662,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public const val CHARS_LOWER: String = "0123456789abcdefghijklmnopqrstuv"
         }
 
-        @ExperimentalEncodingApi
-        override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
+        protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
             return object : Decoder<Hex.Config>.Feed() {
 
                 private val buffer = DecodingBuffer(out)
@@ -733,7 +730,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        override fun name(): String = "Base32.Hex"
+        protected override fun name(): String = "Base32.Hex"
     }
 
     private inner class EncodingBuffer(

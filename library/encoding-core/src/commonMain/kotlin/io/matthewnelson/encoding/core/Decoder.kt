@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("RemoveRedundantQualifierName")
+@file:Suppress("RemoveRedundantQualifierName", "SpellCheckingInspection")
 
 package io.matthewnelson.encoding.core
 
@@ -59,7 +59,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * @see [Decoder.Feed]
      * */
     @ExperimentalEncodingApi
-    public abstract fun newDecoderFeed(out: Decoder.OutFeed): Decoder<C>.Feed
+    public fun newDecoderFeed(out: Decoder.OutFeed): Decoder<C>.Feed {
+        // Reserved for future Decoder.OutFeed interception
+        return newDecoderFeedProtected(out)
+    }
+
+    protected abstract fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<C>.Feed
 
     /**
      * Encoded data is fed into [consume] and, as the [Decoder.Feed]'s
@@ -77,7 +82,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * @see [use]
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
-     * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeed]
+     * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeedProtected]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi

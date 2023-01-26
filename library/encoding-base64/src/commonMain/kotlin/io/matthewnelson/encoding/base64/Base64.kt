@@ -86,16 +86,16 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         paddingChar = '=',
     ) {
 
-        override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+        protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return (encodedSize * 6L / 8L)
         }
 
         @Throws(EncodingException::class)
-        override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+        protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
             return decodeOutMaxSizeProtected(encodedSize.toLong()).toInt()
         }
 
-        override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
+        protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             var outSize: Long = (unEncodedSize + 2L) / 3L * 4L
             if (padEncoded) return outSize
 
@@ -108,7 +108,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             return outSize
         }
 
-        override fun toStringAddSettings(sb: StringBuilder) {
+        protected override fun toStringAddSettings(sb: StringBuilder) {
             with(sb) {
                 append("    encodeToUrlSafe: ")
                 append(encodeToUrlSafe)
@@ -148,8 +148,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
     }
 
-    @ExperimentalEncodingApi
-    override fun newDecoderFeed(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
+    protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
         return object : Decoder<Base64.Config>.Feed() {
 
             private val buffer = DecodingBuffer(out)
@@ -221,7 +220,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         }
     }
 
-    override fun name(): String = "Base64"
+    protected override fun name(): String = "Base64"
 
     private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 4,
