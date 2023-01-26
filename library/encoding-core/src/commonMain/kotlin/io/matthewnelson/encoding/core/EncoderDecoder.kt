@@ -376,7 +376,7 @@ constructor(config: C): Encoder<C>(config) {
          * processing remaining data in its buffer before dumping them
          * to [Decoder.OutFeed]/[Encoder.OutFeed].
          *
-         * Can only be called once. Any sucessive calls to [doFinal],
+         * Can only be called once. Any successive calls to [doFinal],
          * [Decoder.Feed.consume], or [Encoder.Feed.consume] will be
          * considered an error and throw an [EncodingException].
          *
