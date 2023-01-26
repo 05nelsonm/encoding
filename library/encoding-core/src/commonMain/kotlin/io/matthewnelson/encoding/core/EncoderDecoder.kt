@@ -269,30 +269,60 @@ constructor(config: C): Encoder<C>(config) {
          * Will be called whenever [toString] is invoked, allowing
          * inheritors of [Config] to add their settings to the output.
          *
-         * The output of [toString] is used in [equals] and [hashCode],
-         * so this affects their results. That said, calling [toString]
-         * or [hashCode] from [toStringAddSettings] should not be done
-         * as it will result in a recursive loop.
-         *
          * e.g.
          *
-         *     override fun toStringAddSettings(sb: StringBuilder) {
-         *         with(sb) {
-         *             // already starting on a new line
-         *             append("    setting1: ") // 4 space indent + colon + single space
-         *             append(setting1)
-         *             appendLine()             // Add new line if multiple settings
-         *             append("    setting2: ")
-         *             append(setting2)
-         *             // a new line is automatically added after
+         *     protected override fun toStringAddSettings(): Set<Setting> {
+         *         return buildSet {
+         *             add(Setting(name = "setting1", value = setting1))
+         *             add(Setting(name = "setting2", value = setting2))
          *         }
          *     }
          *
+         * @see [Setting]
          * @see [toString]
-         * @sample [io.matthewnelson.encoding.base16.Base16.Config.toStringAddSettings]
-         * @sample [io.matthewnelson.encoding.base32.Base32.Crockford.Config.toStringAddSettings]
+         * @throws [IllegalArgumentException] If implementor uses an empty string
+         *   for [Setting.name].
          * */
-        protected abstract fun toStringAddSettings(sb: StringBuilder)
+        @Throws(IllegalArgumentException::class)
+        protected abstract fun toStringAddSettings(): Set<Setting>
+
+        /**
+         * Additional setting to [Config], unique to the implementing class.
+         *
+         * @throws [IllegalArgumentException] If [name] is blank.
+         * */
+        protected inner class Setting
+        @Throws(IllegalArgumentException::class)
+        constructor(
+            name: String,
+            @JvmField
+            public val value: Any?,
+        ) {
+
+            @JvmField
+            public val name: String = name.trim()
+
+            init {
+                require(name.isNotBlank()) {
+                    "Setting.name cannot be blank"
+                }
+            }
+
+            override fun equals(other: Any?): Boolean {
+                return  other is Setting
+                        && other.name == name
+                        && other.value == value
+            }
+
+            override fun hashCode(): Int {
+                var result = 17
+                result = result * 31 + name.hashCode()
+                result = result * 31 + value.hashCode()
+                return result
+            }
+
+            override fun toString(): String = "$name: $value"
+        }
 
         final override fun equals(other: Any?): Boolean {
             return  other is Config
@@ -316,8 +346,13 @@ constructor(config: C): Encoder<C>(config) {
                 appendLine()
                 append("    paddingChar: ")
                 append(paddingChar)
-                appendLine()
-                toStringAddSettings(this)
+
+                for (setting in toStringAddSettings()) {
+                    appendLine()
+                    append("    ")
+                    append(setting)
+                }
+
                 appendLine()
                 append(']')
             }.toString()

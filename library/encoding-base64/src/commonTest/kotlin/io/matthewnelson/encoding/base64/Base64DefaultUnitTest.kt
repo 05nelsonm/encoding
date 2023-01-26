@@ -135,6 +135,9 @@ class Base64DefaultUnitTest: BaseNEncodingTest() {
 
     @Test
     fun givenString_whenEncoded_MatchesRfc4648Spec() {
+        val b64 = Base64()
+        println(b64)
+        println(b64.config)
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 

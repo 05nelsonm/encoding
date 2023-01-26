@@ -164,16 +164,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return outSize
             }
 
-            protected override fun toStringAddSettings(sb: StringBuilder) {
-                with(sb) {
-                    append("    encodeToLowercase: ")
-                    append(encodeToLowercase)
-                    appendLine()
-                    append("    hyphenInterval: ")
-                    append(hyphenInterval)
-                    appendLine()
-                    append("    checkSymbol: ")
-                    append(checkSymbol)
+            protected override fun toStringAddSettings(): Set<Setting> {
+                return buildSet {
+                    add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+                    add(Setting(name = "hyphenInterval", value = hyphenInterval))
+                    add(Setting(name = "checkSymbol", value = checkSymbol))
                 }
             }
 
@@ -453,14 +448,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
             }
 
-            protected override fun toStringAddSettings(sb: StringBuilder) {
-                with(sb) {
-                    appendLine()
-                    append("    encodeToLowercase: ")
-                    append(encodeToLowercase)
-                    appendLine()
-                    append("    padEncoded: ")
-                    append(padEncoded)
+            protected override fun toStringAddSettings(): Set<Setting> {
+                return buildSet {
+                    add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+                    add(Setting(name = "padEncoded", value = padEncoded))
                 }
             }
 
@@ -625,13 +616,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
             }
 
-            protected override fun toStringAddSettings(sb: StringBuilder) {
-                with(sb) {
-                    append("    encodeToLowercase: ")
-                    append(encodeToLowercase)
-                    appendLine()
-                    append("    padEncoded: ")
-                    append(padEncoded)
+            protected override fun toStringAddSettings(): Set<Setting> {
+                return buildSet {
+                    add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+                    add(Setting(name = "padEncoded", value = padEncoded))
                 }
             }
 

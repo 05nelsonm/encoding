@@ -37,5 +37,5 @@ class TestConfig(
     override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
         return encodeReturn.invoke(unEncodedSize)
     }
-    override fun toStringAddSettings(sb: StringBuilder) {}
+    override fun toStringAddSettings(): Set<Setting> = emptySet()
 }

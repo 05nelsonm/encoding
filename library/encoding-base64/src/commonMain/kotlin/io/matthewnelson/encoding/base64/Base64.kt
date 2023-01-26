@@ -108,13 +108,10 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             return outSize
         }
 
-        protected override fun toStringAddSettings(sb: StringBuilder) {
-            with(sb) {
-                append("    encodeToUrlSafe: ")
-                append(encodeToUrlSafe)
-                appendLine()
-                append("    padEncoded: ")
-                append(padEncoded)
+        protected override fun toStringAddSettings(): Set<Setting> {
+            return buildSet {
+                add(Setting(name = "encodeToUrlSafe", value = encodeToUrlSafe))
+                add(Setting(name = "padEncoded", value = padEncoded))
             }
         }
 

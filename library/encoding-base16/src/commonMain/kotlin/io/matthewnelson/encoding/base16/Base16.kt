@@ -95,10 +95,9 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             return unEncodedSize * 2L
         }
 
-        protected override fun toStringAddSettings(sb: StringBuilder) {
-            with(sb) {
-                append("    encodeToLowercase: ")
-                append(encodeToLowercase)
+        protected override fun toStringAddSettings(): Set<Setting> {
+            return buildSet {
+                add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
             }
         }
 
