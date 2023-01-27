@@ -1,4 +1,4 @@
-rootProject.name = "component-encoding"
+rootProject.name = "encoding"
 
 includeBuild("kotlin-components/includeBuild/dependencies")
 includeBuild("kotlin-components/includeBuild/kmp")

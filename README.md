@@ -1,4 +1,4 @@
-# component-encoding
+# encoding
 [![badge-license]][url-license]
 [![badge-latest-release]][url-latest-release]
 
@@ -164,7 +164,7 @@ This project utilizes git submodules. You will need to initialize them when
 cloning the repository via:
 
 ```bash
-$ git clone --recursive https://github.com/05nelsonm/component-encoding.git
+$ git clone --recursive https://github.com/05nelsonm/encoding.git
 ```
 
 If you've already cloned the repository, run:
@@ -204,6 +204,6 @@ $ git pull --recurse-submodules
 [badge-support-linux-arm]: http://img.shields.io/badge/support-[LinuxArm]-2D3F6C.svg?style=flat
 [badge-support-linux-mips]: http://img.shields.io/badge/support-[LinuxMIPS]-2D3F6C.svg?style=flat
 
-[url-latest-release]: https://github.com/05nelsonm/component-encoding/releases/latest
+[url-latest-release]: https://github.com/05nelsonm/encoding/releases/latest
 [url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [url-kotlin]: https://kotlinlang.org
