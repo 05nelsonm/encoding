@@ -302,12 +302,6 @@ constructor(config: C): Encoder<C>(config) {
             @JvmField
             public val name: String = name.trim()
 
-            init {
-                require(name.isNotBlank()) {
-                    "Setting.name cannot be blank"
-                }
-            }
-
             override fun equals(other: Any?): Boolean {
                 return  other is Setting
                         && other.name == name
