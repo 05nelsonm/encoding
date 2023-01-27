@@ -311,14 +311,10 @@ constructor(config: C): Encoder<C>(config) {
             override fun equals(other: Any?): Boolean {
                 return  other is Setting
                         && other.name == name
-                        && other.value == value
             }
 
             override fun hashCode(): Int {
-                var result = 17
-                result = result * 31 + name.hashCode()
-                result = result * 31 + value.hashCode()
-                return result
+                return 17 * 31 + name.hashCode()
             }
 
             override fun toString(): String = "$name: $value"
