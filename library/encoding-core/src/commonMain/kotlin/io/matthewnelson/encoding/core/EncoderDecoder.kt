@@ -280,45 +280,24 @@ constructor(config: C): Encoder<C>(config) {
          *
          * @see [Setting]
          * @see [toString]
-         * @throws [IllegalArgumentException] If implementor uses an empty string
-         *   for [Setting.name].
          * */
-        @Throws(IllegalArgumentException::class)
         protected abstract fun toStringAddSettings(): Set<Setting>
 
         /**
          * Additional setting to [Config], unique to the implementing class.
-         *
-         * @throws [IllegalArgumentException] If [name] is blank.
          * */
-        protected inner class Setting
-        @Throws(IllegalArgumentException::class)
-        constructor(
-            name: String,
-            @JvmField
-            public val value: Any?,
-        ) {
+        protected inner class Setting(name: String, @JvmField public val value: Any?) {
 
             @JvmField
             public val name: String = name.trim()
 
-            init {
-                require(name.isNotBlank()) {
-                    "Setting.name cannot be blank"
-                }
-            }
-
             override fun equals(other: Any?): Boolean {
                 return  other is Setting
                         && other.name == name
-                        && other.value == value
             }
 
             override fun hashCode(): Int {
-                var result = 17
-                result = result * 31 + name.hashCode()
-                result = result * 31 + value.hashCode()
-                return result
+                return 17 * 31 + name.hashCode()
             }
 
             override fun toString(): String = "$name: $value"
