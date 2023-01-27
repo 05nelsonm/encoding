@@ -280,24 +280,13 @@ constructor(config: C): Encoder<C>(config) {
          *
          * @see [Setting]
          * @see [toString]
-         * @throws [IllegalArgumentException] If implementor uses an empty string
-         *   for [Setting.name].
          * */
-        @Throws(IllegalArgumentException::class)
         protected abstract fun toStringAddSettings(): Set<Setting>
 
         /**
          * Additional setting to [Config], unique to the implementing class.
-         *
-         * @throws [IllegalArgumentException] If [name] is blank.
          * */
-        protected inner class Setting
-        @Throws(IllegalArgumentException::class)
-        constructor(
-            name: String,
-            @JvmField
-            public val value: Any?,
-        ) {
+        protected inner class Setting(name: String, @JvmField public val value: Any?) {
 
             @JvmField
             public val name: String = name.trim()
