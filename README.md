@@ -21,19 +21,208 @@
 ![badge-support-linux-arm]
 ![badge-support-linux-mips]
 
-**Base16 (Hex)**
- - [Default (Rfc 4648 section 8)](https://www.ietf.org/rfc/rfc4648.html#section-8)
+Configurable, streamable, efficient and extensible Encoding/Decoding for Kotlin Multiplatform.
+
+**Base16 (a.k.a. "hex")**
+ - [RFC 4648 section 8](https://www.ietf.org/rfc/rfc4648.html#section-8)
 
 **Base32**
  - [Crockford](https://www.crockford.com/base32.html)
- - [Default (Rfc 4648 section 6)](https://www.ietf.org/rfc/rfc4648.html#section-6)
- - [Hex (Rfc 4648 section 7)](https://www.ietf.org/rfc/rfc4648.html#section-7)
+ - Default [RFC 4648 section 6](https://www.ietf.org/rfc/rfc4648.html#section-6)
+ - Hex [RFC 4648 section 7](https://www.ietf.org/rfc/rfc4648.html#section-7)
 
 **Base64**
- - [Default (Rfc 4648 section 4)](https://www.ietf.org/rfc/rfc4648.html#section-4)
- - [Url Safe (Rfc 4648 section 5)](https://www.ietf.org/rfc/rfc4648.html#section-5)
+ - Default [RFC 4648 section 4](https://www.ietf.org/rfc/rfc4648.html#section-4)
+ - UrlSafe [RFC 4648 section 5](https://www.ietf.org/rfc/rfc4648.html#section-5)
 
 A full list of `kotlin-components` projects can be found [HERE](https://kotlin-components.matthewnelson.io)
+
+### Usage
+
+**Configure `EncoderDecoder`(s) to your needs**
+
+```kotlin
+val base16 = Base16 {
+    // Ignore whitespace and new lines when decoding
+    isLenient = true
+
+    // Insert line breaks every X characters of encoded output
+    lineBreakInterval = 10
+
+    // Use lowercase instead of uppercase characters when encoding
+    encodeToLowercase = true
+}
+
+// Shortcuts
+val base16StrictSettings = Base16(strict = true)
+val base16DefaultSettings = Base16()
+```
+
+```kotlin
+val base32Crockford = Base32Crockford {
+    isLenient = true
+    encodeToLowercase = false
+
+    // Insert hyphens every X characters of encoded output
+    hyphenInterval = 5
+
+    // Optional data integrity check unique to the Crockford spec
+    checkSymbol('*')
+}
+
+val base32Default = Base32Default {
+    isLenient = true
+    lineBreakInterval = 64
+    encodeToLowercase = true
+    
+    // Skip padding of the encoded output
+    padEncoded = false
+}
+
+val base32Hex = Base32Hex {
+    isLenient = true
+    lineBreakInterval = 64
+    encodeToLowercase = false
+    padEncoded = true
+}
+```
+
+```kotlin
+val base64 = Base64 {
+    isLenient = true
+    lineBreakInterval = 64
+    encodeToUrlSafe = false
+    padEncoded = true
+}
+
+// Inherit settings from another EncoderDecoder's Config
+val base64UrlSafe = Base64(base64.config) {
+    encodeToUrlSafe = true
+    padEncoded = false
+}
+```
+
+**Encoding/Decoding Extension Functions**
+
+```kotlin
+val text = "Hello World!"
+val bytes = text.encodeToByteArray()
+
+// Choose the output type that suits your needs
+// without having to perform unnecessary intermediate
+// transformations (can be useful for security 
+// purposes, too, as you are able to clear Arrays
+// before they are de-referenced).
+val encodedString = bytes.encodeToString(base64)
+val encodedChars = bytes.encodeToCharArray(base32Default)
+val encodedBytes = bytes.encodeToByteArray(base16)
+
+val decodedString = try {
+    encodedString.decodeToByteArray(base64)
+} catch (e: EncodingException) {
+    Log.e("Something went terribly wrong", e)
+    null
+}
+// Swallow `EncodingException`s by using the `*OrNull` variants
+val decodedChars = encodedChars.decodeToByteArrayOrNull(base32Default)
+val decodedString = encodedBytes.decodeToByteArrayOrNull(base16)
+```
+
+**Encoding/Decoding `Feed`(s) (i.e. Streaming)**
+
+`Feed`'s are a new concept which enable some pretty awesome things. They break 
+the encoding/decoding process into its individual parts, such that the medium 
+for which data is coming from or going to can be **anything**; `Feed`'s only 
+care about `Byte`(s) and `Char`(s)!
+
+`Feed`s are currently annotated with `ExperimentalEncodingApi` and require an 
+`OptIn` to use directly.
+
+```kotlin
+// e.g. Writing encoded data to a File in Java.
+// NOTE: try/catch omitted for this example.
+
+@OptIn(ExperimentalEncodingApi::class)
+file.outputStream().use { oStream ->
+    base64.newEncoderFeed { encodedChar ->
+        // As encoded data comes out of the feed,
+        // write it to the file.
+        oStream.write(encodedChar.code)
+    }.use { feed ->
+
+        // Push data through the feed.
+        //
+        // There are NO size/length limitations with `Feed`s.
+        // You are only limited by the medium you use to store
+        // the output (e.g. the maximum size of a ByteArray is
+        // Int.MAX_VALUE).
+        //
+        // The `Feed.use` extension function calls `doFinal`
+        // automatically, which closes the `Encoder.Feed`
+        // and performs finalization of the operation (such as
+        // adding padding).
+        "Hello World!".forEach { c ->
+            feed.consume(c.code.toByte())
+        }
+    }
+}
+```
+
+As `Feed`(s) is a new concept, they can be "bulky" to use (as you will see in 
+the example below). This is due to a lack of extension functions for them, but 
+it's something I hope can be built out over time with your help (PRs and 
+FeatureRequests are **always** welcome)!
+
+```kotlin
+// e.g. Reading encoded data from a File in Java.
+// NOTE: try/catch omitted for this example.
+
+// Pre-calculate the output size for the given encoding
+// spec; in this case, Base64.
+val size = base64.config.decodeOutMaxSize(file.length())
+
+// Since we will be storing the data in a StringBuilder,
+// we need to check if the output size would exceed
+// StringBuilder's maximum capacity.
+if (size > Int.MAX_VALUE.toLong()) {
+    // Alternatively, one could fall back to chunking, but that
+    // is beyond the scope of this example.
+    throw EncodingSizeException(
+        "File contents would be too large after decoding to store in a StringBuilder"
+    )
+}
+
+val sb = StringBuilder(size.toInt())
+
+@OptIn(ExperimentalEncodingApi::class)
+file.inputStream().reader().use { iStreamReader ->
+    base64.newDecoderFeed { decodedByte ->
+        // As decoded data comes out of the feed,
+        // update the StringBuilder.
+        sb.append(decodedByte.toInt().toChar())
+    }.use { feed ->
+
+        val buffer = CharArray(4096)
+        while (true) {
+            val read = iStreamReader.read(buffer)
+            if (read == -1) break
+            
+            // Push encoded data from the file through the feed.
+            //
+            // The `Feed.use` extension function calls `doFinal`
+            // automatically, which closes the `Decoder.Feed`
+            // and performs finalization of the operation.
+            for (i in 0 until read) {
+                feed.consume(buffer[i])
+            }
+        }
+    }
+}
+
+println(sb.toString())
+```
+
+**Alternatively, create your own `EncoderDecoder`(s) using the abstractions provided by `encoding-core`!**
 
 ### Get Started
 
@@ -42,10 +231,13 @@ A full list of `kotlin-components` projects can be found [HERE](https://kotlin-c
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "1.1.5"
+    val encoding = "1.2.0"
     implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
+    
+    // Alternatively, if you only want the abstractions to create your own EncoderDecoder(s)
+    implementation("io.matthewnelson.kotlin-components:encoding-core:$encoding")
 }
 ```
 
@@ -54,10 +246,13 @@ dependencies {
 ```groovy
 // build.gradle
 dependencies {
-    def encoding = "1.1.5"
+    def encoding = "1.2.0"
     implementation "io.matthewnelson.kotlin-components:encoding-base16:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base32:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base64:$encoding"
+
+    // Alternatively, if you only want the abstractions to create your own EncoderDecoder(s)
+    implementation "io.matthewnelson.kotlin-components:encoding-core:$encoding"
 }
 ```
 
@@ -69,6 +264,7 @@ dependencies {
 
 | encoding | kotlin |
 |:--------:|:------:|
+|  1.2.0   | 1.8.0  |
 |  1.1.5   | 1.8.0  |
 |  1.1.4   | 1.7.20 |
 |  1.1.3   | 1.6.21 |
@@ -76,87 +272,6 @@ dependencies {
 |  1.1.1   | 1.6.21 |
 |  1.1.0   | 1.6.10 |
 |  1.0.3   | 1.5.31 |
-
-### Usage
-
-Encoding/Decoding are extension functions, but below are example
-classes for demonstration purposes.
-
-```kotlin
-import io.matthewnelson.component.encoding.base16.*
-
-class Base16EncodeDecodeExample {
-    
-    fun base16Encode(bytes: ByteArray): String =
-        bytes.encodeBase16()
-    
-    fun base16EncodeToCharArray(bytes: ByteArray): CharArray =
-        bytes.encodeBase16ToCharArray()
-        
-    fun base16EncodeToByteArray(bytes: ByteArray): ByteArray =
-        bytes.encodeBase16ToByteArray()
-    
-    fun base16Decode(string: String): ByteArray? =
-        string.decodeBase16ToArray()
-    
-    fun base16Decode(chars: CharArray): ByteArray? =
-        chars.decodeBase16ToArray()
-}
-```
-
-
-```kotlin
-import io.matthewnelson.component.encoding.base32.*
-
-class Base32EncodeDecodeExample {
-
-    // enable whichever for decoding/encoding
-    private val base32: Base32 = Base32.Default
-    // private val base32: Base32 = Base32.Hex
-    // private val base32: Base32 = Base32.Crockford(checkSymbol = null)
-    
-    fun base32Encode(bytes: ByteArray): String =
-        bytes.encodeBase32(base32 = base32)
-    
-    fun base32EncodeToCharArray(bytes: ByteArray): CharArray =
-        bytes.encodeBase32ToCharArray(base32 = base32)
-        
-    fun base32EncodeToByteArray(bytes: ByteArray): ByteArray =
-        bytes.encodeBase32ToByteArray(base32 = base32)
-    
-    fun base32Decode(string: String): ByteArray? =
-        string.decodeBase32ToArray(base32 = base32)
-    
-    fun base32Decode(chars: CharArray): ByteArray? =
-        chars.decodeBase32ToArray(base32 = base32)
-}
-```
-
-```kotlin
-import io.matthewnelson.component.base64.*
-
-class Base64EncodeDecodeExample {
-
-    // enable whichever for decoding/encoding
-    private val base64: Base64 = Base64.Default
-    // private val base64: Base64 = Base64.UrlSafe(pad = true)
-    
-    fun base64Encode(bytes: ByteArray): String =
-        bytes.encodeBase64(base64 = base64)
-    
-    fun base64EncodeToCharArray(bytes: ByteArray): CharArray =
-        bytes.encodeBase64ToCharArray(base64 = base64)
-        
-    fun base64EncodeToByteArray(bytes: ByteArray): ByteArray =
-        bytes.encodeBase64ToByteArray(base64 = base64)
-    
-    fun base64Decode(string: String): ByteArray? =
-        string.decodeBase64ToArray()
-    
-    fun base64Decode(chars: CharArray): ByteArray? =
-        chars.decodeBase64ToArray()
-}
-```
 
 ### Git
 
@@ -180,7 +295,7 @@ $ git pull --recurse-submodules
 ```
 
 <!-- TAG_VERSION -->
-[badge-latest-release]: https://img.shields.io/badge/latest--release-1.1.5-blue.svg?style=flat
+[badge-latest-release]: https://img.shields.io/badge/latest--release-1.2.0-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 <!-- TAG_DEPENDENCIES -->

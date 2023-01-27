@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## Version 1.2.0 (2023-01-27)
+ - Fixes `base16` and `base32` decoding case sensitivity.
+     - Previously, encoded data had to be all `uppercase` for decoding to work. This 
+       was **not** compliant with RFC 4648 which specifies those n-encodings should 
+       be `case-insensitive` (should be able to decode upper &/or lowercase).
+ - Adds `binary-compatibility-validator` gradle plugin to track API changes.
+ - Adds CI build + caching to project.
+ - Changes project & repository name from `component-encoding` -> `encoding`.
+ - Downgrades the KotlinJvm & Java `compile`/`target` `sourceCompatibility` versions 
+   from 11 to 8.
+      - There was absolutely no need to require Java 11.
+      - As this is a downgrade, inline functions "should" still work since 
+        library consumers had to have been using Java 11+ to use them anyway.
+ - Moves all library modules from the root project directory to the `library` directory.
+ - Introduces the `encoding-core` module
+     - Migrates all core/common functionality of `encoding-base16`, `encoding-base32`, 
+       `encoding-base64` to `encoding-core`.
+     - Abstractions for easily creating `EncoderDecoder`(s) not already implemented by
+       this library.
+         - Adds the `Encoder` & `Decoder` sealed classes.
+         - Adds the `EncoderDecoder` abstract class (to expose `Encoder` and `Decoder` 
+           to library consumers).
+         - Adds the `EncoderDecoder.Config` abstract class to specify configuration 
+           options for `EncoderDecoder` implementors.
+         - Adds the `Encoder.Feed` & `Decoder.Feed` classes for "streaming" 
+           encoded/decoded data.
+         - Adds 2 new exceptions; `EncodingException` & `EncodingSizeException`.
+         - Adds the `FeedBuffer` utility class for use in `EncoderDecoder` implementations.
+      - Adds builder classes & functions for easily configuring `base16`, `base32` & 
+        `base64` `EncoderDecoder`(s).
+      - Refer to [README.md#usage](https://github.com/05nelsonm/encoding#usage) for a quick 
+        rundown of new functionality.
+ - Deprecates all old extension functions
+     - `ReplaceWith` setup to easily switch over to use new `EncoderDecoder`(s) for
+       `base16`, `base32` & `base64` library consumers.
+
 ## Version 1.1.5 (2023-01-09)
  - Updates `kotlin-components` submodule
      - Kotlin `1.7.20` -> `1.8.0`
