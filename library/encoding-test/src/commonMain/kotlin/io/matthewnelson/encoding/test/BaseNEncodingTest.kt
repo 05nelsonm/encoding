@@ -164,7 +164,7 @@ abstract class BaseNEncodingTest {
     }
 
     protected fun checkRandomData() {
-        val bytes = Random.nextBytes(20_000)
+        val bytes = Random.nextBytes(1_000_000)
         val encoded = encode(bytes)
         val decoded = decode(encoded)!!
 
