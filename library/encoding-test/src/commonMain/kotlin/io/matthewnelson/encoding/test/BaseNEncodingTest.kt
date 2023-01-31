@@ -168,6 +168,7 @@ abstract class BaseNEncodingTest {
         val encoded = encode(bytes)
         val decoded = decode(encoded)!!
 
+        assertEquals(bytes.size, decoded.size)
         bytes.forEachIndexed { index, byte ->
             assertEquals(byte, decoded[index])
         }
