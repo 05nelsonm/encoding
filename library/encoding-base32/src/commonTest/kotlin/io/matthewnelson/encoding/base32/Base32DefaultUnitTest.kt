@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.Base32Default
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
@@ -172,5 +173,13 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
     fun givenBase32Default_whenLowercaseAndUppercaseChars_thenMatch() {
         assertEquals(Base32.Default.CHARS_UPPER, Base32.Default.CHARS_LOWER.uppercase())
         assertEquals(Base32.Default.CHARS_LOWER, Base32.Default.CHARS_UPPER.lowercase())
+    }
+
+    @Test
+    fun givenBase32Default_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "OBTDFCGTEKTGXPVR23DA7YFDEB5IZGLEHJH5GIIVBKGL5S2HNNRQ===="
+        val decoded = expected.decodeToByteArray(base32Default)
+        val rencoded = decoded.encodeToString(base32Default)
+        assertEquals(expected, rencoded)
     }
 }

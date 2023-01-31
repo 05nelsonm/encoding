@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.Base32Hex
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
@@ -173,5 +174,13 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     fun givenBase32Hex_whenLowercaseAndUppercaseChars_thenMatch() {
         assertEquals(Base32.Hex.CHARS_UPPER, Base32.Hex.CHARS_LOWER.uppercase())
         assertEquals(Base32.Hex.CHARS_LOWER, Base32.Hex.CHARS_UPPER.lowercase())
+    }
+
+    @Test
+    fun givenBase32Hex_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "AHK6A83HELKM6QP0C9P6UTRE41J6UU10D9QMQS3J41NNCPBI41Q6GP90DHGNKU90CHNMEBG="
+        val decoded = expected.decodeToByteArray(base32Hex)
+        val rencoded = decoded.encodeToString(base32Hex)
+        assertEquals(expected, rencoded)
     }
 }

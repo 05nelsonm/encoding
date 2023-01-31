@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.Base32Crockford
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
@@ -343,5 +344,13 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenBase32Crockford_whenLowercaseAndUppercaseChars_thenMatch() {
         assertEquals(Base32.Crockford.CHARS_UPPER, Base32.Crockford.CHARS_LOWER.uppercase())
         assertEquals(Base32.Crockford.CHARS_LOWER, Base32.Crockford.CHARS_UPPER.lowercase())
+    }
+
+    @Test
+    fun givenBase32Hex_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "AHM6A83HENMP6TS0C9S6YXVE41K6YY10D9TPTW3K41QQCSBJ41T6GS90DHGQMY90CHQPEBG"
+        val decoded = expected.decodeToByteArray(crockford)
+        val rencoded = decoded.encodeToString(crockford)
+        assertEquals(expected, rencoded)
     }
 }
