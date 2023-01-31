@@ -20,9 +20,11 @@ package io.matthewnelson.encoding.base64
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import io.matthewnelson.encoding.base64.Base64DefaultUnitTest.Companion.decodeHexToByteArray
 import io.matthewnelson.encoding.builders.Base64
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Base64UrlSafeUnitTest: BaseNEncodingTest() {
 
@@ -177,4 +179,11 @@ class Base64UrlSafeUnitTest: BaseNEncodingTest() {
         checkUniversalEncoderParameters()
     }
 
+    @Test
+    fun givenBase64UrlSafe_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "U2FsdGVkX1_4ZC61vUIS40oz3-re25V1W1fBbNbK_mnRgdvTyYP0kbNMJx7ud1YTXThgcgceR08A_p_NsaNTZQ=="
+        val decoded = expected.decodeToByteArray(base64UrlSafe)
+        val rencoded = decoded.encodeToString(base64UrlSafe)
+        assertEquals(expected, rencoded)
+    }
 }
