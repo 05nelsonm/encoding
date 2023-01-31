@@ -375,4 +375,11 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenBase32Crockford_whenEncodeDecodeRandomData_thenBytesMatch() {
         checkRandomData()
     }
+
+    @Test
+    fun givenBase32CrockfordLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+        crockford = Base32Crockford { encodeToLowercase = true }
+        checkRandomData()
+    }
+
 }

@@ -204,4 +204,11 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
     fun givenBase32Default_whenEncodeDecodeRandomData_thenBytesMatch() {
         checkRandomData()
     }
+
+    @Test
+    fun givenBase32DefaultLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+        base32Default = Base32Default { encodeToLowercase = true }
+        checkRandomData()
+    }
+
 }

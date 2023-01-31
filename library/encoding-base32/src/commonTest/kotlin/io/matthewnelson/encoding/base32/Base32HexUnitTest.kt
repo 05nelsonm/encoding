@@ -205,4 +205,10 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     fun givenBase32Hex_whenEncodeDecodeRandomData_thenBytesMatch() {
         checkRandomData()
     }
+
+    @Test
+    fun givenBase32HexLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+        base32Hex = Base32Hex { encodeToLowercase = true }
+        checkRandomData()
+    }
 }
