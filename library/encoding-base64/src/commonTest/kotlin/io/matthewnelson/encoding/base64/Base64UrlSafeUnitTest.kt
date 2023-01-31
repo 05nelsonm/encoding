@@ -18,7 +18,6 @@
 package io.matthewnelson.encoding.base64
 
 import io.matthewnelson.encoding.test.BaseNEncodingTest
-import io.matthewnelson.encoding.base64.Base64DefaultUnitTest.Companion.decodeHexToByteArray
 import io.matthewnelson.encoding.builders.Base64
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull

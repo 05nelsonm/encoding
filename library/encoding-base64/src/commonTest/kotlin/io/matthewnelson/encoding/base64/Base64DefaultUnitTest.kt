@@ -27,17 +27,6 @@ import kotlin.test.assertEquals
 
 class Base64DefaultUnitTest: BaseNEncodingTest() {
 
-    companion object {
-        fun String.decodeHexToByteArray(): ByteArray {
-            val newString = replace(" ", "")
-            check(newString.length % 2 == 0) { "Hex must have an even length" }
-
-            return newString.chunked(2)
-                .map { it.toInt(16).toByte() }
-                .toByteArray()
-        }
-    }
-
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data("SGVsbG8gV29ybGQ^", expected = null, message = "Character '^' should return null")
     )
