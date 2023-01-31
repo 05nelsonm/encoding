@@ -191,7 +191,7 @@ class Base16UnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenBase12_whenEncodeDecodeRandomData_thenBytesMatch() {
+    fun givenBase16_whenEncodeDecodeRandomData_thenBytesMatch() {
         checkRandomData()
     }
 }
