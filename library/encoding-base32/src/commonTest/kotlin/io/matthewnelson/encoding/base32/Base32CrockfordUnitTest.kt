@@ -364,10 +364,22 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenBase32Hex_whenDecodeEncode_thenReturnsSameValue() {
+    fun givenBase32Crockford_whenDecodeEncode_thenReturnsSameValue() {
         val expected = "AHM6A83HENMP6TS0C9S6YXVE41K6YY10D9TPTW3K41QQCSBJ41T6GS90DHGQMY90CHQPEBG"
         val decoded = expected.decodeToByteArray(crockford)
         val rencoded = decoded.encodeToString(crockford)
         assertEquals(expected, rencoded)
     }
+
+    @Test
+    fun givenBase32Crockford_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+    }
+
+    @Test
+    fun givenBase32CrockfordLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+        crockford = Base32Crockford { encodeToLowercase = true }
+        checkRandomData()
+    }
+
 }

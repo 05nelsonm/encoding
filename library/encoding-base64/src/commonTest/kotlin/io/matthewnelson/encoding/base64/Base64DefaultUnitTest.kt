@@ -157,4 +157,9 @@ class Base64DefaultUnitTest: BaseNEncodingTest() {
         val rencoded = decoded.encodeToString(base64)
         assertEquals(expected, rencoded)
     }
+
+    @Test
+    fun givenBase64_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+    }
 }

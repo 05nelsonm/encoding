@@ -16,6 +16,7 @@
 package io.matthewnelson.encoding.test
 
 import kotlin.jvm.JvmStatic
+import kotlin.random.Random
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -160,5 +161,16 @@ abstract class BaseNEncodingTest {
             actual = encode(ByteArray(0)),
             message = "Encoding empty ByteArray should return an empty String"
         )
+    }
+
+    protected fun checkRandomData() {
+        val bytes = Random.nextBytes(1_000_000)
+        val encoded = encode(bytes)
+        val decoded = decode(encoded)!!
+
+        assertEquals(bytes.size, decoded.size)
+        bytes.forEachIndexed { index, byte ->
+            assertEquals(byte, decoded[index])
+        }
     }
 }

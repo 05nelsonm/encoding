@@ -200,4 +200,15 @@ class Base32HexUnitTest: BaseNEncodingTest() {
         val rencoded = decoded.encodeToString(base32Hex)
         assertEquals(expected, rencoded)
     }
+
+    @Test
+    fun givenBase32Hex_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+    }
+
+    @Test
+    fun givenBase32HexLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+        base32Hex = Base32Hex { encodeToLowercase = true }
+        checkRandomData()
+    }
 }

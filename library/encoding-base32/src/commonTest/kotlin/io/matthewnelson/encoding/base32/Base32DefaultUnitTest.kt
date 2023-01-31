@@ -199,4 +199,16 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
         val rencoded = decoded.encodeToString(base32Default)
         assertEquals(expected, rencoded)
     }
+
+    @Test
+    fun givenBase32Default_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+    }
+
+    @Test
+    fun givenBase32DefaultLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+        base32Default = Base32Default { encodeToLowercase = true }
+        checkRandomData()
+    }
+
 }

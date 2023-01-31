@@ -189,4 +189,15 @@ class Base16UnitTest: BaseNEncodingTest() {
         val rencoded = decoded.encodeToString(base16)
         assertEquals(expected, rencoded)
     }
+
+    @Test
+    fun givenBase16_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+    }
+
+    @Test
+    fun givenBase16Lowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+        base16 = Base16 { encodeToLowercase = true }
+        checkRandomData()
+    }
 }
