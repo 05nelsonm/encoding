@@ -200,4 +200,9 @@ class Base32HexUnitTest: BaseNEncodingTest() {
         val rencoded = decoded.encodeToString(base32Hex)
         assertEquals(expected, rencoded)
     }
+
+    @Test
+    fun givenBase32Hex_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+    }
 }

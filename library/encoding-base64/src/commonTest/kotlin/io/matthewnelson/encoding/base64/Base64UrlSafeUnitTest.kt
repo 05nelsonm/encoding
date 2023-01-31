@@ -185,4 +185,9 @@ class Base64UrlSafeUnitTest: BaseNEncodingTest() {
         val rencoded = decoded.encodeToString(base64UrlSafe)
         assertEquals(expected, rencoded)
     }
+
+    @Test
+    fun givenBase64UrlSafe_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+    }
 }
