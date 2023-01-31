@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Version 1.2.1 (2023-01-31)
+ - Fixes `Base32` encoding
+ - Updates `kotlin-components` submodule
+     - Publication support updates
+
 ## Version 1.2.0 (2023-01-27)
  - Fixes `base16` and `base32` decoding case sensitivity.
      - Previously, encoded data had to be all `uppercase` for decoding to work. This 

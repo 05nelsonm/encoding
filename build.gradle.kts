@@ -71,7 +71,7 @@ plugins {
 
 kmpPublish {
     setupRootProject(
-        versionName = "1.2.1-SNAPSHOT",
+        versionName = "1.2.1",
         // 1.0.0-alpha1 == 01_00_00_11
         // 1.0.0-alpha2 == 01_00_00_12
         // 1.0.0-beta1  == 01_00_00_21

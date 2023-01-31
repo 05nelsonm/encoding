@@ -231,7 +231,7 @@ println(sb.toString())
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "1.2.0"
+    val encoding = "1.2.1"
     implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
@@ -246,7 +246,7 @@ dependencies {
 ```groovy
 // build.gradle
 dependencies {
-    def encoding = "1.2.0"
+    def encoding = "1.2.1"
     implementation "io.matthewnelson.kotlin-components:encoding-base16:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base32:$encoding"
     implementation "io.matthewnelson.kotlin-components:encoding-base64:$encoding"
@@ -264,6 +264,7 @@ dependencies {
 
 | encoding | kotlin |
 |:--------:|:------:|
+|  1.2.1   | 1.8.0  |
 |  1.2.0   | 1.8.0  |
 |  1.1.5   | 1.8.0  |
 |  1.1.4   | 1.7.20 |
@@ -295,7 +296,7 @@ $ git pull --recurse-submodules
 ```
 
 <!-- TAG_VERSION -->
-[badge-latest-release]: https://img.shields.io/badge/latest--release-1.2.0-blue.svg?style=flat
+[badge-latest-release]: https://img.shields.io/badge/latest--release-1.2.1-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 <!-- TAG_DEPENDENCIES -->
