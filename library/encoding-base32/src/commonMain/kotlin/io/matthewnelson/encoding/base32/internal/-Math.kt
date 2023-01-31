@@ -35,3 +35,6 @@ internal inline fun Long.encodeOutSize(willBePadded: Boolean): Long {
 
     return outSize
 }
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun Byte.toBits(): Long = if (this < 0) this + 256L else toLong()

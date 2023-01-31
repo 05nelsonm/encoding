@@ -15,11 +15,27 @@
  **/
 package io.matthewnelson.encoding.test
 
+import kotlin.jvm.JvmStatic
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 abstract class BaseNEncodingTest {
+
+    companion object {
+        /**
+         * Converts Bytes in hexidecimal format from https://cryptii.com to a ByteArray.
+         * */
+        @JvmStatic
+        fun String.decodeHexToByteArray(): ByteArray {
+            val newString = replace(" ", "")
+            check(newString.length % 2 == 0) { "Hex must have an even length" }
+
+            return newString.chunked(2)
+                .map { it.toInt(16).toByte() }
+                .toByteArray()
+        }
+    }
 
     protected data class Data<Data: Any, Expected: Any?>(
         val raw: Data,

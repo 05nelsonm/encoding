@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.base32
 import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize
 import io.matthewnelson.encoding.base32.internal.encodeOutSize
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
+import io.matthewnelson.encoding.base32.internal.toBits
 import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.*
@@ -732,7 +733,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
             // Append each char's 8 bits to the bitBuffer
             for (bits in buffer) {
-                bitBuffer =  (bitBuffer shl  8) + bits
+                bitBuffer =  (bitBuffer shl  8) + bits.toByte().toBits()
             }
 
             // For every 5 chars of input, we accumulate
@@ -751,7 +752,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
             // Append each char remaining in the buffer to the bitBuffer
             for (i in 0 until modulus) {
-                bitBuffer =  (bitBuffer shl  8) + buffer[i]
+                bitBuffer =  (bitBuffer shl  8) + buffer[i].toByte().toBits()
             }
 
             val padCount: Int = when (modulus) {

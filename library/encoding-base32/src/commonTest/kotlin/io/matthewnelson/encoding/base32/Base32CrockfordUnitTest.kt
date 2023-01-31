@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.Base32Crockford
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
@@ -46,6 +47,23 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
 
     override val decodeSuccessDataSet: Set<Data<String, ByteArray>> = setOf(
         decodeSuccessHelloWorld,
+        Data(
+            raw = "ADGPRX35CHFNZY345TTVTGGJWD537QZAVVDSAXAVAZ0PSNPAZSMX30EVTF4R7X4HPD62E7QEEXB16Q9RC1S0E7J79W0FX7YDP6HN6S8",
+            expected = ("53 61 6c 74 65 64 5f 5f f8 64 2e b5 bd 42 12 e3 4a 33 df ea de db 95 75 5b 57 c1 " +
+                    "6c d6 ca fe 69 d1 81 db d3 c9 83 f4 91 b3 4c 27 1e ee 77 56 13 5d 38 60 72 07 1e 47 " +
+                    "4f 00 fe 9f cd b1 a3 53 65").decodeHexToByteArray()
+        ),
+        Data(
+            raw = "ADGPRX35CHFNZHQS2E9EKVGSVA5C2669DJFAAVEVNXV9FQ8NTBD5RNVXEME5WTDFMP76BG677TG8E",
+            expected = ("53 61 6c 74 65 64 5f 5f c6 f9 13 92 e9 ee 19 da 8a c1 18 c9 6c 9e a5 " +
+                    "6d db af 76 97 dd 15 d2 da 5c 57 7d 75 1c 5e 69 af a5 8e 65 c0 c7 3e a0 " +
+                    "87").decodeHexToByteArray()
+        ),
+        Data(
+            raw = "ADGPRX35CHFNZWWMJ1QFN78GY6RXZR0F80AG2EMQXGFMHEKPNPMG",
+            expected = ("53 61 6c 74 65 64 5f 5f f3 94 90 6e fa 9d 10 f1 b1 df e0 0f 40 15 01 " +
+                    "3a 97 ec 1f 48 ba 76 ad a9").decodeHexToByteArray()
+        ),
         Data(raw = " 91JP RV3F41B PYW KCC GGG  ", expected = "Hello World!".encodeToByteArray(), message = "Spaces ' ' should be ignored"),
         Data(raw = "-----", expected = ByteArray(0), message = "Decoding a String containing only hyphens '-' should return an empty ByteArray"),
 
@@ -343,5 +361,13 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenBase32Crockford_whenLowercaseAndUppercaseChars_thenMatch() {
         assertEquals(Base32.Crockford.CHARS_UPPER, Base32.Crockford.CHARS_LOWER.uppercase())
         assertEquals(Base32.Crockford.CHARS_LOWER, Base32.Crockford.CHARS_UPPER.lowercase())
+    }
+
+    @Test
+    fun givenBase32Hex_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "AHM6A83HENMP6TS0C9S6YXVE41K6YY10D9TPTW3K41QQCSBJ41T6GS90DHGQMY90CHQPEBG"
+        val decoded = expected.decodeToByteArray(crockford)
+        val rencoded = decoded.encodeToString(crockford)
+        assertEquals(expected, rencoded)
     }
 }

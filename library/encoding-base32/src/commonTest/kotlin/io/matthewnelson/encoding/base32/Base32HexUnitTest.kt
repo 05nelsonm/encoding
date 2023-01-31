@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.builders.Base32Hex
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
@@ -40,6 +41,23 @@ class Base32HexUnitTest: BaseNEncodingTest() {
 
     override val decodeSuccessDataSet: Set<Data<String, ByteArray>> = setOf(
         decodeSuccessHelloWorld,
+        Data(
+            raw = "ADGMOT35CHFLVU345QQRQGGISD537NVARRDPATARAV0MPLMAVPKT30ERQF4O7T4HMD62E7NEETB16N9OC1P0E7I79S0FT7UDM6HL6P8=",
+            expected = ("53 61 6c 74 65 64 5f 5f f8 64 2e b5 bd 42 12 e3 4a 33 df ea de db 95 75 5b 57 c1 " +
+                    "6c d6 ca fe 69 d1 81 db d3 c9 83 f4 91 b3 4c 27 1e ee 77 56 13 5d 38 60 72 07 1e 47 " +
+                    "4f 00 fe 9f cd b1 a3 53 65").decodeHexToByteArray()
+        ),
+        Data(
+            raw = "ADGMOT35CHFLVHNP2E9EJRGPRA5C2669DIFAARERLTR9FN8LQBD5OLRTEKE5SQDFKM76BG677QG8E===",
+            expected = ("53 61 6c 74 65 64 5f 5f c6 f9 13 92 e9 ee 19 da 8a c1 18 c9 6c 9e a5 " +
+                    "6d db af 76 97 dd 15 d2 da 5c 57 7d 75 1c 5e 69 af a5 8e 65 c0 c7 3e a0 " +
+                    "87").decodeHexToByteArray()
+        ),
+        Data(
+            raw = "ADGMOT35CHFLVSSKI1NFL78GU6OTVO0F80AG2EKNTGFKHEJMLMKG====",
+            expected = ("53 61 6c 74 65 64 5f 5f f3 94 90 6e fa 9d 10 f1 b1 df e0 0f 40 15 01 " +
+                    "3a 97 ec 1f 48 ba 76 ad a9").decodeHexToByteArray()
+        ),
         Data(raw = "======", expected = ByteArray(0), message = "Decoding a String containing only padding '=' should return an empty ByteArray"),
         Data(raw = "CO======", expected = "f".encodeToByteArray()),
         Data(raw = "CO", expected = "f".encodeToByteArray(), message = "Stripped padding should decode"),
@@ -173,5 +191,13 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     fun givenBase32Hex_whenLowercaseAndUppercaseChars_thenMatch() {
         assertEquals(Base32.Hex.CHARS_UPPER, Base32.Hex.CHARS_LOWER.uppercase())
         assertEquals(Base32.Hex.CHARS_LOWER, Base32.Hex.CHARS_UPPER.lowercase())
+    }
+
+    @Test
+    fun givenBase32Hex_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "AHK6A83HELKM6QP0C9P6UTRE41J6UU10D9QMQS3J41NNCPBI41Q6GP90DHGNKU90CHNMEBG="
+        val decoded = expected.decodeToByteArray(base32Hex)
+        val rencoded = decoded.encodeToString(base32Hex)
+        assertEquals(expected, rencoded)
     }
 }

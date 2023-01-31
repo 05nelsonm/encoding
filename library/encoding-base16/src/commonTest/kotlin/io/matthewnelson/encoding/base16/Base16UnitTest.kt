@@ -16,6 +16,7 @@
 package io.matthewnelson.encoding.base16
 
 import io.matthewnelson.encoding.builders.Base16
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
@@ -176,5 +177,16 @@ class Base16UnitTest: BaseNEncodingTest() {
     fun givenBase16_whenLowercaseAndUppercaseChars_thenMatch() {
         assertEquals(Base16.CHARS_UPPER, Base16.CHARS_LOWER.uppercase())
         assertEquals(Base16.CHARS_LOWER, Base16.CHARS_UPPER.lowercase())
+    }
+
+    @Test
+    fun givenBase16_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "54686520717569636b2062726f776e20666f78206a756d7073206f76657220746865206c617a7920646f672e"
+        val base16 = Base16(base16.config) {
+            encodeToLowercase = true
+        }
+        val decoded = expected.decodeToByteArray(base16)
+        val rencoded = decoded.encodeToString(base16)
+        assertEquals(expected, rencoded)
     }
 }

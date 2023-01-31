@@ -18,23 +18,14 @@
 package io.matthewnelson.encoding.base64
 
 import io.matthewnelson.encoding.builders.Base64
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class Base64DefaultUnitTest: BaseNEncodingTest() {
-
-    companion object {
-        fun String.decodeHexToByteArray(): ByteArray {
-            val newString = replace(" ", "")
-            check(newString.length % 2 == 0) { "Hex must have an even length" }
-
-            return newString.chunked(2)
-                .map { it.toInt(16).toByte() }
-                .toByteArray()
-        }
-    }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data("SGVsbG8gV29ybGQ^", expected = null, message = "Character '^' should return null")
@@ -158,4 +149,12 @@ class Base64DefaultUnitTest: BaseNEncodingTest() {
         checkUniversalEncoderParameters()
     }
 
+    @Test
+    fun givenBase64_whenDecodeEncode_thenReturnsSameValue() {
+        val expected = "U2FsdGVkX1/4ZC61vUIS40oz3+re25V1W1fBbNbK/mnRgdvTyYP0kbNMJx7ud1YTXThgcgceR08A/p/NsaNTZQ=="
+        val base64 = Base64()
+        val decoded = expected.decodeToByteArray(base64)
+        val rencoded = decoded.encodeToString(base64)
+        assertEquals(expected, rencoded)
+    }
 }
