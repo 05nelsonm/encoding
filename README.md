@@ -125,7 +125,7 @@ val decodedString = try {
 }
 // Swallow `EncodingException`s by using the `*OrNull` variants
 val decodedChars = encodedChars.decodeToByteArrayOrNull(base32Default)
-val decodedString = encodedBytes.decodeToByteArrayOrNull(base16)
+val decodedBytes = encodedBytes.decodeToByteArrayOrNull(base16)
 ```
 
 **Encoding/Decoding `Feed`(s) (i.e. Streaming)**
