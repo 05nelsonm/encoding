@@ -2,7 +2,7 @@
 binaryCompat = "0.12.1"
 configuration = "0.1.0-alpha02"
 kotlin = "1.8.0"
-publish = "0.18.0"
+publish = "0.24.0"
 
 [libraries]
 gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

@@ -39,6 +39,10 @@ buildscript {
 
 allprojects {
 
+    findProperty("GROUP")?.let { group = it }
+    findProperty("VERSION_NAME")?.let { version = it }
+    findProperty("POM_DESCRIPTION")?.let { description = it.toString() }
+
     repositories {
         mavenCentral()
     }
@@ -58,25 +62,8 @@ plugins.withType<YarnPlugin> {
 }
 
 plugins {
-    id(pluginId.kmp.publish)
     @Suppress("DSL_SCOPE_VIOLATION")
     alias(libs.plugins.binaryCompat)
-}
-
-kmpPublish {
-    setupRootProject(
-        versionName = "1.2.2-SNAPSHOT",
-        // 1.0.0-alpha1 == 01_00_00_11
-        // 1.0.0-alpha2 == 01_00_00_12
-        // 1.0.0-beta1  == 01_00_00_21
-        // 1.0.0-rc1    == 01_00_00_31
-        // 1.0.0        == 01_00_00_99
-        // 1.0.1        == 01_00_01_99
-        // 1.1.1        == 01_01_01_99
-        // 1.15.1       == 01_15_01_99
-        versionCode = /*0 */1_02_02_99,
-        pomInceptionYear = 2021,
-    )
 }
 
 @Suppress("LocalVariableName")

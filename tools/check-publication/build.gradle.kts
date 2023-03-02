@@ -14,20 +14,27 @@
  * limitations under the License.
  **/
 import io.matthewnelson.kotlin.components.kmp.KmpTarget
-import io.matthewnelson.kotlin.components.kmp.publish.isSnapshotVersion
-import io.matthewnelson.kotlin.components.kmp.publish.kmpPublishRootProjectConfiguration
-import io.matthewnelson.kotlin.components.kmp.util.includeSnapshotsRepoIfTrue
-import io.matthewnelson.kotlin.components.kmp.util.includeStagingRepoIfTrue
 
 plugins {
     id(pluginId.kmp.configuration)
-    id(pluginId.kmp.publish)
 }
 
-val pConfig = kmpPublishRootProjectConfiguration!!
+repositories {
+    val host = "https://s01.oss.sonatype.org"
 
-includeSnapshotsRepoIfTrue(pConfig.isSnapshotVersion)
-includeStagingRepoIfTrue(!pConfig.isSnapshotVersion)
+    if (version.toString().endsWith("-SNAPSHOT")) {
+        maven("$host/content/repositories/snapshots/")
+    } else {
+        maven("$host/content/groups/staging") {
+            val p = rootProject.properties
+
+            credentials {
+                username = p["mavenCentralUsername"]?.toString()
+                password = p["mavenCentralPassword"]?.toString()
+            }
+        }
+    }
+}
 
 kmpConfiguration {
     setupMultiplatform(targets=
@@ -57,10 +64,10 @@ kmpConfiguration {
 
         commonMainSourceSet = {
             dependencies {
-                implementation("${pConfig.group}:encoding-base16:${pConfig.versionName}")
-                implementation("${pConfig.group}:encoding-base32:${pConfig.versionName}")
-                implementation("${pConfig.group}:encoding-base64:${pConfig.versionName}")
-                implementation("${pConfig.group}:encoding-core:${pConfig.versionName}")
+                implementation("${group}:encoding-base16:${version}")
+                implementation("${group}:encoding-base32:${version}")
+                implementation("${group}:encoding-base64:${version}")
+                implementation("${group}:encoding-core:${version}")
             }
         },
     )

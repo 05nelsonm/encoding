@@ -17,7 +17,6 @@ import io.matthewnelson.kotlin.components.kmp.KmpTarget
 
 plugins {
     id(pluginId.kmp.configuration)
-    id(pluginId.kmp.publish)
 }
 
 kmpConfiguration {
@@ -52,14 +51,10 @@ kmpConfiguration {
             }
         },
 
+        commonPluginIds = setOf(libs.plugins.publish.get().pluginId),
+
         kotlin = {
             explicitApi()
         }
-    )
-}
-
-kmpPublish {
-    setupModule(
-        pomDescription = "Kotlin Components' Core Encoding Library",
     )
 }
