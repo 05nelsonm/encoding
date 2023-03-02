@@ -18,8 +18,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-        with:
-          submodules: true
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
