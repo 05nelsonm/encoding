@@ -56,6 +56,10 @@ kmpConfiguration {
 
         kotlin {
             explicitApi()
+
+            extensions.configure<SigningExtension>("signing") {
+                useGpgCmd()
+            }
         }
     }
 }
