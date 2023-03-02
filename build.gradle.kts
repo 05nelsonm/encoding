@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import io.matthewnelson.kotlin.components.kmp.util.configureYarn
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED
-import org.jetbrains.kotlin.psi.addRemoveModifier.addAnnotationEntry
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
 
     repositories {
         mavenCentral()
-        google()
         gradlePluginPortal()
     }
 
     dependencies {
-        classpath(pluginDeps.android.gradle)
-        classpath(pluginDeps.kotlin.gradle)
-        classpath(pluginDeps.mavenPublish)
+        classpath(libs.gradle.kotlin)
+        classpath(libs.gradle.maven.publish)
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle.kts files
@@ -44,8 +41,6 @@ allprojects {
 
     repositories {
         mavenCentral()
-        google()
-        gradlePluginPortal()
     }
 
     tasks.withType<Test> {
@@ -58,15 +53,14 @@ allprojects {
 
 }
 
-configureYarn { rootYarn, _ ->
-    rootYarn.apply {
-        lockFileDirectory = project.rootDir.resolve(".kotlin-js-store")
-    }
+plugins.withType<YarnPlugin> {
+    the<YarnRootExtension>().lockFileDirectory = rootDir.resolve(".kotlin-js-store")
 }
 
 plugins {
     id(pluginId.kmp.publish)
-    id(pluginId.kotlin.binaryCompat) version(versions.gradle.binaryCompat)
+    @Suppress("DSL_SCOPE_VIOLATION")
+    alias(libs.plugins.binaryCompat)
 }
 
 kmpPublish {
@@ -87,23 +81,13 @@ kmpPublish {
 
 @Suppress("LocalVariableName")
 apiValidation {
-    val KMP_TARGETS = findProperty("KMP_TARGETS") as? String
     val CHECK_PUBLICATION = findProperty("CHECK_PUBLICATION") as? String
-    val KMP_TARGETS_ALL = System.getProperty("KMP_TARGETS_ALL") != null
-    val TARGETS = KMP_TARGETS?.split(',')
 
     if (CHECK_PUBLICATION != null) {
         ignoredProjects.add("check-publication")
     } else {
         nonPublicMarkers.add("io.matthewnelson.encoding.core.internal.InternalEncodingApi")
 
-        val JVM = TARGETS?.contains("JVM") != false
-        val ANDROID = TARGETS?.contains("ANDROID") != false
-
         ignoredProjects.add("encoding-test")
-
-        if (KMP_TARGETS_ALL || (ANDROID && JVM)) {
-            ignoredProjects.add("app")
-        }
     }
 }
