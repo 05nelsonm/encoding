@@ -13,48 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import io.matthewnelson.kotlin.components.kmp.KmpTarget
-
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id(pluginId.kmp.configuration)
+    alias(libs.plugins.configuration)
 }
 
 kmpConfiguration {
-    setupMultiplatform(targets=
-        setOf(
-            KmpTarget.Jvm.Jvm(
-                kotlinJvmTarget = JavaVersion.VERSION_1_8,
-                target = {
-                    withJava()
-
-                    extensions.configure<JavaPluginExtension> {
-                        sourceCompatibility = JavaVersion.VERSION_1_8
-                        targetCompatibility = JavaVersion.VERSION_1_8
-                    }
-                }
-            ),
-            KmpTarget.NonJvm.JS.DEFAULT,
-            KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.DeviceArm64.DEFAULT,
-        ) +
-        KmpTarget.NonJvm.Native.Android.ALL_DEFAULT             +
-        KmpTarget.NonJvm.Native.Unix.Darwin.Ios.ALL_DEFAULT     +
-        KmpTarget.NonJvm.Native.Unix.Darwin.Macos.ALL_DEFAULT   +
-        KmpTarget.NonJvm.Native.Unix.Darwin.Tvos.ALL_DEFAULT    +
-        KmpTarget.NonJvm.Native.Unix.Darwin.Watchos.ALL_DEFAULT +
-        KmpTarget.NonJvm.Native.Unix.Linux.ALL_DEFAULT          +
-        KmpTarget.NonJvm.Native.Mingw.ALL_DEFAULT               +
-        KmpTarget.NonJvm.Native.Wasm.ALL_DEFAULT,
-
-        commonTestSourceSet = {
-            dependencies {
-                implementation(kotlin("test"))
+    configure {
+        jvm {
+            target {
+                withJava()
             }
-        },
 
-        commonPluginIds = setOf(libs.plugins.publish.get().pluginId),
+            kotlinJvmTarget = JavaVersion.VERSION_1_8
+            compileSourceCompatibility = JavaVersion.VERSION_1_8
+            compileTargetCompatibility = JavaVersion.VERSION_1_8
+        }
 
-        kotlin = {
+        js()
+//        wasm()
+        wasmNativeAll()
+
+        androidNativeAll()
+
+        iosAll()
+        macosAll()
+        tvosAll()
+        watchosAll()
+
+        linuxAll()
+        mingwAll()
+
+        common {
+            pluginIds(libs.plugins.publish.get().pluginId)
+
+            sourceSetTest {
+                dependencies {
+                    implementation(kotlin("test"))
+                }
+            }
+        }
+
+        kotlin {
             explicitApi()
         }
-    )
+    }
 }

@@ -1,8 +1,5 @@
 rootProject.name = "encoding"
 
-includeBuild("kotlin-components/includeBuild/dependencies")
-includeBuild("kotlin-components/includeBuild/kmp")
-
 @Suppress("PrivatePropertyName")
 private val CHECK_PUBLICATION: String? by settings
 
