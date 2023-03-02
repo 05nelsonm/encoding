@@ -274,27 +274,6 @@ dependencies {
 |  1.1.0   | 1.6.10 |
 |  1.0.3   | 1.5.31 |
 
-### Git
-
-This project utilizes git submodules. You will need to initialize them when
-cloning the repository via:
-
-```bash
-$ git clone --recursive https://github.com/05nelsonm/encoding.git
-```
-
-If you've already cloned the repository, run:
-```bash
-$ git checkout master
-$ git pull
-$ git submodule update --init
-```
-
-In order to keep submodules updated when pulling the latest code, run:
-```bash
-$ git pull --recurse-submodules
-```
-
 <!-- TAG_VERSION -->
 [badge-latest-release]: https://img.shields.io/badge/latest--release-1.2.1-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat

@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import io.matthewnelson.kotlin.components.kmp.util.configureYarn
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED
-import org.jetbrains.kotlin.psi.addRemoveModifier.addAnnotationEntry
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
 
     repositories {
         mavenCentral()
-        google()
         gradlePluginPortal()
     }
 
     dependencies {
-        classpath(pluginDeps.android.gradle)
-        classpath(pluginDeps.kotlin.gradle)
-        classpath(pluginDeps.mavenPublish)
+        classpath(libs.gradle.kotlin)
+        classpath(libs.gradle.maven.publish)
+        classpath(libs.gradle.versions)
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle.kts files
@@ -42,10 +41,12 @@ buildscript {
 
 allprojects {
 
+    findProperty("GROUP")?.let { group = it }
+    findProperty("VERSION_NAME")?.let { version = it }
+    findProperty("POM_DESCRIPTION")?.let { description = it.toString() }
+
     repositories {
         mavenCentral()
-        google()
-        gradlePluginPortal()
     }
 
     tasks.withType<Test> {
@@ -58,52 +59,56 @@ allprojects {
 
 }
 
-configureYarn { rootYarn, _ ->
-    rootYarn.apply {
-        lockFileDirectory = project.rootDir.resolve(".kotlin-js-store")
-    }
+plugins.withType<YarnPlugin> {
+    the<YarnRootExtension>().lockFileDirectory = rootDir.resolve(".kotlin-js-store")
 }
 
 plugins {
-    id(pluginId.kmp.publish)
-    id(pluginId.kotlin.binaryCompat) version(versions.gradle.binaryCompat)
+    @Suppress("DSL_SCOPE_VIOLATION")
+    alias(libs.plugins.binaryCompat)
 }
 
-kmpPublish {
-    setupRootProject(
-        versionName = "1.2.2-SNAPSHOT",
-        // 1.0.0-alpha1 == 01_00_00_11
-        // 1.0.0-alpha2 == 01_00_00_12
-        // 1.0.0-beta1  == 01_00_00_21
-        // 1.0.0-rc1    == 01_00_00_31
-        // 1.0.0        == 01_00_00_99
-        // 1.0.1        == 01_00_01_99
-        // 1.1.1        == 01_01_01_99
-        // 1.15.1       == 01_15_01_99
-        versionCode = /*0 */1_02_02_99,
-        pomInceptionYear = 2021,
-    )
-}
+plugins.apply(libs.plugins.gradleVersions.get().pluginId)
 
 @Suppress("LocalVariableName")
 apiValidation {
-    val KMP_TARGETS = findProperty("KMP_TARGETS") as? String
     val CHECK_PUBLICATION = findProperty("CHECK_PUBLICATION") as? String
-    val KMP_TARGETS_ALL = System.getProperty("KMP_TARGETS_ALL") != null
-    val TARGETS = KMP_TARGETS?.split(',')
 
     if (CHECK_PUBLICATION != null) {
         ignoredProjects.add("check-publication")
     } else {
         nonPublicMarkers.add("io.matthewnelson.encoding.core.internal.InternalEncodingApi")
 
-        val JVM = TARGETS?.contains("JVM") != false
-        val ANDROID = TARGETS?.contains("ANDROID") != false
-
         ignoredProjects.add("encoding-test")
+    }
+}
 
-        if (KMP_TARGETS_ALL || (ANDROID && JVM)) {
-            ignoredProjects.add("app")
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    // Example 1: reject all non stable versions
+    rejectVersionIf {
+        isNonStable(candidate.version)
+    }
+
+    // Example 2: disallow release candidates as upgradable versions from stable versions
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+
+    // Example 3: using the full syntax
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
+                    reject("Release candidate")
+                }
+            }
         }
     }
 }

@@ -18,8 +18,6 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
-        with:
-          submodules: true
 
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
@@ -35,14 +33,14 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.konan
-          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('kotlin-components/includeBuild/dependencies/src/main/kotlin/versions.kt') }}
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('gradle/libs.versions.toml') }}
           restore-keys: ${{ runner.os }}-konan-
 
       - name: Setup Caches [ Gradle Caches ]
         uses: actions/cache@v1
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('kotlin-components/includeBuild/dependencies/src/main/kotlin/versions.kt') }}
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('gradle/libs.versions.toml') }}
           restore-keys: ${{ runner.os }}-gradle-caches-
 
       - name: Setup JDK
@@ -55,14 +53,14 @@ jobs:
         if: matrix.os == 'macos-latest' && matrix.job == 'test'
         run: >
           ./gradlew check --stacktrace
-          -PKMP_TARGETS="JVM,JS,IOS_ARM32,IOS_ARM64,IOS_X64,IOS_SIMULATOR_ARM64,MACOS_ARM64,MACOS_X64,TVOS_ARM64,TVOS_X64,TVOS_SIMULATOR_ARM64,WATCHOS_ARM32,WATCHOS_ARM64,WATCHOS_DEVICE_ARM64,WATCHOS_X64,WATCHOS_X86,WATCHOS_SIMULATOR_ARM64,WASM_32"
+          -PKMP_TARGETS="JVM,JS,IOS_ARM32,IOS_ARM64,IOS_X64,IOS_SIMULATOR_ARM64,MACOS_ARM64,MACOS_X64,TVOS_ARM64,TVOS_X64,TVOS_SIMULATOR_ARM64,WATCHOS_ARM32,WATCHOS_ARM64,WATCHOS_DEVICE_ARM64,WATCHOS_X64,WATCHOS_X86,WATCHOS_SIMULATOR_ARM64,WASM,WASM_32"
       - name: Run Linux Tests
         if: matrix.os == 'ubuntu-latest' && matrix.job == 'test'
         run: >
           ./gradlew check --stacktrace
-          -PKMP_TARGETS="JVM,JS,ANDROID,ANDROID_ARM32,ANDROID_ARM64,ANDROID_X64,ANDROID_X86,LINUX_ARM32HFP,LINUX_ARM64,LINUX_MIPS32,LINUX_MIPSEL32,LINUX_X64,WASM_32"
+          -PKMP_TARGETS="JVM,JS,ANDROID,ANDROID_ARM32,ANDROID_ARM64,ANDROID_X64,ANDROID_X86,LINUX_ARM32HFP,LINUX_ARM64,LINUX_MIPS32,LINUX_MIPSEL32,LINUX_X64,WASM,WASM_32"
       - name: Run Windows Tests
         if: matrix.os == 'windows-latest' && matrix.job == 'test'
         run: >
           ./gradlew check --stacktrace
-          -PKMP_TARGETS="JVM,JS,MINGW_X64,MINGW_X86,WASM_32"
+          -PKMP_TARGETS="JVM,JS,MINGW_X64,MINGW_X86,WASM,WASM_32"
