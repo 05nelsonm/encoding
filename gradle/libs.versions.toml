@@ -1,14 +1,17 @@
 [versions]
 binaryCompat = "0.12.1"
 configuration = "0.1.0-alpha02"
+gradleVersions = "0.46.0"
 kotlin = "1.8.0"
 publish = "0.24.0"
 
 [libraries]
 gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradle-maven-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "publish" }
+gradle-versions = { module = "com.github.ben-manes:gradle-versions-plugin", version.ref = "gradleVersions" }
 
 [plugins]
 binaryCompat = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompat" }
 publish = { id = "com.vanniktech.maven.publish", version.ref = "publish" }
 configuration = { id = "io.matthewnelson.kmp.configuration", version.ref = "configuration" }
+gradleVersions = { id = "com.github.ben-manes.versions", version.ref = "gradleVersions" }

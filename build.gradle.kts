@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
@@ -31,6 +32,7 @@ buildscript {
     dependencies {
         classpath(libs.gradle.kotlin)
         classpath(libs.gradle.maven.publish)
+        classpath(libs.gradle.versions)
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle.kts files
@@ -66,6 +68,8 @@ plugins {
     alias(libs.plugins.binaryCompat)
 }
 
+plugins.apply(libs.plugins.gradleVersions.get().pluginId)
+
 @Suppress("LocalVariableName")
 apiValidation {
     val CHECK_PUBLICATION = findProperty("CHECK_PUBLICATION") as? String
@@ -76,5 +80,35 @@ apiValidation {
         nonPublicMarkers.add("io.matthewnelson.encoding.core.internal.InternalEncodingApi")
 
         ignoredProjects.add("encoding-test")
+    }
+}
+
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    // Example 1: reject all non stable versions
+    rejectVersionIf {
+        isNonStable(candidate.version)
+    }
+
+    // Example 2: disallow release candidates as upgradable versions from stable versions
+    rejectVersionIf {
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
+    }
+
+    // Example 3: using the full syntax
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
+                    reject("Release candidate")
+                }
+            }
+        }
     }
 }
