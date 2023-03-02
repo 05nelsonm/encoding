@@ -224,6 +224,11 @@ println(sb.toString())
 
 **Alternatively, create your own `EncoderDecoder`(s) using the abstractions provided by `encoding-core`!**
 
+
+### Sample
+
+See [sample project](sample/README.md)
+
 ### Get Started
 
 <!-- TAG_VERSION -->

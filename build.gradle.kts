@@ -80,6 +80,7 @@ apiValidation {
         nonPublicMarkers.add("io.matthewnelson.encoding.core.internal.InternalEncodingApi")
 
         ignoredProjects.add("encoding-test")
+        ignoredProjects.add("sample")
     }
 }
 
