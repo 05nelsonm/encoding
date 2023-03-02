@@ -33,14 +33,14 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.konan
-          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('kotlin-components/includeBuild/dependencies/src/main/kotlin/versions.kt') }}
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('gradle/libs.versions.toml') }}
           restore-keys: ${{ runner.os }}-konan-
 
       - name: Setup Caches [ Gradle Caches ]
         uses: actions/cache@v1
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('kotlin-components/includeBuild/dependencies/src/main/kotlin/versions.kt') }}
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('gradle/libs.versions.toml') }}
           restore-keys: ${{ runner.os }}-gradle-caches-
 
       - name: Setup JDK
