@@ -17,7 +17,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
  **/
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.configuration)
+    id("configuration")
 }
 
 kmpConfiguration {

@@ -13,59 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.configuration)
+    id("configuration")
 }
 
 kmpConfiguration {
-    configure {
-        jvm {
-            target {
-                withJava()
-            }
-
-            kotlinJvmTarget = JavaVersion.VERSION_1_8
-            compileSourceCompatibility = JavaVersion.VERSION_1_8
-            compileTargetCompatibility = JavaVersion.VERSION_1_8
-        }
-
-        js()
-//        wasm()
-        wasmNativeAll()
-
-        androidNativeAll()
-
-        iosAll()
-        macosAll()
-        tvosAll()
-        watchosAll()
-
-        linuxAll()
-        mingwAll()
-
+    configureShared(publish = true) {
         common {
-            pluginIds(libs.plugins.publish.get().pluginId)
-
             sourceSetMain {
                 dependencies {
                     api(project(":library:encoding-core"))
                 }
             }
-
             sourceSetTest {
                 dependencies {
-                    implementation(kotlin("test"))
                     implementation(project(":library:encoding-test"))
                 }
-            }
-        }
-
-        kotlin {
-            explicitApi()
-
-            extensions.configure<SigningExtension>("signing") {
-                useGpgCmd()
             }
         }
     }
