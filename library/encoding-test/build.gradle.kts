@@ -18,5 +18,13 @@ plugins {
 }
 
 kmpConfiguration {
-    configureShared(explicitApi = false) {}
+    configureShared(explicitApi = false) {
+        common {
+            sourceSetMain {
+                dependencies {
+                    implementation(kotlin("test"))
+                }
+            }
+        }
+    }
 }
