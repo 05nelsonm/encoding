@@ -39,10 +39,11 @@ kmpConfiguration {
         common {
             sourceSetMain {
                 dependencies {
-                    implementation("${group}:encoding-base16:${version}")
-                    implementation("${group}:encoding-base32:${version}")
-                    implementation("${group}:encoding-base64:${version}")
-                    implementation("${group}:encoding-core:${version}")
+                    implementation(platform("$group:encoding-bom:$version"))
+                    implementation("$group:encoding-base16")
+                    implementation("$group:encoding-base32")
+                    implementation("$group:encoding-base64")
+                    implementation("$group:encoding-core")
                 }
             }
         }
