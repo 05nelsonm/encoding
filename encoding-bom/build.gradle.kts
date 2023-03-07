@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2021 Matthew Nelson
+ * Copyright (c) 2023 Matthew Nelson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         https://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,22 +14,18 @@
  * limitations under the License.
  **/
 plugins {
-    id("configuration")
-    id("bom-include")
+    id("publication")
+    id("java-platform")
 }
 
-kmpConfiguration {
-    configureShared(publish = true) {
-        common {
-            sourceSetMain {
-                dependencies {
-                    api(project(":library:encoding-core"))
-                }
-            }
-            sourceSetTest {
-                dependencies {
-                    implementation(project(":library:encoding-test"))
-                }
+dependencies {
+    constraints {
+        rootProject.subprojects.forEach {
+            if (
+                it.path.startsWith(":library:")
+                && evaluationDependsOn(it.path).plugins.hasPlugin("bom-include")
+            ) {
+                api(project(it.path))
             }
         }
     }

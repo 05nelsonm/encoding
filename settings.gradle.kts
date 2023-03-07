@@ -25,5 +25,6 @@ if (CHECK_PUBLICATION != null) {
         include(":library:$name")
     }
 
+    include(":encoding-bom")
     include(":sample")
 }

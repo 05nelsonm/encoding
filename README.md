@@ -240,44 +240,32 @@ dependencies {
     implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
-    
-    // Alternatively, if you only want the abstractions to create your own EncoderDecoder(s)
+
+    // Only necessary if you just want the abstractions to create your own EncoderDecoder(s)
     implementation("io.matthewnelson.kotlin-components:encoding-core:$encoding")
 }
 ```
 
 <!-- TAG_VERSION -->
+<!-- TODO: Uncomment next release
+Alternatively, you can use the BOM.
 
-```groovy
-// build.gradle
+```kotlin
+// build.gradle.kts
 dependencies {
-    def encoding = "1.2.1"
-    implementation "io.matthewnelson.kotlin-components:encoding-base16:$encoding"
-    implementation "io.matthewnelson.kotlin-components:encoding-base32:$encoding"
-    implementation "io.matthewnelson.kotlin-components:encoding-base64:$encoding"
+    // define the BOM and its version
+    implementation(platform("io.matthewnelson.kotlin-components:encoding-bom:1.2.1"))
 
-    // Alternatively, if you only want the abstractions to create your own EncoderDecoder(s)
-    implementation "io.matthewnelson.kotlin-components:encoding-core:$encoding"
+    // define artifacts without version
+    implementation("io.matthewnelson.kotlin-components:encoding-base16")
+    implementation("io.matthewnelson.kotlin-components:encoding-base32")
+    implementation("io.matthewnelson.kotlin-components:encoding-base64")
+
+    // Only necessary if you just want the abstractions to create your own EncoderDecoder(s)
+    implementation("io.matthewnelson.kotlin-components:encoding-core")
 }
 ```
-
-### Kotlin Version Compatibility
-
-**Note:** as of `1.1.0`, the experimental memory model for KotlinNative is enabled.
-
-<!-- TAG_VERSION -->
-
-| encoding | kotlin |
-|:--------:|:------:|
-|  1.2.1   | 1.8.0  |
-|  1.2.0   | 1.8.0  |
-|  1.1.5   | 1.8.0  |
-|  1.1.4   | 1.7.20 |
-|  1.1.3   | 1.6.21 |
-|  1.1.2   | 1.6.21 |
-|  1.1.1   | 1.6.21 |
-|  1.1.0   | 1.6.10 |
-|  1.0.3   | 1.5.31 |
+-->
 
 <!-- TAG_VERSION -->
 [badge-latest-release]: https://img.shields.io/badge/latest--release-1.2.1-blue.svg?style=flat
