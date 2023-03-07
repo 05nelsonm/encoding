@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.configuration)
+    id("configuration")
 }
 
 repositories {
@@ -36,38 +35,15 @@ repositories {
 }
 
 kmpConfiguration {
-    configure {
-        jvm {
-            target {
-                withJava()
-            }
-
-            kotlinJvmTarget = JavaVersion.VERSION_1_8
-            compileSourceCompatibility = JavaVersion.VERSION_1_8
-            compileTargetCompatibility = JavaVersion.VERSION_1_8
-        }
-
-        js()
-//        wasm()
-        wasmNativeAll()
-
-        androidNativeAll()
-
-        iosAll()
-        macosAll()
-        tvosAll()
-        watchosAll()
-
-        linuxAll()
-        mingwAll()
-
+    configureShared(explicitApi = false) {
         common {
             sourceSetMain {
                 dependencies {
-                    implementation("${group}:encoding-base16:${version}")
-                    implementation("${group}:encoding-base32:${version}")
-                    implementation("${group}:encoding-base64:${version}")
-                    implementation("${group}:encoding-core:${version}")
+                    implementation(platform("$group:encoding-bom:$version"))
+                    implementation("$group:encoding-base16")
+                    implementation("$group:encoding-base32")
+                    implementation("$group:encoding-base64")
+                    implementation("$group:encoding-core")
                 }
             }
         }

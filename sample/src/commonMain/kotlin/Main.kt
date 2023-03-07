@@ -70,7 +70,7 @@ fun main() {
     val base64 = bytes.encodeToString(base64DefaultEncoderDecoder)
     val base64UrlSafe = bytes.encodeToString(base64UrlSafeEncoderDecoder)
 
-    println("Hello World Encodes to:")
+    println("'Hello World!' Encodes to:")
     println("    Base16 (hex): $base16")
 
     println("    Base32 Crockford[checkSymbol = *, hyphenInterval = 5]: $crockford")
