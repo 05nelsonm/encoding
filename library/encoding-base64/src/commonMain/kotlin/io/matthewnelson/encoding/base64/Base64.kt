@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base64
 
 import io.matthewnelson.encoding.base64.Base64.Default
+import io.matthewnelson.encoding.builders.Base64
 import io.matthewnelson.encoding.builders.Base64ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.DecoderInput
@@ -55,6 +56,8 @@ import kotlin.jvm.JvmSynthetic
  * @see [Base64.Config]
  * @see [Default.CHARS]
  * @see [UrlSafe.CHARS]
+ * @see [Default.INSTANCE]
+ * @see [UrlSafe.INSTANCE]
  * @see [EncoderDecoder]
  * @see [Decoder.decodeToByteArray]
  * @see [Decoder.decodeToByteArrayOrNull]
@@ -135,6 +138,12 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
          * Base64 Default encoding characters.
          * */
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+
+        /**
+         * A static instance with a lineBreakInterval of 64
+         * */
+        @JvmField
+        public val INSTANCE: Base64 = Base64 { lineBreakInterval = 64 }
     }
 
     public object UrlSafe {
@@ -143,6 +152,12 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
          * Base64 UrlSafe encoding characters.
          * */
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+
+        /**
+         * A static instance with a lineBreakInterval of 64
+         * */
+        @JvmField
+        public val INSTANCE: Base64 = Base64(Default.INSTANCE.config) { encodeToUrlSafe = true }
     }
 
     protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {

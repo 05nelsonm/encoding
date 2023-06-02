@@ -67,6 +67,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthe
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Crockford$Companion;
+	public static final field INSTANCE Lio/matthewnelson/encoding/base32/Base32$Crockford;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
 }
 
@@ -84,6 +85,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewn
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Default$Companion;
+	public static final field INSTANCE Lio/matthewnelson/encoding/base32/Base32$Default;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
 }
 
@@ -100,6 +102,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelso
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Hex$Companion;
+	public static final field INSTANCE Lio/matthewnelson/encoding/base32/Base32$Hex;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
 }
 
