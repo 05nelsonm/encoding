@@ -17,6 +17,7 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.helpers.TestConfig
 import io.matthewnelson.encoding.core.helpers.TestEncoderDecoder
+import io.matthewnelson.encoding.core.util.EncoderLineBreakOutFeed
 import kotlin.test.*
 
 @OptIn(ExperimentalEncodingApi::class)
@@ -196,7 +197,7 @@ class EncoderDecoderFeedUnitTest {
     }
 
     @Test
-    fun givenEncoderFeed_whenLineBreakExpressedInConfig_then() {
+    fun givenEncoderFeed_whenLineBreakExpressedInConfig_thenNewLinesAreAutomaticallyAppended() {
         val encoder = TestEncoderDecoder(
             config = TestConfig(
                 isLenient = true,
@@ -227,5 +228,33 @@ class EncoderDecoderFeedUnitTest {
         assertEquals(11, count)
 
         feed.doFinal()
+    }
+
+    @Test
+    fun givenEncoderFeed_whenEncoderLineBreakOutFeedUsed_thenConfigLineBreakIntervalIsOverridden() {
+        val encoder = TestEncoderDecoder(
+            config = TestConfig(
+                isLenient = true,
+                lineBreakInterval = 2,
+                encodeReturn = { it }
+            )
+        )
+
+        val sb = StringBuilder()
+        encoder.newEncoderFeed(EncoderLineBreakOutFeed(10) { c ->
+            sb.append(c)
+        }).use { feed ->
+            assertEquals(0, sb.length)
+
+            repeat(10) {
+                feed.consume(5)
+            }
+
+            assertEquals(10, sb.length)
+
+            feed.consume(5)
+            assertEquals(12, sb.length)
+            assertTrue(sb.toString().lines().size == 2)
+        }
     }
 }

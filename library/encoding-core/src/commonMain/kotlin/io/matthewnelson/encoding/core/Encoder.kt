@@ -54,7 +54,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * */
     @ExperimentalEncodingApi
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
-        return if (config.lineBreakInterval > 0) {
+        return if (config.lineBreakInterval > 0 && out !is EncoderLineBreakOutFeed) {
             newEncoderFeedProtected(EncoderLineBreakOutFeed(config.lineBreakInterval, out))
         } else {
             newEncoderFeedProtected(out)
