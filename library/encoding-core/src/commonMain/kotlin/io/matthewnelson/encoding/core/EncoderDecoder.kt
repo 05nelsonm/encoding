@@ -82,7 +82,23 @@ constructor(config: C): Encoder<C>(config) {
          *   the calculated size exceeded [Long.MAX_VALUE].
          * */
         @Throws(EncodingSizeException::class)
-        public fun encodeOutSize(unEncodedSize: Long): Long {
+        public fun encodeOutSize(unEncodedSize: Long): Long = encodeOutSize(unEncodedSize, lineBreakInterval)
+
+        /**
+         * Pre-calculates and returns the size of the output, after encoding
+         * would occur, based off of the [Config] options set and expressed
+         * [lineBreakInterval].
+         *
+         * Will always return a value greater than or equal to 0.
+         *
+         * @param [unEncodedSize] The size of the data which is to be encoded.
+         * @param [lineBreakInterval] The interval at which linebreaks are to
+         *   be inserted.
+         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or
+         *   the calculated size exceeded [Long.MAX_VALUE].
+         * */
+        @Throws(EncodingSizeException::class)
+        public fun encodeOutSize(unEncodedSize: Long, lineBreakInterval: Byte): Long {
             if (unEncodedSize < 0L) {
                 throw EncodingSizeException("unEncodedSize cannot be negative")
             }

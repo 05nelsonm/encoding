@@ -85,6 +85,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 	protected abstract fun decodeOutMaxSizeProtected (J)J
 	public final fun encodeOutSize (J)J
+	public final fun encodeOutSize (JB)J
 	protected abstract fun encodeOutSizeProtected (J)J
 	public final fun equals (Ljava/lang/Object;)Z
 	public final fun hashCode ()I
