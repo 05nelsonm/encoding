@@ -34,7 +34,6 @@ import kotlin.jvm.JvmStatic
  * @see [truncatedInputEncodingException]
  * @throws [IllegalArgumentException] if [blockSize] is less
  *   than or equal to 0
- * @sample [io.matthewnelson.encoding.base16.Base16.DecodingBuffer]
  * */
 public abstract class FeedBuffer
 @Throws(IllegalArgumentException::class)

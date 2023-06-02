@@ -32,7 +32,6 @@ import kotlin.jvm.JvmStatic
  * @see [Feed]
  * @see [Encoder]
  * @see [Decoder]
- * @sample [io.matthewnelson.encoding.base16.Base16]
  * */
 public abstract class EncoderDecoder<C: EncoderDecoder.Config>
 @ExperimentalEncodingApi
@@ -54,7 +53,6 @@ constructor(config: C): Encoder<C>(config) {
      *   padding the encoded output; **NOT** "if padding should be
      *   used". If the encoding specification does not use padding,
      *   pass `null`.
-     * @sample [io.matthewnelson.encoding.base16.Base16.Config]
      * */
     public abstract class Config
     @ExperimentalEncodingApi
@@ -84,7 +82,23 @@ constructor(config: C): Encoder<C>(config) {
          *   the calculated size exceeded [Long.MAX_VALUE].
          * */
         @Throws(EncodingSizeException::class)
-        public fun encodeOutSize(unEncodedSize: Long): Long {
+        public fun encodeOutSize(unEncodedSize: Long): Long = encodeOutSize(unEncodedSize, lineBreakInterval)
+
+        /**
+         * Pre-calculates and returns the size of the output, after encoding
+         * would occur, based off of the [Config] options set and expressed
+         * [lineBreakInterval].
+         *
+         * Will always return a value greater than or equal to 0.
+         *
+         * @param [unEncodedSize] The size of the data which is to be encoded.
+         * @param [lineBreakInterval] The interval at which linebreaks are to
+         *   be inserted.
+         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or
+         *   the calculated size exceeded [Long.MAX_VALUE].
+         * */
+        @Throws(EncodingSizeException::class)
+        public fun encodeOutSize(unEncodedSize: Long, lineBreakInterval: Byte): Long {
             if (unEncodedSize < 0L) {
                 throw EncodingSizeException("unEncodedSize cannot be negative")
             }
@@ -379,11 +393,33 @@ constructor(config: C): Encoder<C>(config) {
      * recommended) which will call [doFinal] (or [close] if there was
      * an error with the operation) for you.
      *
+     * If encoding/decoding multiple chunks of data (e.g. encoding 2
+     * ByteArrays and concatenating them with a separator character),
+     * you can call [flush] between chunks to perform final operations
+     * on that chunk without closing the [Feed].
+     *
      * @see [use]
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
      * */
     public sealed class Feed<C: EncoderDecoder.Config>(public val config: C) {
+
+        /**
+         * Flushes any buffered input of the [Feed] without
+         * closing it, performing final encoding/decoding
+         * operations for that chunk of data.
+         *
+         * Useful in the event you are performing encoding/decoding
+         * operations with a single feed on multiple inputs.
+         *
+         * @see [Decoder.Feed.flush]
+         * @see [Encoder.Feed.flush]
+         * @throws [EncodingException] if [isClosed] is true, or
+         *   there was an error encoding/decoding.
+         * */
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public abstract fun flush()
 
         /**
          * [close]s the [Decoder.Feed]/[Encoder.Feed] and finalizes the
@@ -404,8 +440,12 @@ constructor(config: C): Encoder<C>(config) {
         @Throws(EncodingException::class)
         public fun doFinal() {
             if (isClosed()) throw closedException()
-            close()
-            doFinalProtected()
+
+            try {
+                doFinalProtected()
+            } finally {
+                close()
+            }
         }
 
         /**
@@ -426,6 +466,12 @@ constructor(config: C): Encoder<C>(config) {
 
         public abstract fun isClosed(): Boolean
 
+        /**
+         * Implementors should perform final operations on
+         * their buffered input, **AND** reset any stateful
+         * variables they may have. This is called by both
+         * [flush] and [doFinal].
+         * */
         @Throws(EncodingException::class)
         protected abstract fun doFinalProtected()
     }

@@ -197,6 +197,30 @@ class EncoderDecoderFeedUnitTest {
     }
 
     @Test
+    fun givenDecoderFeed_whenFlushed_thenFeedIsReset() {
+        var invocations = 0
+        var output: Byte = 0
+        val feed = TestEncoderDecoder(TestConfig(isLenient = true, paddingChar = '=')).newDecoderFeed {
+            invocations++
+            output = it
+        }
+
+        feed.consume('g')
+        feed.consume('=')
+
+        assertEquals(1, invocations)
+        assertEquals(Byte.MAX_VALUE, output)
+
+        feed.flush()
+        assertEquals(2, invocations)
+        assertEquals(Byte.MIN_VALUE, output)
+
+        feed.consume('g')
+        assertEquals(3, invocations)
+        assertEquals(Byte.MAX_VALUE, output)
+    }
+
+    @Test
     fun givenEncoderFeed_whenLineBreakExpressedInConfig_thenNewLinesAreAutomaticallyAppended() {
         val encoder = TestEncoderDecoder(
             config = TestConfig(
@@ -256,5 +280,28 @@ class EncoderDecoderFeedUnitTest {
             assertEquals(12, sb.length)
             assertTrue(sb.toString().lines().size == 2)
         }
+    }
+
+    @Test
+    fun givenEncoderFeed_whenFlushed_thenFeedIsReset() {
+        var invocations = 0
+        var output = ' '
+        val feed = TestEncoderDecoder(TestConfig(isLenient = true, paddingChar = '=')).newEncoderFeed {
+            invocations++
+            output = it
+        }
+
+        feed.consume(5)
+
+        assertEquals(1, invocations)
+        assertEquals(Char.MAX_VALUE, output)
+
+        feed.flush()
+        assertEquals(2, invocations)
+        assertEquals(Char.MIN_VALUE, output)
+
+        feed.consume(5)
+        assertEquals(3, invocations)
+        assertEquals(Char.MAX_VALUE, output)
     }
 }

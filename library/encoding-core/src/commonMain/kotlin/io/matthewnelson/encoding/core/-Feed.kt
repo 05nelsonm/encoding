@@ -29,9 +29,6 @@ import io.matthewnelson.encoding.core.EncoderDecoder.Feed
  *    exception and the feed is still open.
  *  - Calling [Feed.close] if [block] **DID** throw an
  *    exception.
- *
- * @sample [io.matthewnelson.encoding.core.internal.encode]
- * @sample [io.matthewnelson.encoding.core.internal.decode]
  * */
 @ExperimentalEncodingApi
 @OptIn(ExperimentalContracts::class)
