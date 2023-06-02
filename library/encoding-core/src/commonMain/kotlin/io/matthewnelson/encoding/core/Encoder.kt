@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.core
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutSizeOrFail
+import io.matthewnelson.encoding.core.util.EncoderLineBreakOutFeed
 import kotlin.jvm.JvmStatic
 
 /**
@@ -54,7 +55,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
     @ExperimentalEncodingApi
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
         return if (config.lineBreakInterval > 0) {
-            newEncoderFeedProtected(LineBreakOutFeed(config.lineBreakInterval, out))
+            newEncoderFeedProtected(EncoderLineBreakOutFeed(config.lineBreakInterval, out))
         } else {
             newEncoderFeedProtected(out)
         }
@@ -199,35 +200,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
                 ba
             }
-        }
-    }
-
-    /**
-     * A wrapper around [Encoder.OutFeed] to hijack the
-     * output and insert new line characters at every
-     * expressed [interval].
-     * */
-    private inner class LineBreakOutFeed(
-        private val interval: Byte,
-        private val out: Encoder.OutFeed,
-    ): Encoder.OutFeed {
-
-        init {
-            require(interval > 0) {
-                "interval must be greater than 0"
-            }
-        }
-
-        private var count: Byte = 0
-
-        override fun output(encoded: Char) {
-            if (count == interval) {
-                out.output('\n')
-                count = 0
-            }
-
-            out.output(encoded)
-            count++
         }
     }
 }
