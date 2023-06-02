@@ -32,7 +32,6 @@ import kotlin.jvm.JvmStatic
  * @see [Feed]
  * @see [Encoder]
  * @see [Decoder]
- * @sample [io.matthewnelson.encoding.base16.Base16]
  * */
 public abstract class EncoderDecoder<C: EncoderDecoder.Config>
 @ExperimentalEncodingApi
@@ -54,7 +53,6 @@ constructor(config: C): Encoder<C>(config) {
      *   padding the encoded output; **NOT** "if padding should be
      *   used". If the encoding specification does not use padding,
      *   pass `null`.
-     * @sample [io.matthewnelson.encoding.base16.Base16.Config]
      * */
     public abstract class Config
     @ExperimentalEncodingApi

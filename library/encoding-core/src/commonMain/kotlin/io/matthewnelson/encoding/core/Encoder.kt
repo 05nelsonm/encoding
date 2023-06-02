@@ -79,7 +79,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [use]
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
-     * @sample [io.matthewnelson.encoding.base16.Base16.newEncoderFeedProtected]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi

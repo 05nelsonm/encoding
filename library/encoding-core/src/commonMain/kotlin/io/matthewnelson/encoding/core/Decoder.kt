@@ -82,7 +82,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * @see [use]
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
-     * @sample [io.matthewnelson.encoding.base16.Base16.newDecoderFeedProtected]
      * */
     public abstract inner class Feed
     @ExperimentalEncodingApi
