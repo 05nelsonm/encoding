@@ -53,7 +53,9 @@ internal inline fun <C: Config> Decoder<C>.decode(
     return if (i == size) {
         ba
     } else {
-        ba.copyOf(i)
+        val copy = ba.copyOf(i)
+        ba.fill(0, toIndex = i)
+        copy
     }
 }
 
