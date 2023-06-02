@@ -17,7 +17,7 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.helpers.TestConfig
 import io.matthewnelson.encoding.core.helpers.TestEncoderDecoder
-import io.matthewnelson.encoding.core.util.EncoderLineBreakOutFeed
+import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import kotlin.test.*
 
 @OptIn(ExperimentalEncodingApi::class)
@@ -265,7 +265,7 @@ class EncoderDecoderFeedUnitTest {
         )
 
         val sb = StringBuilder()
-        encoder.newEncoderFeed(EncoderLineBreakOutFeed(10) { c ->
+        encoder.newEncoderFeed(LineBreakOutFeed(10) { c ->
             sb.append(c)
         }).use { feed ->
             assertEquals(0, sb.length)

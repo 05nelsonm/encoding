@@ -145,12 +145,6 @@ public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public final fun get (I)C
 }
 
-public final class io/matthewnelson/encoding/core/util/EncoderLineBreakOutFeed : io/matthewnelson/encoding/core/Encoder$OutFeed {
-	public final field interval B
-	public fun <init> (BLio/matthewnelson/encoding/core/Encoder$OutFeed;)V
-	public fun output (C)V
-}
-
 public abstract class io/matthewnelson/encoding/core/util/FeedBuffer {
 	public static final field Companion Lio/matthewnelson/encoding/core/util/FeedBuffer$Companion;
 	public final field blockSize I
@@ -171,5 +165,12 @@ public abstract interface class io/matthewnelson/encoding/core/util/FeedBuffer$F
 
 public abstract interface class io/matthewnelson/encoding/core/util/FeedBuffer$Flush {
 	public abstract fun invoke ([I)V
+}
+
+public final class io/matthewnelson/encoding/core/util/LineBreakOutFeed : io/matthewnelson/encoding/core/Encoder$OutFeed {
+	public final field interval B
+	public fun <init> (BLio/matthewnelson/encoding/core/Encoder$OutFeed;)V
+	public fun output (C)V
+	public final fun reset ()V
 }
 
