@@ -27,7 +27,7 @@ import kotlin.jvm.JvmField
  * @param [out] The other [Encoder.OutFeed]
  * @throws [IllegalArgumentException] if [interval] is less than 0
  * */
-public class EncoderLineBreakOutFeed
+public class LineBreakOutFeed
 @Throws(IllegalArgumentException::class)
 public constructor(
     @JvmField

@@ -17,11 +17,10 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.Decoder.Feed
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutSizeOrFail
-import io.matthewnelson.encoding.core.util.EncoderLineBreakOutFeed
+import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import kotlin.jvm.JvmStatic
 
 /**
@@ -55,8 +54,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * */
     @ExperimentalEncodingApi
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
-        return if (config.lineBreakInterval > 0 && out !is EncoderLineBreakOutFeed) {
-            newEncoderFeedProtected(EncoderLineBreakOutFeed(config.lineBreakInterval, out))
+        return if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
+            newEncoderFeedProtected(LineBreakOutFeed(config.lineBreakInterval, out))
         } else {
             newEncoderFeedProtected(out)
         }
