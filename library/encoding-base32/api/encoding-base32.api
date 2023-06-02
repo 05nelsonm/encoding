@@ -68,9 +68,11 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthe
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Crockford$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
+	public static final fun getINSTANCE ()Lio/matthewnelson/encoding/base32/Base32$Crockford;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion {
+	public final fun getINSTANCE ()Lio/matthewnelson/encoding/base32/Base32$Crockford;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
@@ -85,9 +87,11 @@ public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewn
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Default$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
+	public static final fun getINSTANCE ()Lio/matthewnelson/encoding/base32/Base32$Default;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Companion {
+	public final fun getINSTANCE ()Lio/matthewnelson/encoding/base32/Base32$Default;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
@@ -101,9 +105,11 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelso
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Hex$Companion;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
+	public static final fun getINSTANCE ()Lio/matthewnelson/encoding/base32/Base32$Hex;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion {
+	public final fun getINSTANCE ()Lio/matthewnelson/encoding/base32/Base32$Hex;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {

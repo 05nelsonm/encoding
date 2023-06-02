@@ -26,6 +26,7 @@ import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.*
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -67,6 +68,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      * @see [Crockford.Config]
      * @see [Crockford.CHARS_UPPER]
      * @see [Crockford.CHARS_LOWER]
+     * @see [Crockford.INSTANCE]
      * @see [EncoderDecoder]
      * */
     public class Crockford(config: Crockford.Config): Base32<Crockford.Config>(config) {
@@ -198,6 +200,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * Lowercase Base32 Crockford encoding characters.
              * */
             public const val CHARS_LOWER: String = "0123456789abcdefghjkmnpqrstvwxyz"
+
+            /**
+             * A static instance with a hyphenInterval of 4
+             * */
+            @JvmStatic
+            public val INSTANCE: Base32.Crockford = Base32Crockford { hyphenInterval = 4 }
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
@@ -416,6 +424,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      * @see [Default.Config]
      * @see [Default.CHARS_UPPER]
      * @see [Default.CHARS_LOWER]
+     * @see [Default.INSTANCE]
      * @see [EncoderDecoder]
      * */
     public class Default(config: Default.Config): Base32<Default.Config>(config) {
@@ -485,6 +494,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * Lowercase Base32 Default encoding characters.
              * */
             public const val CHARS_LOWER: String = "abcdefghijklmnopqrstuvwxyz234567"
+
+            /**
+             * A static instance with a lineBreakInterval of 64
+             * */
+            @JvmStatic
+            public val INSTANCE: Base32.Default = Base32Default { lineBreakInterval = 64 }
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
@@ -584,6 +599,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      * @see [Hex.Config]
      * @see [Hex.CHARS_UPPER]
      * @see [Hex.CHARS_LOWER]
+     * @see [Hex.INSTANCE]
      * @see [EncoderDecoder]
      * */
     public class Hex(config: Hex.Config): Base32<Hex.Config>(config) {
@@ -653,6 +669,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * Lowercase Base32 Hex encoding characters.
              * */
             public const val CHARS_LOWER: String = "0123456789abcdefghijklmnopqrstuv"
+
+            /**
+             * A static instance with a lineBreakInterval of 64
+             * */
+            @JvmStatic
+            public val INSTANCE: Base32.Hex = Base32Hex { lineBreakInterval = 64 }
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {

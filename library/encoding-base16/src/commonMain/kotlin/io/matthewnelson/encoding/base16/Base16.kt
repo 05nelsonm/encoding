@@ -17,11 +17,13 @@
 
 package io.matthewnelson.encoding.base16
 
+import io.matthewnelson.encoding.builders.Base16
 import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -49,6 +51,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Base16.Config]
  * @see [Base16.CHARS_UPPER]
  * @see [Base16.CHARS_LOWER]
+ * @see [Base16.INSTANCE]
  * @see [EncoderDecoder]
  * @see [Decoder.decodeToByteArray]
  * @see [Decoder.decodeToByteArrayOrNull]
@@ -125,6 +128,12 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
          * Lowercase Base16 encoding characters.
          * */
         public const val CHARS_LOWER: String = "0123456789abcdef"
+
+        /**
+         * A static instance with a lineBreakInterval of 64
+         * */
+        @JvmStatic
+        public val INSTANCE: Base16 = Base16 { lineBreakInterval = 64 }
     }
 
     protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
