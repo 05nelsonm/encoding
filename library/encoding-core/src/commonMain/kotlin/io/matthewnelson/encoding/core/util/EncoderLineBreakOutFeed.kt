@@ -19,15 +19,17 @@ import io.matthewnelson.encoding.core.Encoder
 import kotlin.jvm.JvmField
 
 /**
- * A Wrapper around [Encoder.OutFeed] to hijack the
- * output and insert new line characters at every
- * expressed [interval]
+ * A Wrapper around another [Encoder.OutFeed] to hijack
+ * the output and insert new line characters at every
+ * expressed [interval].
  *
+ * @param [interval] The interval at which new lines are inserted
+ * @param [out] The other [Encoder.OutFeed]
  * @throws [IllegalArgumentException] if [interval] is less than 0
  * */
 public class EncoderLineBreakOutFeed
 @Throws(IllegalArgumentException::class)
-constructor(
+public constructor(
     @JvmField
     public val interval: Byte,
     private val out: Encoder.OutFeed,
@@ -38,6 +40,11 @@ constructor(
     }
 
     private var count: Byte = 0
+
+    /**
+     * Resets the [count] to 0
+     * */
+    public fun reset() { count = 0 }
 
     override fun output(encoded: Char) {
         if (count == interval) {

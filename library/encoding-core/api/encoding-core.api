@@ -149,6 +149,7 @@ public final class io/matthewnelson/encoding/core/util/EncoderLineBreakOutFeed :
 	public final field interval B
 	public fun <init> (BLio/matthewnelson/encoding/core/Encoder$OutFeed;)V
 	public fun output (C)V
+	public final fun reset ()V
 }
 
 public abstract class io/matthewnelson/encoding/core/util/FeedBuffer {
