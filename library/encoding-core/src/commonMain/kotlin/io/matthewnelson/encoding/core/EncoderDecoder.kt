@@ -377,11 +377,33 @@ constructor(config: C): Encoder<C>(config) {
      * recommended) which will call [doFinal] (or [close] if there was
      * an error with the operation) for you.
      *
+     * If encoding/decoding multiple chunks of data (e.g. encoding 2
+     * ByteArrays and concatenating them with a separator character),
+     * you can call [flush] between chunks to perform final operations
+     * on that chunk without closing the [Feed].
+     *
      * @see [use]
      * @see [Encoder.Feed]
      * @see [Decoder.Feed]
      * */
     public sealed class Feed<C: EncoderDecoder.Config>(public val config: C) {
+
+        /**
+         * Flushes any buffered input of the [Feed] without
+         * closing it, performing final encoding/decoding
+         * operations for that chunk of data.
+         *
+         * Useful in the event you are performing encoding/decoding
+         * operations with a single feed on multiple inputs.
+         *
+         * @see [Decoder.Feed.flush]
+         * @see [Encoder.Feed.flush]
+         * @throws [EncodingException] if [isClosed] is true, or
+         *   there was an error encoding/decoding.
+         * */
+        @ExperimentalEncodingApi
+        @Throws(EncodingException::class)
+        public abstract fun flush()
 
         /**
          * [close]s the [Decoder.Feed]/[Encoder.Feed] and finalizes the
@@ -402,8 +424,12 @@ constructor(config: C): Encoder<C>(config) {
         @Throws(EncodingException::class)
         public fun doFinal() {
             if (isClosed()) throw closedException()
-            close()
-            doFinalProtected()
+
+            try {
+                doFinalProtected()
+            } finally {
+                close()
+            }
         }
 
         /**
@@ -424,6 +450,12 @@ constructor(config: C): Encoder<C>(config) {
 
         public abstract fun isClosed(): Boolean
 
+        /**
+         * Implementors should perform final operations on
+         * their buffered input, **AND** reset any stateful
+         * variables they may have. This is called by both
+         * [flush] and [doFinal].
+         * */
         @Throws(EncodingException::class)
         protected abstract fun doFinalProtected()
     }

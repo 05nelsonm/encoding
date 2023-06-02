@@ -26,6 +26,7 @@ public abstract class io/matthewnelson/encoding/core/Decoder$Feed : io/matthewne
 	public final fun close ()V
 	public final fun consume (C)V
 	protected abstract fun consumeProtected (C)V
+	public final fun flush ()V
 	public final fun isClosed ()Z
 	public final fun toString ()Ljava/lang/String;
 }
@@ -56,6 +57,7 @@ public abstract class io/matthewnelson/encoding/core/Encoder$Feed : io/matthewne
 	public final fun consume (B)V
 	protected abstract fun consumeProtected (B)V
 	protected abstract fun doFinalProtected ()V
+	public final fun flush ()V
 	public final fun isClosed ()Z
 	public final fun toString ()Ljava/lang/String;
 }
@@ -109,6 +111,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public abstract fun close ()V
 	public final fun doFinal ()V
 	protected abstract fun doFinalProtected ()V
+	public abstract fun flush ()V
 	public final fun getConfig ()Lio/matthewnelson/encoding/core/EncoderDecoder$Config;
 	public abstract fun isClosed ()Z
 }

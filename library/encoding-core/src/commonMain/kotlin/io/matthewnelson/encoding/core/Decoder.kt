@@ -132,10 +132,32 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
             }
         }
 
+        /**
+         * Flushes the buffered input and performs any final decoding
+         * operations without closing the [Feed].
+         *
+         * @see [EncoderDecoder.Feed.flush]
+         * @throws [EncodingException] if [isClosed] is true, or if
+         *   there was an error decoding.
+         * */
         @ExperimentalEncodingApi
-        final override fun close() { isClosed = true }
-        final override fun isClosed(): Boolean = isClosed
-        final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
+        @Throws(EncodingException::class)
+        public final override fun flush() {
+            if (isClosed) throw closedException()
+
+            try {
+                doFinalProtected()
+                isPaddingSet = false
+            } catch (t: Throwable) {
+                close()
+                throw t
+            }
+        }
+
+        @ExperimentalEncodingApi
+        public final override fun close() { isClosed = true }
+        public final override fun isClosed(): Boolean = isClosed
+        public final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
 
         @Throws(EncodingException::class)
         protected abstract fun consumeProtected(input: Char)

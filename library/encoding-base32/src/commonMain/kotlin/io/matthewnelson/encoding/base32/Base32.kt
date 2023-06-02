@@ -331,6 +331,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 @Throws(EncodingException::class)
                 override fun doFinalProtected() {
                     buffer.finalize()
+                    isCheckSymbolSet = false
                 }
             }
         }
@@ -379,6 +380,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             out.output(symbol.uppercaseChar())
                         }
                     }
+
+                    outCount = 0
+                    outputHyphenOnNext = false
                 }
             }
         }

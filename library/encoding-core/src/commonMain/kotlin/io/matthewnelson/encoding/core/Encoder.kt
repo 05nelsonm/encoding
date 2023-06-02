@@ -17,6 +17,7 @@
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.Decoder.Feed
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutSizeOrFail
@@ -96,6 +97,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             if (isClosed) throw closedException()
 
             try {
+                // should not throw exception, but just
+                // in case, we close the Feed.
                 consumeProtected(input)
             } catch (t: Throwable) {
                 close()
@@ -103,10 +106,32 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             }
         }
 
+        /**
+         * Flushes the buffered input and performs any final encoding
+         * operations without closing the [Feed].
+         *
+         * @see [EncoderDecoder.Feed.flush]
+         * @throws [EncodingException] if [isClosed] is true.
+         * */
         @ExperimentalEncodingApi
-        final override fun close() { isClosed = true }
-        final override fun isClosed(): Boolean = isClosed
-        final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
+        @Throws(EncodingException::class)
+        public final override fun flush() {
+            if (isClosed) throw closedException()
+
+            try {
+                // should not throw exception, but just
+                // in case, we close the Feed.
+                doFinalProtected()
+            } catch (t: Throwable) {
+                close()
+                throw t
+            }
+        }
+
+        @ExperimentalEncodingApi
+        public final override fun close() { isClosed = true }
+        public final override fun isClosed(): Boolean = isClosed
+        public final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
 
         protected abstract fun consumeProtected(input: Byte)
         protected abstract override fun doFinalProtected()
