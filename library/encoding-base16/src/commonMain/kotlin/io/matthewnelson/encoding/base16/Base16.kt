@@ -23,7 +23,6 @@ import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -132,7 +131,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         /**
          * A static instance with a lineBreakInterval of 64
          * */
-        @JvmStatic
+        @JvmField
         public val INSTANCE: Base16 = Base16 { lineBreakInterval = 64 }
     }
 

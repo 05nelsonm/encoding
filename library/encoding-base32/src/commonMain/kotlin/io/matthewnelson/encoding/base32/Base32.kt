@@ -26,7 +26,6 @@ import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.*
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -204,7 +203,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             /**
              * A static instance with a hyphenInterval of 4
              * */
-            @JvmStatic
+            @JvmField
             public val INSTANCE: Base32.Crockford = Base32Crockford { hyphenInterval = 4 }
         }
 
@@ -498,7 +497,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             /**
              * A static instance with a lineBreakInterval of 64
              * */
-            @JvmStatic
+            @JvmField
             public val INSTANCE: Base32.Default = Base32Default { lineBreakInterval = 64 }
         }
 
@@ -673,7 +672,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             /**
              * A static instance with a lineBreakInterval of 64
              * */
-            @JvmStatic
+            @JvmField
             public val INSTANCE: Base32.Hex = Base32Hex { lineBreakInterval = 64 }
         }
 

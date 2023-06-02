@@ -10,12 +10,11 @@ public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/en
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base16/Base16$Companion;
+	public static final field INSTANCE Lio/matthewnelson/encoding/base16/Base16;
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
-	public static final fun getINSTANCE ()Lio/matthewnelson/encoding/base16/Base16;
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Companion {
-	public final fun getINSTANCE ()Lio/matthewnelson/encoding/base16/Base16;
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {

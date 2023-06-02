@@ -24,7 +24,6 @@ import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
-import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -143,7 +142,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         /**
          * A static instance with a lineBreakInterval of 64
          * */
-        @JvmStatic
+        @JvmField
         public val INSTANCE: Base64 = Base64 { lineBreakInterval = 64 }
     }
 
@@ -157,7 +156,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         /**
          * A static instance with a lineBreakInterval of 64
          * */
-        @JvmStatic
+        @JvmField
         public val INSTANCE: Base64 = Base64(Default.INSTANCE.config) { encodeToUrlSafe = true }
     }
 

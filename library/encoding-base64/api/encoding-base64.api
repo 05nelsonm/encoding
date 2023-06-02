@@ -54,13 +54,13 @@ public final class io/matthewnelson/encoding/base64/Base64$Config : io/matthewne
 public final class io/matthewnelson/encoding/base64/Base64$Default {
 	public static final field CHARS Ljava/lang/String;
 	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64$Default;
-	public static final fun getINSTANCE ()Lio/matthewnelson/encoding/base64/Base64;
+	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64;
 }
 
 public final class io/matthewnelson/encoding/base64/Base64$UrlSafe {
 	public static final field CHARS Ljava/lang/String;
 	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64$UrlSafe;
-	public static final fun getINSTANCE ()Lio/matthewnelson/encoding/base64/Base64;
+	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64;
 }
 
 public final class io/matthewnelson/encoding/builders/Base64BuildersKt {
