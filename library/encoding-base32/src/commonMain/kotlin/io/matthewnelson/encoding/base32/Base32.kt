@@ -60,14 +60,17 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *     val bytes = text.encodeToByteArray()
      *     val encoded = bytes.encodeToString(base32Crockford)
      *     println(encoded) // 91JPR-V3F41-BPYWK-CCGGG~
-     *     val decoded = encoded.decodeToByteArray(base32Crockford).decodeToString()
+     *
+     *     // Alternatively, use the static implementaton instead of
+     *     // configuring your own settings.
+     *     val decoded = encoded.decodeToByteArray(Base32.Crockford).decodeToString()
      *     assertEquals(text, decoded)
      *
      * @see [Base32Crockford]
      * @see [Crockford.Config]
      * @see [Crockford.CHARS_UPPER]
      * @see [Crockford.CHARS_LOWER]
-     * @see [Crockford.INSTANCE]
+     * @see [Crockford.Companion]
      * @see [EncoderDecoder]
      * */
     public class Crockford(config: Crockford.Config): Base32<Crockford.Config>(config) {
@@ -192,7 +195,22 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        public companion object {
+        /**
+         * Doubles as a static implementation with default settings
+         * and a hyphenInterval of 4.
+         *
+         * e.g.
+         *
+         *     val encoded = "Hello World!"
+         *         .encodeToByteArray()
+         *         .encodeToString(Base32.Crockford)
+         *
+         *     println(encoded) // 91JP-RV3F-41BP-YWKC-CGGG
+         *
+         * */
+        public companion object: EncoderDecoder<Base32.Crockford.Config>(
+            config = Base32CrockfordConfigBuilder().apply { hyphenInterval = 4 }.build()
+        ) {
 
             /**
              * Uppercase Base32 Crockford encoding characters.
@@ -204,11 +222,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * */
             public const val CHARS_LOWER: String = "0123456789abcdefghjkmnpqrstvwxyz"
 
-            /**
-             * A static instance with a hyphenInterval of 4
-             * */
-            @JvmField
-            public val INSTANCE: Base32.Crockford = Base32Crockford { hyphenInterval = 4 }
+            private val DELEGATE = Crockford(config)
+            protected override fun name(): String = DELEGATE.name()
+            protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
+                return DELEGATE.newDecoderFeedProtected(out)
+            }
+            protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Crockford.Config>.Feed {
+                return DELEGATE.newEncoderFeedProtected(out)
+            }
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
@@ -422,14 +443,17 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *     val bytes = text.encodeToByteArray()
      *     val encoded = bytes.encodeToString(base32Default)
      *     println(encoded) // JBSWY3DPEBLW64TMMQQQ====
-     *     val decoded = encoded.decodeToByteArray(base32Default).decodeToString()
+     *
+     *     // Alternatively, use the static implementaton instead of
+     *     // configuring your own settings.
+     *     val decoded = encoded.decodeToByteArray(Base32.Default).decodeToString()
      *     assertEquals(text, decoded)
      *
      * @see [Base32Default]
      * @see [Default.Config]
      * @see [Default.CHARS_UPPER]
      * @see [Default.CHARS_LOWER]
-     * @see [Default.INSTANCE]
+     * @see [Default.Companion]
      * @see [EncoderDecoder]
      * */
     public class Default(config: Default.Config): Base32<Default.Config>(config) {
@@ -488,7 +512,22 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        public companion object {
+        /**
+         * Doubles as a static implementation with default settings
+         * and a lineBreakInterval of 64.
+         *
+         * e.g.
+         *
+         *     val encoded = "Hello World!"
+         *         .encodeToByteArray()
+         *         .encodeToString(Base32.Default)
+         *
+         *     println(encoded) // JBSWY3DPEBLW64TMMQQQ====
+         *
+         * */
+        public companion object: EncoderDecoder<Base32.Default.Config>(
+            config = Base32DefaultConfigBuilder().apply { lineBreakInterval = 64 }.build()
+        ) {
 
             /**
              * Uppercase Base32 Default encoding characters.
@@ -500,11 +539,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * */
             public const val CHARS_LOWER: String = "abcdefghijklmnopqrstuvwxyz234567"
 
-            /**
-             * A static instance with a lineBreakInterval of 64
-             * */
-            @JvmField
-            public val INSTANCE: Base32.Default = Base32Default { lineBreakInterval = 64 }
+            private val DELEGATE = Default(config)
+            protected override fun name(): String = DELEGATE.name()
+            protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
+                return DELEGATE.newDecoderFeedProtected(out)
+            }
+            protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Default.Config>.Feed {
+                return DELEGATE.newEncoderFeedProtected(out)
+            }
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
@@ -597,14 +639,17 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *     val bytes = text.encodeToByteArray()
      *     val encoded = bytes.encodeToString(base32Hex)
      *     println(encoded) // 91IMOR3F41BMUSJCCGGG====
-     *     val decoded = encoded.decodeToByteArray(base32Hex).decodeToString()
+     *
+     *     // Alternatively, use the static implementaton instead of
+     *     // configuring your own settings.
+     *     val decoded = encoded.decodeToByteArray(Base32.Hex).decodeToString()
      *     assertEquals(text, decoded)
      *
      * @see [Base32Hex]
      * @see [Hex.Config]
      * @see [Hex.CHARS_UPPER]
      * @see [Hex.CHARS_LOWER]
-     * @see [Hex.INSTANCE]
+     * @see [Hex.Companion]
      * @see [EncoderDecoder]
      * */
     public class Hex(config: Hex.Config): Base32<Hex.Config>(config) {
@@ -663,7 +708,22 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
         }
 
-        public companion object {
+        /**
+         * Doubles as a static implementation with default settings
+         * and a lineBreakInterval of 64.
+         *
+         * e.g.
+         *
+         *     val encoded = "Hello World!"
+         *         .encodeToByteArray()
+         *         .encodeToString(Base32.Hex)
+         *
+         *     println(encoded) // 91IMOR3F41BMUSJCCGGG====
+         *
+         * */
+        public companion object: EncoderDecoder<Base32.Hex.Config>(
+            config = Base32HexConfigBuilder().apply { lineBreakInterval = 64 }.build()
+        ) {
 
             /**
              * Uppercase Base32 Hex encoding characters.
@@ -675,11 +735,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * */
             public const val CHARS_LOWER: String = "0123456789abcdefghijklmnopqrstuv"
 
-            /**
-             * A static instance with a lineBreakInterval of 64
-             * */
-            @JvmField
-            public val INSTANCE: Base32.Hex = Base32Hex { lineBreakInterval = 64 }
+            private val DELEGATE = Hex(config)
+            override fun name(): String = DELEGATE.name()
+            override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
+                return DELEGATE.newDecoderFeedProtected(out)
+            }
+            override fun newEncoderFeedProtected(out: OutFeed): Encoder<Hex.Config>.Feed {
+                return DELEGATE.newEncoderFeedProtected(out)
+            }
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
