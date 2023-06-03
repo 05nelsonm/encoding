@@ -88,6 +88,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val hyphenInterval: Byte,
             @JvmField
             public val checkSymbol: Char?,
+            @JvmField
+            public val finalizeWhenFlushed: Boolean,
         ): EncoderDecoder.Config(
             isLenient = isLenient,
             lineBreakInterval = 0,
@@ -171,6 +173,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
                     add(Setting(name = "hyphenInterval", value = hyphenInterval))
                     add(Setting(name = "checkSymbol", value = checkSymbol))
+                    add(Setting(name = "finalizeWhenFlushed", value = finalizeWhenFlushed))
                 }
             }
 
@@ -182,7 +185,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         isLenient = builder.isLenient,
                         encodeToLowercase = builder.encodeToLowercase,
                         hyphenInterval = if (builder.hyphenInterval > 0) builder.hyphenInterval else 0,
-                        checkSymbol = builder.checkSymbol
+                        checkSymbol = builder.checkSymbol,
+                        finalizeWhenFlushed = builder.finalizeWhenFlushed
                     )
                 }
             }
@@ -375,21 +379,23 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 override fun doFinalProtected() {
                     buffer.finalize()
 
-                    config.checkSymbol?.let { symbol ->
+                    if (config.finalizeWhenFlushed || isClosed()) {
+                        config.checkSymbol?.let { symbol ->
 
-                        if (outputHyphenOnNext) {
-                            out.output('-')
+                            if (outputHyphenOnNext) {
+                                out.output('-')
+                            }
+
+                            if (config.encodeToLowercase) {
+                                out.output(symbol.lowercaseChar())
+                            } else {
+                                out.output(symbol.uppercaseChar())
+                            }
                         }
 
-                        if (config.encodeToLowercase) {
-                            out.output(symbol.lowercaseChar())
-                        } else {
-                            out.output(symbol.uppercaseChar())
-                        }
+                        outCount = 0
+                        outputHyphenOnNext = false
                     }
-
-                    outCount = 0
-                    outputHyphenOnNext = false
                 }
             }
         }

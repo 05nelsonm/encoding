@@ -77,8 +77,9 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion {
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field checkSymbol Ljava/lang/Character;
 	public final field encodeToLowercase Z
+	public final field finalizeWhenFlushed Z
 	public final field hyphenInterval B
-	public synthetic fun <init> (ZZBLjava/lang/Character;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZZBLjava/lang/Character;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewnelson/encoding/base32/Base32 {
@@ -117,6 +118,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matth
 
 public final class io/matthewnelson/encoding/builders/Base32CrockfordConfigBuilder {
 	public field encodeToLowercase Z
+	public field finalizeWhenFlushed Z
 	public field hyphenInterval B
 	public field isLenient Z
 	public fun <init> ()V
