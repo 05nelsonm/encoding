@@ -441,11 +441,12 @@ constructor(config: C): Encoder<C>(config) {
         public fun doFinal() {
             if (isClosed()) throw closedException()
 
-            try {
-                doFinalProtected()
-            } finally {
-                close()
-            }
+            // Close the feed before calling doFinalProtected
+            // so feed implementations can check if flush or doFinal
+            // was called (if necessary).
+            close()
+
+            doFinalProtected()
         }
 
         /**
@@ -467,10 +468,15 @@ constructor(config: C): Encoder<C>(config) {
         public abstract fun isClosed(): Boolean
 
         /**
-         * Implementors should perform final operations on
+         * Implementations should perform final operations on
          * their buffered input, **AND** reset any stateful
          * variables they may have. This is called by both
          * [flush] and [doFinal].
+         *
+         * Implementations can check which was called, if
+         * necessary, by:
+         *  - If [isClosed] is true, [doFinal] was invoked.
+         *  - If [isClosed] is false, [flush] was invoked.
          * */
         @Throws(EncodingException::class)
         protected abstract fun doFinalProtected()

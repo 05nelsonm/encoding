@@ -304,4 +304,36 @@ class EncoderDecoderFeedUnitTest {
         assertEquals(3, invocations)
         assertEquals(Char.MAX_VALUE, output)
     }
+
+    @Test
+    fun givenFeed_whenDoFinal_thenIsClosedTrue() {
+        var eCount = 0
+        var dCount = 0
+        val encoder = TestEncoderDecoder(
+            TestConfig(),
+            encoderDoFinal = { eCount++; assertTrue(it.isClosed()) },
+            decoderDoFinal = { dCount++; assertTrue(it.isClosed()) }
+        )
+
+        encoder.newEncoderFeed {}.doFinal()
+        encoder.newDecoderFeed {}.doFinal()
+        assertEquals(1, eCount)
+        assertEquals(1, dCount)
+    }
+
+    @Test
+    fun givenFeed_whenFlush_thenIsClosedFalse() {
+        var eCount = 0
+        var dCount = 0
+        val encoder = TestEncoderDecoder(
+            TestConfig(),
+            encoderDoFinal = { eCount++; assertFalse(it.isClosed()) },
+            decoderDoFinal = { dCount++; assertFalse(it.isClosed()) }
+        )
+
+        encoder.newEncoderFeed {}.apply { flush() }.close()
+        encoder.newDecoderFeed {}.apply { flush() }.close()
+        assertEquals(1, eCount)
+        assertEquals(1, dCount)
+    }
 }
