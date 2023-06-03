@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Version 1.2.2 (2023-06-03)
+ - Build improvements [[#106]][106]
+     - Removes `kotln-components` submodule
+     - Composite builds via `gradle-kmp-configuration-plugin`
+     - Adds a Bill of Materials (BOM)
+ - Updates dependencies
+     - Kotlin `1.8.0` -> `1.8.21`
+ - Fixes dropped decoded bytes not being back-filled on resize [[#112]][112]
+ - Adds static instances with "reasonable" default configurations [[#122]][122]
+ - Exposes `LineBreakOutFeed` utility class [[#113]][113] && [[#118]][118]
+ - Adds ability to `flush` an `EncoderDecoder.Feed` [[#114]][114]
+
 ## Version 1.2.1 (2023-01-31)
  - Fixes `Base32` encoding
  - Updates `kotlin-components` submodule
@@ -98,3 +110,10 @@
 
 ## Version 1.0.0 (2021-10-30)
  - Initial Release
+
+[106]: https://github.com/05nelsonm/encoding/pull/106
+[112]: https://github.com/05nelsonm/encoding/pull/112
+[113]: https://github.com/05nelsonm/encoding/pull/113
+[114]: https://github.com/05nelsonm/encoding/pull/114
+[118]: https://github.com/05nelsonm/encoding/pull/118
+[122]: https://github.com/05nelsonm/encoding/pull/122

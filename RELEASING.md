@@ -31,7 +31,7 @@ git checkout -b release_"$VERSION_NAME"
 ```bash
 git add --all
 git commit -S -m "Prepare $VERSION_NAME release"
-git tag -s $VersionName -m "Release v$VERSION_NAME"
+git tag -s "$VERSION_NAME" -m "Release v$VERSION_NAME"
 ```
 
 - Make sure you have valid credentials in `~/.gradle/gradle.properties`
@@ -75,19 +75,24 @@ ykman openpgp keys set-touch sig off
 git push -u origin release_"$VERSION_NAME"
 ```
 
-### Macos
+### macOS
 
 - Spin up VM of macOS and ensure USB pass through worked for the YubiKey
-    - Should ask for PIN to log in
+  - Should ask for PIN to log in
 
 - Sign a random `.txt` file (gpg tty for YubiKey PIN + gradle build don't mix)
-```bash
+```shell
 gpg --sign --armor --detach ~/Documents/hello.txt
 ```
 
 - Ensure java version is greater than or equal to 11
-```bash
+```shell
 java --version
+```
+
+- Ensure you are in a `bash` shell
+```shell
+bash
 ```
 
 - Set version variable in terminal shell
@@ -131,7 +136,32 @@ PUBLISH_TASKS=$(./gradlew tasks -PKMP_TARGETS="$MACOS_TARGETS" |
   cut -d ' ' -f 1 |
   grep -e "publishIos" -e "publishMacos" -e "publishTvos" -e "publishWatchos"
 )
-./gradlew $PUBLISH_TASKS -PKMP_TARGETS="$MACOS_TARGETS"
+./gradlew $PUBLISH_TASKS --no-daemon --no-parallel -PKMP_TARGETS="$MACOS_TARGETS"
+```
+
+### Linux
+
+- The [gradle-maven-publish-plugin](https://github.com/vanniktech/gradle-maven-publish-plugin) should have automatically
+  closed the staged repositories, but if it did not:
+  - Close publications (Don't release yet)
+    - Login to Sonatype OSS Nexus: [oss.sonatype.org](https://s01.oss.sonatype.org/#stagingRepositories)
+    - Click on **Staging Repositories**
+    - Select all Publications
+    - Click **Close** then **Confirm**
+    - Wait a bit, hit **Refresh** until the *Status* changes to *Closed*
+
+- Check Publication
+```bash
+./gradlew clean -PCHECK_PUBLICATION -DKMP_TARGETS_ALL
+./gradlew :tools:check-publication:build --refresh-dependencies -PCHECK_PUBLICATION -DKMP_TARGETS_ALL
+```
+
+### macOS
+
+- Check Publication
+```bash
+./gradlew clean -PCHECK_PUBLICATION -DKMP_TARGETS_ALL
+./gradlew :tools:check-publication:build --refresh-dependencies -PCHECK_PUBLICATION -DKMP_TARGETS_ALL
 ```
 
 ### Linux
@@ -141,20 +171,24 @@ PUBLISH_TASKS=$(./gradlew tasks -PKMP_TARGETS="$MACOS_TARGETS" |
 ykman openpgp keys set-touch sig on
 ```
 
-- Close publications (Don't release yet)
-    - Login to Sonatype OSS Nexus: [oss.sonatype.org](https://s01.oss.sonatype.org/#stagingRepositories)
-    - Click on **Staging Repositories**
-    - Select all Publications
-    - Click **Close** then **Confirm**
-    - Wait a bit, hit **Refresh** until the *Status* changes to *Closed*
-
-- Check Publication
-```bash
-./gradlew clean -DKMP_TARGETS_ALL
-./gradlew :tools:check-publication:build --refresh-dependencies -PCHECK_PUBLICATION -DKMP_TARGETS_ALL
-```
-
 - **Release** publications from Sonatype OSS Nexus StagingRepositories manager
+  - Alternatively, can use Curl with the given repository id's that were output
+    to terminal when publishing, e.g. `iomatthewnelson-1018`
+    ```shell
+    curl -v -u "<USER NAME>" \
+      -H "Content-Type: application/json" \
+      -H "Accept: application/json" \
+      https://s01.oss.sonatype.org/service/local/staging/bulk/promote --data '
+      {
+        "data": {
+          "stagedRepositoryIds": [
+            "iomatthewnelson-<id>",
+            "iomatthewnelson-<id>"
+          ],
+          "autoDropAfterRelease": true
+        }
+      }'
+    ```
 
 - Merge release branch to `master`
 ```bash
@@ -207,5 +241,5 @@ git branch -D release_"$VERSION_NAME"
 
 - Wait for releases to become available on [MavenCentral](https://repo1.maven.org/maven2/io/matthewnelson/kotlin-components/)
 - Draft new release on GitHub
-    - Enter the release name <VersionName> as tag and title
-    - Have the description point to the changelog
+  - Enter the release name <VersionName> as tag and title
+  - Have the description point to the changelog

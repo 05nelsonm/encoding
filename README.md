@@ -56,6 +56,9 @@ val base16 = Base16 {
 // Shortcuts
 val base16StrictSettings = Base16(strict = true)
 val base16DefaultSettings = Base16()
+
+// Alternatively, use the static instance with its default settings
+Base16
 ```
 
 ```kotlin
@@ -68,7 +71,15 @@ val base32Crockford = Base32Crockford {
 
     // Optional data integrity check unique to the Crockford spec
     checkSymbol('*')
+
+    // Only apply the checkSymbol & reset hyphen interval counter
+    // when Encoder.Feed.doFinal is called (see builder docs for
+    // more info) 
+    finalizeWhenFlushed = false
 }
+
+// Alternatively, use the static instance with its default settings
+Base32.Crockford
 
 val base32Default = Base32Default {
     isLenient = true
@@ -79,12 +90,18 @@ val base32Default = Base32Default {
     padEncoded = false
 }
 
+// Alternatively, use the static instance with its default settings
+Base32.Default
+
 val base32Hex = Base32Hex {
     isLenient = true
     lineBreakInterval = 64
     encodeToLowercase = false
     padEncoded = true
 }
+
+// Alternatively, use the static instance with its default settings
+Base32.Hex
 ```
 
 ```kotlin
@@ -95,11 +112,17 @@ val base64 = Base64 {
     padEncoded = true
 }
 
+// Alternatively, use the static instance with its default settings
+Base64.Default
+
 // Inherit settings from another EncoderDecoder's Config
 val base64UrlSafe = Base64(base64.config) {
     encodeToUrlSafe = true
     padEncoded = false
 }
+
+// Alternatively, use the static instance with its default settings
+Base64.UrlSafe
 ```
 
 **Encoding/Decoding Extension Functions**
@@ -113,19 +136,19 @@ val bytes = text.encodeToByteArray()
 // transformations (can be useful for security 
 // purposes, too, as you are able to clear Arrays
 // before they are de-referenced).
-val encodedString = bytes.encodeToString(base64)
-val encodedChars = bytes.encodeToCharArray(base32Default)
-val encodedBytes = bytes.encodeToByteArray(base16)
+val encodedString = bytes.encodeToString(Base64.Default)
+val encodedChars = bytes.encodeToCharArray(Base32.Default)
+val encodedBytes = bytes.encodeToByteArray(Base16)
 
 val decodedString = try {
-    encodedString.decodeToByteArray(base64)
+    encodedString.decodeToByteArray(Base64.Default)
 } catch (e: EncodingException) {
     Log.e("Something went terribly wrong", e)
     null
 }
 // Swallow `EncodingException`s by using the `*OrNull` variants
-val decodedChars = encodedChars.decodeToByteArrayOrNull(base32Default)
-val decodedBytes = encodedBytes.decodeToByteArrayOrNull(base16)
+val decodedChars = encodedChars.decodeToByteArrayOrNull(Base32.Default)
+val decodedBytes = encodedBytes.decodeToByteArrayOrNull(Base16)
 ```
 
 **Encoding/Decoding `Feed`(s) (i.e. Streaming)**
@@ -139,12 +162,32 @@ care about `Byte`(s) and `Char`(s)!
 `OptIn` to use directly.
 
 ```kotlin
+// e.g. Concatenate multiple encodings
+val sb = StringBuilder()
+
+// Use our own line break out feed in order to add a delimiter between
+// encodings and preserve the counter.
+val out = LineBreakOutFeed(interval = 64) { char -> sb.append(char) }
+
+@OptIn(ExperimentalEncodingApi::class)
+Base64.Default.newEncoderFeed(out).use { feed ->
+    "Hello World 1!".forEach { c -> feed.consume(c.code.toByte())  }
+    feed.flush()
+    out.output('.')
+    "Hello World 2!".forEach { c -> feed.consume(c.code.toByte())  }
+}
+
+println(sb.toString())
+// SGVsbG8gV29ybGQgMSE=.SGVsbG8gV29ybGQgMiE=
+```
+
+```kotlin
 // e.g. Writing encoded data to a File in Java.
 // NOTE: try/catch omitted for this example.
 
 @OptIn(ExperimentalEncodingApi::class)
 file.outputStream().use { oStream ->
-    base64.newEncoderFeed { encodedChar ->
+    Base64.Default.newEncoderFeed { encodedChar ->
         // As encoded data comes out of the feed,
         // write it to the file.
         oStream.write(encodedChar.code)
@@ -179,7 +222,7 @@ FeatureRequests are **always** welcome)!
 
 // Pre-calculate the output size for the given encoding
 // spec; in this case, Base64.
-val size = base64.config.decodeOutMaxSize(file.length())
+val size = Base64.Default.config.decodeOutMaxSize(file.length())
 
 // Since we will be storing the data in a StringBuilder,
 // we need to check if the output size would exceed
@@ -196,7 +239,7 @@ val sb = StringBuilder(size.toInt())
 
 @OptIn(ExperimentalEncodingApi::class)
 file.inputStream().reader().use { iStreamReader ->
-    base64.newDecoderFeed { decodedByte ->
+    Base64.Default.newDecoderFeed { decodedByte ->
         // As decoded data comes out of the feed,
         // update the StringBuilder.
         sb.append(decodedByte.toInt().toChar())
@@ -236,7 +279,7 @@ See [sample project](sample/README.md)
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "1.2.1"
+    val encoding = "1.2.2"
     implementation("io.matthewnelson.kotlin-components:encoding-base16:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base32:$encoding")
     implementation("io.matthewnelson.kotlin-components:encoding-base64:$encoding")
@@ -247,14 +290,13 @@ dependencies {
 ```
 
 <!-- TAG_VERSION -->
-<!-- TODO: Uncomment next release
 Alternatively, you can use the BOM.
 
 ```kotlin
 // build.gradle.kts
 dependencies {
     // define the BOM and its version
-    implementation(platform("io.matthewnelson.kotlin-components:encoding-bom:1.2.1"))
+    implementation(platform("io.matthewnelson.kotlin-components:encoding-bom:1.2.2"))
 
     // define artifacts without version
     implementation("io.matthewnelson.kotlin-components:encoding-base16")
@@ -265,14 +307,13 @@ dependencies {
     implementation("io.matthewnelson.kotlin-components:encoding-core")
 }
 ```
--->
 
 <!-- TAG_VERSION -->
-[badge-latest-release]: https://img.shields.io/badge/latest--release-1.2.1-blue.svg?style=flat
+[badge-latest-release]: https://img.shields.io/badge/latest--release-1.2.2-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 <!-- TAG_DEPENDENCIES -->
-[badge-kotlin]: https://img.shields.io/badge/kotlin-1.8.0-blue.svg?logo=kotlin
+[badge-kotlin]: https://img.shields.io/badge/kotlin-1.8.21-blue.svg?logo=kotlin
 
 <!-- TAG_PLATFORMS -->
 [badge-platform-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
