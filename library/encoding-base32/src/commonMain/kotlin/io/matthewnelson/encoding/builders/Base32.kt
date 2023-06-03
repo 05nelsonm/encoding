@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.builders
 import io.matthewnelson.encoding.base32.Base32
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
 import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.Encoder
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -150,6 +151,7 @@ public class Base32CrockfordConfigBuilder {
         encodeToLowercase = config.encodeToLowercase
         hyphenInterval = config.hyphenInterval
         checkSymbol = config.checkSymbol
+        finalizeWhenFlushed = config.finalizeWhenFlushed
     }
 
     /**
@@ -225,12 +227,70 @@ public class Base32CrockfordConfigBuilder {
     }
 
     /**
+     * If true, whenever [Encoder.Feed.flush] is invoked:
+     *  - The [checkSymbol] will be appended.
+     *  - The counter for [hyphenInterval] insertion will be reset.
+     *
+     * If false
+     *  - Appendage of the [checkSymbol] will only occur when
+     *   [Encoder.Feed.doFinal] is invoked.
+     *  - The counter for [hyphenInterval] insertion will not be reset.
+     *
+     * If neither [checkSymbol] or [hyphenInterval] are set, this has
+     * no effect when encoding.
+     *
+     * e.g.
+     *
+     *     // WHEN FALSE
+     *     val sb = StringBuilder()
+     *     Base32Crockford {
+     *         hyphenInterval = 4
+     *         checkSymbol('*')
+     *         finalizeWhenFlushed = false
+     *     }.newEncoderFeed { encodedChar ->
+     *         sb.append(encodedChar)
+     *     }.use { feed ->
+     *         bytes1.forEach { b -> feed.consume(b) }
+     *         feed.flush()
+     *         bytes2.forEach { b -> feed.consume(b) }
+     *     }
+     *
+     *     println(sb.toString())
+     *     // 91JP-RV3F-41BP-YWKC-CGGG-*
+     *
+     *     // WHEN TRUE
+     *     val sb = StringBuilder()
+     *     Base32Crockford {
+     *         hyphenInterval = 4
+     *         checkSymbol('*')
+     *         finalizeWhenFlushed = true
+     *     }.newEncoderFeed { encodedChar ->
+     *         sb.append(encodedChar)
+     *     }.use { feed ->
+     *         bytes1.forEach { b -> feed.consume(b) }
+     *         feed.flush()
+     *
+     *         // Could do something here like insert a line
+     *         // break. It has its use cases.
+     *
+     *         bytes2.forEach { b -> feed.consume(b) }
+     *     }
+     *
+     *     println(sb.toString())
+     *     // 91JP-RV3F-*41BP-YWKC-CGGG-*
+     *
+     * */
+    @JvmField
+    public var finalizeWhenFlushed: Boolean = false
+
+    /**
      * A shortcut for configuring things to be in strict
      * adherence with the Crockford spec.
      * */
     public fun strict(): Base32CrockfordConfigBuilder {
         isLenient = false
         encodeToLowercase = false
+        finalizeWhenFlushed = false
         return this
     }
 

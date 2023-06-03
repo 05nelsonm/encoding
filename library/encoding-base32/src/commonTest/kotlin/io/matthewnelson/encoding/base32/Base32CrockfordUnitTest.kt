@@ -21,9 +21,12 @@ import io.matthewnelson.encoding.builders.Base32Crockford
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
+import io.matthewnelson.encoding.core.ExperimentalEncodingApi
+import io.matthewnelson.encoding.core.use
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.*
 
+@OptIn(ExperimentalEncodingApi::class)
 class Base32CrockfordUnitTest: BaseNEncodingTest() {
 
     private var crockford: Base32.Crockford = Base32Crockford { checkSymbol(null) }
@@ -380,6 +383,75 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenBase32CrockfordLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
         crockford = Base32Crockford { encodeToLowercase = true }
         checkRandomData()
+    }
+
+    @Test
+    fun givenBase32CrockfordFinalzeWhenFlushedFalse_whenEncoderFeedIsFlushed_thenFinalizationIsNotPerformed() {
+        val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
+
+        val crockford = Base32Crockford {
+            hyphenInterval = 4
+            checkSymbol('*')
+            finalizeWhenFlushed = false
+        }
+
+        val decoded = expected.decodeToByteArray(crockford)
+        val sb = StringBuilder()
+        crockford.newEncoderFeed { encodedChar ->
+            sb.append(encodedChar)
+        }.use { feed ->
+            // encode block size is 5, so use a multiple of that
+            // so there are no partial blocks which would give
+            // a different encoding.
+            for (i in 0 until 15) {
+                feed.consume(decoded[i])
+            }
+
+            // Should not reset hyphen intervals and append symbol check
+            feed.flush()
+
+            for (i in 15 until decoded.size) {
+                feed.consume(decoded[i])
+            }
+        }
+
+        assertEquals(expected, sb.toString())
+    }
+
+    @Test
+    fun givenBase32CrockfordFinalzeWhenFlushedTrue_whenEncoderFeedIsFlushed_thenFinalizationIsPerformed() {
+        val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-*\n41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
+
+        val crockford = Base32Crockford {
+            hyphenInterval = 4
+            checkSymbol('*')
+            finalizeWhenFlushed = true
+        }
+
+        val decoded = expected.split('\n').let { splits ->
+            splits[0].decodeToByteArray(crockford) + splits[1].decodeToByteArray(crockford)
+        }
+
+        val sb = StringBuilder()
+        crockford.newEncoderFeed { encodedChar ->
+            sb.append(encodedChar)
+        }.use { feed ->
+            // encode block size is 5, so use a multiple of that
+            // so there are no partial blocks which would give
+            // a different encoding.
+            for (i in 0 until 15) {
+                feed.consume(decoded[i])
+            }
+
+            feed.flush()
+            sb.appendLine()
+
+            for (i in 15 until decoded.size) {
+                feed.consume(decoded[i])
+            }
+        }
+
+        assertEquals(expected, sb.toString())
     }
 
 }
