@@ -49,15 +49,18 @@ import kotlin.jvm.JvmSynthetic
  *     val bytes = text.encodeToByteArray()
  *     val encoded = bytes.encodeToString(base64)
  *     println(encoded) // SGVsbG8gV29ybGQh
- *     val decoded = encoded.decodeToByteArray(base64).decodeToString()
+ *
+ *     // Alternatively, use the static implementaton instead of
+ *     // configuring your own settings.
+ *     val decoded = encoded.decodeToByteArray(Base64.Default).decodeToString()
  *     assertEquals(text, decoded)
  *
  * @see [io.matthewnelson.encoding.builders.Base64]
  * @see [Base64.Config]
  * @see [Default.CHARS]
  * @see [UrlSafe.CHARS]
- * @see [Default.INSTANCE]
- * @see [UrlSafe.INSTANCE]
+ * @see [Default]
+ * @see [UrlSafe]
  * @see [EncoderDecoder]
  * @see [Decoder.decodeToByteArray]
  * @see [Decoder.decodeToByteArrayOrNull]
@@ -132,32 +135,68 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         }
     }
 
-    public object Default {
+    /**
+     * Doubles as a static implementation with default settings
+     * and a lineBreakInterval of 64.
+     *
+     * e.g.
+     *
+     *     val encoded = "Hello World!"
+     *         .encodeToByteArray()
+     *         .encodeToString(Base64.Default)
+     *
+     *     println(encoded) // SGVsbG8gV29ybGQh
+     *
+     * */
+    public object Default: EncoderDecoder<Base64.Config>(
+        config = Base64ConfigBuilder().apply { lineBreakInterval = 64 }.build()
+    ) {
 
         /**
          * Base64 Default encoding characters.
          * */
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
-        /**
-         * A static instance with a lineBreakInterval of 64
-         * */
-        @JvmField
-        public val INSTANCE: Base64 = Base64 { lineBreakInterval = 64 }
+        private val DELEGATE = Base64(config)
+        override fun name(): String = DELEGATE.name()
+        override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
+            return DELEGATE.newDecoderFeedProtected(out)
+        }
+        override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base64.Config>.Feed {
+            return DELEGATE.newEncoderFeedProtected(out)
+        }
     }
 
-    public object UrlSafe {
+    /**
+     * Doubles as a static implementation with default settings
+     * and a lineBreakInterval of 64.
+     *
+     * e.g.
+     *
+     *     val encoded = "Hello World!"
+     *         .encodeToByteArray()
+     *         .encodeToString(Base64.UrlSafe)
+     *
+     *     println(encoded) // SGVsbG8gV29ybGQh
+     *
+     * */
+    public object UrlSafe: EncoderDecoder<Base64.Config>(
+        config = Base64ConfigBuilder(Default.config).apply { encodeToUrlSafe = true }.build()
+    ) {
 
         /**
          * Base64 UrlSafe encoding characters.
          * */
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
-        /**
-         * A static instance with a lineBreakInterval of 64
-         * */
-        @JvmField
-        public val INSTANCE: Base64 = Base64(Default.INSTANCE.config) { encodeToUrlSafe = true }
+        private val DELEGATE = Base64(config)
+        override fun name(): String = DELEGATE.name()
+        override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
+            return DELEGATE.newDecoderFeedProtected(out)
+        }
+        override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base64.Config>.Feed {
+            return DELEGATE.newEncoderFeedProtected(out)
+        }
     }
 
     protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {

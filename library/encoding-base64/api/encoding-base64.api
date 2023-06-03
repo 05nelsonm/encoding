@@ -51,16 +51,14 @@ public final class io/matthewnelson/encoding/base64/Base64$Config : io/matthewne
 	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
-public final class io/matthewnelson/encoding/base64/Base64$Default {
+public final class io/matthewnelson/encoding/base64/Base64$Default : io/matthewnelson/encoding/core/EncoderDecoder {
 	public static final field CHARS Ljava/lang/String;
 	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64$Default;
-	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64;
 }
 
-public final class io/matthewnelson/encoding/base64/Base64$UrlSafe {
+public final class io/matthewnelson/encoding/base64/Base64$UrlSafe : io/matthewnelson/encoding/core/EncoderDecoder {
 	public static final field CHARS Ljava/lang/String;
 	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64$UrlSafe;
-	public static final field INSTANCE Lio/matthewnelson/encoding/base64/Base64;
 }
 
 public final class io/matthewnelson/encoding/builders/Base64BuildersKt {

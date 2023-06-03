@@ -43,14 +43,17 @@ import kotlin.jvm.JvmSynthetic
  *     val bytes = text.encodeToByteArray()
  *     val encoded = bytes.encodeToString(base16)
  *     println(encoded) // 48656c6c6f20576f726c6421
- *     val decoded = encoded.decodeToByteArray(base16).decodeToString()
+ *
+ *     // Alternatively, use the static implementaton instead of
+ *     // configuring your own settings.
+ *     val decoded = encoded.decodeToByteArray(Base16).decodeToString()
  *     assertEquals(text, decoded)
  *
  * @see [io.matthewnelson.encoding.builders.Base16]
  * @see [Base16.Config]
  * @see [Base16.CHARS_UPPER]
  * @see [Base16.CHARS_LOWER]
- * @see [Base16.INSTANCE]
+ * @see [Base16.Companion]
  * @see [EncoderDecoder]
  * @see [Decoder.decodeToByteArray]
  * @see [Decoder.decodeToByteArrayOrNull]
@@ -116,7 +119,22 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         }
     }
 
-    public companion object {
+    /**
+     * Doubles as a static implementation with default settings
+     * and a lineBreakInterval of 64.
+     *
+     * e.g.
+     *
+     *     val encoded = "Hello World!"
+     *         .encodeToByteArray()
+     *         .encodeToString(Base16)
+     *
+     *     println(encoded) // 48656c6c6f20576f726c6421
+     *
+     * */
+    public companion object: EncoderDecoder<Base16.Config>(
+        config = Base16ConfigBuilder().apply { lineBreakInterval = 64 }.build()
+    ) {
 
         /**
          * Uppercase Base16 encoding characters.
@@ -128,11 +146,14 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
          * */
         public const val CHARS_LOWER: String = "0123456789abcdef"
 
-        /**
-         * A static instance with a lineBreakInterval of 64
-         * */
-        @JvmField
-        public val INSTANCE: Base16 = Base16 { lineBreakInterval = 64 }
+        private val DELEGATE = Base16(config)
+        protected override fun name(): String = DELEGATE.name()
+        protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base16.Config>.Feed {
+            return DELEGATE.newDecoderFeedProtected(out)
+        }
+        protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base16.Config>.Feed {
+            return DELEGATE.newEncoderFeedProtected(out)
+        }
     }
 
     protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {

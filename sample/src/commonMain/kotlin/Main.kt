@@ -14,66 +14,27 @@
  * limitations under the License.
  **/
 
-import io.matthewnelson.encoding.builders.*
+import io.matthewnelson.encoding.base16.Base16
+import io.matthewnelson.encoding.base32.Base32
+import io.matthewnelson.encoding.base64.Base64
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 
 fun main() {
-    val base16EncoderDecoder = Base16 {
-        isLenient = false
-        lineBreakInterval = 64
-        encodeToLowercase = true
-    }
-
-    val base32CrockfordEncoderDecoder = Base32Crockford {
-        isLenient = false
-        encodeToLowercase = false
-        hyphenInterval = 5
-        checkSymbol('*')
-    }
-
-    val base32DefaultEncoderDecoder = Base32Default {
-        isLenient = false
-        lineBreakInterval = 64
-        encodeToLowercase = true
-        padEncoded = false
-    }
-
-    val base32HexEncoderDecoder = Base32Hex {
-        isLenient = false
-        lineBreakInterval = 64
-        encodeToLowercase = true
-        padEncoded = false
-    }
-
-    val base64DefaultEncoderDecoder = Base64 {
-        isLenient = true
-        lineBreakInterval = 64
-        encodeToUrlSafe = false
-        padEncoded = true
-    }
-
-    val base64UrlSafeEncoderDecoder = Base64 {
-        isLenient = false
-        lineBreakInterval = 64
-        encodeToUrlSafe = true
-        padEncoded = false
-    }
-
     val bytes = "Hello World!".encodeToByteArray()
 
-    val base16 = bytes.encodeToString(base16EncoderDecoder)
+    val base16 = bytes.encodeToString(Base16)
 
-    val crockford = bytes.encodeToString(base32CrockfordEncoderDecoder)
-    val default = bytes.encodeToString(base32DefaultEncoderDecoder)
-    val hex = bytes.encodeToString(base32HexEncoderDecoder)
+    val crockford = bytes.encodeToString(Base32.Crockford)
+    val default = bytes.encodeToString(Base32.Default)
+    val hex = bytes.encodeToString(Base32.Hex)
 
-    val base64 = bytes.encodeToString(base64DefaultEncoderDecoder)
-    val base64UrlSafe = bytes.encodeToString(base64UrlSafeEncoderDecoder)
+    val base64 = bytes.encodeToString(Base64.Default)
+    val base64UrlSafe = bytes.encodeToString(Base64.UrlSafe)
 
     println("'Hello World!' Encodes to:")
     println("    Base16 (hex): $base16")
 
-    println("    Base32 Crockford[checkSymbol = *, hyphenInterval = 5]: $crockford")
+    println("    Base32 Crockford[hyphenInterval = 4]: $crockford")
     println("    Base32 Default: $default")
     println("    Base32 Hex: $hex")
 
