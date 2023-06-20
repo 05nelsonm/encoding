@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("FunctionName", "SpellCheckingInspection", "DEPRECATION")
+@file:Suppress("FunctionName", "SpellCheckingInspection")
 
-package io.matthewnelson.encoding.builders
+package io.matthewnelson.encoding.base32
 
-import io.matthewnelson.encoding.base32.Base32
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.Encoder
@@ -26,19 +25,11 @@ import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Crockford] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Crockford]
+ * @param [config] inherit settings from.
+ * @see [Base32CrockfordConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Crockford(config) { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Crockford"
-        ]
-    )
-)
 public fun Base32Crockford(
     config: Base32.Crockford.Config?,
     block: Base32CrockfordConfigBuilder.() -> Unit,
@@ -49,19 +40,10 @@ public fun Base32Crockford(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Crockford] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Crockford]
+ * @see [Base32CrockfordConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Crockford { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Crockford"
-        ]
-    )
-)
 public fun Base32Crockford(
     block: Base32CrockfordConfigBuilder.() -> Unit,
 ): Base32.Crockford {
@@ -69,36 +51,22 @@ public fun Base32Crockford(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Crockford] encoder/decoder
+ * using the default settings.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Crockford]
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with the Crockford spec.
+ * @see [Base32CrockfordConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Crockford(strict)",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Crockford"
-        ]
-    )
-)
 @JvmOverloads
 public fun Base32Crockford(strict: Boolean = false): Base32.Crockford = Base32Crockford { if (strict) strict() }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Default] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Default]
+ * @param [config] to inherit from.
+ * @see [Base32DefaultConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Default(config) { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Default"
-        ]
-    )
-)
 public fun Base32Default(
     config: Base32.Default.Config?,
     block: Base32DefaultConfigBuilder.() -> Unit,
@@ -109,19 +77,10 @@ public fun Base32Default(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Default] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Default]
+ * @see [Base32DefaultConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Default { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Default"
-        ]
-    )
-)
 public fun Base32Default(
     block: Base32DefaultConfigBuilder.() -> Unit,
 ): Base32.Default {
@@ -129,36 +88,22 @@ public fun Base32Default(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Default] encoder/decoder
+ * using the default settings.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Default]
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with RFC 4648.
+ * @see [Base32DefaultConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Default(strict)",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Default"
-        ]
-    )
-)
 @JvmOverloads
 public fun Base32Default(strict: Boolean = false): Base32.Default = Base32Default { if (strict) strict() }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Hex] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Hex]
+ * @param [config] to inherit from.
+ * @see [Base32HexConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Hex(config) { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Hex"
-        ]
-    )
-)
 public fun Base32Hex(
     config: Base32.Hex.Config?,
     block: Base32HexConfigBuilder.() -> Unit,
@@ -169,19 +114,10 @@ public fun Base32Hex(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Hex] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Hex]
+ * @see [Base32HexConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Hex { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Hex"
-        ]
-    )
-)
 public fun Base32Hex(
     block: Base32HexConfigBuilder.() -> Unit,
 ): Base32.Hex {
@@ -189,36 +125,22 @@ public fun Base32Hex(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base32.Hex] encoder/decoder
+ * using the default settings.
  *
- * @see [io.matthewnelson.encoding.base32.Base32Hex]
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with RFC 4648.
+ * @see [Base32HexConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32Hex(strict)",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32Hex"
-        ]
-    )
-)
 @JvmOverloads
 public fun Base32Hex(strict: Boolean = false): Base32.Hex = Base32Hex { if (strict) strict() }
 
 /**
- * Deprecated
+ * Builder for creating a [Base32.Crockford.Config].
  *
- * @see [io.matthewnelson.encoding.base32.Base32CrockfordConfigBuilder]
+ * @see [strict]
+ * @see [Base32Crockford]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32CrockfordConfigBuilder",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32CrockfordConfigBuilder"
-        ]
-    )
-)
 public class Base32CrockfordConfigBuilder {
 
     public constructor()
@@ -374,31 +296,15 @@ public class Base32CrockfordConfigBuilder {
     /**
      * Builds a [Base32.Crockford.Config] for the provided settings.
      * */
-    public fun build(): Base32.Crockford.Config {
-        val b = io.matthewnelson.encoding.base32.Base32CrockfordConfigBuilder()
-        b.isLenient = isLenient
-        b.encodeToLowercase = encodeToLowercase
-        b.hyphenInterval = hyphenInterval
-        b.checkSymbol(checkSymbol)
-        b.finalizeWhenFlushed = finalizeWhenFlushed
-        return b.build()
-    }
+    public fun build(): Base32.Crockford.Config = Base32.Crockford.Config.from(this)
 }
 
 /**
- * Deprecated
+ * Builder for creating a [Base32.Default.Config].
  *
- * @see [io.matthewnelson.encoding.base32.Base32DefaultConfigBuilder]
+ * @see [strict]
+ * @see [Base32Default]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32DefaultConfigBuilder",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32DefaultConfigBuilder"
-        ]
-    )
-)
 public class Base32DefaultConfigBuilder {
 
     public constructor()
@@ -485,30 +391,15 @@ public class Base32DefaultConfigBuilder {
     /**
      * Builds a [Base32.Default.Config] for the provided settings.
      * */
-    public fun build(): Base32.Default.Config {
-        val b = io.matthewnelson.encoding.base32.Base32DefaultConfigBuilder()
-        b.isLenient = isLenient
-        b.lineBreakInterval = lineBreakInterval
-        b.encodeToLowercase = encodeToLowercase
-        b.padEncoded = padEncoded
-        return b.build()
-    }
+    public fun build(): Base32.Default.Config = Base32.Default.Config.from(this)
 }
 
 /**
- * Deprecated
+ * Builder for creating a [Base32.Hex.Config].
  *
- * @see [io.matthewnelson.encoding.base32.Base32HexConfigBuilder]
+ * @see [strict]
+ * @see [Base32Hex]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
-    replaceWith = ReplaceWith(
-        expression = "Base32HexConfigBuilder",
-        imports = [
-            "io.matthewnelson.encoding.base32.Base32HexConfigBuilder"
-        ]
-    )
-)
 public class Base32HexConfigBuilder {
 
     public constructor()
@@ -595,12 +486,5 @@ public class Base32HexConfigBuilder {
     /**
      * Builds a [Base32.Hex.Config] for the provided settings.
      * */
-    public fun build(): Base32.Hex.Config {
-        val b = io.matthewnelson.encoding.base32.Base32HexConfigBuilder()
-        b.isLenient = isLenient
-        b.lineBreakInterval = lineBreakInterval
-        b.encodeToLowercase = encodeToLowercase
-        b.padEncoded = padEncoded
-        return b.build()
-    }
+    public fun build(): Base32.Hex.Config = Base32.Hex.Config.from(this)
 }

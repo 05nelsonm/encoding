@@ -26,9 +26,9 @@
 
 package io.matthewnelson.component.encoding.base32
 
-import io.matthewnelson.encoding.builders.Base32Crockford
-import io.matthewnelson.encoding.builders.Base32Default
-import io.matthewnelson.encoding.builders.Base32Hex
+import io.matthewnelson.encoding.base32.Base32Crockford
+import io.matthewnelson.encoding.base32.Base32Default
+import io.matthewnelson.encoding.base32.Base32Hex
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
@@ -59,7 +59,7 @@ public sealed class Base32 {
     )
     public data class Crockford @JvmOverloads constructor(
         @Deprecated(
-            message = "Replaced by EncoderDecoder. Use io.matthewnelson.builders.Base32Crockford to set",
+            message = "Replaced by EncoderDecoder. Use io.matthewnelson.base32.Base32Crockford to set",
             level = DeprecationLevel.WARNING
         )
         val checkSymbol: Char? = null
@@ -93,13 +93,13 @@ public sealed class Base32 {
         }
 
         @Deprecated(
-            message = "Replaced by EncoderDecoder. Use io.matthewnelson.builders.Base32Crockford to set",
+            message = "Replaced by EncoderDecoder. Use io.matthewnelson.base32.Base32Crockford to set",
             level = DeprecationLevel.WARNING
         )
         inline val hasCheckSymbol: Boolean get() = checkSymbol != null
 
         @Deprecated(
-            message = "Replaced by EncoderDecoder. Use io.matthewnelson.builders.Base32Crockford to set",
+            message = "Replaced by EncoderDecoder. Use io.matthewnelson.base32.Base32Crockford to set",
             level = DeprecationLevel.WARNING
         )
         inline val checkByte: Byte? get() = checkSymbol?.uppercaseChar()?.code?.toByte()
@@ -161,7 +161,7 @@ public sealed class Base32 {
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base32Default())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Default",
+            "io.matthewnelson.encoding.base32.Base32Default",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -178,7 +178,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Def
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base32Hex())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Hex",
+            "io.matthewnelson.encoding.base32.Base32Hex",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -194,7 +194,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base32Crockford { checkSymbol('value') })",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Crockford",
+            "io.matthewnelson.encoding.base32.Base32Crockford",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -210,7 +210,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArra
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base32Default())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Default",
+            "io.matthewnelson.encoding.base32.Base32Default",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -226,7 +226,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base32Hex())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Hex",
+            "io.matthewnelson.encoding.base32.Base32Hex",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -241,7 +241,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base32Crockford { checkSymbol('value') })",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Crockford",
+            "io.matthewnelson.encoding.base32.Base32Crockford",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -256,7 +256,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
     replaceWith = ReplaceWith(
         expression = "this.encodeToString(Base32Default())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Default",
+            "io.matthewnelson.encoding.base32.Base32Default",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
@@ -273,7 +273,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Default = Base32.Default
     replaceWith = ReplaceWith(
         expression = "this.encodeToString(Base32Hex())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Hex",
+            "io.matthewnelson.encoding.base32.Base32Hex",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
@@ -289,7 +289,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
     replaceWith = ReplaceWith(
         expression = "this.encodeToString(Base32Crockford { checkSymbol('value') })",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Crockford",
+            "io.matthewnelson.encoding.base32.Base32Crockford",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
@@ -305,7 +305,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
     replaceWith = ReplaceWith(
         expression = "this.encodeToCharArray(Base32Default())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Default",
+            "io.matthewnelson.encoding.base32.Base32Default",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
@@ -322,7 +322,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Default = Bas
     replaceWith = ReplaceWith(
         expression = "this.encodeToCharArray(Base32Hex())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Hex",
+            "io.matthewnelson.encoding.base32.Base32Hex",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
@@ -338,7 +338,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArr
     replaceWith = ReplaceWith(
         expression = "this.encodeToCharArray(Base32Crockford { checkSymbol('value') })",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Crockford",
+            "io.matthewnelson.encoding.base32.Base32Crockford",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
@@ -354,7 +354,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): C
     replaceWith = ReplaceWith(
         expression = "this.encodeToByteArray(Base32Default())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Default",
+            "io.matthewnelson.encoding.base32.Base32Default",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
@@ -370,7 +370,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Def
     replaceWith = ReplaceWith(
         expression = "this.encodeToByteArray(Base32Hex())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Hex",
+            "io.matthewnelson.encoding.base32.Base32Hex",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
@@ -385,7 +385,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
     replaceWith = ReplaceWith(
         expression = "this.encodeToByteArray(Base32Crockford { checkSymbol('value') })",
         imports = [
-            "io.matthewnelson.encoding.builders.Base32Crockford",
+            "io.matthewnelson.encoding.base32.Base32Crockford",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
