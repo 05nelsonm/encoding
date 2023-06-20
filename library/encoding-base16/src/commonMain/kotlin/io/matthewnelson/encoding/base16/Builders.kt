@@ -13,30 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection", "DEPRECATION")
+@file:Suppress("SpellCheckingInspection")
 
-package io.matthewnelson.encoding.builders
+package io.matthewnelson.encoding.base16
 
 import io.matthewnelson.encoding.base16.Base16.Config
-import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.core.EncodingException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmOverloads
 
 /**
- * Deprecated
+ * Creates a configured [Base16] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base16.Base16]
+ * @param [config] inherit settings from.
+ * @see [Base16ConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
-    replaceWith = ReplaceWith(
-        expression = "Base16(config) { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base16.Base16"
-        ]
-    )
-)
 public fun Base16(
     config: Config?,
     block: Base16ConfigBuilder.() -> Unit
@@ -47,19 +38,10 @@ public fun Base16(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base16] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base16.Base16]
+ * @see [Base16ConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
-    replaceWith = ReplaceWith(
-        expression = "Base16 { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base16.Base16"
-        ]
-    )
-)
 public fun Base16(
     block: Base16ConfigBuilder.() -> Unit
 ): Base16 {
@@ -67,37 +49,23 @@ public fun Base16(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base16] encoder/decoder
+ * using the default settings.
  *
- * @see [io.matthewnelson.encoding.base16.Base16]
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with RFC 4648.
+ * @see [Base16ConfigBuilder]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
-    replaceWith = ReplaceWith(
-        expression = "Base16(strict)",
-        imports = [
-            "io.matthewnelson.encoding.base16.Base16"
-        ]
-    )
-)
 @JvmOverloads
 public fun Base16(strict: Boolean = false): Base16 = Base16 { if (strict) strict() }
 
 
 /**
- * Deprecated
+ * Builder for creating a [Base16.Config].
  *
- * @see [io.matthewnelson.encoding.base16.Base16ConfigBuilder]
+ * @see [strict]
+ * @see [io.matthewnelson.encoding.base16.Base16]
  * */
-@Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
-    replaceWith = ReplaceWith(
-        expression = "Base16ConfigBuilder",
-        imports = [
-            "io.matthewnelson.encoding.base16.Base16ConfigBuilder"
-        ]
-    )
-)
 public class Base16ConfigBuilder {
 
     public constructor()
@@ -172,11 +140,5 @@ public class Base16ConfigBuilder {
     /**
      * Builds a [Base16.Config] for the provided settings.
      * */
-    public fun build(): Config {
-        val b = io.matthewnelson.encoding.base16.Base16ConfigBuilder()
-        b.isLenient = isLenient
-        b.lineBreakInterval = lineBreakInterval
-        b.encodeToLowercase = encodeToLowercase
-        return b.build()
-    }
+    public fun build(): Config = Config.from(this)
 }
