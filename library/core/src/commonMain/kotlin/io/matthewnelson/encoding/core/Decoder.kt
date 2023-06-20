@@ -58,7 +58,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      *
      * @see [Decoder.Feed]
      * */
-    @ExperimentalEncodingApi
     public fun newDecoderFeed(out: Decoder.OutFeed): Decoder<C>.Feed {
         // Reserved for future Decoder.OutFeed interception
         return newDecoderFeedProtected(out)
@@ -83,9 +82,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
      * */
-    public abstract inner class Feed
-    @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed<C>(config) {
+    public abstract inner class Feed: EncoderDecoder.Feed<C>(config) {
         private var isClosed = false
         private var isPaddingSet = false
 
@@ -95,7 +92,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @throws [EncodingException] if [isClosed] is true, or if
          *   there was an error decoding.
          * */
-        @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public fun consume(input: Char) {
             if (isClosed) throw closedException()
@@ -140,7 +136,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @throws [EncodingException] if [isClosed] is true, or if
          *   there was an error decoding.
          * */
-        @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public final override fun flush() {
             if (isClosed) throw closedException()
@@ -154,7 +149,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
             }
         }
 
-        @ExperimentalEncodingApi
         public final override fun close() { isClosed = true }
         public final override fun isClosed(): Boolean = isClosed
         public final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
@@ -185,7 +179,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharSequence.decodeToByteArray(decoder: Decoder<*>): ByteArray {
-            @OptIn(ExperimentalEncodingApi::class)
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.consume(c)
@@ -212,7 +205,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
-            @OptIn(ExperimentalEncodingApi::class)
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { c ->
                     feed.consume(c)
@@ -239,7 +231,6 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
-            @OptIn(ExperimentalEncodingApi::class)
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b ->
                     feed.consume(b.toInt().toChar())

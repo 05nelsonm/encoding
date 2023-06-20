@@ -65,7 +65,6 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToCharArray]
  * @see [Encoder.encodeToByteArray]
  * */
-@OptIn(ExperimentalEncodingApi::class)
 public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config) {
 
     /**

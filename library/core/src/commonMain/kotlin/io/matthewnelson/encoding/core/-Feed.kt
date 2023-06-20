@@ -30,7 +30,6 @@ import io.matthewnelson.encoding.core.EncoderDecoder.Feed
  *  - Calling [Feed.close] if [block] **DID** throw an
  *    exception.
  * */
-@ExperimentalEncodingApi
 @OptIn(ExperimentalContracts::class)
 public inline fun <C: EncoderDecoder.Config, T: Feed<C>?, V> T.use(block: (T) -> V): V {
     contract {

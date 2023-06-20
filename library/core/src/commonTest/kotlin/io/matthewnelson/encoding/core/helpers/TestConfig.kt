@@ -16,10 +16,8 @@
 package io.matthewnelson.encoding.core.helpers
 
 import io.matthewnelson.encoding.core.EncoderDecoder
-import io.matthewnelson.encoding.core.ExperimentalEncodingApi
 import io.matthewnelson.encoding.core.util.DecoderInput
 
-@OptIn(ExperimentalEncodingApi::class)
 class TestConfig(
     isLenient: Boolean? = false,
     lineBreakInterval: Byte = 0,

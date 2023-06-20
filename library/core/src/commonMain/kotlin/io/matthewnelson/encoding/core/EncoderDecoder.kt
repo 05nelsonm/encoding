@@ -33,9 +33,7 @@ import kotlin.jvm.JvmStatic
  * @see [Encoder]
  * @see [Decoder]
  * */
-public abstract class EncoderDecoder<C: EncoderDecoder.Config>
-@ExperimentalEncodingApi
-constructor(config: C): Encoder<C>(config) {
+public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encoder<C>(config) {
 
     /**
      * Base configuration for an [EncoderDecoder]. More options
@@ -54,9 +52,7 @@ constructor(config: C): Encoder<C>(config) {
      *   used". If the encoding specification does not use padding,
      *   pass `null`.
      * */
-    public abstract class Config
-    @ExperimentalEncodingApi
-    constructor(
+    public abstract class Config(
         @JvmField
         public val isLenient: Boolean?,
         lineBreakInterval: Byte,
@@ -417,7 +413,6 @@ constructor(config: C): Encoder<C>(config) {
          * @throws [EncodingException] if [isClosed] is true, or
          *   there was an error encoding/decoding.
          * */
-        @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public abstract fun flush()
 
@@ -436,7 +431,6 @@ constructor(config: C): Encoder<C>(config) {
          * @throws [EncodingException] if [isClosed] is true, or
          *   there was an error encoding/decoding.
          * */
-        @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public fun doFinal() {
             if (isClosed()) throw closedException()
@@ -462,7 +456,6 @@ constructor(config: C): Encoder<C>(config) {
          *
          * @see [use]
          * */
-        @ExperimentalEncodingApi
         public abstract fun close()
 
         public abstract fun isClosed(): Boolean

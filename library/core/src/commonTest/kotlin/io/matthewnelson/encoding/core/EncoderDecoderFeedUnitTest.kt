@@ -20,7 +20,6 @@ import io.matthewnelson.encoding.core.helpers.TestEncoderDecoder
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import kotlin.test.*
 
-@OptIn(ExperimentalEncodingApi::class)
 class EncoderDecoderFeedUnitTest {
 
     @Test

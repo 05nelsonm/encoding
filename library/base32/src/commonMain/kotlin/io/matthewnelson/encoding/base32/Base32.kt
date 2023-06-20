@@ -39,7 +39,6 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToCharArray]
  * @see [Encoder.encodeToByteArray]
  * */
-@OptIn(ExperimentalEncodingApi::class)
 public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<C>(config) {
 
     /**

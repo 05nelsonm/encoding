@@ -59,7 +59,6 @@ import kotlin.jvm.JvmSynthetic
  * @see [Encoder.encodeToCharArray]
  * @see [Encoder.encodeToByteArray]
  * */
-@OptIn(ExperimentalEncodingApi::class)
 public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config) {
 
     /**
