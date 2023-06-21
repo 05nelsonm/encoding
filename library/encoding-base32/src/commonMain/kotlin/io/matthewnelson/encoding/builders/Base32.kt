@@ -31,7 +31,13 @@ import kotlin.jvm.JvmOverloads
  * @see [io.matthewnelson.encoding.base32.Base32Crockford]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+    
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """
+    ,
     replaceWith = ReplaceWith(
         expression = "Base32Crockford(config) { block() }",
         imports = [
@@ -54,7 +60,12 @@ public fun Base32Crockford(
  * @see [io.matthewnelson.encoding.base32.Base32Crockford]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+    Moved to package io.matthewnelson.encoding.base32
+    
+    Will be removed in 2.0.0 because of an issue with
+    Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Crockford { block() }",
         imports = [
@@ -74,7 +85,12 @@ public fun Base32Crockford(
  * @see [io.matthewnelson.encoding.base32.Base32Crockford]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Crockford(strict)",
         imports = [
@@ -91,7 +107,12 @@ public fun Base32Crockford(strict: Boolean = false): Base32.Crockford = Base32Cr
  * @see [io.matthewnelson.encoding.base32.Base32Default]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Default(config) { block() }",
         imports = [
@@ -114,7 +135,12 @@ public fun Base32Default(
  * @see [io.matthewnelson.encoding.base32.Base32Default]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Default { block() }",
         imports = [
@@ -134,7 +160,12 @@ public fun Base32Default(
  * @see [io.matthewnelson.encoding.base32.Base32Default]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Default(strict)",
         imports = [
@@ -151,7 +182,12 @@ public fun Base32Default(strict: Boolean = false): Base32.Default = Base32Defaul
  * @see [io.matthewnelson.encoding.base32.Base32Hex]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Hex(config) { block() }",
         imports = [
@@ -174,7 +210,12 @@ public fun Base32Hex(
  * @see [io.matthewnelson.encoding.base32.Base32Hex]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Hex { block() }",
         imports = [
@@ -194,7 +235,12 @@ public fun Base32Hex(
  * @see [io.matthewnelson.encoding.base32.Base32Hex]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32Hex(strict)",
         imports = [
@@ -211,7 +257,12 @@ public fun Base32Hex(strict: Boolean = false): Base32.Hex = Base32Hex { if (stri
  * @see [io.matthewnelson.encoding.base32.Base32CrockfordConfigBuilder]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32CrockfordConfigBuilder",
         imports = [
@@ -391,7 +442,12 @@ public class Base32CrockfordConfigBuilder {
  * @see [io.matthewnelson.encoding.base32.Base32DefaultConfigBuilder]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32DefaultConfigBuilder",
         imports = [
@@ -501,7 +557,12 @@ public class Base32DefaultConfigBuilder {
  * @see [io.matthewnelson.encoding.base32.Base32HexConfigBuilder]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base32",
+    message = """
+        Moved to package io.matthewnelson.encoding.base32
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base32HexConfigBuilder",
         imports = [

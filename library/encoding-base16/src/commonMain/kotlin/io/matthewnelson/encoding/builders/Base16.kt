@@ -29,7 +29,12 @@ import kotlin.jvm.JvmOverloads
  * @see [io.matthewnelson.encoding.base16.Base16]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
+    message = """
+        Moved to package io.matthewnelson.encoding.base16
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base16(config) { block() }",
         imports = [
@@ -52,7 +57,12 @@ public fun Base16(
  * @see [io.matthewnelson.encoding.base16.Base16]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
+    message = """
+        Moved to package io.matthewnelson.encoding.base16
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base16 { block() }",
         imports = [
@@ -72,7 +82,12 @@ public fun Base16(
  * @see [io.matthewnelson.encoding.base16.Base16]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
+    message = """
+        Moved to package io.matthewnelson.encoding.base16
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base16(strict)",
         imports = [
@@ -90,7 +105,12 @@ public fun Base16(strict: Boolean = false): Base16 = Base16 { if (strict) strict
  * @see [io.matthewnelson.encoding.base16.Base16ConfigBuilder]
  * */
 @Deprecated(
-    message = "Moved to package io.matthewnelson.encoding.base16",
+    message = """
+        Moved to package io.matthewnelson.encoding.base16
+        
+        Will be removed in 2.0.0 because of an issue with
+        Java 9 modules and JPMS not allowing split packages
+    """,
     replaceWith = ReplaceWith(
         expression = "Base16ConfigBuilder",
         imports = [
