@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## Version 1.2.3 (2023-06-21)
+ - Deprecates `...encoding.builders` package path classes/functions for
+   `encoding-base16`, `encoding-base32`, `encoding-base64` modules
+   and re-introduces them at new package locations
+     - `...encoding.base16.Builders.kt`
+     - `...encoding.base32.Builders.kt`
+     - `...encoding.base64.Builders.kt`
+ - This is attributed to issue [[#124]][124] whereby JPMS does not allowing
+   split packages.
+ - A follow up release of `2.0.0` with the API breaking changes will be had.
+   This release is primarily for consumers to migrate as gracefully as possible.
+ - See the [MIGRATION][MIGRATION] guide for more details.
+
 ## Version 1.2.2 (2023-06-03)
  - Build improvements [[#106]][106]
      - Removes `kotln-components` submodule
@@ -117,3 +130,5 @@
 [114]: https://github.com/05nelsonm/encoding/pull/114
 [118]: https://github.com/05nelsonm/encoding/pull/118
 [122]: https://github.com/05nelsonm/encoding/pull/122
+[124]: https://github.com/05nelsonm/encoding/issues/124
+[MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md

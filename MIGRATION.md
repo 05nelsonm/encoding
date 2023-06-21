@@ -14,7 +14,7 @@ For more details, see [[#124]][124].
 
 ## Migration guide for 1.x.x -> 2.0.0
 
- - Update dependency to `1.2.3`
+ - Update dependency to version `1.2.3`
      - Migration method 1:
          - Use your IDE or editor to search your project for the following
            ```
@@ -24,6 +24,18 @@ For more details, see [[#124]][124].
      - Migration method 2:
          - Use the provided `ReplaceWith` functionality of the `@Deprecated` notice 
            to update to the new builder class/function package locations.
- - Update dependency to `2.0.0`
+ - Update dependencies to new maven target:
+   ```kotlin
+   // Bill of Materials
+   implementation(platform("io.matthewnelson.encoding:bom:2.0.0"))
+
+   // New Maven Central target (include version if not using the BOM)
+   implementation("io.matthewnelson.encoding:base16")
+   implementation("io.matthewnelson.encoding:base32")
+   implementation("io.matthewnelson.encoding:base64")
+
+   // optionally if you only want the abstractions
+   implementation("io.matthewnelson.encoding:core")
+   ```
 
 [124]: https://github.com/05nelsonm/encoding/issues/124
