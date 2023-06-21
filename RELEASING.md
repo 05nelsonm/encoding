@@ -237,7 +237,7 @@ git branch -D release_"$VERSION_NAME"
 
 ### Linux
 
-- Wait for releases to become available on [MavenCentral](https://repo1.maven.org/maven2/io/matthewnelson/kotlin-components/)
+- Wait for releases to become available on [MavenCentral](https://repo1.maven.org/maven2/io/matthewnelson/encoding/)
 - Draft new release on GitHub
   - Enter the release name <VersionName> as tag and title
   - Have the description point to the changelog

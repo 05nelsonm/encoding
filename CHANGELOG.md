@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## Version 2.0.0 (2023-06-21)
+ - Fixes JPMS split package exception [[#126]][126] & [[#127]][127]
+     - **API BREAKING CHANGES**
+     - See the [MIGRATION][MIGRATION] guide for more details
+ - Updates the `Maven Central` group & artifact ids
+     - **NEW:**
+         - `io.matthewnelson.encoding:bom:2.0.0`
+         - `io.matthewnelson.encoding:core:2.0.0`
+         - `io.matthewnelson.encoding:base16:2.0.0`
+         - `io.matthewnelson.encoding:base32:2.0.0`
+         - `io.matthewnelson.encoding:base64:2.0.0`
+     - **OLD:**
+         - `io.matthewnelson.kotlin-components:encoding-bom:1.2.3`
+         - `io.matthewnelson.kotlin-components:encoding-core:1.2.3`
+         - `io.matthewnelson.kotlin-components:encoding-base16:1.2.3`
+         - `io.matthewnelson.kotlin-components:encoding-base32:1.2.3`
+         - `io.matthewnelson.kotlin-components:encoding-base64:1.2.3`
+ - Promotes `EncoderDecoder.Feed`s to stable by removing the
+   `ExperimentalEncodingApi` annotation [[#130]][130]
+ - In the event of a decoding failure, the underlying `ByteArray` is now
+   cleared prior to throwing the exception [[#132]][132]
+
 ## Version 1.2.3 (2023-06-21)
  - Deprecates `...encoding.builders` package path classes/functions for
    `encoding-base16`, `encoding-base32`, `encoding-base64` modules
@@ -9,7 +31,7 @@
      - `...encoding.base64.Builders.kt`
  - This is attributed to issue [[#124]][124] whereby JPMS does not allowing
    split packages.
- - A follow up release of `2.0.0` with the API breaking changes will be had.
+ - A follow-up release of `2.0.0` with the API breaking changes will be had.
    This release is primarily for consumers to migrate as gracefully as possible.
  - See the [MIGRATION][MIGRATION] guide for more details.
 
@@ -131,4 +153,8 @@
 [118]: https://github.com/05nelsonm/encoding/pull/118
 [122]: https://github.com/05nelsonm/encoding/pull/122
 [124]: https://github.com/05nelsonm/encoding/issues/124
+[126]: https://github.com/05nelsonm/encoding/pull/126
+[127]: https://github.com/05nelsonm/encoding/pull/127
+[130]: https://github.com/05nelsonm/encoding/pull/130
+[132]: https://github.com/05nelsonm/encoding/pull/132
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
