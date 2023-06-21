@@ -52,7 +52,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      *
      * @see [Encoder.Feed]
      * */
-    @ExperimentalEncodingApi
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
         return if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
             newEncoderFeedProtected(LineBreakOutFeed(config.lineBreakInterval, out))
@@ -80,9 +79,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
      * */
-    public abstract inner class Feed
-    @ExperimentalEncodingApi
-    constructor(): EncoderDecoder.Feed<C>(config) {
+    public abstract inner class Feed: EncoderDecoder.Feed<C>(config) {
         private var isClosed = false
 
         /**
@@ -90,7 +87,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          *
          * @throws [EncodingException] if [isClosed] is true.
          * */
-        @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public fun consume(input: Byte) {
             if (isClosed) throw closedException()
@@ -112,7 +108,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * @see [EncoderDecoder.Feed.flush]
          * @throws [EncodingException] if [isClosed] is true.
          * */
-        @ExperimentalEncodingApi
         @Throws(EncodingException::class)
         public final override fun flush() {
             if (isClosed) throw closedException()
@@ -127,7 +122,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             }
         }
 
-        @ExperimentalEncodingApi
         public final override fun close() { isClosed = true }
         public final override fun isClosed(): Boolean = isClosed
         public final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"

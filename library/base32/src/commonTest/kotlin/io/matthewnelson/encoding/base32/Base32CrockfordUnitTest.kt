@@ -20,12 +20,10 @@ package io.matthewnelson.encoding.base32
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
-import io.matthewnelson.encoding.core.ExperimentalEncodingApi
 import io.matthewnelson.encoding.core.use
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.*
 
-@OptIn(ExperimentalEncodingApi::class)
 class Base32CrockfordUnitTest: BaseNEncodingTest() {
 
     private var crockford: Base32.Crockford = Base32Crockford { checkSymbol(null) }

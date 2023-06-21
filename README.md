@@ -158,9 +158,6 @@ the encoding/decoding process into its individual parts, such that the medium
 for which data is coming from or going to can be **anything**; `Feed`'s only 
 care about `Byte`(s) and `Char`(s)!
 
-`Feed`s are currently annotated with `ExperimentalEncodingApi` and require an 
-`OptIn` to use directly.
-
 ```kotlin
 // e.g. Concatenate multiple encodings
 val sb = StringBuilder()
@@ -169,7 +166,6 @@ val sb = StringBuilder()
 // encodings and preserve the counter.
 val out = LineBreakOutFeed(interval = 64) { char -> sb.append(char) }
 
-@OptIn(ExperimentalEncodingApi::class)
 Base64.Default.newEncoderFeed(out).use { feed ->
     "Hello World 1!".forEach { c -> feed.consume(c.code.toByte())  }
     feed.flush()
@@ -185,7 +181,6 @@ println(sb.toString())
 // e.g. Writing encoded data to a File in Java.
 // NOTE: try/catch omitted for this example.
 
-@OptIn(ExperimentalEncodingApi::class)
 file.outputStream().use { oStream ->
     Base64.Default.newEncoderFeed { encodedChar ->
         // As encoded data comes out of the feed,
@@ -237,7 +232,6 @@ if (size > Int.MAX_VALUE.toLong()) {
 
 val sb = StringBuilder(size.toInt())
 
-@OptIn(ExperimentalEncodingApi::class)
 file.inputStream().reader().use { iStreamReader ->
     Base64.Default.newDecoderFeed { decodedByte ->
         // As decoded data comes out of the feed,

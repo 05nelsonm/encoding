@@ -17,7 +17,6 @@ package io.matthewnelson.encoding.core.helpers
 
 import io.matthewnelson.encoding.core.*
 
-@OptIn(ExperimentalEncodingApi::class)
 class TestEncoderDecoder(
     config: TestConfig,
     private val encoderDoFinal: ((Encoder<TestConfig>.Feed) -> Unit)? = null,

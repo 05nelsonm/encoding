@@ -26,7 +26,7 @@ import kotlin.contracts.contract
 
 @Suppress("NOTHING_TO_INLINE")
 @Throws(EncodingException::class)
-@OptIn(ExperimentalEncodingApi::class, ExperimentalContracts::class)
+@OptIn(ExperimentalContracts::class)
 internal inline fun <C: Config> Decoder<C>.decode(
     input: DecoderInput,
     action: (feed: Decoder<*>.Feed) -> Unit
@@ -82,7 +82,6 @@ internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
 }
 
 @Suppress("NOTHING_TO_INLINE")
-@OptIn(ExperimentalEncodingApi::class)
 internal inline fun <C: Config> Encoder<C>.encode(
     data: ByteArray,
     out: Encoder.OutFeed,
