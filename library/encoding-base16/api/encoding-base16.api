@@ -1,9 +1,9 @@
 public final class io/matthewnelson/component/encoding/base16/Base16Kt {
-	public static final fun decodeBase16ToArray (Ljava/lang/String;)[B
-	public static final fun decodeBase16ToArray ([C)[B
-	public static final fun encodeBase16 ([B)Ljava/lang/String;
-	public static final fun encodeBase16ToByteArray ([B)[B
-	public static final fun encodeBase16ToCharArray ([B)[C
+	public static final synthetic fun decodeBase16ToArray (Ljava/lang/String;)[B
+	public static final synthetic fun decodeBase16ToArray ([C)[B
+	public static final synthetic fun encodeBase16 ([B)Ljava/lang/String;
+	public static final synthetic fun encodeBase16ToByteArray ([B)[B
+	public static final synthetic fun encodeBase16ToCharArray ([B)[C
 }
 
 public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/encoding/core/EncoderDecoder {
@@ -32,24 +32,6 @@ public final class io/matthewnelson/encoding/base16/Base16ConfigBuilder {
 }
 
 public final class io/matthewnelson/encoding/base16/BuildersKt {
-	public static final fun Base16 ()Lio/matthewnelson/encoding/base16/Base16;
-	public static final fun Base16 (Lio/matthewnelson/encoding/base16/Base16$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
-	public static final fun Base16 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
-	public static final fun Base16 (Z)Lio/matthewnelson/encoding/base16/Base16;
-	public static synthetic fun Base16$default (ZILjava/lang/Object;)Lio/matthewnelson/encoding/base16/Base16;
-}
-
-public final class io/matthewnelson/encoding/builders/Base16ConfigBuilder {
-	public field encodeToLowercase Z
-	public field isLenient Z
-	public field lineBreakInterval B
-	public fun <init> ()V
-	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
-	public final fun build ()Lio/matthewnelson/encoding/base16/Base16$Config;
-	public final fun strict ()Lio/matthewnelson/encoding/builders/Base16ConfigBuilder;
-}
-
-public final class io/matthewnelson/encoding/builders/Base16Kt {
 	public static final fun Base16 ()Lio/matthewnelson/encoding/base16/Base16;
 	public static final fun Base16 (Lio/matthewnelson/encoding/base16/Base16$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 	public static final fun Base16 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;

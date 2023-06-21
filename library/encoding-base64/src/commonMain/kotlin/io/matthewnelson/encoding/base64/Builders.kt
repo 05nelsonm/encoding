@@ -60,7 +60,7 @@ public fun Base64(strict: Boolean = false): Base64 = Base64 { if (strict) strict
  * Builder for creating a [Base64.Config].
  *
  * @see [strict]
- * @see [io.matthewnelson.encoding.builders.Base64]
+ * @see [io.matthewnelson.encoding.base64.Base64]
  * */
 public class Base64ConfigBuilder {
 

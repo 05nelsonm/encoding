@@ -121,7 +121,7 @@ public sealed class Base64 {
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase64ToArray(): ByteArray? {
@@ -137,7 +137,7 @@ public inline fun String.decodeBase64ToArray(): ByteArray? {
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun CharArray.decodeBase64ToArray(): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base64.Base64())
@@ -152,7 +152,7 @@ public fun CharArray.decodeBase64ToArray(): ByteArray? {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
@@ -169,7 +169,7 @@ public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
@@ -188,7 +188,7 @@ public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
@@ -205,7 +205,7 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Bas
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): CharArray {
@@ -224,7 +224,7 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): Cha
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Default): ByteArray {
@@ -240,7 +240,7 @@ public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Def
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.UrlSafe): ByteArray {
     return encodeToByteArray(io.matthewnelson.encoding.base64.Base64 {

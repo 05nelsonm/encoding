@@ -25,19 +25,19 @@ public final class io/matthewnelson/component/base64/Base64$UrlSafe$Companion {
 }
 
 public final class io/matthewnelson/component/base64/Base64Kt {
-	public static final fun decodeBase64ToArray (Ljava/lang/String;)[B
-	public static final fun decodeBase64ToArray ([C)[B
-	public static final fun encodeBase64 ([B)Ljava/lang/String;
-	public static final fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64$Default;)Ljava/lang/String;
-	public static final fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)Ljava/lang/String;
+	public static final synthetic fun decodeBase64ToArray (Ljava/lang/String;)[B
+	public static final synthetic fun decodeBase64ToArray ([C)[B
+	public static final synthetic fun encodeBase64 ([B)Ljava/lang/String;
+	public static final synthetic fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64$Default;)Ljava/lang/String;
+	public static final synthetic fun encodeBase64 ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)Ljava/lang/String;
 	public static synthetic fun encodeBase64$default ([BLio/matthewnelson/component/base64/Base64$Default;ILjava/lang/Object;)Ljava/lang/String;
-	public static final fun encodeBase64ToByteArray ([B)[B
-	public static final fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64$Default;)[B
-	public static final fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)[B
+	public static final synthetic fun encodeBase64ToByteArray ([B)[B
+	public static final synthetic fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64$Default;)[B
+	public static final synthetic fun encodeBase64ToByteArray ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)[B
 	public static synthetic fun encodeBase64ToByteArray$default ([BLio/matthewnelson/component/base64/Base64$Default;ILjava/lang/Object;)[B
-	public static final fun encodeBase64ToCharArray ([B)[C
-	public static final fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64$Default;)[C
-	public static final fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)[C
+	public static final synthetic fun encodeBase64ToCharArray ([B)[C
+	public static final synthetic fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64$Default;)[C
+	public static final synthetic fun encodeBase64ToCharArray ([BLio/matthewnelson/component/base64/Base64$UrlSafe;)[C
 	public static synthetic fun encodeBase64ToCharArray$default ([BLio/matthewnelson/component/base64/Base64$Default;ILjava/lang/Object;)[C
 }
 
@@ -78,24 +78,5 @@ public final class io/matthewnelson/encoding/base64/BuildersKt {
 	public static final fun Base64 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
 	public static final fun Base64 (Z)Lio/matthewnelson/encoding/base64/Base64;
 	public static synthetic fun Base64$default (ZILjava/lang/Object;)Lio/matthewnelson/encoding/base64/Base64;
-}
-
-public final class io/matthewnelson/encoding/builders/Base64BuildersKt {
-	public static final fun Base64 ()Lio/matthewnelson/encoding/base64/Base64;
-	public static final fun Base64 (Lio/matthewnelson/encoding/base64/Base64$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
-	public static final fun Base64 (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
-	public static final fun Base64 (Z)Lio/matthewnelson/encoding/base64/Base64;
-	public static synthetic fun Base64$default (ZILjava/lang/Object;)Lio/matthewnelson/encoding/base64/Base64;
-}
-
-public final class io/matthewnelson/encoding/builders/Base64ConfigBuilder {
-	public field encodeToUrlSafe Z
-	public field isLenient Z
-	public field lineBreakInterval B
-	public field padEncoded Z
-	public fun <init> ()V
-	public fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;)V
-	public final fun build ()Lio/matthewnelson/encoding/base64/Base64$Config;
-	public final fun strict ()Lio/matthewnelson/encoding/builders/Base64ConfigBuilder;
 }
 
