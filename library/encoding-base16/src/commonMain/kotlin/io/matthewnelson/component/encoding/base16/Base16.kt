@@ -32,7 +32,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase16ToArray(): ByteArray? {
@@ -48,7 +48,7 @@ public inline fun String.decodeBase16ToArray(): ByteArray? {
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun CharArray.decodeBase16ToArray(): ByteArray? {
     return decodeToByteArrayOrNull(Base16())
@@ -63,7 +63,7 @@ public fun CharArray.decodeBase16ToArray(): ByteArray? {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16(): String {
@@ -79,7 +79,7 @@ public inline fun ByteArray.encodeBase16(): String {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
@@ -95,7 +95,7 @@ public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase16ToByteArray(): ByteArray {
     return encodeToByteArray(Base16())

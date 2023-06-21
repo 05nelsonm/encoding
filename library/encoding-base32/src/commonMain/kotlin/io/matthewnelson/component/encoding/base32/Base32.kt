@@ -165,7 +165,7 @@ public sealed class Base32 {
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
@@ -182,7 +182,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Def
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
@@ -198,7 +198,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
@@ -214,7 +214,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArra
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default): ByteArray? {
@@ -230,7 +230,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     return decodeToByteArrayOrNull(Base32Hex())
@@ -245,7 +245,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
     return decodeToByteArrayOrNull(Base32Crockford { checkSymbol(base32.checkSymbol) })
@@ -260,7 +260,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
@@ -277,7 +277,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Default = Base32.Default
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
@@ -293,7 +293,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
@@ -309,7 +309,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
@@ -326,7 +326,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Default = Bas
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArray {
@@ -342,7 +342,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArr
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): CharArray {
@@ -358,7 +358,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): C
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Default): ByteArray {
@@ -374,7 +374,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Def
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
     return encodeToByteArray(Base32Hex())
@@ -389,7 +389,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Crockford): ByteArray {
     return encodeToByteArray(Base32Crockford { checkSymbol(base32.checkSymbol) })
