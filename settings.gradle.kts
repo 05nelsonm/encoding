@@ -16,15 +16,15 @@ if (CHECK_PUBLICATION != null) {
     include(":tools:check-publication")
 } else {
     listOf(
-        "encoding-base16",
-        "encoding-base32",
-        "encoding-base64",
-        "encoding-core",
-        "encoding-test",
+        "base16",
+        "base32",
+        "base64",
+        "core",
+        "test",
     ).forEach { name ->
         include(":library:$name")
     }
 
-    include(":encoding-bom")
+    include(":bom")
     include(":sample")
 }
