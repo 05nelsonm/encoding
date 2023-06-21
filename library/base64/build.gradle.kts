@@ -23,12 +23,12 @@ kmpConfiguration {
         common {
             sourceSetMain {
                 dependencies {
-                    api(project(":library:encoding-core"))
+                    api(project(":library:core"))
                 }
             }
             sourceSetTest {
                 dependencies {
-                    implementation(project(":library:encoding-test"))
+                    implementation(project(":library:test"))
                 }
             }
         }

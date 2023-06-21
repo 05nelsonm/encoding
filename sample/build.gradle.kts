@@ -90,9 +90,9 @@ kmpConfiguration {
         common {
             sourceSetMain {
                 dependencies {
-                    implementation(project(":library:encoding-base16"))
-                    implementation(project(":library:encoding-base32"))
-                    implementation(project(":library:encoding-base64"))
+                    implementation(project(":library:base16"))
+                    implementation(project(":library:base32"))
+                    implementation(project(":library:base64"))
                 }
             }
         }

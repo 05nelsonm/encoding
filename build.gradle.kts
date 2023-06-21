@@ -49,7 +49,7 @@ apiValidation {
     } else {
         nonPublicMarkers.add("io.matthewnelson.encoding.core.internal.InternalEncodingApi")
 
-        ignoredProjects.add("encoding-test")
+        ignoredProjects.add("test")
         ignoredProjects.add("sample")
     }
 }
