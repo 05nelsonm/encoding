@@ -36,6 +36,8 @@ import kotlin.jvm.JvmOverloads
     
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """
     ,
     replaceWith = ReplaceWith(
@@ -65,6 +67,8 @@ public fun Base32Crockford(
     
     Will be removed in 2.0.0 because of an issue with
     Java 9 modules and JPMS not allowing split packages
+    
+    See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Crockford { block() }",
@@ -90,6 +94,8 @@ public fun Base32Crockford(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Crockford(strict)",
@@ -112,6 +118,8 @@ public fun Base32Crockford(strict: Boolean = false): Base32.Crockford = Base32Cr
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Default(config) { block() }",
@@ -140,6 +148,8 @@ public fun Base32Default(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Default { block() }",
@@ -165,6 +175,8 @@ public fun Base32Default(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Default(strict)",
@@ -187,6 +199,8 @@ public fun Base32Default(strict: Boolean = false): Base32.Default = Base32Defaul
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Hex(config) { block() }",
@@ -215,6 +229,8 @@ public fun Base32Hex(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Hex { block() }",
@@ -240,6 +256,8 @@ public fun Base32Hex(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32Hex(strict)",
@@ -262,6 +280,8 @@ public fun Base32Hex(strict: Boolean = false): Base32.Hex = Base32Hex { if (stri
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32CrockfordConfigBuilder",
@@ -447,6 +467,8 @@ public class Base32CrockfordConfigBuilder {
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32DefaultConfigBuilder",
@@ -562,6 +584,8 @@ public class Base32DefaultConfigBuilder {
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base32HexConfigBuilder",

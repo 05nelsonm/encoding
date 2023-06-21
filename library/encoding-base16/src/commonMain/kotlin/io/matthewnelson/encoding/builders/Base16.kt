@@ -34,6 +34,8 @@ import kotlin.jvm.JvmOverloads
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base16(config) { block() }",
@@ -62,6 +64,8 @@ public fun Base16(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base16 { block() }",
@@ -87,6 +91,8 @@ public fun Base16(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base16(strict)",
@@ -110,6 +116,8 @@ public fun Base16(strict: Boolean = false): Base16 = Base16 { if (strict) strict
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base16ConfigBuilder",

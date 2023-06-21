@@ -33,6 +33,8 @@ import kotlin.jvm.JvmOverloads
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base64(config) { block() }",
@@ -61,6 +63,8 @@ public fun Base64(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base64 { block() }",
@@ -86,6 +90,8 @@ public fun Base64(
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base64(strict)",
@@ -108,6 +114,8 @@ public fun Base64(strict: Boolean = false): Base64 = Base64 { if (strict) strict
         
         Will be removed in 2.0.0 because of an issue with
         Java 9 modules and JPMS not allowing split packages
+        
+        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
     """,
     replaceWith = ReplaceWith(
         expression = "Base64ConfigBuilder",
