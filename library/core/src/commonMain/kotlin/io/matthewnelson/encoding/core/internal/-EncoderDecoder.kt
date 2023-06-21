@@ -23,6 +23,7 @@ import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.math.min
 
 @Suppress("NOTHING_TO_INLINE")
 @Throws(EncodingException::class)
@@ -32,22 +33,27 @@ internal inline fun <C: Config> Decoder<C>.decode(
     action: (feed: Decoder<*>.Feed) -> Unit
 ): ByteArray {
     contract {
-        callsInPlace(action, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(action, InvocationKind.UNKNOWN)
     }
 
     val size = config.decodeOutMaxSizeOrFail(input)
     val ba = ByteArray(size)
 
     var i = 0
-    newDecoderFeed { decodedByte ->
-        try {
-            ba[i++] = decodedByte
-        } catch (e: IndexOutOfBoundsException) {
-            // Something is wrong with the encoder's pre-calculation
-            throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", e)
+    try {
+        newDecoderFeed { decodedByte ->
+            try {
+                ba[i++] = decodedByte
+            } catch (e: IndexOutOfBoundsException) {
+                // Something is wrong with the encoder's pre-calculation
+                throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", e)
+            }
+        }.use { feed ->
+            action.invoke(feed)
         }
-    }.use { feed ->
-        action.invoke(feed)
+    } catch (t: Throwable) {
+        ba.fill(0, toIndex = min(ba.size, i))
+        throw t
     }
 
     return if (i == size) {
@@ -100,8 +106,8 @@ internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException 
     return EncodingException("$this is closed")
 }
 
-@Suppress("NOTHING_TO_INLINE")
-internal inline fun EncoderDecoder.Config.calculatedOutputNegativeEncodingSizeException(
+@Suppress("NOTHING_TO_INLINE", "UnusedReceiverParameter")
+internal inline fun Config.calculatedOutputNegativeEncodingSizeException(
     outSize: Number
 ): EncodingSizeException {
     return EncodingSizeException("Calculated output of Size[$outSize] was negative")
