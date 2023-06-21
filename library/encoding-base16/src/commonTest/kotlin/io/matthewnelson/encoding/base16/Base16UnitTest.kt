@@ -15,7 +15,6 @@
  **/
 package io.matthewnelson.encoding.base16
 
-import io.matthewnelson.encoding.builders.Base16
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString

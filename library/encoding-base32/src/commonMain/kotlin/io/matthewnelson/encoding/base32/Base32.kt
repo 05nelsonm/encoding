@@ -21,7 +21,6 @@ import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize
 import io.matthewnelson.encoding.base32.internal.encodeOutSize
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
 import io.matthewnelson.encoding.base32.internal.toBits
-import io.matthewnelson.encoding.builders.*
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.*
 import io.matthewnelson.encoding.core.util.FeedBuffer

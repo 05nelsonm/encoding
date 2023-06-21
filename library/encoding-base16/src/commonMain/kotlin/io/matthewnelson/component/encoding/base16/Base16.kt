@@ -17,7 +17,7 @@
 
 package io.matthewnelson.component.encoding.base16
 
-import io.matthewnelson.encoding.builders.Base16
+import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
@@ -28,7 +28,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base16())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -44,7 +44,7 @@ public inline fun String.decodeBase16ToArray(): ByteArray? {
     replaceWith = ReplaceWith(
         expression = "this.decodeToByteArrayOrNull(Base16())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
         ],
     ),
@@ -59,7 +59,7 @@ public fun CharArray.decodeBase16ToArray(): ByteArray? {
     replaceWith = ReplaceWith(
         expression = "this.encodeToString(Base16())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
         ],
     ),
@@ -75,7 +75,7 @@ public inline fun ByteArray.encodeBase16(): String {
     replaceWith = ReplaceWith(
         expression = "this.encodeToCharArray(Base16())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
         ],
     ),
@@ -91,7 +91,7 @@ public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
     ReplaceWith(
         expression = "this.encodeToByteArray(Base16())",
         imports = [
-            "io.matthewnelson.encoding.builders.Base16",
+            "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
         ],
     ),

@@ -17,8 +17,6 @@
 
 package io.matthewnelson.encoding.base16
 
-import io.matthewnelson.encoding.builders.Base16
-import io.matthewnelson.encoding.builders.Base16ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
@@ -49,7 +47,7 @@ import kotlin.jvm.JvmSynthetic
  *     val decoded = encoded.decodeToByteArray(Base16).decodeToString()
  *     assertEquals(text, decoded)
  *
- * @see [io.matthewnelson.encoding.builders.Base16]
+ * @see [io.matthewnelson.encoding.base16.Base16]
  * @see [Base16.Config]
  * @see [Base16.CHARS_UPPER]
  * @see [Base16.CHARS_LOWER]

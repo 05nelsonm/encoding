@@ -17,9 +17,6 @@
 
 package io.matthewnelson.encoding.base64
 
-import io.matthewnelson.encoding.base64.Base64.Default
-import io.matthewnelson.encoding.builders.Base64
-import io.matthewnelson.encoding.builders.Base64ConfigBuilder
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
@@ -55,7 +52,7 @@ import kotlin.jvm.JvmSynthetic
  *     val decoded = encoded.decodeToByteArray(Base64.Default).decodeToString()
  *     assertEquals(text, decoded)
  *
- * @see [io.matthewnelson.encoding.builders.Base64]
+ * @see [io.matthewnelson.encoding.base64.Base64]
  * @see [Base64.Config]
  * @see [Default.CHARS]
  * @see [UrlSafe.CHARS]

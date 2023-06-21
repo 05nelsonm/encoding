@@ -13,36 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("DEPRECATION")
+package io.matthewnelson.encoding.base64
 
-package io.matthewnelson.encoding.builders
-
-import io.matthewnelson.encoding.base64.Base64
 import io.matthewnelson.encoding.core.EncodingException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmOverloads
 
 /**
- * Deprecated
+ * Creates a configured [Base64] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base64.Base64]
+ * @param [config] inherit settings from.
+ * @see [Base64ConfigBuilder]
  * */
-@Deprecated(
-    message = """
-        Moved to package io.matthewnelson.encoding.base64
-        
-        Will be removed in 2.0.0 because of an issue with
-        Java 9 modules and JPMS not allowing split packages
-        
-        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
-    """,
-    replaceWith = ReplaceWith(
-        expression = "Base64(config) { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base64.Base64"
-        ]
-    )
-)
 public fun Base64(
     config: Base64.Config?,
     block: Base64ConfigBuilder.() -> Unit,
@@ -53,26 +35,10 @@ public fun Base64(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base64] encoder/decoder.
  *
- * @see [io.matthewnelson.encoding.base64.Base64]
+ * @see [Base64ConfigBuilder]
  * */
-@Deprecated(
-    message = """
-        Moved to package io.matthewnelson.encoding.base64
-        
-        Will be removed in 2.0.0 because of an issue with
-        Java 9 modules and JPMS not allowing split packages
-        
-        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
-    """,
-    replaceWith = ReplaceWith(
-        expression = "Base64 { block() }",
-        imports = [
-            "io.matthewnelson.encoding.base64.Base64"
-        ]
-    )
-)
 public fun Base64(
     block: Base64ConfigBuilder.() -> Unit,
 ): Base64 {
@@ -80,50 +46,22 @@ public fun Base64(
 }
 
 /**
- * Deprecated
+ * Creates a configured [Base64] encoder/decoder
+ * using the default settings.
  *
- * @see [io.matthewnelson.encoding.base64.Base64]
+ * @param [strict] If true, configures the encoder/decoder
+ *   to be in strict accordance with RFC 4648.
+ * @see [Base64ConfigBuilder]
  * */
-@Deprecated(
-    message = """
-        Moved to package io.matthewnelson.encoding.base64
-        
-        Will be removed in 2.0.0 because of an issue with
-        Java 9 modules and JPMS not allowing split packages
-        
-        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
-    """,
-    replaceWith = ReplaceWith(
-        expression = "Base64(strict)",
-        imports = [
-            "io.matthewnelson.encoding.base64.Base64"
-        ]
-    )
-)
 @JvmOverloads
 public fun Base64(strict: Boolean = false): Base64 = Base64 { if (strict) strict() }
 
 /**
- * Deprecated
+ * Builder for creating a [Base64.Config].
  *
- * @see [io.matthewnelson.encoding.base64.Base64ConfigBuilder]
+ * @see [strict]
+ * @see [io.matthewnelson.encoding.builders.Base64]
  * */
-@Deprecated(
-    message = """
-        Moved to package io.matthewnelson.encoding.base64
-        
-        Will be removed in 2.0.0 because of an issue with
-        Java 9 modules and JPMS not allowing split packages
-        
-        See: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
-    """,
-    replaceWith = ReplaceWith(
-        expression = "Base64ConfigBuilder",
-        imports = [
-            "io.matthewnelson.encoding.base64.Base64ConfigBuilder"
-        ]
-    )
-)
 public class Base64ConfigBuilder {
 
     public constructor()
@@ -205,12 +143,5 @@ public class Base64ConfigBuilder {
         return this
     }
 
-    public fun build(): Base64.Config {
-        val b = io.matthewnelson.encoding.base64.Base64ConfigBuilder()
-        b.isLenient = isLenient
-        b.lineBreakInterval = lineBreakInterval
-        b.encodeToUrlSafe = encodeToUrlSafe
-        b.padEncoded = padEncoded
-        return b.build()
-    }
+    public fun build(): Base64.Config = Base64.Config.from(this)
 }
