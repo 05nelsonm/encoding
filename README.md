@@ -105,6 +105,8 @@ Base32.Hex
 ```
 
 ```kotlin
+// NOTE: Base64 can _decode_ both Default and UrlSafe, no matter what
+// encodeToUrlSafe is set to.
 val base64 = Base64 {
     isLenient = true
     lineBreakInterval = 64
