@@ -33,8 +33,8 @@ fun KmpConfigurationExtension.configureShared(
         }
 
         js()
-//        wasm()
-        wasmNativeAll()
+        // wasmJs {}
+        // wasmWasi {}
 
         androidNativeAll()
 
