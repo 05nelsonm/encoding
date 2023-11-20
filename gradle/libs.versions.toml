@@ -1,9 +1,9 @@
 [versions]
-binaryCompat = "0.13.1"
-configuration = "0.1.1"
-gradleVersions = "0.46.0"
-kotlin = "1.8.21"
-publish = "0.25.2"
+binaryCompat = "0.13.2"
+configuration = "0.1.5"
+gradleVersions = "0.50.0"
+kotlin = "1.9.20"
+publish = "0.25.3"
 
 [libraries]
 gradle-kmp-configuration = { module = "io.matthewnelson:gradle-kmp-configuration-plugin", version.ref = "configuration" }

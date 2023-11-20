@@ -6,7 +6,7 @@ Simple Application that will output encoded values of `Hello World!`
 
 Java:
 ```shell
-./gradlew :sample:run -PKMP_TARGETS="JVM"
+./gradlew :sample:jvmRun -PKMP_TARGETS="JVM"
 ```
 
 Native:
