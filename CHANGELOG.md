@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Version 2.1.0 (2023-11-30)
+ - Updates dependencies
+     - Kotlin `1.8.21` -> `1.9.21`
+ - Drops support for the following deprecated targets:
+     - `iosArm32`
+     - `watchosX86`
+     - `linuxArm32Hfp`
+     - `linuxMips32`
+     - `linuxMipsel32`
+     - `mingwX86`
+     - `wasm32`
+
 ## Version 2.0.0 (2023-06-21)
  - Fixes JPMS split package exception [[#126]][126] & [[#127]][127]
      - **API BREAKING CHANGES**

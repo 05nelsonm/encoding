@@ -13,13 +13,15 @@
 ![badge-platform-ios]
 ![badge-platform-tvos]
 ![badge-platform-watchos]
-![badge-platform-wasm]
 ![badge-platform-windows]
 ![badge-support-android-native]
 ![badge-support-apple-silicon]
 ![badge-support-js-ir]
 ![badge-support-linux-arm]
-![badge-support-linux-mips]
+
+<!--
+![badge-platform-wasm]
+-->
 
 Configurable, streamable, efficient and extensible Encoding/Decoding for Kotlin Multiplatform.
 
@@ -275,7 +277,7 @@ See [sample project](sample/README.md)
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "2.0.0"
+    val encoding = "2.1.0"
     implementation("io.matthewnelson.encoding:base16:$encoding")
     implementation("io.matthewnelson.encoding:base32:$encoding")
     implementation("io.matthewnelson.encoding:base64:$encoding")
@@ -292,7 +294,7 @@ Alternatively, you can use the BOM.
 // build.gradle.kts
 dependencies {
     // define the BOM and its version
-    implementation(platform("io.matthewnelson.encoding:bom:2.0.0"))
+    implementation(platform("io.matthewnelson.encoding:bom:2.1.0"))
 
     // define artifacts without version
     implementation("io.matthewnelson.encoding:base16")
@@ -305,11 +307,11 @@ dependencies {
 ```
 
 <!-- TAG_VERSION -->
-[badge-latest-release]: https://img.shields.io/badge/latest--release-2.0.0-blue.svg?style=flat
+[badge-latest-release]: https://img.shields.io/badge/latest--release-2.1.0-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 <!-- TAG_DEPENDENCIES -->
-[badge-kotlin]: https://img.shields.io/badge/kotlin-1.8.21-blue.svg?logo=kotlin
+[badge-kotlin]: https://img.shields.io/badge/kotlin-1.9.21-blue.svg?logo=kotlin
 
 <!-- TAG_PLATFORMS -->
 [badge-platform-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
@@ -327,7 +329,6 @@ dependencies {
 [badge-support-apple-silicon]: http://img.shields.io/badge/support-[AppleSilicon]-43BBFF.svg?style=flat
 [badge-support-js-ir]: https://img.shields.io/badge/support-[js--IR]-AAC4E0.svg?style=flat
 [badge-support-linux-arm]: http://img.shields.io/badge/support-[LinuxArm]-2D3F6C.svg?style=flat
-[badge-support-linux-mips]: http://img.shields.io/badge/support-[LinuxMIPS]-2D3F6C.svg?style=flat
 
 [url-latest-release]: https://github.com/05nelsonm/encoding/releases/latest
 [url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
