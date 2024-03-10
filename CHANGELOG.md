@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Version 2.2.0 (2024-03-10)
+ - Updates dependencies
+     - Kotlin `1.9.21` -> `1.9.23`
+ - Adds support for Java9 JPMS via Multi-Release jars [[#139]][139]
+ - Adds experimental support for the following targets [[#140]][140]:
+     - `wasmJs`
+     - `wasmWasi`
+ - Deprecates `InternalEncodingApi` annotation [[#142]][142]
+
 ## Version 2.1.0 (2023-11-30)
  - Updates dependencies
      - Kotlin `1.8.21` -> `1.9.21`
@@ -169,4 +178,7 @@
 [127]: https://github.com/05nelsonm/encoding/pull/127
 [130]: https://github.com/05nelsonm/encoding/pull/130
 [132]: https://github.com/05nelsonm/encoding/pull/132
+[139]: https://github.com/05nelsonm/encoding/pull/139
+[140]: https://github.com/05nelsonm/encoding/pull/140
+[142]: https://github.com/05nelsonm/encoding/pull/142
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
