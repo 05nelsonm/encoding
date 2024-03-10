@@ -8,6 +8,7 @@
 ![badge-platform-jvm]
 ![badge-platform-js]
 ![badge-platform-js-node]
+![badge-platform-wasm]
 ![badge-platform-linux]
 ![badge-platform-macos]
 ![badge-platform-ios]
