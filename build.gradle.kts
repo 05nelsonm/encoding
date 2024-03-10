@@ -52,14 +52,9 @@ plugins.withType<NodeJsRootPlugin> {
 }
 
 apiValidation {
-    @Suppress("LocalVariableName")
-    val CHECK_PUBLICATION = findProperty("CHECK_PUBLICATION") as? String
-
-    if (CHECK_PUBLICATION != null) {
+    if (findProperty("CHECK_PUBLICATION") != null) {
         ignoredProjects.add("check-publication")
     } else {
-        nonPublicMarkers.add("io.matthewnelson.encoding.core.internal.InternalEncodingApi")
-
         ignoredProjects.add("test")
         ignoredProjects.add("sample")
     }
