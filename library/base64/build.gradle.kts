@@ -19,7 +19,7 @@ plugins {
 }
 
 kmpConfiguration {
-    configureShared(publish = true) {
+    configureShared(java9ModuleName = "io.matthewnelson.encoding.base64", publish = true) {
         common {
             sourceSetMain {
                 dependencies {
