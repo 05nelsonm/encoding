@@ -43,4 +43,5 @@ package io.matthewnelson.encoding.core.internal
     AnnotationTarget.TYPEALIAS
 )
 @Retention(AnnotationRetention.BINARY)
+@Deprecated(message = "deprecated due to package name incompatibility with JPMS")
 public annotation class InternalEncodingApi
