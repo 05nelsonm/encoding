@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## Version 2.2.1 (2024-03-13)
+ - Adds support for `wasmJs.browser` [[#144]][144]
+
 ## Version 2.2.0 (2024-03-10)
  - Updates dependencies
      - Kotlin `1.9.21` -> `1.9.23`
@@ -181,4 +184,5 @@
 [139]: https://github.com/05nelsonm/encoding/pull/139
 [140]: https://github.com/05nelsonm/encoding/pull/140
 [142]: https://github.com/05nelsonm/encoding/pull/142
+[144]: https://github.com/05nelsonm/encoding/pull/144
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
