@@ -36,13 +36,21 @@ fun KmpConfigurationExtension.configureShared(
             java9MultiReleaseModuleInfo(java9ModuleName)
         }
 
-        js()
-        @OptIn(ExperimentalWasmDsl::class)
-        wasmJs {
+        js {
             target {
+                browser()
                 nodejs()
             }
         }
+
+        @OptIn(ExperimentalWasmDsl::class)
+        wasmJs {
+            target {
+                browser()
+                nodejs()
+            }
+        }
+
         @OptIn(ExperimentalWasmDsl::class)
         wasmWasi {
             target {
