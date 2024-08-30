@@ -1,0 +1,196 @@
+// Klib ABI Dump
+// Targets: [androidNativeArm32, androidNativeArm64, androidNativeX64, androidNativeX86, iosArm64, iosSimulatorArm64, iosX64, js, linuxArm64, linuxX64, macosArm64, macosX64, mingwX64, tvosArm64, tvosSimulatorArm64, tvosX64, wasmJs, wasmWasi, watchosArm32, watchosArm64, watchosDeviceArm64, watchosSimulatorArm64, watchosX64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <io.matthewnelson.encoding:base32>
+final class io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder { // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder|null[0]
+    constructor <init>() // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.<init>|<init>(){}[0]
+    constructor <init>(io.matthewnelson.encoding.base32/Base32.Crockford.Config?) // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Crockford.Config?){}[0]
+
+    final var checkSymbol // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.checkSymbol|<set-checkSymbol>(kotlin.Char?){}[0]
+        final fun <get-checkSymbol>(): kotlin/Char? // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.checkSymbol.<get-checkSymbol>|<get-checkSymbol>(){}[0]
+    final var encodeToLowercase // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.encodeToLowercase|<set-encodeToLowercase>(kotlin.Boolean){}[0]
+        final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
+        final fun <set-encodeToLowercase>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.encodeToLowercase.<set-encodeToLowercase>|<set-encodeToLowercase>(kotlin.Boolean){}[0]
+    final var finalizeWhenFlushed // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.finalizeWhenFlushed|<set-finalizeWhenFlushed>(kotlin.Boolean){}[0]
+        final fun <get-finalizeWhenFlushed>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.finalizeWhenFlushed.<get-finalizeWhenFlushed>|<get-finalizeWhenFlushed>(){}[0]
+        final fun <set-finalizeWhenFlushed>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.finalizeWhenFlushed.<set-finalizeWhenFlushed>|<set-finalizeWhenFlushed>(kotlin.Boolean){}[0]
+    final var hyphenInterval // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.hyphenInterval|<set-hyphenInterval>(kotlin.Byte){}[0]
+        final fun <get-hyphenInterval>(): kotlin/Byte // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.hyphenInterval.<get-hyphenInterval>|<get-hyphenInterval>(){}[0]
+        final fun <set-hyphenInterval>(kotlin/Byte) // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.hyphenInterval.<set-hyphenInterval>|<set-hyphenInterval>(kotlin.Byte){}[0]
+    final var isLenient // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.isLenient|<set-isLenient>(kotlin.Boolean){}[0]
+        final fun <get-isLenient>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.isLenient.<get-isLenient>|<get-isLenient>(){}[0]
+        final fun <set-isLenient>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.isLenient.<set-isLenient>|<set-isLenient>(kotlin.Boolean){}[0]
+
+    final fun build(): io.matthewnelson.encoding.base32/Base32.Crockford.Config // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.build|build(){}[0]
+    final fun checkSymbol(kotlin/Char?): io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.checkSymbol|checkSymbol(kotlin.Char?){}[0]
+    final fun strict(): io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder // io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder.strict|strict(){}[0]
+}
+
+final class io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder { // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder|null[0]
+    constructor <init>() // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.<init>|<init>(){}[0]
+    constructor <init>(io.matthewnelson.encoding.base32/Base32.Default.Config?) // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Default.Config?){}[0]
+
+    final var encodeToLowercase // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.encodeToLowercase|<set-encodeToLowercase>(kotlin.Boolean){}[0]
+        final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
+        final fun <set-encodeToLowercase>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.encodeToLowercase.<set-encodeToLowercase>|<set-encodeToLowercase>(kotlin.Boolean){}[0]
+    final var isLenient // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.isLenient|<set-isLenient>(kotlin.Boolean){}[0]
+        final fun <get-isLenient>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.isLenient.<get-isLenient>|<get-isLenient>(){}[0]
+        final fun <set-isLenient>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.isLenient.<set-isLenient>|<set-isLenient>(kotlin.Boolean){}[0]
+    final var lineBreakInterval // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.lineBreakInterval|<set-lineBreakInterval>(kotlin.Byte){}[0]
+        final fun <get-lineBreakInterval>(): kotlin/Byte // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.lineBreakInterval.<get-lineBreakInterval>|<get-lineBreakInterval>(){}[0]
+        final fun <set-lineBreakInterval>(kotlin/Byte) // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.lineBreakInterval.<set-lineBreakInterval>|<set-lineBreakInterval>(kotlin.Byte){}[0]
+    final var padEncoded // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.padEncoded|<set-padEncoded>(kotlin.Boolean){}[0]
+        final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
+        final fun <set-padEncoded>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.padEncoded.<set-padEncoded>|<set-padEncoded>(kotlin.Boolean){}[0]
+
+    final fun build(): io.matthewnelson.encoding.base32/Base32.Default.Config // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.build|build(){}[0]
+    final fun strict(): io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder // io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder.strict|strict(){}[0]
+}
+
+final class io.matthewnelson.encoding.base32/Base32HexConfigBuilder { // io.matthewnelson.encoding.base32/Base32HexConfigBuilder|null[0]
+    constructor <init>() // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.<init>|<init>(){}[0]
+    constructor <init>(io.matthewnelson.encoding.base32/Base32.Hex.Config?) // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Hex.Config?){}[0]
+
+    final var encodeToLowercase // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.encodeToLowercase|<set-encodeToLowercase>(kotlin.Boolean){}[0]
+        final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
+        final fun <set-encodeToLowercase>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.encodeToLowercase.<set-encodeToLowercase>|<set-encodeToLowercase>(kotlin.Boolean){}[0]
+    final var isLenient // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.isLenient|<set-isLenient>(kotlin.Boolean){}[0]
+        final fun <get-isLenient>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.isLenient.<get-isLenient>|<get-isLenient>(){}[0]
+        final fun <set-isLenient>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.isLenient.<set-isLenient>|<set-isLenient>(kotlin.Boolean){}[0]
+    final var lineBreakInterval // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.lineBreakInterval|<set-lineBreakInterval>(kotlin.Byte){}[0]
+        final fun <get-lineBreakInterval>(): kotlin/Byte // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.lineBreakInterval.<get-lineBreakInterval>|<get-lineBreakInterval>(){}[0]
+        final fun <set-lineBreakInterval>(kotlin/Byte) // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.lineBreakInterval.<set-lineBreakInterval>|<set-lineBreakInterval>(kotlin.Byte){}[0]
+    final var padEncoded // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.padEncoded|<set-padEncoded>(kotlin.Boolean){}[0]
+        final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
+        final fun <set-padEncoded>(kotlin/Boolean) // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.padEncoded.<set-padEncoded>|<set-padEncoded>(kotlin.Boolean){}[0]
+
+    final fun build(): io.matthewnelson.encoding.base32/Base32.Hex.Config // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.build|build(){}[0]
+    final fun strict(): io.matthewnelson.encoding.base32/Base32HexConfigBuilder // io.matthewnelson.encoding.base32/Base32HexConfigBuilder.strict|strict(){}[0]
+}
+
+sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matthewnelson.encoding.base32/Base32 : io.matthewnelson.encoding.core/EncoderDecoder<#A> { // io.matthewnelson.encoding.base32/Base32|null[0]
+    constructor <init>(#A) // io.matthewnelson.encoding.base32/Base32.<init>|<init>(1:0){}[0]
+
+    final class Crockford : io.matthewnelson.encoding.base32/Base32<io.matthewnelson.encoding.base32/Base32.Crockford.Config> { // io.matthewnelson.encoding.base32/Base32.Crockford|null[0]
+        constructor <init>(io.matthewnelson.encoding.base32/Base32.Crockford.Config) // io.matthewnelson.encoding.base32/Base32.Crockford.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Crockford.Config){}[0]
+
+        final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base32/Base32.Crockford.Config|null[0]
+            final val checkSymbol // io.matthewnelson.encoding.base32/Base32.Crockford.Config.checkSymbol|{}checkSymbol[0]
+                final fun <get-checkSymbol>(): kotlin/Char? // io.matthewnelson.encoding.base32/Base32.Crockford.Config.checkSymbol.<get-checkSymbol>|<get-checkSymbol>(){}[0]
+            final val encodeToLowercase // io.matthewnelson.encoding.base32/Base32.Crockford.Config.encodeToLowercase|{}encodeToLowercase[0]
+                final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Crockford.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
+            final val finalizeWhenFlushed // io.matthewnelson.encoding.base32/Base32.Crockford.Config.finalizeWhenFlushed|{}finalizeWhenFlushed[0]
+                final fun <get-finalizeWhenFlushed>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Crockford.Config.finalizeWhenFlushed.<get-finalizeWhenFlushed>|<get-finalizeWhenFlushed>(){}[0]
+            final val hyphenInterval // io.matthewnelson.encoding.base32/Base32.Crockford.Config.hyphenInterval|{}hyphenInterval[0]
+                final fun <get-hyphenInterval>(): kotlin/Byte // io.matthewnelson.encoding.base32/Base32.Crockford.Config.hyphenInterval.<get-hyphenInterval>|<get-hyphenInterval>(){}[0]
+        }
+
+        final object Companion : io.matthewnelson.encoding.core/EncoderDecoder<io.matthewnelson.encoding.base32/Base32.Crockford.Config> { // io.matthewnelson.encoding.base32/Base32.Crockford.Companion|null[0]
+            final const val CHARS_LOWER // io.matthewnelson.encoding.base32/Base32.Crockford.Companion.CHARS_LOWER|{}CHARS_LOWER[0]
+                final fun <get-CHARS_LOWER>(): kotlin/String // io.matthewnelson.encoding.base32/Base32.Crockford.Companion.CHARS_LOWER.<get-CHARS_LOWER>|<get-CHARS_LOWER>(){}[0]
+            final const val CHARS_UPPER // io.matthewnelson.encoding.base32/Base32.Crockford.Companion.CHARS_UPPER|{}CHARS_UPPER[0]
+                final fun <get-CHARS_UPPER>(): kotlin/String // io.matthewnelson.encoding.base32/Base32.Crockford.Companion.CHARS_UPPER.<get-CHARS_UPPER>|<get-CHARS_UPPER>(){}[0]
+        }
+    }
+
+    final class Default : io.matthewnelson.encoding.base32/Base32<io.matthewnelson.encoding.base32/Base32.Default.Config> { // io.matthewnelson.encoding.base32/Base32.Default|null[0]
+        constructor <init>(io.matthewnelson.encoding.base32/Base32.Default.Config) // io.matthewnelson.encoding.base32/Base32.Default.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Default.Config){}[0]
+
+        final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base32/Base32.Default.Config|null[0]
+            final val encodeToLowercase // io.matthewnelson.encoding.base32/Base32.Default.Config.encodeToLowercase|{}encodeToLowercase[0]
+                final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Default.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
+            final val padEncoded // io.matthewnelson.encoding.base32/Base32.Default.Config.padEncoded|{}padEncoded[0]
+                final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Default.Config.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
+        }
+
+        final object Companion : io.matthewnelson.encoding.core/EncoderDecoder<io.matthewnelson.encoding.base32/Base32.Default.Config> { // io.matthewnelson.encoding.base32/Base32.Default.Companion|null[0]
+            final const val CHARS_LOWER // io.matthewnelson.encoding.base32/Base32.Default.Companion.CHARS_LOWER|{}CHARS_LOWER[0]
+                final fun <get-CHARS_LOWER>(): kotlin/String // io.matthewnelson.encoding.base32/Base32.Default.Companion.CHARS_LOWER.<get-CHARS_LOWER>|<get-CHARS_LOWER>(){}[0]
+            final const val CHARS_UPPER // io.matthewnelson.encoding.base32/Base32.Default.Companion.CHARS_UPPER|{}CHARS_UPPER[0]
+                final fun <get-CHARS_UPPER>(): kotlin/String // io.matthewnelson.encoding.base32/Base32.Default.Companion.CHARS_UPPER.<get-CHARS_UPPER>|<get-CHARS_UPPER>(){}[0]
+        }
+    }
+
+    final class Hex : io.matthewnelson.encoding.base32/Base32<io.matthewnelson.encoding.base32/Base32.Hex.Config> { // io.matthewnelson.encoding.base32/Base32.Hex|null[0]
+        constructor <init>(io.matthewnelson.encoding.base32/Base32.Hex.Config) // io.matthewnelson.encoding.base32/Base32.Hex.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Hex.Config){}[0]
+
+        final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base32/Base32.Hex.Config|null[0]
+            final val encodeToLowercase // io.matthewnelson.encoding.base32/Base32.Hex.Config.encodeToLowercase|{}encodeToLowercase[0]
+                final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Hex.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
+            final val padEncoded // io.matthewnelson.encoding.base32/Base32.Hex.Config.padEncoded|{}padEncoded[0]
+                final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Hex.Config.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
+        }
+
+        final object Companion : io.matthewnelson.encoding.core/EncoderDecoder<io.matthewnelson.encoding.base32/Base32.Hex.Config> { // io.matthewnelson.encoding.base32/Base32.Hex.Companion|null[0]
+            final const val CHARS_LOWER // io.matthewnelson.encoding.base32/Base32.Hex.Companion.CHARS_LOWER|{}CHARS_LOWER[0]
+                final fun <get-CHARS_LOWER>(): kotlin/String // io.matthewnelson.encoding.base32/Base32.Hex.Companion.CHARS_LOWER.<get-CHARS_LOWER>|<get-CHARS_LOWER>(){}[0]
+            final const val CHARS_UPPER // io.matthewnelson.encoding.base32/Base32.Hex.Companion.CHARS_UPPER|{}CHARS_UPPER[0]
+                final fun <get-CHARS_UPPER>(): kotlin/String // io.matthewnelson.encoding.base32/Base32.Hex.Companion.CHARS_UPPER.<get-CHARS_UPPER>|<get-CHARS_UPPER>(){}[0]
+        }
+    }
+}
+
+sealed class io.matthewnelson.component.encoding.base32/Base32 { // io.matthewnelson.component.encoding.base32/Base32|null[0]
+    constructor <init>() // io.matthewnelson.component.encoding.base32/Base32.<init>|<init>(){}[0]
+
+    final class Crockford : io.matthewnelson.component.encoding.base32/Base32 { // io.matthewnelson.component.encoding.base32/Base32.Crockford|null[0]
+        constructor <init>(kotlin/Char? =...) // io.matthewnelson.component.encoding.base32/Base32.Crockford.<init>|<init>(kotlin.Char?){}[0]
+
+        final val checkByte // io.matthewnelson.component.encoding.base32/Base32.Crockford.checkByte|{}checkByte[0]
+            final inline fun <get-checkByte>(): kotlin/Byte? // io.matthewnelson.component.encoding.base32/Base32.Crockford.checkByte.<get-checkByte>|<get-checkByte>(){}[0]
+        final val checkSymbol // io.matthewnelson.component.encoding.base32/Base32.Crockford.checkSymbol|{}checkSymbol[0]
+            final fun <get-checkSymbol>(): kotlin/Char? // io.matthewnelson.component.encoding.base32/Base32.Crockford.checkSymbol.<get-checkSymbol>|<get-checkSymbol>(){}[0]
+        final val hasCheckSymbol // io.matthewnelson.component.encoding.base32/Base32.Crockford.hasCheckSymbol|{}hasCheckSymbol[0]
+            final inline fun <get-hasCheckSymbol>(): kotlin/Boolean // io.matthewnelson.component.encoding.base32/Base32.Crockford.hasCheckSymbol.<get-hasCheckSymbol>|<get-hasCheckSymbol>(){}[0]
+
+        final fun component1(): kotlin/Char? // io.matthewnelson.component.encoding.base32/Base32.Crockford.component1|component1(){}[0]
+        final fun copy(kotlin/Char? =...): io.matthewnelson.component.encoding.base32/Base32.Crockford // io.matthewnelson.component.encoding.base32/Base32.Crockford.copy|copy(kotlin.Char?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // io.matthewnelson.component.encoding.base32/Base32.Crockford.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // io.matthewnelson.component.encoding.base32/Base32.Crockford.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // io.matthewnelson.component.encoding.base32/Base32.Crockford.toString|toString(){}[0]
+
+        final object Companion { // io.matthewnelson.component.encoding.base32/Base32.Crockford.Companion|null[0]
+            final const val CHARS // io.matthewnelson.component.encoding.base32/Base32.Crockford.Companion.CHARS|{}CHARS[0]
+                final fun <get-CHARS>(): kotlin/String // io.matthewnelson.component.encoding.base32/Base32.Crockford.Companion.CHARS.<get-CHARS>|<get-CHARS>(){}[0]
+        }
+    }
+
+    final object Default : io.matthewnelson.component.encoding.base32/Base32 { // io.matthewnelson.component.encoding.base32/Base32.Default|null[0]
+        final const val CHARS // io.matthewnelson.component.encoding.base32/Base32.Default.CHARS|{}CHARS[0]
+            final fun <get-CHARS>(): kotlin/String // io.matthewnelson.component.encoding.base32/Base32.Default.CHARS.<get-CHARS>|<get-CHARS>(){}[0]
+    }
+
+    final object Hex : io.matthewnelson.component.encoding.base32/Base32 { // io.matthewnelson.component.encoding.base32/Base32.Hex|null[0]
+        final const val CHARS // io.matthewnelson.component.encoding.base32/Base32.Hex.CHARS|{}CHARS[0]
+            final fun <get-CHARS>(): kotlin/String // io.matthewnelson.component.encoding.base32/Base32.Hex.CHARS.<get-CHARS>|<get-CHARS>(){}[0]
+    }
+}
+
+final fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32ToByteArray(io.matthewnelson.component.encoding.base32/Base32.Crockford): kotlin/ByteArray // io.matthewnelson.component.encoding.base32/encodeBase32ToByteArray|encodeBase32ToByteArray@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Crockford){}[0]
+final fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32ToByteArray(io.matthewnelson.component.encoding.base32/Base32.Default =...): kotlin/ByteArray // io.matthewnelson.component.encoding.base32/encodeBase32ToByteArray|encodeBase32ToByteArray@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Default){}[0]
+final fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32ToByteArray(io.matthewnelson.component.encoding.base32/Base32.Hex): kotlin/ByteArray // io.matthewnelson.component.encoding.base32/encodeBase32ToByteArray|encodeBase32ToByteArray@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Hex){}[0]
+final fun (kotlin/CharArray).io.matthewnelson.component.encoding.base32/decodeBase32ToArray(io.matthewnelson.component.encoding.base32/Base32.Crockford): kotlin/ByteArray? // io.matthewnelson.component.encoding.base32/decodeBase32ToArray|decodeBase32ToArray@kotlin.CharArray(io.matthewnelson.component.encoding.base32.Base32.Crockford){}[0]
+final fun (kotlin/CharArray).io.matthewnelson.component.encoding.base32/decodeBase32ToArray(io.matthewnelson.component.encoding.base32/Base32.Default =...): kotlin/ByteArray? // io.matthewnelson.component.encoding.base32/decodeBase32ToArray|decodeBase32ToArray@kotlin.CharArray(io.matthewnelson.component.encoding.base32.Base32.Default){}[0]
+final fun (kotlin/CharArray).io.matthewnelson.component.encoding.base32/decodeBase32ToArray(io.matthewnelson.component.encoding.base32/Base32.Hex): kotlin/ByteArray? // io.matthewnelson.component.encoding.base32/decodeBase32ToArray|decodeBase32ToArray@kotlin.CharArray(io.matthewnelson.component.encoding.base32.Base32.Hex){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Crockford(io.matthewnelson.encoding.base32/Base32.Crockford.Config?, kotlin/Function1<io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base32/Base32.Crockford // io.matthewnelson.encoding.base32/Base32Crockford|Base32Crockford(io.matthewnelson.encoding.base32.Base32.Crockford.Config?;kotlin.Function1<io.matthewnelson.encoding.base32.Base32CrockfordConfigBuilder,kotlin.Unit>){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Crockford(kotlin/Boolean =...): io.matthewnelson.encoding.base32/Base32.Crockford // io.matthewnelson.encoding.base32/Base32Crockford|Base32Crockford(kotlin.Boolean){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Crockford(kotlin/Function1<io.matthewnelson.encoding.base32/Base32CrockfordConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base32/Base32.Crockford // io.matthewnelson.encoding.base32/Base32Crockford|Base32Crockford(kotlin.Function1<io.matthewnelson.encoding.base32.Base32CrockfordConfigBuilder,kotlin.Unit>){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Default(io.matthewnelson.encoding.base32/Base32.Default.Config?, kotlin/Function1<io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base32/Base32.Default // io.matthewnelson.encoding.base32/Base32Default|Base32Default(io.matthewnelson.encoding.base32.Base32.Default.Config?;kotlin.Function1<io.matthewnelson.encoding.base32.Base32DefaultConfigBuilder,kotlin.Unit>){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Default(kotlin/Boolean =...): io.matthewnelson.encoding.base32/Base32.Default // io.matthewnelson.encoding.base32/Base32Default|Base32Default(kotlin.Boolean){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Default(kotlin/Function1<io.matthewnelson.encoding.base32/Base32DefaultConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base32/Base32.Default // io.matthewnelson.encoding.base32/Base32Default|Base32Default(kotlin.Function1<io.matthewnelson.encoding.base32.Base32DefaultConfigBuilder,kotlin.Unit>){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Hex(io.matthewnelson.encoding.base32/Base32.Hex.Config?, kotlin/Function1<io.matthewnelson.encoding.base32/Base32HexConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base32/Base32.Hex // io.matthewnelson.encoding.base32/Base32Hex|Base32Hex(io.matthewnelson.encoding.base32.Base32.Hex.Config?;kotlin.Function1<io.matthewnelson.encoding.base32.Base32HexConfigBuilder,kotlin.Unit>){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Hex(kotlin/Boolean =...): io.matthewnelson.encoding.base32/Base32.Hex // io.matthewnelson.encoding.base32/Base32Hex|Base32Hex(kotlin.Boolean){}[0]
+final fun io.matthewnelson.encoding.base32/Base32Hex(kotlin/Function1<io.matthewnelson.encoding.base32/Base32HexConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base32/Base32.Hex // io.matthewnelson.encoding.base32/Base32Hex|Base32Hex(kotlin.Function1<io.matthewnelson.encoding.base32.Base32HexConfigBuilder,kotlin.Unit>){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32(io.matthewnelson.component.encoding.base32/Base32.Crockford): kotlin/String // io.matthewnelson.component.encoding.base32/encodeBase32|encodeBase32@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Crockford){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32(io.matthewnelson.component.encoding.base32/Base32.Default =...): kotlin/String // io.matthewnelson.component.encoding.base32/encodeBase32|encodeBase32@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Default){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32(io.matthewnelson.component.encoding.base32/Base32.Hex): kotlin/String // io.matthewnelson.component.encoding.base32/encodeBase32|encodeBase32@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Hex){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32ToCharArray(io.matthewnelson.component.encoding.base32/Base32.Crockford): kotlin/CharArray // io.matthewnelson.component.encoding.base32/encodeBase32ToCharArray|encodeBase32ToCharArray@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Crockford){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32ToCharArray(io.matthewnelson.component.encoding.base32/Base32.Default =...): kotlin/CharArray // io.matthewnelson.component.encoding.base32/encodeBase32ToCharArray|encodeBase32ToCharArray@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Default){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base32/encodeBase32ToCharArray(io.matthewnelson.component.encoding.base32/Base32.Hex): kotlin/CharArray // io.matthewnelson.component.encoding.base32/encodeBase32ToCharArray|encodeBase32ToCharArray@kotlin.ByteArray(io.matthewnelson.component.encoding.base32.Base32.Hex){}[0]
+final inline fun (kotlin/String).io.matthewnelson.component.encoding.base32/decodeBase32ToArray(io.matthewnelson.component.encoding.base32/Base32.Crockford): kotlin/ByteArray? // io.matthewnelson.component.encoding.base32/decodeBase32ToArray|decodeBase32ToArray@kotlin.String(io.matthewnelson.component.encoding.base32.Base32.Crockford){}[0]
+final inline fun (kotlin/String).io.matthewnelson.component.encoding.base32/decodeBase32ToArray(io.matthewnelson.component.encoding.base32/Base32.Default =...): kotlin/ByteArray? // io.matthewnelson.component.encoding.base32/decodeBase32ToArray|decodeBase32ToArray@kotlin.String(io.matthewnelson.component.encoding.base32.Base32.Default){}[0]
+final inline fun (kotlin/String).io.matthewnelson.component.encoding.base32/decodeBase32ToArray(io.matthewnelson.component.encoding.base32/Base32.Hex): kotlin/ByteArray? // io.matthewnelson.component.encoding.base32/decodeBase32ToArray|decodeBase32ToArray@kotlin.String(io.matthewnelson.component.encoding.base32.Base32.Hex){}[0]
