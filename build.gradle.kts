@@ -22,7 +22,6 @@ plugins {
 }
 
 allprojects {
-
     findProperty("GROUP")?.let { group = it }
     findProperty("VERSION_NAME")?.let { version = it }
     findProperty("POM_DESCRIPTION")?.let { description = it.toString() }
@@ -30,7 +29,6 @@ allprojects {
     repositories {
         mavenCentral()
     }
-
 }
 
 plugins.withType<YarnPlugin> {

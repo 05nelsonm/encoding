@@ -77,7 +77,7 @@ fun KmpConfigurationExtension.configureShared(
         mingwAll()
 
         common {
-            if (publish) { pluginIds("publication") }
+            if (publish) pluginIds("publication")
 
             sourceSetTest {
                 dependencies {
@@ -86,7 +86,7 @@ fun KmpConfigurationExtension.configureShared(
             }
         }
 
-        if (publish) { kotlin { explicitApi() } }
+        if (publish) kotlin { explicitApi() }
 
         action.execute(this)
     }
