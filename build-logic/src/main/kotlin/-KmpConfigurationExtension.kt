@@ -24,7 +24,7 @@ fun KmpConfigurationExtension.configureShared(
     java9ModuleName: String? = null,
     publish: Boolean = false,
     explicitApi: Boolean = true,
-    action: Action<KmpConfigurationContainerDsl>
+    action: Action<KmpConfigurationContainerDsl>,
 ) {
     configure {
         jvm {
@@ -33,7 +33,7 @@ fun KmpConfigurationExtension.configureShared(
             compileTargetCompatibility = JavaVersion.VERSION_1_8
 
             @OptIn(ExperimentalKmpConfigurationApi::class)
-            java9MultiReleaseModuleInfo(java9ModuleName)
+            java9ModuleInfoName = java9ModuleName
         }
 
         js {
