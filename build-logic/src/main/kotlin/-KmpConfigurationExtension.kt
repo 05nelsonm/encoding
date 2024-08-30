@@ -40,12 +40,7 @@ fun KmpConfigurationExtension.configureShared(
             java9ModuleInfoName = java9ModuleName
         }
 
-        js {
-            target {
-                browser()
-                nodejs()
-            }
-        }
+        js()
 
         @OptIn(ExperimentalWasmDsl::class)
         wasmJs {
