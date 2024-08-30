@@ -23,9 +23,12 @@ import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 fun KmpConfigurationExtension.configureShared(
     java9ModuleName: String? = null,
     publish: Boolean = false,
-    explicitApi: Boolean = true,
     action: Action<KmpConfigurationContainerDsl>,
 ) {
+    if (publish) {
+        require(!java9ModuleName.isNullOrBlank()) { "publications must specify a module-info name" }
+    }
+
     configure {
         options {
             useUniqueModuleNames = true
@@ -83,7 +86,7 @@ fun KmpConfigurationExtension.configureShared(
             }
         }
 
-        if (explicitApi) { kotlin { explicitApi() } }
+        if (publish) { kotlin { explicitApi() } }
 
         action.execute(this)
     }
