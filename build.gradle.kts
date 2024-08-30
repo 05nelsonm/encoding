@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin
-import org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
 plugins {
-    alias(libs.plugins.multiplatform) apply(false)
     alias(libs.plugins.binary.compat)
+    alias(libs.plugins.multiplatform) apply(false)
 }
 
 allprojects {
@@ -38,17 +35,6 @@ allprojects {
 
 plugins.withType<YarnPlugin> {
     the<YarnRootExtension>().lockFileDirectory = rootDir.resolve(".kotlin-js-store")
-}
-
-plugins.withType<NodeJsRootPlugin> {
-    the<NodeJsRootExtension>().apply {
-        nodeVersion = "21.0.0-v8-canary202309167e82ab1fa2"
-        nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
-    }
-
-    tasks.withType<KotlinNpmInstallTask>().configureEach {
-        args.add("--ignore-engines")
-    }
 }
 
 apiValidation {
