@@ -278,7 +278,7 @@ See [sample project](sample/README.md)
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "2.2.1"
+    val encoding = "2.2.2"
     implementation("io.matthewnelson.encoding:base16:$encoding")
     implementation("io.matthewnelson.encoding:base32:$encoding")
     implementation("io.matthewnelson.encoding:base64:$encoding")
@@ -295,7 +295,7 @@ Alternatively, you can use the BOM.
 // build.gradle.kts
 dependencies {
     // define the BOM and its version
-    implementation(platform("io.matthewnelson.encoding:bom:2.2.1"))
+    implementation(platform("io.matthewnelson.encoding:bom:2.2.2"))
 
     // define artifacts without version
     implementation("io.matthewnelson.encoding:base16")
@@ -308,11 +308,11 @@ dependencies {
 ```
 
 <!-- TAG_VERSION -->
-[badge-latest-release]: https://img.shields.io/badge/latest--release-2.2.1-blue.svg?style=flat
+[badge-latest-release]: https://img.shields.io/badge/latest--release-2.2.2-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 <!-- TAG_DEPENDENCIES -->
-[badge-kotlin]: https://img.shields.io/badge/kotlin-1.9.23-blue.svg?logo=kotlin
+[badge-kotlin]: https://img.shields.io/badge/kotlin-1.9.24-blue.svg?logo=kotlin
 
 <!-- TAG_PLATFORMS -->
 [badge-platform-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat

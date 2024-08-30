@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Version 2.2.2 (2024-08-30)
+ - Updates dependencies
+     - Kotlin `1.9.23` -> `1.9.24`
+ - Fixes multiplatform metadata manifest `unique_name` parameter for
+   all source sets to be truly unique. [[#147]][147]
+ - Updates jvm `.kotlin_module` with truly unique file name. [[#147]][147]
+ - Fixes Java9 JPMS `module-info` to use `transitive` instead of just
+   `requires`. [[#150]][150]
+
 ## Version 2.2.1 (2024-03-13)
  - Adds support for `wasmJs.browser` [[#144]][144]
 
@@ -185,4 +194,6 @@
 [140]: https://github.com/05nelsonm/encoding/pull/140
 [142]: https://github.com/05nelsonm/encoding/pull/142
 [144]: https://github.com/05nelsonm/encoding/pull/144
+[147]: https://github.com/05nelsonm/encoding/pull/147
+[150]: https://github.com/05nelsonm/encoding/pull/150
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
