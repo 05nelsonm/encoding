@@ -71,10 +71,22 @@ public class Base16ConfigBuilder {
     public constructor()
     public constructor(config: Config?): this() {
         if (config == null) return
+        isConstantTime = config.isConstantTime
         isLenient = config.isLenient ?: true
         lineBreakInterval = config.lineBreakInterval
         encodeToLowercase = config.encodeToLowercase
     }
+
+    /**
+     * If true, will utilize constant time operations when
+     * encoding/decoding data. This will be slower, but help
+     * mitigate potential timing attacks with sensitive data
+     * (such as private key material).
+     *
+     * If false, will not use constant time operations.
+     * */
+    @JvmField
+    public var isConstantTime: Boolean = false
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')

@@ -74,6 +74,8 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         lineBreakInterval: Byte,
         @JvmField
         public val encodeToLowercase: Boolean,
+        @JvmField
+        public val isConstantTime: Boolean,
     ): EncoderDecoder.Config(
         isLenient = isLenient,
         lineBreakInterval = lineBreakInterval,
@@ -100,6 +102,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         protected override fun toStringAddSettings(): Set<Setting> {
             return buildSet {
                 add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+                add(Setting(name = "isConstantTime", value = isConstantTime))
             }
         }
 
@@ -111,6 +114,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                     isLenient = builder.isLenient,
                     lineBreakInterval = builder.lineBreakInterval,
                     encodeToLowercase = builder.encodeToLowercase,
+                    isConstantTime = builder.isConstantTime,
                 )
             }
         }
@@ -133,15 +137,18 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         config = Base16ConfigBuilder().apply { lineBreakInterval = 64 }.build()
     ) {
 
+        private const val LETTERS_UPPER: String = "ABCDEF"
+        private const val LETTERS_LOWER: String = "abcdef"
+
         /**
          * Uppercase Base16 encoding characters.
          * */
-        public const val CHARS_UPPER: String = "0123456789ABCDEF"
+        public const val CHARS_UPPER: String = "0123456789$LETTERS_UPPER"
 
         /**
          * Lowercase Base16 encoding characters.
          * */
-        public const val CHARS_LOWER: String = "0123456789abcdef"
+        public const val CHARS_LOWER: String = "0123456789$LETTERS_LOWER"
 
         private val DELEGATE = Base16(config)
         protected override fun name(): String = DELEGATE.name()
@@ -151,40 +158,89 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base16.Config>.Feed {
             return DELEGATE.newEncoderFeedProtected(out)
         }
+
+        private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
+            '0'..'9' to {
+                // char ASCII value
+                // 0     48    0
+                // 9     57    9 (ASCII - 48)
+                code - 48
+            },
+            LETTERS_UPPER.asIterable() to {
+                // char ASCII value
+                //   A   65    10
+                //   F   70    15 (ASCII - 55)
+                code - 55
+            },
+            LETTERS_LOWER.asIterable() to {
+                // char ASCII value
+                //   A   65    10
+                //   F   70    15 (ASCII - 55)
+                uppercaseChar().code - 55
+            },
+        )
     }
 
     protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
         return object : Decoder<Config>.Feed() {
 
             private val buffer = DecodingBuffer(out)
+            private val actions = when {
+                // Do not include lowercase letter actions. Constant time
+                // operations will uppercase the input on every invocation.
+                config.isConstantTime -> arrayOf(
+                    DECODE_ACTIONS[0],
+                    DECODE_ACTIONS[1],
+                )
+                // Assume input will be lowercase letters. Reorder
+                // actions to check lowercase before uppercase.
+                config.encodeToLowercase -> arrayOf(
+                    DECODE_ACTIONS[0],
+                    DECODE_ACTIONS[2],
+                    DECODE_ACTIONS[1],
+                )
+                else -> DECODE_ACTIONS
+            }
 
             @Throws(EncodingException::class)
             override fun consumeProtected(input: Char) {
-                val bits: Int = when (input) {
-                    in '0'..'9' -> {
-                        // char ASCII value
-                        // 0     48    0
-                        // 9     57    9 (ASCII - 48)
-                        input.code - 48
-                    }
-                    in 'a'..'f' -> {
-                        // char ASCII value
-                        //   A   65    10
-                        //   F   70    15 (ASCII - 55)
-                        input.uppercaseChar().code - 55
-                    }
-                    in 'A'..'F' -> {
-                        // char ASCII value
-                        //   A   65    10
-                        //   F   70    15 (ASCII - 55)
-                        input.code - 55
-                    }
-                    else -> {
-                        throw EncodingException("Char[${input}] is not a valid Base16 character")
+                var bitsFrom: (Char.() -> Int)? = null
+                var target: Char? = null
+
+                if (config.isConstantTime) {
+                    val iLower = LETTERS_LOWER.iterator()
+                    val iUpper = LETTERS_UPPER.iterator()
+
+                    while (iLower.hasNext() && iUpper.hasNext()) {
+                        val cLower = iLower.next()
+                        val cUpper = iUpper.next()
+
+                        if (input != cLower) continue
+                        target = cUpper
                     }
                 }
 
-                buffer.update(bits)
+                if (target == null) {
+                    // Either not using constant time, or input was not a lowercase letter.
+                    target = input
+                }
+
+                for ((chars, action) in actions) {
+                    for (c in chars) {
+                        if (!config.isConstantTime && bitsFrom != null) break
+                        if (target != c) continue
+                        bitsFrom = action
+                    }
+
+                    if (config.isConstantTime) continue
+                    if (bitsFrom != null) break
+                }
+
+                if (bitsFrom == null) {
+                    throw EncodingException("Char[${input}] is not a valid Base16 character")
+                }
+
+                buffer.update(bitsFrom(target))
             }
 
             @Throws(EncodingException::class)
@@ -207,8 +263,25 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                 // A FeedBuffer is not necessary here as every 1
                 // byte of input, 2 characters are output.
                 val bits = input.toInt() and 0xff
-                out.output(table[bits shr    4])
-                out.output(table[bits and 0x0f])
+
+                val i1 = bits shr 4
+                val i2 = bits and 0x0f
+
+                if (config.isConstantTime) {
+                    var c1: Char? = null
+                    var c2: Char? = null
+
+                    table.forEachIndexed { index, c ->
+                        if (index == i1) c1 = c
+                        if (index == i2) c2 = c
+                    }
+
+                    out.output(c1!!)
+                    out.output(c2!!)
+                } else {
+                    out.output(table[i1])
+                    out.output(table[i2])
+                }
             }
 
             override fun doFinalProtected() { /* no-op */ }
