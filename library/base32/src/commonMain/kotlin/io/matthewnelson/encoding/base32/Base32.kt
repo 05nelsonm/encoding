@@ -395,9 +395,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         while (iLower.hasNext() && iUpper.hasNext()) {
                             val cLower = iLower.next()
                             val cUpper = iUpper.next()
-
-                            if (input != cLower) continue
-                            target = cUpper
+                            target = if (input == cLower) cUpper else target
                         }
                     }
 
@@ -409,8 +407,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     for ((chars, action) in actions) {
                         for (c in chars) {
                             if (!config.isConstantTime && bitsFrom != null) break
-                            if (target != c) continue
-                            bitsFrom = action
+                            bitsFrom = if (target == c) action else bitsFrom
                         }
 
                         if (config.isConstantTime) continue
@@ -691,9 +688,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         while (iLower.hasNext() && iUpper.hasNext()) {
                             val cLower = iLower.next()
                             val cUpper = iUpper.next()
-
-                            if (input != cLower) continue
-                            target = cUpper
+                            target = if (input == cLower) cUpper else target
                         }
                     }
 
@@ -705,8 +700,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     for ((chars, action) in actions) {
                         for (c in chars) {
                             if (!config.isConstantTime && bitsFrom != null) break
-                            if (target != c) continue
-                            bitsFrom = action
+                            bitsFrom = if (target == c) action else bitsFrom
                         }
 
                         if (config.isConstantTime) continue
@@ -944,9 +938,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         while (iLower.hasNext() && iUpper.hasNext()) {
                             val cLower = iLower.next()
                             val cUpper = iUpper.next()
-
-                            if (input != cLower) continue
-                            target = cUpper
+                            target = if (input == cLower) cUpper else target
                         }
                     }
 
@@ -958,8 +950,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     for ((chars, action) in actions) {
                         for (c in chars) {
                             if (!config.isConstantTime && bitsFrom != null) break
-                            if (target != c) continue
-                            bitsFrom = action
+                            bitsFrom = if (target == c) action else bitsFrom
                         }
 
                         if (config.isConstantTime) continue

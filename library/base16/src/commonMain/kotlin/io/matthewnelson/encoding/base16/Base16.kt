@@ -214,9 +214,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                     while (iLower.hasNext() && iUpper.hasNext()) {
                         val cLower = iLower.next()
                         val cUpper = iUpper.next()
-
-                        if (input != cLower) continue
-                        target = cUpper
+                        target = if (input == cLower) cUpper else target
                     }
                 }
 
@@ -228,8 +226,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                 for ((chars, action) in actions) {
                     for (c in chars) {
                         if (!config.isConstantTime && bitsFrom != null) break
-                        if (target != c) continue
-                        bitsFrom = action
+                        bitsFrom = if (target == c) action else bitsFrom
                     }
 
                     if (config.isConstantTime) continue

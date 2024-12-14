@@ -236,8 +236,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                 for ((chars, action) in DECODE_ACTIONS) {
                     for (c in chars) {
                         if (!config.isConstantTime && bitsFrom != null) break
-                        if (input != c) continue
-                        bitsFrom = action
+                        bitsFrom = if (input == c) action else bitsFrom
                     }
 
                     if (config.isConstantTime) continue
