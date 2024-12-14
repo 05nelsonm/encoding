@@ -82,6 +82,8 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         public val encodeToUrlSafe: Boolean,
         @JvmField
         public val padEncoded: Boolean,
+        @JvmField
+        public val isConstantTime: Boolean,
     ): EncoderDecoder.Config(
         isLenient = isLenient,
         lineBreakInterval = lineBreakInterval,
@@ -114,6 +116,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             return buildSet {
                 add(Setting(name = "encodeToUrlSafe", value = encodeToUrlSafe))
                 add(Setting(name = "padEncoded", value = padEncoded))
+                add(Setting(name = "isConstantTime", value = isConstantTime))
             }
         }
 
@@ -126,6 +129,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                     lineBreakInterval = builder.lineBreakInterval,
                     encodeToUrlSafe = builder.encodeToUrlSafe,
                     padEncoded = builder.padEncoded,
+                    isConstantTime =  builder.isConstantTime,
                 )
             }
         }
@@ -195,43 +199,56 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         }
     }
 
+    private companion object {
+
+        private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
+            '0'..'9' to {
+                // char ASCII value
+                //  0    48    52
+                //  9    57    61 (ASCII + 4)
+                code + 4
+            },
+            'A'..'Z' to {
+                // char ASCII value
+                //  A    65    0
+                //  Z    90    25 (ASCII - 65)
+                code - 65
+            },
+            'a'..'z' to {
+                // char ASCII value
+                //  a    97    26
+                //  z    122   51 (ASCII - 71)
+                code - 71
+            },
+            listOf('+', '-') to { 62 },
+            listOf('/', '_') to { 63 },
+        )
+    }
+
     protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
         return object : Decoder<Base64.Config>.Feed() {
 
             private val buffer = DecodingBuffer(out)
 
             override fun consumeProtected(input: Char) {
-                val bits: Int = when (input) {
-                    in '0'..'9' -> {
-                        // char ASCII value
-                        //  0    48    52
-                        //  9    57    61 (ASCII + 4)
-                        input.code + 4
+                var bitsFrom: (Char.() -> Int)? = null
+
+                for ((chars, action) in DECODE_ACTIONS) {
+                    for (c in chars) {
+                        if (!config.isConstantTime && bitsFrom != null) break
+                        if (input != c) continue
+                        bitsFrom = action
                     }
-                    in 'A'..'Z' -> {
-                        // char ASCII value
-                        //  A    65    0
-                        //  Z    90    25 (ASCII - 65)
-                        input.code - 65
-                    }
-                    in 'a'..'z' -> {
-                        // char ASCII value
-                        //  a    97    26
-                        //  z    122   51 (ASCII - 71)
-                        input.code - 71
-                    }
-                    '+', '-' -> {
-                        62
-                    }
-                    '/', '_' -> {
-                        63
-                    }
-                    else -> {
-                        throw EncodingException("Char[$input] is not a valid Base64 character")
-                    }
+
+                    if (config.isConstantTime) continue
+                    if (bitsFrom != null) break
                 }
 
-                buffer.update(bits)
+                if (bitsFrom == null) {
+                    throw EncodingException("Char[$input] is not a valid Base64 character")
+                }
+
+                buffer.update(bitsFrom(input))
             }
 
             override fun doFinalProtected() {
@@ -326,27 +343,92 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             val b0 = buffer[0]
             val b1 = buffer[1]
             val b2 = buffer[2]
-            out.output(table[(b0 and 0xff shr 2)])
-            out.output(table[(b0 and 0x03 shl 4) or (b1 and 0xff shr 4)])
-            out.output(table[(b1 and 0x0f shl 2) or (b2 and 0xff shr 6)])
-            out.output(table[(b2 and 0x3f)])
+
+            val i1 = (b0 and 0xff shr 2)
+            val i2 = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4)
+            val i3 = (b1 and 0x0f shl 2) or (b2 and 0xff shr 6)
+            val i4 = (b2 and 0x3f)
+
+            if (config.isConstantTime) {
+                var c1: Char? = null
+                var c2: Char? = null
+                var c3: Char? = null
+                var c4: Char? = null
+
+                table.forEachIndexed { index, c ->
+                    if (index == i1) c1 = c
+                    if (index == i2) c2 = c
+                    if (index == i3) c3 = c
+                    if (index == i4) c4 = c
+                }
+
+                out.output(c1!!)
+                out.output(c2!!)
+                out.output(c3!!)
+                out.output(c4!!)
+            } else {
+                out.output(table[i1])
+                out.output(table[i2])
+                out.output(table[i3])
+                out.output(table[i4])
+            }
         },
         finalize = { modulus, buffer ->
             val padCount: Int = when (modulus) {
                 0 -> { 0 }
                 1 -> {
                     val b0 = buffer[0]
-                    out.output(table[b0 and 0xff shr 2])
-                    out.output(table[b0 and 0x03 shl 4])
+
+                    val i1 = b0 and 0xff shr 2
+                    val i2 = b0 and 0x03 shl 4
+
+                    if (config.isConstantTime) {
+                        var c1: Char? = null
+                        var c2: Char? = null
+
+                        table.forEachIndexed { index, c ->
+                            if (index == i1) c1 = c
+                            if (index == i2) c2 = c
+                        }
+
+                        out.output(c1!!)
+                        out.output(c2!!)
+                    } else {
+                        out.output(table[i1])
+                        out.output(table[i2])
+                    }
+
                     2
                 }
                 // 2
                 else -> {
                     val b0 = buffer[0]
                     val b1 = buffer[1]
-                    out.output(table[(b0 and 0xff shr 2)])
-                    out.output(table[(b0 and 0x03 shl 4) or (b1 and 0xff shr 4)])
-                    out.output(table[(b1 and 0x0f shl 2)])
+
+                    val i1 = (b0 and 0xff shr 2)
+                    val i2 = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4)
+                    val i3 = (b1 and 0x0f shl 2)
+
+                    if (config.isConstantTime) {
+                        var c1: Char? = null
+                        var c2: Char? = null
+                        var c3: Char? = null
+
+                        table.forEachIndexed { index, c ->
+                            if (index == i1) c1 = c
+                            if (index == i2) c2 = c
+                            if (index == i3) c3 = c
+                        }
+
+                        out.output(c1!!)
+                        out.output(c2!!)
+                        out.output(c3!!)
+                    } else {
+                        out.output(table[i1])
+                        out.output(table[i2])
+                        out.output(table[i3])
+                    }
+
                     1
                 }
             }

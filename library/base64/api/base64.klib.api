@@ -12,6 +12,8 @@ final class io.matthewnelson.encoding.base64/Base64 : io.matthewnelson.encoding.
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base64/Base64.Config|null[0]
         final val encodeToUrlSafe // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe|{}encodeToUrlSafe[0]
             final fun <get-encodeToUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe.<get-encodeToUrlSafe>|<get-encodeToUrlSafe>(){}[0]
+        final val isConstantTime // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime|{}isConstantTime[0]
+            final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
         final val padEncoded // io.matthewnelson.encoding.base64/Base64.Config.padEncoded|{}padEncoded[0]
             final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
     }
@@ -34,6 +36,9 @@ final class io.matthewnelson.encoding.base64/Base64ConfigBuilder { // io.matthew
     final var encodeToUrlSafe // io.matthewnelson.encoding.base64/Base64ConfigBuilder.encodeToUrlSafe|<set-encodeToUrlSafe>(kotlin.Boolean){}[0]
         final fun <get-encodeToUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64ConfigBuilder.encodeToUrlSafe.<get-encodeToUrlSafe>|<get-encodeToUrlSafe>(){}[0]
         final fun <set-encodeToUrlSafe>(kotlin/Boolean) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.encodeToUrlSafe.<set-encodeToUrlSafe>|<set-encodeToUrlSafe>(kotlin.Boolean){}[0]
+    final var isConstantTime // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isConstantTime|<set-isConstantTime>(kotlin.Boolean){}[0]
+        final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
+        final fun <set-isConstantTime>(kotlin/Boolean) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isConstantTime.<set-isConstantTime>|<set-isConstantTime>(kotlin.Boolean){}[0]
     final var isLenient // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isLenient|<set-isLenient>(kotlin.Boolean){}[0]
         final fun <get-isLenient>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isLenient.<get-isLenient>|<get-isLenient>(){}[0]
         final fun <set-isLenient>(kotlin/Boolean) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isLenient.<set-isLenient>|<set-isLenient>(kotlin.Boolean){}[0]

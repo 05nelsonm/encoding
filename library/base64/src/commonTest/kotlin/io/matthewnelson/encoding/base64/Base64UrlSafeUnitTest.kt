@@ -26,7 +26,14 @@ import kotlin.test.assertEquals
 
 class Base64UrlSafeUnitTest: BaseNEncodingTest() {
 
-    private var base64UrlSafe: Base64 = Base64 { encodeToUrlSafe = true }
+    private var useConstantTime = false
+    private var usePadding = true
+
+    private fun base64(): Base64 = Base64 {
+        encodeToUrlSafe = true
+        isConstantTime = useConstantTime
+        padEncoded = usePadding
+    }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data("SGVsbG8gV29ybGQ^", expected = null, message = "Character '^' should return null")
@@ -133,60 +140,72 @@ class Base64UrlSafeUnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        return data.decodeToByteArrayOrNull(base64UrlSafe)
+        return data.decodeToByteArrayOrNull(base64())
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(base64UrlSafe)
+        return data.encodeToString(base64())
     }
 
     @Test
     fun givenString_whenEncoded_MatchesRfc4648Spec() {
+        checkEncodeSuccessForDataSet(encodeSuccessDataSet)
+        useConstantTime = true
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 
     @Test
     fun givenBadEncoding_whenDecoded_ReturnsNull() {
         checkDecodeFailureForDataSet(decodeFailureDataSet)
+        useConstantTime = true
+        checkDecodeFailureForDataSet(decodeFailureDataSet)
     }
 
     @Test
     fun givenEncodedData_whenDecoded_MatchesRfc4648Spec() {
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
+        useConstantTime = true
+        checkDecodeSuccessForDataSet(decodeSuccessDataSet)
     }
 
     @Test
     fun givenString_whenEncodedWithoutPaddingExpressed_returnsExpected() {
-        base64UrlSafe = Base64 {
-            encodeToUrlSafe = true
-            padEncoded = false
-        }
-
-        checkDecodeSuccessForDataSet(
-            getDecodeSuccessDataSetWithoutPadding()
-        )
+        usePadding = false
+        checkDecodeSuccessForDataSet(getDecodeSuccessDataSetWithoutPadding())
+        useConstantTime = true
+        checkDecodeSuccessForDataSet(getDecodeSuccessDataSetWithoutPadding())
     }
 
     @Test
     fun givenUniversalDecoderParameters_whenChecked_areSuccessful() {
+        checkUniversalDecoderParameters()
+        useConstantTime = true
         checkUniversalDecoderParameters()
     }
 
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
         checkUniversalEncoderParameters()
+        useConstantTime = true
+        checkUniversalEncoderParameters()
     }
 
     @Test
     fun givenBase64UrlSafe_whenDecodeEncode_thenReturnsSameValue() {
         val expected = "U2FsdGVkX1_4ZC61vUIS40oz3-re25V1W1fBbNbK_mnRgdvTyYP0kbNMJx7ud1YTXThgcgceR08A_p_NsaNTZQ=="
-        val decoded = expected.decodeToByteArray(base64UrlSafe)
-        val rencoded = decoded.encodeToString(base64UrlSafe)
-        assertEquals(expected, rencoded)
+        listOf(false, true).forEach { ct ->
+            useConstantTime = ct
+            val encoder = base64()
+            val decoded = expected.decodeToByteArray(encoder)
+            val actual = decoded.encodeToString(encoder)
+            assertEquals(expected, actual)
+        }
     }
 
     @Test
     fun givenBase64UrlSafe_whenEncodeDecodeRandomData_thenBytesMatch() {
+        checkRandomData()
+        useConstantTime = true
         checkRandomData()
     }
 }
