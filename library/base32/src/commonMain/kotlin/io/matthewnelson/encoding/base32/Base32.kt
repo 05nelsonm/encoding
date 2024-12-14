@@ -214,18 +214,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             config = Base32CrockfordConfigBuilder().apply { hyphenInterval = 4 }.build()
         ) {
 
-            private const val LETTERS_UPPER: String = "ABCDEFGHJKMNPQRSTVWXYZ"
-            private const val LETTERS_LOWER: String = "abcdefghjkmnpqrstvwxyz"
-
             /**
              * Uppercase Base32 Crockford encoding characters.
              * */
-            public const val CHARS_UPPER: String = "0123456789$LETTERS_UPPER"
+            public const val CHARS_UPPER: String = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
             /**
              * Lowercase Base32 Crockford encoding characters.
              * */
-            public const val CHARS_LOWER: String = "0123456789$LETTERS_LOWER"
+            public const val CHARS_LOWER: String = "0123456789abcdefghjkmnpqrstvwxyz"
 
             private val DELEGATE = Crockford(config)
             protected override fun name(): String = DELEGATE.name()
@@ -235,6 +232,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Crockford.Config>.Feed {
                 return DELEGATE.newEncoderFeedProtected(out)
             }
+
+            private val CT_CASE = CTCase(table = CHARS_UPPER)
 
             private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
                 '0'..'9' to {
@@ -386,22 +385,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     }
 
                     var bitsFrom: (Char.() -> Int)? = null
-                    var target: Char? = null
 
-                    if (config.isConstantTime) {
-                        val iLower = LETTERS_LOWER.iterator()
-                        val iUpper = LETTERS_UPPER.iterator()
-
-                        while (iLower.hasNext() && iUpper.hasNext()) {
-                            val cLower = iLower.next()
-                            val cUpper = iUpper.next()
-                            target = if (input == cLower) cUpper else target
-                        }
-                    }
-
-                    if (target == null) {
-                        // Either not using constant time, or input was not a lowercase letter.
-                        target = input
+                    val target = if (config.isConstantTime) {
+                        CT_CASE.uppercase(input) ?: input
+                    } else {
+                        input
                     }
 
                     for ((chars, action) in actions) {
@@ -611,18 +599,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             config = Base32DefaultConfigBuilder().apply { lineBreakInterval = 64 }.build()
         ) {
 
-            private const val LETTERS_UPPER: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            private const val LETTERS_LOWER: String = "abcdefghijklmnopqrstuvwxyz"
-
             /**
              * Uppercase Base32 Default encoding characters.
              * */
-            public const val CHARS_UPPER: String = "${LETTERS_UPPER}234567"
+            public const val CHARS_UPPER: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 
             /**
              * Lowercase Base32 Default encoding characters.
              * */
-            public const val CHARS_LOWER: String = "${LETTERS_LOWER}234567"
+            public const val CHARS_LOWER: String = "abcdefghijklmnopqrstuvwxyz234567"
 
             private val DELEGATE = Default(config)
             protected override fun name(): String = DELEGATE.name()
@@ -633,6 +618,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return DELEGATE.newEncoderFeedProtected(out)
             }
 
+            private val CT_CASE = CTCase(table = CHARS_UPPER)
+
             private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
                 '2'..'7' to {
                     // char ASCII value
@@ -640,13 +627,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     //  7    55    31 (ASCII - 24)
                     code - 24
                 },
-                LETTERS_UPPER.asIterable() to {
+                CT_CASE.uppers to {
                     // char ASCII value
                     //  A    65    0
                     //  Z    90    25 (ASCII - 65)
                     code - 65
                 },
-                LETTERS_LOWER.asIterable() to {
+                CT_CASE.lowers to {
                     // char ASCII value
                     //  A    65    0
                     //  Z    90    25 (ASCII - 65)
@@ -679,22 +666,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
                     var bitsFrom: (Char.() -> Int)? = null
-                    var target: Char? = null
 
-                    if (config.isConstantTime) {
-                        val iLower = LETTERS_LOWER.iterator()
-                        val iUpper = LETTERS_UPPER.iterator()
-
-                        while (iLower.hasNext() && iUpper.hasNext()) {
-                            val cLower = iLower.next()
-                            val cUpper = iUpper.next()
-                            target = if (input == cLower) cUpper else target
-                        }
-                    }
-
-                    if (target == null) {
-                        // Either not using constant time, or input was not a lowercase letter.
-                        target = input
+                    val target = if (config.isConstantTime) {
+                        CT_CASE.uppercase(input) ?: input
+                    } else {
+                        input
                     }
 
                     for ((chars, action) in actions) {
@@ -861,18 +837,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             config = Base32HexConfigBuilder().apply { lineBreakInterval = 64 }.build()
         ) {
 
-            private const val LETTERS_UPPER: String = "ABCDEFGHIJKLMNOPQRSTUV"
-            private const val LETTERS_LOWER: String = "abcdefghijklmnopqrstuv"
-
             /**
              * Uppercase Base32 Hex encoding characters.
              * */
-            public const val CHARS_UPPER: String = "0123456789$LETTERS_UPPER"
+            public const val CHARS_UPPER: String = "0123456789ABCDEFGHIJKLMNOPQRSTUV"
 
             /**
              * Lowercase Base32 Hex encoding characters.
              * */
-            public const val CHARS_LOWER: String = "0123456789$LETTERS_LOWER"
+            public const val CHARS_LOWER: String = "0123456789abcdefghijklmnopqrstuv"
 
             private val DELEGATE = Hex(config)
             override fun name(): String = DELEGATE.name()
@@ -883,6 +856,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return DELEGATE.newEncoderFeedProtected(out)
             }
 
+            private val CT_CASE = CTCase(table = CHARS_UPPER)
+
             private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
                 '0'..'9' to {
                     // char ASCII value
@@ -890,13 +865,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     //  9    57    9 (ASCII - 48)
                     code - 48
                 },
-                LETTERS_UPPER.asIterable() to {
+                CT_CASE.uppers to {
                     // char ASCII value
                     //  A    65    10
                     //  V    86    31 (ASCII - 55)
                     code - 55
                 },
-                LETTERS_LOWER.asIterable() to {
+                CT_CASE.lowers to {
                     // char ASCII value
                     //  A    65    10
                     //  V    86    31 (ASCII - 55)
@@ -929,22 +904,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
                     var bitsFrom: (Char.() -> Int)? = null
-                    var target: Char? = null
 
-                    if (config.isConstantTime) {
-                        val iLower = LETTERS_LOWER.iterator()
-                        val iUpper = LETTERS_UPPER.iterator()
-
-                        while (iLower.hasNext() && iUpper.hasNext()) {
-                            val cLower = iLower.next()
-                            val cUpper = iUpper.next()
-                            target = if (input == cLower) cUpper else target
-                        }
-                    }
-
-                    if (target == null) {
-                        // Either not using constant time, or input was not a lowercase letter.
-                        target = input
+                    val target = if (config.isConstantTime) {
+                        CT_CASE.uppercase(input) ?: input
+                    } else {
+                        input
                     }
 
                     for ((chars, action) in actions) {

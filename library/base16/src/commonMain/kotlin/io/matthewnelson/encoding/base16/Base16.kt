@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base16
 
 import io.matthewnelson.encoding.core.*
+import io.matthewnelson.encoding.core.util.CTCase
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
@@ -137,18 +138,15 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         config = Base16ConfigBuilder().apply { lineBreakInterval = 64 }.build()
     ) {
 
-        private const val LETTERS_UPPER: String = "ABCDEF"
-        private const val LETTERS_LOWER: String = "abcdef"
-
         /**
          * Uppercase Base16 encoding characters.
          * */
-        public const val CHARS_UPPER: String = "0123456789$LETTERS_UPPER"
+        public const val CHARS_UPPER: String = "0123456789ABCDEF"
 
         /**
          * Lowercase Base16 encoding characters.
          * */
-        public const val CHARS_LOWER: String = "0123456789$LETTERS_LOWER"
+        public const val CHARS_LOWER: String = "0123456789abcdef"
 
         private val DELEGATE = Base16(config)
         protected override fun name(): String = DELEGATE.name()
@@ -159,6 +157,8 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             return DELEGATE.newEncoderFeedProtected(out)
         }
 
+        private val CT_CASE = CTCase(table = CHARS_UPPER)
+
         private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
             '0'..'9' to {
                 // char ASCII value
@@ -166,13 +166,13 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                 // 9     57    9 (ASCII - 48)
                 code - 48
             },
-            LETTERS_UPPER.asIterable() to {
+            CT_CASE.uppers to {
                 // char ASCII value
                 //   A   65    10
                 //   F   70    15 (ASCII - 55)
                 code - 55
             },
-            LETTERS_LOWER.asIterable() to {
+            CT_CASE.lowers to {
                 // char ASCII value
                 //   A   65    10
                 //   F   70    15 (ASCII - 55)
@@ -205,22 +205,11 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             @Throws(EncodingException::class)
             override fun consumeProtected(input: Char) {
                 var bitsFrom: (Char.() -> Int)? = null
-                var target: Char? = null
 
-                if (config.isConstantTime) {
-                    val iLower = LETTERS_LOWER.iterator()
-                    val iUpper = LETTERS_UPPER.iterator()
-
-                    while (iLower.hasNext() && iUpper.hasNext()) {
-                        val cLower = iLower.next()
-                        val cUpper = iUpper.next()
-                        target = if (input == cLower) cUpper else target
-                    }
-                }
-
-                if (target == null) {
-                    // Either not using constant time, or input was not a lowercase letter.
-                    target = input
+                val target = if (config.isConstantTime) {
+                    CT_CASE.uppercase(input) ?: input
+                } else {
+                    input
                 }
 
                 for ((chars, action) in actions) {

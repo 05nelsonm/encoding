@@ -138,6 +138,14 @@ public final class io/matthewnelson/encoding/core/_FeedKt {
 public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
 }
 
+public final class io/matthewnelson/encoding/core/util/CTCase {
+	public final field lowers Ljava/util/Set;
+	public final field uppers Ljava/util/Set;
+	public fun <init> (Ljava/lang/CharSequence;)V
+	public final fun lowercase (C)Ljava/lang/Character;
+	public final fun uppercase (C)Ljava/lang/Character;
+}
+
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public fun <init> (Ljava/lang/CharSequence;)V
 	public fun <init> ([B)V
