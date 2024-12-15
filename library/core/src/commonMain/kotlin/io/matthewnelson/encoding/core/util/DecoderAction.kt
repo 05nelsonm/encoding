@@ -27,7 +27,7 @@ import kotlin.jvm.JvmField
 public fun interface DecoderAction {
 
     /**
-     * Convert decoder input character to its bitwise integer
+     * Convert decoder input character to its bitwise integer value.
      * */
     public fun convert(input: Char): Int
 
@@ -49,7 +49,7 @@ public fun interface DecoderAction {
      *
      *     val bits = "48656C6C6F20576F726C6421".map { char ->
      *         parser.parse(char, isConstantTime = true)
-     *             ?: error("Invalid Char[$char])
+     *             ?: error("Invalid Char[$char]")
      *     }
      *
      * @param [action] Pairs of character ranges and their associated [DecoderAction]

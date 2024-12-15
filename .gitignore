@@ -39,6 +39,7 @@ captures/
 # IntelliJ
 *.iml
 .idea/
+.kotlin/
 
 # Android Studio 3 in .gitignore file.
 .idea/caches

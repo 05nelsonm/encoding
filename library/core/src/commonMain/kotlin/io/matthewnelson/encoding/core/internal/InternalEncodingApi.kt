@@ -26,6 +26,8 @@ package io.matthewnelson.encoding.core.internal
  * the following compiler argument:
  *
  *   -Xopt-in=io.matthewnelson.encoding.core.internal.InternalEncodingApi
+ *
+ * @suppress
  * */
 @RequiresOptIn
 @MustBeDocumented

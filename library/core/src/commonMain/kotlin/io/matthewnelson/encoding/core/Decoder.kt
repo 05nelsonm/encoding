@@ -149,6 +149,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
         public final override fun close() { isClosed = true }
         public final override fun isClosed(): Boolean = isClosed
+        /** @suppress */
         public final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
 
         @Throws(EncodingException::class)
@@ -221,6 +222,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *
          * @see [decodeToByteArrayOrNull]
          * @throws [EncodingException] if decoding failed.
+         * @suppress
          * */
         @JvmStatic
         @Throws(EncodingException::class)
@@ -231,6 +233,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
             }
         }
 
+        /** @suppress */
         @JvmStatic
         @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
         public fun ByteArray.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
