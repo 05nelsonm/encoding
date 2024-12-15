@@ -80,3 +80,6 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+gh-pages/*
+!gh-pages/publish.sh
