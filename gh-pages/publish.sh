@@ -25,10 +25,12 @@ echo "encoding.matthewnelson.io" > "$DIR_SCRIPT/encoding/CNAME"
 
 cd ..
 ./gradlew clean -DKMP_TARGETS_ALL
-./gradlew dokkaHtmlMultiModule -DKMP_TARGETS_ALL
+./gradlew dokkaHtmlMultiModule --no-build-cache -DKMP_TARGETS_ALL
 cp -aR build/dokka/htmlMultiModule/* gh-pages/encoding
 
 cd "$DIR_SCRIPT/encoding"
+sed -i "s|module:|module:library/|g" "package-list"
+
 git add --all
 git commit -S --message "Update dokka docs"
 git push
