@@ -343,10 +343,10 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                 var c4: Char? = null
 
                 table.forEachIndexed { index, c ->
-                    if (index == i1) c1 = c
-                    if (index == i2) c2 = c
-                    if (index == i3) c3 = c
-                    if (index == i4) c4 = c
+                    c1 = if (index == i1) c else c1
+                    c2 = if (index == i2) c else c2
+                    c3 = if (index == i3) c else c3
+                    c4 = if (index == i4) c else c4
                 }
 
                 out.output(c1!!)
@@ -374,8 +374,8 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                         var c2: Char? = null
 
                         table.forEachIndexed { index, c ->
-                            if (index == i1) c1 = c
-                            if (index == i2) c2 = c
+                            c1 = if (index == i1) c else c1
+                            c2 = if (index == i2) c else c2
                         }
 
                         out.output(c1!!)
@@ -402,9 +402,9 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                         var c3: Char? = null
 
                         table.forEachIndexed { index, c ->
-                            if (index == i1) c1 = c
-                            if (index == i2) c2 = c
-                            if (index == i3) c3 = c
+                            c1 = if (index == i1) c else c1
+                            c2 = if (index == i2) c else c2
+                            c3 = if (index == i3) c else c3
                         }
 
                         out.output(c1!!)

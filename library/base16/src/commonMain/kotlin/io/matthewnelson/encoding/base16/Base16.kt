@@ -250,8 +250,8 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                     var c2: Char? = null
 
                     table.forEachIndexed { index, c ->
-                        if (index == i1) c1 = c
-                        if (index == i2) c2 = c
+                        c1 = if (index == i1) c else c1
+                        c2 = if (index == i2) c else c2
                     }
 
                     out.output(c1!!)

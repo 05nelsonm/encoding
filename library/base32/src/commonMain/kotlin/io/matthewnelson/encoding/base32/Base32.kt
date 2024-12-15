@@ -979,14 +979,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 var c8: Char? = null
 
                 table.forEachIndexed { index, c ->
-                    if (index == i1) c1 = c
-                    if (index == i2) c2 = c
-                    if (index == i3) c3 = c
-                    if (index == i4) c4 = c
-                    if (index == i5) c5 = c
-                    if (index == i6) c6 = c
-                    if (index == i7) c7 = c
-                    if (index == i8) c8 = c
+                    c1 = if (index == i1) c else c1
+                    c2 = if (index == i2) c else c2
+                    c3 = if (index == i3) c else c3
+                    c4 = if (index == i4) c else c4
+                    c5 = if (index == i5) c else c5
+                    c6 = if (index == i6) c else c6
+                    c7 = if (index == i7) c else c7
+                    c8 = if (index == i8) c else c8
                 }
 
                 out.output(c1!!)
@@ -1028,8 +1028,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         var c2: Char? = null
 
                         table.forEachIndexed { index, c ->
-                            if (index == i1) c1 = c
-                            if (index == i2) c2 = c
+                            c1 = if (index == i1) c else c1
+                            c2 = if (index == i2) c else c2
                         }
 
                         out.output(c1!!)
@@ -1055,10 +1055,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         var c4: Char? = null
 
                         table.forEachIndexed { index, c ->
-                            if (index == i1) c1 = c
-                            if (index == i2) c2 = c
-                            if (index == i3) c3 = c
-                            if (index == i4) c4 = c
+                            c1 = if (index == i1) c else c1
+                            c2 = if (index == i2) c else c2
+                            c3 = if (index == i3) c else c3
+                            c4 = if (index == i4) c else c4
                         }
 
                         out.output(c1!!)
@@ -1090,11 +1090,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         var c5: Char? = null
 
                         table.forEachIndexed { index, c ->
-                            if (index == i1) c1 = c
-                            if (index == i2) c2 = c
-                            if (index == i3) c3 = c
-                            if (index == i4) c4 = c
-                            if (index == i5) c5 = c
+                            c1 = if (index == i1) c else c1
+                            c2 = if (index == i2) c else c2
+                            c3 = if (index == i3) c else c3
+                            c4 = if (index == i4) c else c4
+                            c5 = if (index == i5) c else c5
                         }
 
                         out.output(c1!!)
@@ -1133,13 +1133,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         var c7: Char? = null
 
                         table.forEachIndexed { index, c ->
-                            if (index == i1) c1 = c
-                            if (index == i2) c2 = c
-                            if (index == i3) c3 = c
-                            if (index == i4) c4 = c
-                            if (index == i5) c5 = c
-                            if (index == i6) c6 = c
-                            if (index == i7) c7 = c
+                            c1 = if (index == i1) c else c1
+                            c2 = if (index == i2) c else c2
+                            c3 = if (index == i3) c else c3
+                            c4 = if (index == i4) c else c4
+                            c5 = if (index == i5) c else c5
+                            c6 = if (index == i6) c else c6
+                            c7 = if (index == i7) c else c7
                         }
 
                         out.output(c1!!)
