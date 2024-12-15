@@ -77,7 +77,7 @@ fun KmpConfigurationExtension.configureShared(
         mingwAll()
 
         common {
-            if (publish) pluginIds("publication")
+            if (publish) pluginIds("publication", "dokka")
 
             sourceSetTest {
                 dependencies {

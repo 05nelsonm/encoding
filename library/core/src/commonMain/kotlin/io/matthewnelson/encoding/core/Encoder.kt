@@ -124,6 +124,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
         public final override fun close() { isClosed = true }
         public final override fun isClosed(): Boolean = isClosed
+        /** @suppress */
         public final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
 
         protected abstract fun consumeProtected(input: Byte)
@@ -199,6 +200,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          *   data, but is something that can occur with Base16 (hex)
          *   as it produces 2 characters of output for every 1 byte
          *   of input.
+         * @suppress
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)

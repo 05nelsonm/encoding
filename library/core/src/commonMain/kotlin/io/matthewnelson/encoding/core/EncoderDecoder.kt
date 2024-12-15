@@ -302,28 +302,34 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             @JvmField
             public val name: String = name.trim()
 
+            /** @suppress */
             override fun equals(other: Any?): Boolean {
                 return  other is Setting
                         && other.name == name
             }
 
+            /** @suppress */
             override fun hashCode(): Int {
                 return 17 * 31 + name.hashCode()
             }
 
+            /** @suppress */
             override fun toString(): String = "$name: $value"
         }
 
+        /** @suppress */
         final override fun equals(other: Any?): Boolean {
             return  other is Config
                     && other::class == this::class
                     && other.toString() == toString()
         }
 
+        /** @suppress */
         final override fun hashCode(): Int {
             return 17 * 31 + toString().hashCode()
         }
 
+        /** @suppress */
         final override fun toString(): String {
             return StringBuilder().apply {
                 append("EncoderDecoder.Config [")
@@ -488,6 +494,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
      * */
     protected abstract fun name(): String
 
+    /** @suppress */
     final override fun equals(other: Any?): Boolean {
         return  other is EncoderDecoder<*>
                 && other::class == this::class
@@ -495,6 +502,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
                 && other.config.hashCode() == config.hashCode()
     }
 
+    /** @suppress */
     final override fun hashCode(): Int {
         var result = 17
         result = result * 31 + name().hashCode()
@@ -502,6 +510,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         return result
     }
 
+    /** @suppress */
     final override fun toString(): String {
         return "EncoderDecoder[${name()}]@${hashCode()}"
     }

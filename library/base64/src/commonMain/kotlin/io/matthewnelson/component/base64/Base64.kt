@@ -40,6 +40,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.jvm.JvmOverloads
 
+/** @suppress */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(

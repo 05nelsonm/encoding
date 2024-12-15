@@ -21,10 +21,6 @@
 ![badge-support-js-ir]
 ![badge-support-linux-arm]
 
-<!--
-![badge-platform-wasm]
--->
-
 Configurable, streamable, efficient and extensible Encoding/Decoding for Kotlin Multiplatform.
 
 **Base16 (a.k.a. "hex")**
@@ -38,8 +34,6 @@ Configurable, streamable, efficient and extensible Encoding/Decoding for Kotlin 
 **Base64**
  - Default [RFC 4648 section 4](https://www.ietf.org/rfc/rfc4648.html#section-4)
  - UrlSafe [RFC 4648 section 5](https://www.ietf.org/rfc/rfc4648.html#section-5)
-
-A full list of `kotlin-components` projects can be found [HERE](https://kotlin-components.matthewnelson.io)
 
 ### Usage
 
@@ -56,7 +50,7 @@ val base16 = Base16 {
     // Use lowercase instead of uppercase characters when encoding
     encodeToLowercase = true
 
-    // Use constant-time operations for sensitive data
+    // Use constant-time operations when encoding/decoding sensitive data
     isConstantTime = true
 }
 

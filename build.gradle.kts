@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
 
 plugins {
+    alias(libs.plugins.dokka)
     alias(libs.plugins.binary.compat)
     alias(libs.plugins.multiplatform) apply(false)
 }
