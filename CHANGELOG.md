@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## Version 2.3.0 (2024-12-15)
+ - Fixes `Encoder.Companion` extension function `ByteArray.encodeToString` not zeroing
+   out its local `StringBuilder` before returning encoded data. [[#155]][155]
+ - Deprecates the following [[#156]][156] [[#158]][158]:
+     - `Decoder.Companion` extension function `ByteArray.decodeToByteArray`
+     - `Decoder.Companion` extension function `ByteArray.decodeToByteArrayOrNull`
+     - `Encoder.Companion` extension function `ByteArray.encodeToByteArray`
+     - `DecoderInput` constructor for `ByteArray` input
+ - Adds support for constant-time operations when encoding/decoding (off by 
+   default). [[#154]][154]
+ - Adds `dokka` documentation at `https://encoding.matthewnelson.io` [[#157]][157]
+
 ## Version 2.2.2 (2024-08-30)
  - Updates dependencies
      - Kotlin `1.9.23` -> `1.9.24`
@@ -196,4 +208,9 @@
 [144]: https://github.com/05nelsonm/encoding/pull/144
 [147]: https://github.com/05nelsonm/encoding/pull/147
 [150]: https://github.com/05nelsonm/encoding/pull/150
+[154]: https://github.com/05nelsonm/encoding/pull/154
+[155]: https://github.com/05nelsonm/encoding/pull/155
+[156]: https://github.com/05nelsonm/encoding/pull/156
+[157]: https://github.com/05nelsonm/encoding/pull/157
+[158]: https://github.com/05nelsonm/encoding/pull/158
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
