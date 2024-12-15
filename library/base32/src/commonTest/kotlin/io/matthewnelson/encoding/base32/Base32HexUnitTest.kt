@@ -26,7 +26,15 @@ import kotlin.test.assertEquals
 
 class Base32HexUnitTest: BaseNEncodingTest() {
 
-    private var base32Hex = Base32Hex()
+    private var useConstantTime = false
+    private var useLowercase = false
+    private var usePadding = true
+
+    private fun base32(): Base32.Hex = Base32Hex {
+        isConstantTime = useConstantTime
+        encodeToLowercase = useLowercase
+        padEncoded = usePadding
+    }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data(raw = "AW", expected = null, message = "Character 'W' should return null"),
@@ -123,42 +131,50 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        return data.decodeToByteArrayOrNull(base32Hex)
+        return data.decodeToByteArrayOrNull(base32())
     }
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(base32Hex)
+        return data.encodeToString(base32())
     }
 
     @Test
     fun givenString_whenEncoded_MatchesRfc4648Spec() {
+        checkEncodeSuccessForDataSet(encodeSuccessDataSet)
+        useConstantTime = true
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 
     @Test
     fun givenBadEncoding_whenDecoded_ReturnsNull() {
         checkDecodeFailureForDataSet(decodeFailureDataSet)
+        useConstantTime = true
+        checkDecodeFailureForDataSet(decodeFailureDataSet)
     }
 
     @Test
     fun givenEncodedData_whenDecoded_MatchesRfc4648Spec() {
+        checkDecodeSuccessForDataSet(decodeSuccessDataSet)
+        useConstantTime = true
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
     }
 
     @Test
     fun givenUniversalDecoderParameters_whenChecked_areSuccessful() {
         checkUniversalDecoderParameters()
+        useConstantTime = true
+        checkUniversalDecoderParameters()
     }
 
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
         checkUniversalEncoderParameters()
+        useConstantTime = true
+        checkUniversalEncoderParameters()
     }
 
     @Test
     fun givenBase32Hex_whenPadEncodedFalse_thenDoesNotPadOutput() {
-        base32Hex = Base32Hex {
-            padEncoded = false
-        }
+        usePadding = false
 
         val noPadData = buildSet {
             encodeSuccessDataSet.forEach { data ->
@@ -168,13 +184,13 @@ class Base32HexUnitTest: BaseNEncodingTest() {
         }
 
         checkEncodeSuccessForDataSet(noPadData)
+        useConstantTime = true
+        checkEncodeSuccessForDataSet(noPadData)
     }
 
     @Test
     fun givenBase32Hex_whenEncodeToLowercase_thenOutputIsLowercase() {
-        base32Hex = Base32Hex {
-            encodeToLowercase = true
-        }
+        useLowercase = true
 
         val lowercaseData = buildSet {
             encodeSuccessDataSet.forEach { data ->
@@ -183,6 +199,8 @@ class Base32HexUnitTest: BaseNEncodingTest() {
             }
         }
 
+        checkEncodeSuccessForDataSet(lowercaseData)
+        useConstantTime = true
         checkEncodeSuccessForDataSet(lowercaseData)
     }
 
@@ -195,19 +213,28 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     @Test
     fun givenBase32Hex_whenDecodeEncode_thenReturnsSameValue() {
         val expected = "AHK6A83HELKM6QP0C9P6UTRE41J6UU10D9QMQS3J41NNCPBI41Q6GP90DHGNKU90CHNMEBG="
-        val decoded = expected.decodeToByteArray(base32Hex)
-        val rencoded = decoded.encodeToString(base32Hex)
-        assertEquals(expected, rencoded)
+        listOf(false, true).forEach { ct ->
+            useConstantTime = ct
+            val encoder = base32()
+            val decoded = expected.decodeToByteArray(encoder)
+            val actual = decoded.encodeToString(encoder)
+            assertEquals(expected, actual)
+        }
     }
 
     @Test
     fun givenBase32Hex_whenEncodeDecodeRandomData_thenBytesMatch() {
         checkRandomData()
+        useConstantTime = true
+        checkRandomData()
     }
 
     @Test
     fun givenBase32HexLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
-        base32Hex = Base32Hex { encodeToLowercase = true }
+        useLowercase = true
+        checkRandomData()
+        useConstantTime = true
         checkRandomData()
     }
+
 }

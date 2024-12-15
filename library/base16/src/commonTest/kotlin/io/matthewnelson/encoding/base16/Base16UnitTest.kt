@@ -24,7 +24,13 @@ import kotlin.test.assertEquals
 
 class Base16UnitTest: BaseNEncodingTest() {
 
-    private var base16 = Base16()
+    private var useConstantTime = false
+    private var useLowercase = false
+
+    private fun base16(): Base16 = Base16 {
+        isConstantTime = useConstantTime
+        encodeToLowercase = useLowercase
+    }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data(raw = "A=", expected = null, message = "Typical padding character '=' should return null"),
@@ -124,43 +130,51 @@ class Base16UnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        return data.decodeToByteArrayOrNull(base16)
+        return data.decodeToByteArrayOrNull(base16())
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(base16)
+        return data.encodeToString(base16())
     }
 
     @Test
     fun givenString_whenEncoded_MatchesRfc4648Spec() {
+        checkEncodeSuccessForDataSet(encodeSuccessDataSet)
+        useConstantTime = true
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 
     @Test
     fun givenBadEncoding_whenDecoded_ReturnsNull() {
         checkDecodeFailureForDataSet(decodeFailureDataSet)
+        useConstantTime = true
+        checkDecodeFailureForDataSet(decodeFailureDataSet)
     }
 
     @Test
     fun givenEncodedData_whenDecoded_MatchesRfc4648Spec() {
+        checkDecodeSuccessForDataSet(decodeSuccessDataSet)
+        useConstantTime = true
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
     }
 
     @Test
     fun givenUniversalDecoderParameters_whenChecked_areSuccessful() {
         checkUniversalDecoderParameters()
+        useConstantTime = true
+        checkUniversalDecoderParameters()
     }
 
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
         checkUniversalEncoderParameters()
+        useConstantTime = true
+        checkUniversalEncoderParameters()
     }
 
     @Test
     fun givenBase16_whenEncodeToLowercase_thenOutputIsLowercase() {
-        base16 = Base16 {
-            encodeToLowercase = true
-        }
+        useLowercase = true
 
         val lowercaseData = buildSet {
             encodeSuccessDataSet.forEach { data ->
@@ -169,6 +183,8 @@ class Base16UnitTest: BaseNEncodingTest() {
             }
         }
 
+        checkEncodeSuccessForDataSet(lowercaseData)
+        useConstantTime = true
         checkEncodeSuccessForDataSet(lowercaseData)
     }
 
@@ -181,22 +197,28 @@ class Base16UnitTest: BaseNEncodingTest() {
     @Test
     fun givenBase16_whenDecodeEncode_thenReturnsSameValue() {
         val expected = "54686520717569636b2062726f776e20666f78206a756d7073206f76657220746865206c617a7920646f672e"
-        val base16 = Base16(base16.config) {
-            encodeToLowercase = true
+        useLowercase = true
+        listOf(false, true).forEach { ct ->
+            useConstantTime = ct
+            val encoder = base16()
+            val decoded = expected.decodeToByteArray(encoder)
+            val actual = decoded.encodeToString(encoder)
+            assertEquals(expected, actual)
         }
-        val decoded = expected.decodeToByteArray(base16)
-        val rencoded = decoded.encodeToString(base16)
-        assertEquals(expected, rencoded)
     }
 
     @Test
     fun givenBase16_whenEncodeDecodeRandomData_thenBytesMatch() {
         checkRandomData()
+        useConstantTime = true
+        checkRandomData()
     }
 
     @Test
     fun givenBase16Lowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
-        base16 = Base16 { encodeToLowercase = true }
+        useLowercase = true
+        checkRandomData()
+        useConstantTime = true
         checkRandomData()
     }
 }

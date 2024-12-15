@@ -14,6 +14,19 @@ open annotation class io.matthewnelson.encoding.core/ExperimentalEncodingApi : k
     constructor <init>() // io.matthewnelson.encoding.core/ExperimentalEncodingApi.<init>|<init>(){}[0]
 }
 
+abstract fun interface io.matthewnelson.encoding.core.util/DecoderAction { // io.matthewnelson.encoding.core.util/DecoderAction|null[0]
+    abstract fun convert(kotlin/Char): kotlin/Int // io.matthewnelson.encoding.core.util/DecoderAction.convert|convert(kotlin.Char){}[0]
+
+    final class Parser { // io.matthewnelson.encoding.core.util/DecoderAction.Parser|null[0]
+        constructor <init>(kotlin/Array<out kotlin/Pair<kotlin.collections/Iterable<kotlin/Char>, io.matthewnelson.encoding.core.util/DecoderAction>>...) // io.matthewnelson.encoding.core.util/DecoderAction.Parser.<init>|<init>(kotlin.Array<out|kotlin.Pair<kotlin.collections.Iterable<kotlin.Char>,io.matthewnelson.encoding.core.util.DecoderAction>>...){}[0]
+
+        final val actions // io.matthewnelson.encoding.core.util/DecoderAction.Parser.actions|{}actions[0]
+            final fun <get-actions>(): kotlin.collections/List<kotlin/Pair<kotlin.collections/Set<kotlin/Char>, io.matthewnelson.encoding.core.util/DecoderAction>> // io.matthewnelson.encoding.core.util/DecoderAction.Parser.actions.<get-actions>|<get-actions>(){}[0]
+
+        final fun parse(kotlin/Char, kotlin/Boolean): kotlin/Int? // io.matthewnelson.encoding.core.util/DecoderAction.Parser.parse|parse(kotlin.Char;kotlin.Boolean){}[0]
+    }
+}
+
 abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matthewnelson.encoding.core/EncoderDecoder : io.matthewnelson.encoding.core/Encoder<#A> { // io.matthewnelson.encoding.core/EncoderDecoder|null[0]
     constructor <init>(#A) // io.matthewnelson.encoding.core/EncoderDecoder.<init>|<init>(1:0){}[0]
 
@@ -99,6 +112,18 @@ abstract class io.matthewnelson.encoding.core.util/FeedBuffer { // io.matthewnel
     final object Companion { // io.matthewnelson.encoding.core.util/FeedBuffer.Companion|null[0]
         final fun truncatedInputEncodingException(kotlin/Int): io.matthewnelson.encoding.core/EncodingException // io.matthewnelson.encoding.core.util/FeedBuffer.Companion.truncatedInputEncodingException|truncatedInputEncodingException(kotlin.Int){}[0]
     }
+}
+
+final class io.matthewnelson.encoding.core.util/CTCase { // io.matthewnelson.encoding.core.util/CTCase|null[0]
+    constructor <init>(kotlin/CharSequence) // io.matthewnelson.encoding.core.util/CTCase.<init>|<init>(kotlin.CharSequence){}[0]
+
+    final val lowers // io.matthewnelson.encoding.core.util/CTCase.lowers|{}lowers[0]
+        final fun <get-lowers>(): kotlin.collections/Set<kotlin/Char> // io.matthewnelson.encoding.core.util/CTCase.lowers.<get-lowers>|<get-lowers>(){}[0]
+    final val uppers // io.matthewnelson.encoding.core.util/CTCase.uppers|{}uppers[0]
+        final fun <get-uppers>(): kotlin.collections/Set<kotlin/Char> // io.matthewnelson.encoding.core.util/CTCase.uppers.<get-uppers>|<get-uppers>(){}[0]
+
+    final fun lowercase(kotlin/Char): kotlin/Char? // io.matthewnelson.encoding.core.util/CTCase.lowercase|lowercase(kotlin.Char){}[0]
+    final fun uppercase(kotlin/Char): kotlin/Char? // io.matthewnelson.encoding.core.util/CTCase.uppercase|uppercase(kotlin.Char){}[0]
 }
 
 final class io.matthewnelson.encoding.core.util/DecoderInput { // io.matthewnelson.encoding.core.util/DecoderInput|null[0]

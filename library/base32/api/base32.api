@@ -78,7 +78,8 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io
 	public final field encodeToLowercase Z
 	public final field finalizeWhenFlushed Z
 	public final field hyphenInterval B
-	public synthetic fun <init> (ZZBLjava/lang/Character;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final field isConstantTime Z
+	public synthetic fun <init> (ZZBLjava/lang/Character;ZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewnelson/encoding/base32/Base32 {
@@ -93,8 +94,9 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Companion : i
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field encodeToLowercase Z
+	public final field isConstantTime Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
@@ -109,14 +111,16 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion : io/ma
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field encodeToLowercase Z
+	public final field isConstantTime Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32CrockfordConfigBuilder {
 	public field encodeToLowercase Z
 	public field finalizeWhenFlushed Z
 	public field hyphenInterval B
+	public field isConstantTime Z
 	public field isLenient Z
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
@@ -128,6 +132,7 @@ public final class io/matthewnelson/encoding/base32/Base32CrockfordConfigBuilder
 
 public final class io/matthewnelson/encoding/base32/Base32DefaultConfigBuilder {
 	public field encodeToLowercase Z
+	public field isConstantTime Z
 	public field isLenient Z
 	public field lineBreakInterval B
 	public field padEncoded Z
@@ -139,6 +144,7 @@ public final class io/matthewnelson/encoding/base32/Base32DefaultConfigBuilder {
 
 public final class io/matthewnelson/encoding/base32/Base32HexConfigBuilder {
 	public field encodeToLowercase Z
+	public field isConstantTime Z
 	public field isLenient Z
 	public field lineBreakInterval B
 	public field padEncoded Z

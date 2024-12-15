@@ -26,6 +26,12 @@ import kotlin.test.assertEquals
 
 class Base64DefaultUnitTest: BaseNEncodingTest() {
 
+    private var useConstantTime = false
+
+    private fun base64(): Base64 = Base64 {
+        isConstantTime = useConstantTime
+    }
+
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data("SGVsbG8gV29ybGQ^", expected = null, message = "Character '^' should return null")
     )
@@ -116,49 +122,65 @@ class Base64DefaultUnitTest: BaseNEncodingTest() {
     )
 
     override fun decode(data: String): ByteArray? {
-        return data.decodeToByteArrayOrNull(Base64())
+        return data.decodeToByteArrayOrNull(base64())
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(Base64())
+        return data.encodeToString(base64())
     }
 
     @Test
     fun givenString_whenEncoded_MatchesRfc4648Spec() {
+        checkEncodeSuccessForDataSet(encodeSuccessDataSet)
+        useConstantTime = true
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 
     @Test
     fun givenBadEncoding_whenDecoded_ReturnsNull() {
         checkDecodeFailureForDataSet(decodeFailureDataSet)
+        useConstantTime = true
+        checkDecodeFailureForDataSet(decodeFailureDataSet)
     }
 
     @Test
     fun givenEncodedData_whenDecoded_MatchesRfc4648Spec() {
+        checkDecodeSuccessForDataSet(decodeSuccessDataSet)
+        useConstantTime = true
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
     }
 
     @Test
     fun givenUniversalDecoderParameters_whenChecked_areSuccessful() {
         checkUniversalDecoderParameters()
+        useConstantTime = true
+        checkUniversalDecoderParameters()
     }
 
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
+        checkUniversalEncoderParameters()
+        useConstantTime = true
         checkUniversalEncoderParameters()
     }
 
     @Test
     fun givenBase64_whenDecodeEncode_thenReturnsSameValue() {
         val expected = "U2FsdGVkX1/4ZC61vUIS40oz3+re25V1W1fBbNbK/mnRgdvTyYP0kbNMJx7ud1YTXThgcgceR08A/p/NsaNTZQ=="
-        val base64 = Base64()
-        val decoded = expected.decodeToByteArray(base64)
-        val rencoded = decoded.encodeToString(base64)
-        assertEquals(expected, rencoded)
+        listOf(false, true).forEach { ct ->
+            useConstantTime = ct
+            val encoder = base64()
+            val decoded = expected.decodeToByteArray(encoder)
+            val actual = decoded.encodeToString(encoder)
+            assertEquals(expected, actual)
+        }
     }
 
     @Test
     fun givenBase64_whenEncodeDecodeRandomData_thenBytesMatch() {
         checkRandomData()
+        useConstantTime = true
+        checkRandomData()
     }
+
 }
