@@ -27,8 +27,6 @@ import kotlin.jvm.JvmStatic
  * Decode things.
  *
  * @see [EncoderDecoder]
- * @see [decodeToByteArray]
- * @see [decodeToByteArrayOrNull]
  * @see [Decoder.Feed]
  * */
 public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
@@ -226,6 +224,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * */
         @JvmStatic
         @Throws(EncodingException::class)
+        @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b -> feed.consume(b.toInt().toChar()) }
@@ -233,8 +232,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         }
 
         @JvmStatic
+        @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
         public fun ByteArray.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
             return try {
+                @Suppress("DEPRECATION")
                 decodeToByteArray(decoder)
             } catch (_: EncodingException) {
                 null
