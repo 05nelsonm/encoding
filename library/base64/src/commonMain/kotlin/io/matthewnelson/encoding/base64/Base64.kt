@@ -114,7 +114,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         }
 
         protected override fun toStringAddSettings(): Set<Setting> {
-            return buildSet {
+            return LinkedHashSet<Setting>(4, 1.0f).apply {
                 add(Setting(name = "encodeToUrlSafe", value = encodeToUrlSafe))
                 add(Setting(name = "padEncoded", value = padEncoded))
                 add(Setting(name = "isConstantTime", value = isConstantTime))

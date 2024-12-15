@@ -47,7 +47,7 @@ public fun interface DecoderAction {
      *         }
      *     )
      *
-     *     val bits = "48656c6c6f20576f726c6421".map { char ->
+     *     val bits = "48656C6C6F20576F726C6421".map { char ->
      *         parser.parse(char, isConstantTime = true)
      *             ?: error("Invalid Char[$char])
      *     }

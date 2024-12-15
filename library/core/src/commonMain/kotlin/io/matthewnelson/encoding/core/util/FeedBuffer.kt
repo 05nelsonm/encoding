@@ -45,9 +45,7 @@ constructor(
 ) {
 
     init {
-        require(blockSize > 0) {
-            "blockSize must be greater than 0"
-        }
+        require(blockSize > 0) { "blockSize must be greater than 0" }
     }
 
     @get:JvmName("count")
