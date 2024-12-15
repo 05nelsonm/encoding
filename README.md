@@ -145,7 +145,6 @@ val bytes = text.encodeToByteArray()
 // before they are de-referenced).
 val encodedString = bytes.encodeToString(Base64.Default)
 val encodedChars = bytes.encodeToCharArray(Base32.Default)
-val encodedBytes = bytes.encodeToByteArray(Base16)
 
 val decodedString = try {
     encodedString.decodeToByteArray(Base64.Default)
@@ -155,7 +154,6 @@ val decodedString = try {
 }
 // Swallow `EncodingException`s by using the `*OrNull` variants
 val decodedChars = encodedChars.decodeToByteArrayOrNull(Base32.Default)
-val decodedBytes = encodedBytes.decodeToByteArrayOrNull(Base16)
 ```
 
 **Encoding/Decoding `Feed`(s) (i.e. Streaming)**
