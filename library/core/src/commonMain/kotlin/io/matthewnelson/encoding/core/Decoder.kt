@@ -228,6 +228,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @Throws(EncodingException::class)
         @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
+            @Suppress("DEPRECATION")
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b -> feed.consume(b.toInt().toChar()) }
             }
