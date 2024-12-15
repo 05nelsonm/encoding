@@ -3,6 +3,7 @@
 [![badge-latest-release]][url-latest-release]
 
 [![badge-kotlin]][url-kotlin]
+[![badge-immutable]][url-immutable]
 
 ![badge-platform-android]
 ![badge-platform-jvm]
@@ -54,6 +55,9 @@ val base16 = Base16 {
 
     // Use lowercase instead of uppercase characters when encoding
     encodeToLowercase = true
+
+    // Use constant-time operations for sensitive data
+    isConstantTime = true
 }
 
 // Shortcuts
@@ -68,6 +72,7 @@ Base16
 val base32Crockford = Base32Crockford {
     isLenient = true
     encodeToLowercase = false
+    isConstantTime = true
 
     // Insert hyphens every X characters of encoded output
     hyphenInterval = 5
@@ -88,6 +93,7 @@ val base32Default = Base32Default {
     isLenient = true
     lineBreakInterval = 64
     encodeToLowercase = true
+    isConstantTime = true
     
     // Skip padding of the encoded output
     padEncoded = false
@@ -101,6 +107,7 @@ val base32Hex = Base32Hex {
     lineBreakInterval = 64
     encodeToLowercase = false
     padEncoded = true
+    isConstantTime = true
 }
 
 // Alternatively, use the static instance with its default settings
@@ -115,6 +122,7 @@ val base64 = Base64 {
     lineBreakInterval = 64
     encodeToUrlSafe = false
     padEncoded = true
+    isConstantTime = true
 }
 
 // Alternatively, use the static instance with its default settings
@@ -313,6 +321,7 @@ dependencies {
 
 <!-- TAG_DEPENDENCIES -->
 [badge-kotlin]: https://img.shields.io/badge/kotlin-1.9.24-blue.svg?logo=kotlin
+[badge-immutable]: https://img.shields.io/badge/immutable-0.1.4-blue.svg?style=flat
 
 <!-- TAG_PLATFORMS -->
 [badge-platform-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
@@ -334,3 +343,4 @@ dependencies {
 [url-latest-release]: https://github.com/05nelsonm/encoding/releases/latest
 [url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [url-kotlin]: https://kotlinlang.org
+[url-immutable]: https://github.com/05nelsonm/immutable
