@@ -36,6 +36,25 @@ public fun interface DecoderAction {
      * with support for constant-time operations (in terms of work performed
      * for provided input).
      *
+     * e.g. (NOT constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         for (c in this) {
+     *             if (c == char) return true
+     *         }
+     *         return false
+     *     }
+     *
+     * e.g. (YES constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         var result = false
+     *         for (c in this) {
+     *             result = if (c == char) true else result
+     *         }
+     *         return result
+     *     }
+     *
      * e.g. (Base16)
      *
      *     val parser = DecoderAction.Parser(
@@ -65,7 +84,7 @@ public fun interface DecoderAction {
          *
          * @param [input] the character to parse [actions] with
          * @param [isConstantTime] If `true`, will **not** jump out of
-         *   loops early in the event a hit occurs.
+         *   loops early in the event a match is found.
          * @return The result of [DecoderAction.convert], or `null` if no
          *   match was found.
          * */

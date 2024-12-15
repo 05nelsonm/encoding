@@ -81,6 +81,25 @@ public class Base64ConfigBuilder {
      * (such as private key material).
      *
      * If false, will not use constant time operations.
+     *
+     * e.g. (NOT constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         for (c in this) {
+     *             if (c == char) return true
+     *         }
+     *         return false
+     *     }
+     *
+     * e.g. (YES constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         var result = false
+     *         for (c in this) {
+     *             result = if (c == char) true else result
+     *         }
+     *         return result
+     *     }
      * */
     @JvmField
     public var isConstantTime: Boolean = false

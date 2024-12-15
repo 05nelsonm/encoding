@@ -161,6 +161,25 @@ public class Base32CrockfordConfigBuilder {
      * (such as private key material).
      *
      * If false, will not use constant time operations.
+     *
+     * e.g. (NOT constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         for (c in this) {
+     *             if (c == char) return true
+     *         }
+     *         return false
+     *     }
+     *
+     * e.g. (YES constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         var result = false
+     *         for (c in this) {
+     *             result = if (c == char) true else result
+     *         }
+     *         return result
+     *     }
      * */
     @JvmField
     public var isConstantTime: Boolean = false
@@ -336,6 +355,25 @@ public class Base32DefaultConfigBuilder {
      * (such as private key material).
      *
      * If false, will not use constant time operations.
+     *
+     * e.g. (NOT constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         for (c in this) {
+     *             if (c == char) return true
+     *         }
+     *         return false
+     *     }
+     *
+     * e.g. (YES constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         var result = false
+     *         for (c in this) {
+     *             result = if (c == char) true else result
+     *         }
+     *         return result
+     *     }
      * */
     @JvmField
     public var isConstantTime: Boolean = false
@@ -443,6 +481,25 @@ public class Base32HexConfigBuilder {
      * (such as private key material).
      *
      * If false, will not use constant time operations.
+     *
+     * e.g. (NOT constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         for (c in this) {
+     *             if (c == char) return true
+     *         }
+     *         return false
+     *     }
+     *
+     * e.g. (YES constant-time operation)
+     *
+     *     fun String.containsChar(char: Char): Boolean {
+     *         var result = false
+     *         for (c in this) {
+     *             result = if (c == char) true else result
+     *         }
+     *         return result
+     *     }
      * */
     @JvmField
     public var isConstantTime: Boolean = false

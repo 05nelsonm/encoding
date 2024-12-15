@@ -28,6 +28,25 @@ import kotlin.jvm.JvmField
  * **NOTE:** Only characters where [Char.isLetter] is true are taken from
  * the provided table.
  *
+ * e.g. (NOT constant-time operation)
+ *
+ *     fun String.containsChar(char: Char): Boolean {
+ *         for (c in this) {
+ *             if (c == char) return true
+ *         }
+ *         return false
+ *     }
+ *
+ * e.g. (YES constant-time operation)
+ *
+ *     fun String.containsChar(char: Char): Boolean {
+ *         var result = false
+ *         for (c in this) {
+ *             result = if (c == char) true else result
+ *         }
+ *         return result
+ *     }
+ *
  * @param [table] The decoding table (e.g. `ABCDEFGHIJKLMNOPQRSTUVWXYZ234567`)
  * @throws [IllegalArgumentException] if table contains a letter that has no
  *   corresponding lowercase value.
