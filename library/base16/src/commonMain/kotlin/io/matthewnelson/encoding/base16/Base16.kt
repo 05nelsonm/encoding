@@ -19,6 +19,7 @@ package io.matthewnelson.encoding.base16
 
 import io.matthewnelson.encoding.core.*
 import io.matthewnelson.encoding.core.util.CTCase
+import io.matthewnelson.encoding.core.util.DecoderAction
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
@@ -159,25 +160,40 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
 
         private val CT_CASE = CTCase(table = CHARS_UPPER)
 
-        private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
-            '0'..'9' to {
+        private val UC_PARSER = DecoderAction.Parser(
+            '0'..'9' to DecoderAction { char ->
                 // char ASCII value
                 // 0     48    0
                 // 9     57    9 (ASCII - 48)
-                code - 48
+                char.code - 48
             },
-            CT_CASE.uppers to {
+            CT_CASE.uppers to DecoderAction { char ->
                 // char ASCII value
                 //   A   65    10
                 //   F   70    15 (ASCII - 55)
-                code - 55
+                char.code - 55
             },
-            CT_CASE.lowers to {
+            CT_CASE.lowers to DecoderAction { char ->
                 // char ASCII value
                 //   A   65    10
                 //   F   70    15 (ASCII - 55)
-                uppercaseChar().code - 55
+                char.uppercaseChar().code - 55
             },
+        )
+
+        // Assume input will be lowercase letters. Reorder
+        // actions to check lowercase before uppercase.
+        private val LC_PARSER = DecoderAction.Parser(
+            UC_PARSER.actions[0],
+            UC_PARSER.actions[2],
+            UC_PARSER.actions[1],
+        )
+
+        // Do not include lowercase letter actions. Constant time
+        // operations will uppercase the input on every invocation.
+        private val CT_PARSER = DecoderAction.Parser(
+            UC_PARSER.actions[0],
+            UC_PARSER.actions[1],
         )
     }
 
@@ -185,48 +201,24 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         return object : Decoder<Config>.Feed() {
 
             private val buffer = DecodingBuffer(out)
-            private val actions = when {
-                // Do not include lowercase letter actions. Constant time
-                // operations will uppercase the input on every invocation.
-                config.isConstantTime -> arrayOf(
-                    DECODE_ACTIONS[0],
-                    DECODE_ACTIONS[1],
-                )
-                // Assume input will be lowercase letters. Reorder
-                // actions to check lowercase before uppercase.
-                config.encodeToLowercase -> arrayOf(
-                    DECODE_ACTIONS[0],
-                    DECODE_ACTIONS[2],
-                    DECODE_ACTIONS[1],
-                )
-                else -> DECODE_ACTIONS
+            private val parser = when {
+                config.isConstantTime -> CT_PARSER
+                config.encodeToLowercase -> LC_PARSER
+                else -> UC_PARSER
             }
 
             @Throws(EncodingException::class)
             override fun consumeProtected(input: Char) {
-                var bitsFrom: (Char.() -> Int)? = null
-
-                val target = if (config.isConstantTime) {
+                val char = if (config.isConstantTime) {
                     CT_CASE.uppercase(input) ?: input
                 } else {
                     input
                 }
 
-                for ((chars, action) in actions) {
-                    for (c in chars) {
-                        if (!config.isConstantTime && bitsFrom != null) break
-                        bitsFrom = if (target == c) action else bitsFrom
-                    }
+                val bits = parser.parse(char, isConstantTime = config.isConstantTime)
+                    ?: throw EncodingException("Char[${input}] is not a valid Base16 character")
 
-                    if (config.isConstantTime) continue
-                    if (bitsFrom != null) break
-                }
-
-                if (bitsFrom == null) {
-                    throw EncodingException("Char[${input}] is not a valid Base16 character")
-                }
-
-                buffer.update(bitsFrom(target))
+                buffer.update(bits)
             }
 
             @Throws(EncodingException::class)

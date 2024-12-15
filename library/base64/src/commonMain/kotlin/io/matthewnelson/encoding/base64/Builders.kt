@@ -75,7 +75,7 @@ public class Base64ConfigBuilder {
     }
 
     /**
-     * If true, will utilize constant time operations when
+     * If true, will utilize constant-time operations when
      * encoding/decoding data. This will be slower, but help
      * mitigate potential timing attacks with sensitive data
      * (such as private key material).

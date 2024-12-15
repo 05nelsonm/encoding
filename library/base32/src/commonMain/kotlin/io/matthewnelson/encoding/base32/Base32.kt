@@ -235,142 +235,146 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
             private val CT_CASE = CTCase(table = CHARS_UPPER)
 
-            private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
-                '0'..'9' to {
+            private val UC_PARSER = DecoderAction.Parser(
+                '0'..'9' to DecoderAction { char ->
                     // char ASCII value
                     //  0    48    0
                     //  9    57    9 (ASCII - 48)
-                    code - 48
+                    char.code - 48
                 },
-                'A'..'H' to {
+                'A'..'H' to DecoderAction { char ->
                     // char ASCII value
                     //  A    65    10
                     //  H    72    17 (ASCII - 55)
-                    code - 55
+                    char.code - 55
                 },
-                listOf('I', 'L') to {
+                setOf('I', 'L') to DecoderAction { _ ->
                     // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
 
                     // char ASCII value
                     //  1    49    1 (ASCII - 48)
                     '1'.code - 48
                 },
-                'J'..'K' to {
+                'J'..'K' to DecoderAction { char ->
                     // char ASCII value
                     //  J    74    18
                     //  K    75    19 (ASCII - 56)
-                    code - 56
+                    char.code - 56
                 },
-                'M'..'N' to {
+                'M'..'N' to DecoderAction { char ->
                     // char ASCII value
                     //  M    77    20
                     //  N    78    21 (ASCII - 57)
-                    code - 57
+                    char.code - 57
                 },
-                listOf('O') to {
+                setOf('O') to DecoderAction { _ ->
                     // Crockford treats characters 'O' and 'o' as 0
 
                     // char ASCII value
                     //  0    48    0 (ASCII - 48)
                     '0'.code - 48
                 },
-                'P'..'T' to {
+                'P'..'T' to DecoderAction { char ->
                     // char ASCII value
                     //  P    80    22
                     //  T    84    26 (ASCII - 58)
-                    code - 58
+                    char.code - 58
                 },
-                'V'..'Z' to {
+                'V'..'Z' to DecoderAction { char ->
                     // char ASCII value
                     //  V    86    27
                     //  Z    90    31 (ASCII - 59)
-                    code - 59
+                    char.code - 59
                 },
-                'a'..'h' to {
+                'a'..'h' to DecoderAction { char ->
                     // char ASCII value
                     //  A    65    10
                     //  H    72    17 (ASCII - 55)
-                    uppercaseChar().code - 55
+                    char.uppercaseChar().code - 55
                 },
-                listOf('i', 'l') to {
+                setOf('i', 'l') to DecoderAction { _ ->
                     // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
 
                     // char ASCII value
                     //  1    49    1 (ASCII - 48)
                     '1'.code - 48
                 },
-                'j'..'k' to {
+                'j'..'k' to DecoderAction { char ->
                     // char ASCII value
                     //  J    74    18
                     //  K    75    19 (ASCII - 56)
-                    uppercaseChar().code - 56
+                    char.uppercaseChar().code - 56
                 },
-                'm'..'n' to {
+                'm'..'n' to DecoderAction { char ->
                     // char ASCII value
                     //  M    77    20
                     //  N    78    21 (ASCII - 57)
-                    uppercaseChar().code - 57
+                    char.uppercaseChar().code - 57
                 },
-                listOf('o') to {
+                setOf('o') to DecoderAction { _ ->
                     // Crockford treats characters 'O' and 'o' as 0
 
                     // char ASCII value
                     //  0    48    0 (ASCII - 48)
                     '0'.code - 48
                 },
-                'p'..'t' to {
+                'p'..'t' to DecoderAction { char ->
                     // char ASCII value
                     //  P    80    22
                     //  T    84    26 (ASCII - 58)
-                    uppercaseChar().code - 58
+                    char.uppercaseChar().code - 58
                 },
-                'v'..'z' to {
+                'v'..'z' to DecoderAction { char ->
                     // char ASCII value
                     //  V    86    27
                     //  Z    90    31 (ASCII - 59)
-                    uppercaseChar().code - 59
+                    char.uppercaseChar().code - 59
                 },
+            )
+
+            // Assume input will be lowercase letters. Reorder
+            // actions to check lowercase before uppercase.
+            private val LC_PARSER = DecoderAction.Parser(
+                UC_PARSER.actions[0],
+                UC_PARSER.actions[8],
+                UC_PARSER.actions[9],
+                UC_PARSER.actions[10],
+                UC_PARSER.actions[11],
+                UC_PARSER.actions[12],
+                UC_PARSER.actions[13],
+                UC_PARSER.actions[14],
+                UC_PARSER.actions[1],
+                UC_PARSER.actions[2],
+                UC_PARSER.actions[3],
+                UC_PARSER.actions[4],
+                UC_PARSER.actions[5],
+                UC_PARSER.actions[6],
+                UC_PARSER.actions[7],
+            )
+
+            // Do not include lowercase letter actions. Constant time
+            // operations will uppercase the input on every invocation.
+            private val CT_PARSER = DecoderAction.Parser(
+                UC_PARSER.actions[0],
+                UC_PARSER.actions[1],
+                UC_PARSER.actions[2],
+                UC_PARSER.actions[3],
+                UC_PARSER.actions[4],
+                UC_PARSER.actions[5],
+                UC_PARSER.actions[6],
+                UC_PARSER.actions[7],
             )
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
             return object : Decoder<Crockford.Config>.Feed() {
 
-                private val buffer = DecodingBuffer(out)
                 private var isCheckSymbolSet = false
-                private val actions = when {
-                    // Do not include lowercase letter actions. Constant time
-                    // operations will uppercase the input on every invocation.
-                    config.isConstantTime -> arrayOf(
-                        DECODE_ACTIONS[0],
-                        DECODE_ACTIONS[1],
-                        DECODE_ACTIONS[2],
-                        DECODE_ACTIONS[3],
-                        DECODE_ACTIONS[4],
-                        DECODE_ACTIONS[5],
-                        DECODE_ACTIONS[6],
-                        DECODE_ACTIONS[7],
-                    )
-                    // Assume input will be lowercase letters. Reorder
-                    // actions to check lowercase before uppercase.
-                    config.encodeToLowercase -> arrayOf(
-                        DECODE_ACTIONS[0],
-                        DECODE_ACTIONS[8],
-                        DECODE_ACTIONS[9],
-                        DECODE_ACTIONS[10],
-                        DECODE_ACTIONS[11],
-                        DECODE_ACTIONS[12],
-                        DECODE_ACTIONS[13],
-                        DECODE_ACTIONS[14],
-                        DECODE_ACTIONS[1],
-                        DECODE_ACTIONS[2],
-                        DECODE_ACTIONS[3],
-                        DECODE_ACTIONS[4],
-                        DECODE_ACTIONS[5],
-                        DECODE_ACTIONS[6],
-                        DECODE_ACTIONS[7],
-                    )
-                    else -> DECODE_ACTIONS
+                private val buffer = DecodingBuffer(out)
+                private val parser = when {
+                    config.isConstantTime -> CT_PARSER
+                    config.encodeToLowercase -> LC_PARSER
+                    else -> UC_PARSER
                 }
 
                 @Throws(EncodingException::class)
@@ -384,25 +388,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         )
                     }
 
-                    var bitsFrom: (Char.() -> Int)? = null
-
-                    val target = if (config.isConstantTime) {
+                    val char = if (config.isConstantTime) {
                         CT_CASE.uppercase(input) ?: input
                     } else {
                         input
                     }
 
-                    for ((chars, action) in actions) {
-                        for (c in chars) {
-                            if (!config.isConstantTime && bitsFrom != null) break
-                            bitsFrom = if (target == c) action else bitsFrom
-                        }
+                    val bits = parser.parse(char, isConstantTime = config.isConstantTime)
 
-                        if (config.isConstantTime) continue
-                        if (bitsFrom != null) break
-                    }
-
-                    if (bitsFrom == null) {
+                    if (bits == null) {
                         // Crockford allows for insertion of hyphens,
                         // which are to be ignored when decoding.
                         if (input == '-') return
@@ -422,7 +416,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         )
                     }
 
-                    buffer.update(bitsFrom(target))
+                    buffer.update(bits)
                 }
 
                 @Throws(EncodingException::class)
@@ -620,25 +614,40 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
             private val CT_CASE = CTCase(table = CHARS_UPPER)
 
-            private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
-                '2'..'7' to {
+            private val UC_PARSER = DecoderAction.Parser(
+                '2'..'7' to DecoderAction { char ->
                     // char ASCII value
                     //  2    50    26
                     //  7    55    31 (ASCII - 24)
-                    code - 24
+                    char.code - 24
                 },
-                CT_CASE.uppers to {
+                CT_CASE.uppers to DecoderAction { char ->
                     // char ASCII value
                     //  A    65    0
                     //  Z    90    25 (ASCII - 65)
-                    code - 65
+                    char.code - 65
                 },
-                CT_CASE.lowers to {
+                CT_CASE.lowers to DecoderAction { char ->
                     // char ASCII value
                     //  A    65    0
                     //  Z    90    25 (ASCII - 65)
-                    uppercaseChar().code - 65
+                    char.uppercaseChar().code - 65
                 },
+            )
+
+            // Assume input will be lowercase letters. Reorder
+            // actions to check lowercase before uppercase.
+            private val LC_PARSER = DecoderAction.Parser(
+                UC_PARSER.actions[0],
+                UC_PARSER.actions[2],
+                UC_PARSER.actions[1],
+            )
+
+            // Do not include lowercase letter actions. Constant time
+            // operations will uppercase the input on every invocation.
+            private val CT_PARSER = DecoderAction.Parser(
+                UC_PARSER.actions[0],
+                UC_PARSER.actions[1],
             )
         }
 
@@ -646,48 +655,24 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return object : Decoder<Default.Config>.Feed() {
 
                 private val buffer = DecodingBuffer(out)
-                private val actions = when {
-                    // Do not include lowercase letter actions. Constant time
-                    // operations will uppercase the input on every invocation.
-                    config.isConstantTime -> arrayOf(
-                        DECODE_ACTIONS[0],
-                        DECODE_ACTIONS[1],
-                    )
-                    // Assume input will be lowercase letters. Reorder
-                    // actions to check lowercase before uppercase.
-                    config.encodeToLowercase -> arrayOf(
-                        DECODE_ACTIONS[0],
-                        DECODE_ACTIONS[2],
-                        DECODE_ACTIONS[1],
-                    )
-                    else -> DECODE_ACTIONS
+                private val parser = when {
+                    config.isConstantTime -> CT_PARSER
+                    config.encodeToLowercase -> LC_PARSER
+                    else -> UC_PARSER
                 }
 
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
-                    var bitsFrom: (Char.() -> Int)? = null
-
-                    val target = if (config.isConstantTime) {
+                    val char = if (config.isConstantTime) {
                         CT_CASE.uppercase(input) ?: input
                     } else {
                         input
                     }
 
-                    for ((chars, action) in actions) {
-                        for (c in chars) {
-                            if (!config.isConstantTime && bitsFrom != null) break
-                            bitsFrom = if (target == c) action else bitsFrom
-                        }
+                    val bits = parser.parse(char, isConstantTime = config.isConstantTime)
+                        ?: throw EncodingException("Char[${input}] is not a valid Base32 Default character")
 
-                        if (config.isConstantTime) continue
-                        if (bitsFrom != null) break
-                    }
-
-                    if (bitsFrom == null) {
-                        throw EncodingException("Char[${input}] is not a valid Base32 Default character")
-                    }
-
-                    buffer.update(bitsFrom(target))
+                    buffer.update(bits)
                 }
 
                 @Throws(EncodingException::class)
@@ -858,25 +843,40 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
             private val CT_CASE = CTCase(table = CHARS_UPPER)
 
-            private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
-                '0'..'9' to {
+            private val UC_PARSER = DecoderAction.Parser(
+                '0'..'9' to DecoderAction { char ->
                     // char ASCII value
                     //  0    48    0
                     //  9    57    9 (ASCII - 48)
-                    code - 48
+                    char.code - 48
                 },
-                CT_CASE.uppers to {
+                CT_CASE.uppers to DecoderAction { char ->
                     // char ASCII value
                     //  A    65    10
                     //  V    86    31 (ASCII - 55)
-                    code - 55
+                    char.code - 55
                 },
-                CT_CASE.lowers to {
+                CT_CASE.lowers to DecoderAction { char ->
                     // char ASCII value
                     //  A    65    10
                     //  V    86    31 (ASCII - 55)
-                    uppercaseChar().code - 55
+                    char.uppercaseChar().code - 55
                 },
+            )
+
+            // Assume input will be lowercase letters. Reorder
+            // actions to check lowercase before uppercase.
+            private val LC_PARSER = DecoderAction.Parser(
+                UC_PARSER.actions[0],
+                UC_PARSER.actions[2],
+                UC_PARSER.actions[1],
+            )
+
+            // Do not include lowercase letter actions. Constant time
+            // operations will uppercase the input on every invocation.
+            private val CT_PARSER = DecoderAction.Parser(
+                UC_PARSER.actions[0],
+                UC_PARSER.actions[1],
             )
         }
 
@@ -884,48 +884,24 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return object : Decoder<Hex.Config>.Feed() {
 
                 private val buffer = DecodingBuffer(out)
-                private val actions = when {
-                    // Do not include lowercase letter actions. Constant time
-                    // operations will uppercase the input on every invocation.
-                    config.isConstantTime -> arrayOf(
-                        DECODE_ACTIONS[0],
-                        DECODE_ACTIONS[1],
-                    )
-                    // Assume input will be lowercase letters. Reorder
-                    // actions to check lowercase before uppercase.
-                    config.encodeToLowercase -> arrayOf(
-                        DECODE_ACTIONS[0],
-                        DECODE_ACTIONS[2],
-                        DECODE_ACTIONS[1],
-                    )
-                    else -> DECODE_ACTIONS
+                private val parser = when {
+                    config.isConstantTime -> CT_PARSER
+                    config.encodeToLowercase -> LC_PARSER
+                    else -> UC_PARSER
                 }
 
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
-                    var bitsFrom: (Char.() -> Int)? = null
-
-                    val target = if (config.isConstantTime) {
+                    val char = if (config.isConstantTime) {
                         CT_CASE.uppercase(input) ?: input
                     } else {
                         input
                     }
 
-                    for ((chars, action) in actions) {
-                        for (c in chars) {
-                            if (!config.isConstantTime && bitsFrom != null) break
-                            bitsFrom = if (target == c) action else bitsFrom
-                        }
+                    val bits = parser.parse(char, isConstantTime = config.isConstantTime)
+                        ?: throw EncodingException("Char[${input}] is not a valid Base32 Hex character")
 
-                        if (config.isConstantTime) continue
-                        if (bitsFrom != null) break
-                    }
-
-                    if (bitsFrom == null) {
-                        throw EncodingException("Char[${input}] is not a valid Base32 Hex character")
-                    }
-
-                    buffer.update(bitsFrom(target))
+                    buffer.update(bits)
                 }
 
                 @Throws(EncodingException::class)

@@ -146,6 +146,16 @@ public final class io/matthewnelson/encoding/core/util/CTCase {
 	public final fun uppercase (C)Ljava/lang/Character;
 }
 
+public abstract interface class io/matthewnelson/encoding/core/util/DecoderAction {
+	public abstract fun convert (C)I
+}
+
+public final class io/matthewnelson/encoding/core/util/DecoderAction$Parser {
+	public final field actions Ljava/util/List;
+	public fun <init> ([Lkotlin/Pair;)V
+	public final fun parse (CZ)Ljava/lang/Integer;
+}
+
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public fun <init> (Ljava/lang/CharSequence;)V
 	public fun <init> ([B)V

@@ -155,7 +155,7 @@ public class Base32CrockfordConfigBuilder {
     }
 
     /**
-     * If true, will utilize constant time operations when
+     * If true, will utilize constant-time operations when
      * encoding/decoding data. This will be slower, but help
      * mitigate potential timing attacks with sensitive data
      * (such as private key material).
@@ -330,7 +330,7 @@ public class Base32DefaultConfigBuilder {
     }
 
     /**
-     * If true, will utilize constant time operations when
+     * If true, will utilize constant-time operations when
      * encoding/decoding data. This will be slower, but help
      * mitigate potential timing attacks with sensitive data
      * (such as private key material).
@@ -437,7 +437,7 @@ public class Base32HexConfigBuilder {
     }
 
     /**
-     * If true, will utilize constant time operations when
+     * If true, will utilize constant-time operations when
      * encoding/decoding data. This will be slower, but help
      * mitigate potential timing attacks with sensitive data
      * (such as private key material).

@@ -14,6 +14,19 @@ open annotation class io.matthewnelson.encoding.core/ExperimentalEncodingApi : k
     constructor <init>() // io.matthewnelson.encoding.core/ExperimentalEncodingApi.<init>|<init>(){}[0]
 }
 
+abstract fun interface io.matthewnelson.encoding.core.util/DecoderAction { // io.matthewnelson.encoding.core.util/DecoderAction|null[0]
+    abstract fun convert(kotlin/Char): kotlin/Int // io.matthewnelson.encoding.core.util/DecoderAction.convert|convert(kotlin.Char){}[0]
+
+    final class Parser { // io.matthewnelson.encoding.core.util/DecoderAction.Parser|null[0]
+        constructor <init>(kotlin/Array<out kotlin/Pair<kotlin.collections/Iterable<kotlin/Char>, io.matthewnelson.encoding.core.util/DecoderAction>>...) // io.matthewnelson.encoding.core.util/DecoderAction.Parser.<init>|<init>(kotlin.Array<out|kotlin.Pair<kotlin.collections.Iterable<kotlin.Char>,io.matthewnelson.encoding.core.util.DecoderAction>>...){}[0]
+
+        final val actions // io.matthewnelson.encoding.core.util/DecoderAction.Parser.actions|{}actions[0]
+            final fun <get-actions>(): kotlin.collections/List<kotlin/Pair<kotlin.collections/Set<kotlin/Char>, io.matthewnelson.encoding.core.util/DecoderAction>> // io.matthewnelson.encoding.core.util/DecoderAction.Parser.actions.<get-actions>|<get-actions>(){}[0]
+
+        final fun parse(kotlin/Char, kotlin/Boolean): kotlin/Int? // io.matthewnelson.encoding.core.util/DecoderAction.Parser.parse|parse(kotlin.Char;kotlin.Boolean){}[0]
+    }
+}
+
 abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matthewnelson.encoding.core/EncoderDecoder : io.matthewnelson.encoding.core/Encoder<#A> { // io.matthewnelson.encoding.core/EncoderDecoder|null[0]
     constructor <init>(#A) // io.matthewnelson.encoding.core/EncoderDecoder.<init>|<init>(1:0){}[0]
 

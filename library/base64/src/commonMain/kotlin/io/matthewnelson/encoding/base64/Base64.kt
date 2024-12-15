@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base64
 
 import io.matthewnelson.encoding.core.*
+import io.matthewnelson.encoding.core.util.DecoderAction
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
@@ -201,27 +202,27 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
 
     private companion object {
 
-        private val DECODE_ACTIONS = arrayOf<Pair<Iterable<Char>, Char.() -> Int>>(
-            '0'..'9' to {
+        private val PARSER = DecoderAction.Parser(
+            '0'..'9' to DecoderAction { char ->
                 // char ASCII value
                 //  0    48    52
                 //  9    57    61 (ASCII + 4)
-                code + 4
+                char.code + 4
             },
-            'A'..'Z' to {
+            'A'..'Z' to DecoderAction { char ->
                 // char ASCII value
                 //  A    65    0
                 //  Z    90    25 (ASCII - 65)
-                code - 65
+                char.code - 65
             },
-            'a'..'z' to {
+            'a'..'z' to DecoderAction { char ->
                 // char ASCII value
                 //  a    97    26
                 //  z    122   51 (ASCII - 71)
-                code - 71
+                char.code - 71
             },
-            listOf('+', '-') to { 62 },
-            listOf('/', '_') to { 63 },
+            setOf('+', '-') to DecoderAction { _ -> 62 },
+            setOf('/', '_') to DecoderAction { _ -> 63 },
         )
     }
 
@@ -231,23 +232,10 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             private val buffer = DecodingBuffer(out)
 
             override fun consumeProtected(input: Char) {
-                var bitsFrom: (Char.() -> Int)? = null
+                val bits = PARSER.parse(input, isConstantTime = config.isConstantTime)
+                    ?: throw EncodingException("Char[$input] is not a valid Base64 character")
 
-                for ((chars, action) in DECODE_ACTIONS) {
-                    for (c in chars) {
-                        if (!config.isConstantTime && bitsFrom != null) break
-                        bitsFrom = if (input == c) action else bitsFrom
-                    }
-
-                    if (config.isConstantTime) continue
-                    if (bitsFrom != null) break
-                }
-
-                if (bitsFrom == null) {
-                    throw EncodingException("Char[$input] is not a valid Base64 character")
-                }
-
-                buffer.update(bitsFrom(input))
+                buffer.update(bits)
             }
 
             override fun doFinalProtected() {
