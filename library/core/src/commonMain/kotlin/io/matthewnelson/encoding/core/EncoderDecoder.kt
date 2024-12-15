@@ -282,7 +282,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * e.g.
          *
          *     protected override fun toStringAddSettings(): Set<Setting> {
-         *         return buildSet {
+         *         return LinkedHashSet<Setting>(3, 1.0f).apply {
          *             add(Setting(name = "setting1", value = setting1))
          *             add(Setting(name = "setting2", value = setting2))
          *         }
@@ -294,7 +294,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         protected abstract fun toStringAddSettings(): Set<Setting>
 
         /**
-         * Additional setting to [Config], unique to the implementing class.
+         * Additional setting to [Config], unique to the implementing class. Used
+         * in the [toString] output
          * */
         protected inner class Setting(name: String, @JvmField public val value: Any?) {
 

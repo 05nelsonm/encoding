@@ -158,12 +158,12 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         public fun ByteArray.encodeToString(encoder: Encoder<*>): String {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 val sb = StringBuilder(outSize)
-
-                encoder.encode(this) { char ->
-                    sb.append(char)
-                }
-
-                sb.toString()
+                encoder.encode(this) { c -> sb.append(c) }
+                val count = sb.count()
+                val out = sb.toString()
+                sb.clear()
+                repeat(count) { sb.append(' ') }
+                out
             }
         }
 
@@ -182,14 +182,10 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToCharArray(encoder: Encoder<*>): CharArray {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
-                val ca = CharArray(outSize)
-
                 var i = 0
-                encoder.encode(this) { char ->
-                    ca[i++] = char
-                }
-
-                ca
+                val a = CharArray(outSize)
+                encoder.encode(this) { c -> a[i++] = c }
+                a
             }
         }
 
@@ -208,14 +204,10 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToByteArray(encoder: Encoder<*>): ByteArray {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
-                val ba = ByteArray(outSize)
-
                 var i = 0
-                encoder.encode(this) { char ->
-                    ba[i++] = char.code.toByte()
-                }
-
-                ba
+                val a = ByteArray(outSize)
+                encoder.encode(this) { char -> a[i++] = char.code.toByte() }
+                a
             }
         }
     }

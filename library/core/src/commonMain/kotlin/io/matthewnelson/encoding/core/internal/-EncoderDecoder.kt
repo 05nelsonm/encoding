@@ -95,9 +95,7 @@ internal inline fun <C: Config> Encoder<C>.encode(
     if (data.isEmpty()) return
 
     newEncoderFeed(out).use { feed ->
-        for (byte in data) {
-            feed.consume(byte)
-        }
+        data.forEach { b -> feed.consume(b) }
     }
 }
 

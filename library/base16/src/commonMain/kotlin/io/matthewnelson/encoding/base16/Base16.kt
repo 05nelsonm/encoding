@@ -102,7 +102,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         }
 
         protected override fun toStringAddSettings(): Set<Setting> {
-            return buildSet {
+            return LinkedHashSet<Setting>(3, 1.0f).apply {
                 add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
                 add(Setting(name = "isConstantTime", value = isConstantTime))
             }

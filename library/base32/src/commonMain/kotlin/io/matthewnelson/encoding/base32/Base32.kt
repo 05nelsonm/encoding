@@ -172,7 +172,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             protected override fun toStringAddSettings(): Set<Setting> {
-                return buildSet {
+                return LinkedHashSet<Setting>(6, 1.0f).apply {
                     add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
                     add(Setting(name = "hyphenInterval", value = hyphenInterval))
                     add(Setting(name = "checkSymbol", value = checkSymbol))
@@ -554,7 +554,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             protected override fun toStringAddSettings(): Set<Setting> {
-                return buildSet {
+                return LinkedHashSet<Setting>(4, 1.0f).apply {
                     add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
                     add(Setting(name = "padEncoded", value = padEncoded))
                     add(Setting(name = "isConstantTime", value = isConstantTime))
@@ -783,7 +783,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             protected override fun toStringAddSettings(): Set<Setting> {
-                return buildSet {
+                return LinkedHashSet<Setting>(4, 1.0f).apply {
                     add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
                     add(Setting(name = "padEncoded", value = padEncoded))
                     add(Setting(name = "isConstantTime", value = isConstantTime))

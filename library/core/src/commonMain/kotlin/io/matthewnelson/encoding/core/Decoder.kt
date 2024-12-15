@@ -180,9 +180,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @Throws(EncodingException::class)
         public fun CharSequence.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
-                forEach { c ->
-                    feed.consume(c)
-                }
+                forEach { c -> feed.consume(c) }
             }
         }
 
@@ -206,9 +204,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @Throws(EncodingException::class)
         public fun CharArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
-                forEach { c ->
-                    feed.consume(c)
-                }
+                forEach { c -> feed.consume(c) }
             }
         }
 
@@ -232,9 +228,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @Throws(EncodingException::class)
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             return decoder.decode(DecoderInput(this)) { feed ->
-                forEach { b ->
-                    feed.consume(b.toInt().toChar())
-                }
+                forEach { b -> feed.consume(b.toInt().toChar()) }
             }
         }
 
