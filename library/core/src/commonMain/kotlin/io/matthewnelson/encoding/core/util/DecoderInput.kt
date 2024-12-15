@@ -38,6 +38,9 @@ public class DecoderInput {
     private constructor(input: Any, size: Int) { this.input = input; this.size = size }
     public constructor(input: CharSequence): this(input, input.length)
     public constructor(input: CharArray): this(input, input.size)
+
+    /** @suppress */
+    @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
     public constructor(input: ByteArray): this(input, input.size)
 
     @Throws(EncodingException::class)
