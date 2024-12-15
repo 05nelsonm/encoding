@@ -202,6 +202,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
+        @Deprecated(message = "Should not utilize. Underlying Char to Byte conversion can produce incorrect results")
         public fun ByteArray.encodeToByteArray(encoder: Encoder<*>): ByteArray {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 var i = 0
