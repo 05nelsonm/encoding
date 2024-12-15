@@ -1,0 +1,76 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Config</title>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../index.html">
+                            encoding
+                    </a>            </div>
+            <div class="library-version">2.3.0
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":library:core:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageids="core::io.matthewnelson.encoding.core/EncoderDecoder.Config/Config/#kotlin.Boolean?#kotlin.Byte#kotlin.Char?/PointingToDeclaration//-623345515">
+  <div class="breadcrumbs"><a href="../../../index.html">core</a><span class="delimiter">/</span><a href="../../index.html">io.matthewnelson.encoding.core</a><span class="delimiter">/</span><a href="../index.html">EncoderDecoder</a><span class="delimiter">/</span><a href="index.html">Config</a><span class="delimiter">/</span><span class="current">Config</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Config</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isLenient<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span><span class="token punctuation">, </span></span><span class="parameter ">paddingChar<span class="token operator">: </span><span data-unresolved-link="kotlin/Char///PointingToDeclaration/">Char</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/EncoderDecoder.kt#L55">source</a>)</span></span></div><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>is</span><wbr><span><span>Lenient</span></span></u></div></span></div><div><div class="title"><p class="paragraph">If true, decoding will skip over spaces and new lines ('\n', '\r', ' ', '\t'). If false, an <a href="../../-encoding-exception/index.html">EncodingException</a> will be thrown when encountering those characters. If null, those characters are passed along to <a href="../../-decoder/-feed/consume-protected.html">Decoder.Feed.consumeProtected</a>.</p></div></div></div></div><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>line</span><wbr><span>Break</span><wbr><span><span>Interval</span></span></u></div></span></div><div><div class="title"><p class="paragraph">If greater than 0 and <a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/-config/[60]init[62].html">isLenient</a> is not <strong>false</strong> (i.e. is null or true), new lines will be output at the expressed <a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/-config/[60]init[62].html">lineBreakInterval</a> when encoding.</p></div></div></div></div><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>padding</span><wbr><span><span>Char</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The character that would be used when padding the encoded output; <strong>NOT</strong> "if padding should be used". If the encoding specification does not use padding, pass <code class="lang-kotlin">null</code>.</p></div></div></div></div></div></div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

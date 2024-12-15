@@ -1,0 +1,153 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>EncoderDecoder</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            encoding
+                    </a>            </div>
+            <div class="library-version">2.3.0
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":library:core:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="core::io.matthewnelson.encoding.core/EncoderDecoder///PointingToDeclaration//-623345515">
+  <div class="breadcrumbs"><a href="../../index.html">core</a><span class="delimiter">/</span><a href="../index.html">io.matthewnelson.encoding.core</a><span class="delimiter">/</span><span class="current">EncoderDecoder</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Encoder</span><wbr><span><span>Decoder</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">EncoderDecoder</a><span class="token operator">&lt;</span><a href="index.html">C</a><span class="token operator"> : </span><a href="-config/index.html">EncoderDecoder.Config</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="index.html">C</a></span></span><span class="token punctuation">)</span> : <a href="../-encoder/index.html">Encoder</a><span class="token operator">&lt;</span><a href="index.html">C</a><span class="token operator">&gt; </span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/EncoderDecoder.kt#L36">source</a>)</span></span></div><p class="paragraph">Base abstraction which expose <a href="../-encoder/index.html">Encoder</a> and <a href="../-decoder/index.html">Decoder</a> (sealed classes) such that inheriting classes must implement both.</p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-config/index.html"><span>Encoder</span><wbr><span>Decoder.</span><wbr><span>Config</span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-feed/index.html"><span>Encoder</span><wbr><span>Decoder.</span><wbr><span>Feed</span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-encoder/index.html"><span><span>Encoder</span></span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../-decoder/index.html"><span><span>Decoder</span></span></a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="593972801%2FConstructors%2F-623345515" anchor-label="EncoderDecoder" id="593972801%2FConstructors%2F-623345515" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-encoder-decoder.html"><span>Encoder</span><wbr><span><span>Decoder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="593972801%2FConstructors%2F-623345515"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="index.html">C</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1457596655%2FClasslikes%2F-623345515" anchor-label="Config" id="-1457596655%2FClasslikes%2F-623345515" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-config/index.html"><span><span>Config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1457596655%2FClasslikes%2F-623345515"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-config/index.html">Config</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>isLenient<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>paddingChar<span class="token operator">: </span><span data-unresolved-link="kotlin/Char///PointingToDeclaration/">Char</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Base configuration for an <a href="index.html">EncoderDecoder</a>. More options may be specified by the implementing class.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="601007285%2FClasslikes%2F-623345515" anchor-label="Feed" id="601007285%2FClasslikes%2F-623345515" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-feed/index.html"><span><span>Feed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="601007285%2FClasslikes%2F-623345515"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-feed/index.html">Feed</a><span class="token operator">&lt;</span><a href="-feed/index.html">C</a><span class="token operator"> : </span><a href="-config/index.html">EncoderDecoder.Config</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>config<span class="token operator">: </span><a href="-feed/index.html">C</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">The base abstraction for <a href="../-decoder/-feed/index.html">Decoder.Feed</a> and <a href="../-encoder/-feed/index.html">Encoder.Feed</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-771355213%2FFunctions%2F-623345515" anchor-label="name" id="-771355213%2FFunctions%2F-623345515" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="name.html"><span><span>name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-771355213%2FFunctions%2F-623345515"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="name.html"><span class="token function">name</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/String///PointingToDeclaration/">String</span></div><div class="brief "><p class="paragraph">The name of the <a href="index.html">EncoderDecoder</a>. This is utilized in the output of <a href="../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/to-string.html">toString</a>, <a href="../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/equals.html">equals</a>, and <a href="../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/hash-code.html">hashCode</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

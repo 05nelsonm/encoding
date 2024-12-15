@@ -1,0 +1,12 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:library/base16
+io.matthewnelson.encoding.base16
+module:library/base32
+io.matthewnelson.encoding.base32
+module:library/base64
+io.matthewnelson.encoding.base64
+module:library/core
+io.matthewnelson.encoding.core
+io.matthewnelson.encoding.core.util

@@ -1,0 +1,198 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Crockford</title>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../../index.html">
+                            encoding
+                    </a>            </div>
+            <div class="library-version">2.3.0
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":library:base32:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="base32::io.matthewnelson.encoding.base32/Base32.Crockford///PointingToDeclaration//-988028188">
+  <div class="breadcrumbs"><a href="../../../index.html">base32</a><span class="delimiter">/</span><a href="../../index.html">io.matthewnelson.encoding.base32</a><span class="delimiter">/</span><a href="../index.html">Base32</a><span class="delimiter">/</span><span class="current">Crockford</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Crockford</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:base32:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">Crockford</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="-config/index.html">Base32.Crockford.Config</a></span></span><span class="token punctuation">)</span> : <a href="../index.html">Base32</a><span class="token operator">&lt;</span><a href="-config/index.html">Base32.Crockford.Config</a><span class="token operator">&gt; </span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/base32/src/commonMain/kotlin/io/matthewnelson/encoding/base32/Base32.kt#L74">source</a>)</span></span></div><p class="paragraph">Base32 Crockford encoding/decoding in accordance with https://www.crockford.com/base32.html</p><p class="paragraph">e.g.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val base32Crockford = Base32Crockford {
+    isLenient = true
+    encodeToLowercase = false
+    hyphenInterval = 5
+    checkSymbol(symbol = '~')
+}
+
+val text = "Hello World!"
+val bytes = text.encodeToByteArray()
+val encoded = bytes.encodeToString(base32Crockford)
+println(encoded) // 91JPR-V3F41-BPYWK-CCGGG~
+
+// Alternatively, use the static implementaton instead of
+// configuring your own settings.
+val decoded = encoded.decodeToByteArray(Base32.Crockford).decodeToString()
+assertEquals(text, decoded)</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../-base32-crockford.html"><span><span>Base32Crockford</span></span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-config/index.html"><span>Base32.</span><wbr><span>Crockford.</span><wbr><span>Config</span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-companion/-c-h-a-r-s_-u-p-p-e-r.html"><span>Base32.</span><wbr><span>Crockford.</span><wbr><span>Companion.</span><wbr><span><span>CHARS_UPPER</span></span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-companion/-c-h-a-r-s_-l-o-w-e-r.html"><span>Base32.</span><wbr><span>Crockford.</span><wbr><span>Companion.</span><wbr><span><span>CHARS_LOWER</span></span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-companion/index.html"><span>Base32.</span><wbr><span>Crockford.</span><wbr><span>Companion</span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/index.html"><span>Encoder</span><wbr><span><span>Decoder</span></span></a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-2118484264%2FConstructors%2F-988028188" anchor-label="Crockford" id="-2118484264%2FConstructors%2F-988028188" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-crockford.html"><span><span>Crockford</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2118484264%2FConstructors%2F-988028188"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:base32:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="-config/index.html">Base32.Crockford.Config</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-689490601%2FClasslikes%2F-988028188" anchor-label="Companion" id="-689490601%2FClasslikes%2F-988028188" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-689490601%2FClasslikes%2F-988028188"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:base32:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a> : <a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/index.html">EncoderDecoder</a><span class="token operator">&lt;</span><a href="-config/index.html">Base32.Crockford.Config</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Doubles as a static implementation with default settings and a hyphenInterval of 4.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1321251261%2FClasslikes%2F-988028188" anchor-label="Config" id="1321251261%2FClasslikes%2F-988028188" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-config/index.html"><span><span>Config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1321251261%2FClasslikes%2F-988028188"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:base32:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-config/index.html">Config</a> : <a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder-decoder/-config/index.html">EncoderDecoder.Config</a></div><div class="brief "><p class="paragraph">Configuration for <a href="index.html">Base32.Crockford</a> encoding/decoding.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1854495905%2FFunctions%2F-988028188" anchor-label="name" id="-1854495905%2FFunctions%2F-988028188" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="name.html"><span><span>name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1854495905%2FFunctions%2F-988028188"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:base32:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="name.html"><span class="token function">name</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/String///PointingToDeclaration/">String</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="271275049%2FFunctions%2F-988028188" anchor-label="newDecoderFeedProtected" id="271275049%2FFunctions%2F-988028188" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="new-decoder-feed-protected.html"><span>new</span><wbr><span>Decoder</span><wbr><span>Feed</span><wbr><span><span>Protected</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="271275049%2FFunctions%2F-988028188"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:base32:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="new-decoder-feed-protected.html"><span class="token function">newDecoderFeedProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">out<span class="token operator">: </span><a href="../../../../../library/core/io.matthewnelson.encoding.core/-decoder/-out-feed/index.html">Decoder.OutFeed</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../library/core/io.matthewnelson.encoding.core/-decoder/-feed/index.html">Decoder.Feed</a><span class="token operator">&lt;</span><a href="-config/index.html">Base32.Crockford.Config</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-536437463%2FFunctions%2F-988028188" anchor-label="newEncoderFeedProtected" id="-536437463%2FFunctions%2F-988028188" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":library:base32:dokkaHtmlPartial/commonMain" data-filterable-set=":library:base32:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="new-encoder-feed-protected.html"><span>new</span><wbr><span>Encoder</span><wbr><span>Feed</span><wbr><span><span>Protected</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-536437463%2FFunctions%2F-988028188"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:base32:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="new-encoder-feed-protected.html"><span class="token function">newEncoderFeedProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">out<span class="token operator">: </span><a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder/-out-feed/index.html">Encoder.OutFeed</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder/-feed/index.html">Encoder.Feed</a><span class="token operator">&lt;</span><a href="-config/index.html">Base32.Crockford.Config</a><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
