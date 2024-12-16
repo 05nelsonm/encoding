@@ -957,8 +957,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 bitBuffer =  (bitBuffer shl  8) + bits.toByte().toBits()
             }
 
-            // For every 5 chars of input, we accumulate
-            // 40 bits of output. Emit 8 bytes.
+            // For every 5 bytes of input, we accumulate
+            // 40 bits of output. Emit 8 characters.
             val i1 = (bitBuffer shr 35 and 0x1fL).toInt() // 40-1*5 = 35
             val i2 = (bitBuffer shr 30 and 0x1fL).toInt() // 40-2*5 = 30
             val i3 = (bitBuffer shr 25 and 0x1fL).toInt() // 40-3*5 = 25

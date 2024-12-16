@@ -77,7 +77,7 @@ public constructor(table: CharSequence) {
 
         var result: Char? = null
 
-        while (iLower.hasNext() && iUpper.hasNext()) {
+        while (iLower.hasNext()) {
             val cLower = iLower.next()
             val cUpper = iUpper.next()
             result = if (char == cLower) cUpper else result
@@ -96,7 +96,7 @@ public constructor(table: CharSequence) {
 
         var result: Char? = null
 
-        while (iLower.hasNext() && iUpper.hasNext()) {
+        while (iLower.hasNext()) {
             val cLower = iLower.next()
             val cUpper = iUpper.next()
             result = if (char == cUpper) cLower else result

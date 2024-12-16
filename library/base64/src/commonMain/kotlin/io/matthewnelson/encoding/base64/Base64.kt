@@ -325,8 +325,8 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
     ): FeedBuffer(
         blockSize = 3,
         flush = { buffer ->
-            // For every 3 chars of input, we accumulate
-            // 24 bits of output. Emit 4 bytes.
+            // For every 3 bytes of input, we accumulate
+            // 24 bits of output. Emit 4 characters.
             val b0 = buffer[0]
             val b1 = buffer[1]
             val b2 = buffer[2]

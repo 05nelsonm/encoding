@@ -1,4 +1,5 @@
 [versions]
+gradle-benchmark = "0.4.11"
 gradle-binary-compat = "0.16.3"
 gradle-dokka = "1.9.20"
 gradle-kmp-configuration = "0.3.2"
@@ -8,6 +9,8 @@ gradle-publish-maven = "0.29.0"
 immutable = "0.1.4"
 
 [libraries]
+benchmark-runtime = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "gradle-benchmark" }
+
 gradle-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "gradle-dokka" }
 gradle-kmp-configuration = { module = "io.matthewnelson:gradle-kmp-configuration-plugin", version.ref = "gradle-kmp-configuration" }
 gradle-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "gradle-kotlin" }
@@ -16,6 +19,7 @@ gradle-publish-maven = { module = "com.vanniktech:gradle-maven-publish-plugin", 
 immutable-collections = { module = "io.matthewnelson.immutable:collections", version.ref = "immutable" }
 
 [plugins]
+benchmark = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "gradle-benchmark" }
 binary-compat = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "gradle-binary-compat" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "gradle-dokka" }
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "gradle-kotlin" }
