@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Matthew Nelson
+ * Copyright (c) 2024 Matthew Nelson
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  **/
 import io.matthewnelson.kmp.configuration.extension.container.target.KmpTarget
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import kotlinx.benchmark.gradle.BenchmarksExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.konan.target.HostManager
 import org.jetbrains.kotlin.konan.target.KonanTarget
 
@@ -24,38 +25,36 @@ plugins {
 }
 
 kmpConfiguration {
+    val benchmarks by lazy { extensions.getByType<BenchmarksExtension>() }
+
+    @OptIn(ExperimentalWasmDsl::class)
     configure {
-        jvm {
-            target {
-                @OptIn(ExperimentalKotlinGradlePluginApi::class)
-                mainRun {
-                    mainClass.set("MainKt")
-                }
-            }
-
-            kotlinJvmTarget = JavaVersion.VERSION_1_8
-            compileSourceCompatibility = JavaVersion.VERSION_1_8
-            compileTargetCompatibility = JavaVersion.VERSION_1_8
+        fun <T: KotlinTarget> KmpTarget<T>.register() {
+            target { benchmarks.targets.register(name) }
         }
 
-        fun <T: KotlinNativeTarget> KmpTarget<T>.setup() {
-            target { binaries { executable { entryPoint = "main" } } }
-        }
+        jvm { register() }
 
-        val targetName = "nativeHost"
+        js { target { browser(); nodejs() }; register() }
+        wasmJs { target { browser(); nodejs() }; register() }
 
+        val nativeHost = "nativeHost"
         when (HostManager.host) {
-            is KonanTarget.LINUX_X64 -> linuxX64(targetName) { setup() }
-            is KonanTarget.LINUX_ARM64 -> linuxArm64(targetName) { setup() }
-            is KonanTarget.MACOS_X64 -> macosX64(targetName) { setup() }
-            is KonanTarget.MACOS_ARM64 -> macosArm64(targetName) { setup() }
-            is KonanTarget.MINGW_X64 -> mingwX64(targetName) { setup() }
+            is KonanTarget.LINUX_X64 -> linuxX64(nativeHost) { register() }
+            is KonanTarget.LINUX_ARM64 -> linuxArm64(nativeHost) { register() }
+            is KonanTarget.MACOS_X64 -> macosX64(nativeHost) { register() }
+            is KonanTarget.MACOS_ARM64 -> macosArm64(nativeHost) { register() }
+            is KonanTarget.MINGW_X64 -> mingwX64(nativeHost) { register() }
             else -> {}
         }
 
         common {
+            pluginIds(libs.plugins.benchmark.get().pluginId)
+
             sourceSetMain {
                 dependencies {
+                    implementation(libs.benchmark.runtime)
+                    implementation(libs.immutable.collections)
                     implementation(project(":library:base16"))
                     implementation(project(":library:base32"))
                     implementation(project(":library:base64"))
