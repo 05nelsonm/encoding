@@ -180,6 +180,8 @@ public class Base32CrockfordConfigBuilder {
      *         }
      *         return result
      *     }
+     *
+     * Default: `false`
      * */
     @JvmField
     public var isConstantTime: Boolean = false
@@ -190,6 +192,8 @@ public class Base32CrockfordConfigBuilder {
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
+     *
+     * Default: `true`
      * */
     @JvmField
     public var isLenient: Boolean = true
@@ -200,6 +204,8 @@ public class Base32CrockfordConfigBuilder {
      *
      * If false, will output uppercase characters when
      * encoding.
+     *
+     * Default: `false`
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false
@@ -220,6 +226,8 @@ public class Base32CrockfordConfigBuilder {
      *     // 91JP-RV3F-41BP-YWKC-CGGG
      *
      * Enable by setting to a value between 1 and 127.
+     *
+     * Default: `0`
      * */
     @JvmField
     public var hyphenInterval: Byte = 0
@@ -235,6 +243,8 @@ public class Base32CrockfordConfigBuilder {
      * Valid check symbols are:
      *  - '*', '~', '$', '=', 'U', 'u'
      *  - or null to omit
+     *
+     * Default: `null`
      *
      * @throws [IllegalArgumentException] If not a valid check symbol.
      * */
@@ -269,9 +279,8 @@ public class Base32CrockfordConfigBuilder {
      * If neither [checkSymbol] or [hyphenInterval] are set, this has
      * no effect when encoding.
      *
-     * e.g.
+     * e.g. (when `false`)
      *
-     *     // WHEN FALSE
      *     val sb = StringBuilder()
      *     Base32Crockford {
      *         hyphenInterval = 4
@@ -288,7 +297,8 @@ public class Base32CrockfordConfigBuilder {
      *     println(sb.toString())
      *     // 91JP-RV3F-41BP-YWKC-CGGG-*
      *
-     *     // WHEN TRUE
+     * e.g. (when `true`)
+     *
      *     val sb = StringBuilder()
      *     Base32Crockford {
      *         hyphenInterval = 4
@@ -309,6 +319,7 @@ public class Base32CrockfordConfigBuilder {
      *     println(sb.toString())
      *     // 91JP-RV3F-*41BP-YWKC-CGGG-*
      *
+     * Default: `false`
      * */
     @JvmField
     public var finalizeWhenFlushed: Boolean = false
@@ -374,6 +385,8 @@ public class Base32DefaultConfigBuilder {
      *         }
      *         return result
      *     }
+     *
+     * Default: `false`
      * */
     @JvmField
     public var isConstantTime: Boolean = false
@@ -384,6 +397,8 @@ public class Base32DefaultConfigBuilder {
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
+     *
+     * Default: `true`
      * */
     @JvmField
     public var isLenient: Boolean = true
@@ -414,6 +429,8 @@ public class Base32DefaultConfigBuilder {
      * setting [isLenient] to true.
      *
      * A great value is 64
+     *
+     * Default: `0`
      * */
     @JvmField
     public var lineBreakInterval: Byte = 0
@@ -424,6 +441,8 @@ public class Base32DefaultConfigBuilder {
      *
      * If false, will output uppercase characters when
      * encoding.
+     *
+     * Default: `false`
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false
@@ -434,6 +453,8 @@ public class Base32DefaultConfigBuilder {
      *
      * If false, padding **WILL NOT** be applied to the
      * encoded output (against RFC 4648).
+     *
+     * Default: `true`
      * */
     @JvmField
     public var padEncoded: Boolean = true
@@ -500,6 +521,8 @@ public class Base32HexConfigBuilder {
      *         }
      *         return result
      *     }
+     *
+     * Default: `false`
      * */
     @JvmField
     public var isConstantTime: Boolean = false
@@ -510,6 +533,8 @@ public class Base32HexConfigBuilder {
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
+     *
+     * Default: `true`
      * */
     @JvmField
     public var isLenient: Boolean = true
@@ -540,6 +565,8 @@ public class Base32HexConfigBuilder {
      * setting [isLenient] to true.
      *
      * A great value is 64
+     *
+     * Default: `0`
      * */
     @JvmField
     public var lineBreakInterval: Byte = 0
@@ -550,6 +577,8 @@ public class Base32HexConfigBuilder {
      *
      * If false, will output uppercase characters when
      * encoding.
+     *
+     * Default: `false`
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false
@@ -560,6 +589,8 @@ public class Base32HexConfigBuilder {
      *
      * If false, padding **WILL NOT** be applied to the
      * encoded output (against RFC 4648).
+     *
+     * Default: `true`
      * */
     @JvmField
     public var padEncoded: Boolean = true

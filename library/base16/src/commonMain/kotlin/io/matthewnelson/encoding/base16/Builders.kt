@@ -103,6 +103,8 @@ public class Base16ConfigBuilder {
      *         }
      *         return result
      *     }
+     *
+     * Default: `false`
      * */
     @JvmField
     public var isConstantTime: Boolean = false
@@ -113,6 +115,8 @@ public class Base16ConfigBuilder {
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
+     *
+     * Default: `true`
      * */
     @JvmField
     public var isLenient: Boolean = true
@@ -143,6 +147,8 @@ public class Base16ConfigBuilder {
      * setting [isLenient] to true.
      *
      * A great value is 64
+     *
+     * Default: `0`
      * */
     @JvmField
     public var lineBreakInterval: Byte = 0
@@ -153,6 +159,8 @@ public class Base16ConfigBuilder {
      *
      * If false, will output uppercase characters when
      * encoding.
+     *
+     * Default: `false`
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false

@@ -132,8 +132,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
      *         .encodeToByteArray()
      *         .encodeToString(Base16)
      *
-     *     println(encoded) // 48656c6c6f20576f726c6421
-     *
+     *     println(encoded) // 48656C6C6F20576F726C6421
      * */
     public companion object: EncoderDecoder<Base16.Config>(
         config = Base16ConfigBuilder().apply { lineBreakInterval = 64 }.build()

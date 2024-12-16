@@ -100,6 +100,8 @@ public class Base64ConfigBuilder {
      *         }
      *         return result
      *     }
+     *
+     * Default: `false`
      * */
     @JvmField
     public var isConstantTime: Boolean = false
@@ -110,6 +112,8 @@ public class Base64ConfigBuilder {
      *
      * If false, an [EncodingException] will be thrown if
      * those characters are encountered when decoding.
+     *
+     * Default: `true`
      * */
     @JvmField
     public var isLenient: Boolean = true
@@ -140,6 +144,8 @@ public class Base64ConfigBuilder {
      * setting [isLenient] to true.
      *
      * A great value is 64
+     *
+     * Default: `0`
      * */
     @JvmField
     public var lineBreakInterval: Byte = 0
@@ -150,6 +156,8 @@ public class Base64ConfigBuilder {
      *
      * If false, will output Base64 Default characters
      * when encoding.
+     *
+     * Default: `false`
      * */
     @JvmField
     public var encodeToUrlSafe: Boolean = false
@@ -160,6 +168,8 @@ public class Base64ConfigBuilder {
      *
      * If false, padding **WILL NOT** be applied to the
      * encoded output (against RFC 4648).
+     *
+     * Default: `true`
      * */
     @JvmField
     public var padEncoded: Boolean = true
