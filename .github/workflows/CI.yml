@@ -55,3 +55,33 @@ jobs:
           name: test-report-${{ matrix.os }}-java${{ matrix.java-version }}
           path: '**/build/reports/tests/**'
           retention-days: 1
+
+  benchmark:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+        target: [ jvm, js, wasmJs, nativeHost ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate Gradle Wrapper
+        uses: gradle/actions/wrapper-validation@v3
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: Run Benchmark
+        run: >
+          ./gradlew ${{ matrix.target }}Benchmark
+
+      - name: Upload Benchmark Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-report-${{ matrix.os }}-${{ matrix.target }}
+          path: '**/build/reports/benchmarks/**'
