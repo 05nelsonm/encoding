@@ -11,5 +11,5 @@ Java:
 
 Native:
 ```shell
-./gradlew :sample:runDebugExecutableNativeSample -PKMP_TARGETS="LINUX_ARM64,LINUX_X64,MACOS_ARM64,MACOS_X64,MINGW_X64,MINGW_X86"
+./gradlew :sample:runReleaseExecutableNativeHost -PKMP_TARGETS="LINUX_ARM64,LINUX_X64,MACOS_ARM64,MACOS_X64,MINGW_X64"
 ```

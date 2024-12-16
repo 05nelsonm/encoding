@@ -13,8 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+import io.matthewnelson.kmp.configuration.extension.container.target.KmpTarget
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.konan.target.HostManager
+import org.jetbrains.kotlin.konan.target.KonanTarget
 
 plugins {
     id("configuration")
@@ -24,8 +27,6 @@ kmpConfiguration {
     configure {
         jvm {
             target {
-                withJava()
-
                 @OptIn(ExperimentalKotlinGradlePluginApi::class)
                 mainRun {
                     mainClass.set("MainKt")
@@ -37,58 +38,19 @@ kmpConfiguration {
             compileTargetCompatibility = JavaVersion.VERSION_1_8
         }
 
-        fun KotlinNativeTarget.setup() {
-            binaries {
-                executable {
-                    entryPoint = "main"
-                }
-            }
+        fun <T: KotlinNativeTarget> KmpTarget<T>.setup() {
+            target { binaries { executable { entryPoint = "main" } } }
         }
 
-        val X86 = "x86"
-        val X64 = "x64"
-        val ARM64 = "arm64"
+        val targetName = "nativeHost"
 
-        val arch = when (System.getProperty("os.arch")) {
-            X86 -> X86
-            "i386" -> X86
-            "i486" -> X86
-            "i586" -> X86
-            "i686" -> X86
-            "pentium" -> X86
-
-            X64 -> X64
-            "x86_64" -> X64
-            "amd64" -> X64
-            "em64t" -> X64
-            "universal" -> X64
-
-            ARM64 -> ARM64
-            "aarch64" -> ARM64
-            else -> null
-        }
-
-        val os = org.gradle.internal.os.OperatingSystem.current()
-        val targetName = "nativeSample"
-
-        when {
-            os.isLinux -> {
-                when (arch) {
-                    ARM64 -> linuxArm64(targetName) { target { setup() } }
-                    X64 -> linuxX64(targetName) { target { setup() } }
-                }
-            }
-            os.isMacOsX -> {
-                when (arch) {
-                    ARM64 -> macosArm64(targetName) { target { setup() } }
-                    X64 -> macosX64(targetName) { target { setup() } }
-                }
-            }
-            os.isWindows -> {
-                when (arch) {
-                    X64 -> mingwX64(targetName) { target { setup() } }
-                }
-            }
+        when (HostManager.host) {
+            is KonanTarget.LINUX_X64 -> linuxX64(targetName) { setup() }
+            is KonanTarget.LINUX_ARM64 -> linuxArm64(targetName) { setup() }
+            is KonanTarget.MACOS_X64 -> macosX64(targetName) { setup() }
+            is KonanTarget.MACOS_ARM64 -> macosArm64(targetName) { setup() }
+            is KonanTarget.MINGW_X64 -> mingwX64(targetName) { setup() }
+            else -> {}
         }
 
         common {
