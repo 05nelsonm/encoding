@@ -38,17 +38,17 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * Creates a new [Encoder.Feed], outputting encoded data to
      * the supplied [Encoder.OutFeed].
      *
-     * e.g. (Writing encoded data to a file)
+     * e.g.
      *
-     *     file.outputStream().use { oStream ->
-     *         myEncoder.newEncoderFeed { encodedChar ->
-     *             oStream.write(encodedChar.code)
-     *         }.use { feed ->
-     *             "Hello World!".forEach { c ->
-     *                 feed.consume(c.code.toByte())
-     *             }
-     *         }
+     *     val sb = StringBuilder()
+     *     myEncoder.newEncoderFeed { encodedChar ->
+     *         sb.append(encodedChar)
+     *     }.use { feed ->
+     *         "Hello World!"
+     *             .encodeToByteArray()
+     *             .forEach { b -> feed.consume(b) }
      *     }
+     *     println(sb.toString())
      *
      * @see [Encoder.Feed]
      * */
@@ -148,11 +148,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * returns the encoded data in the form of a [String].
          *
          * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE]. This is **not applicable** for
-         *   most encoding specifications as the majority compress
-         *   data, but is something that can occur with Base16 (hex)
-         *   as it produces 2 characters of output for every 1 byte
-         *   of input.
+         *   exceeds [Int.MAX_VALUE].
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
@@ -173,11 +169,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * returns the encoded data in the form of a [CharArray].
          *
          * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE]. This is **not applicable** for
-         *   most encoding specifications as the majority compress
-         *   data, but is something that can occur with Base16 (hex)
-         *   as it produces 2 characters of output for every 1 byte
-         *   of input.
+         *   exceeds [Int.MAX_VALUE].
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
@@ -195,11 +187,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * returns the encoded data in the form of a [ByteArray].
          *
          * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE]. This is **not applicable** for
-         *   most encoding specifications as the majority compress
-         *   data, but is something that can occur with Base16 (hex)
-         *   as it produces 2 characters of output for every 1 byte
-         *   of input.
+         *   exceeds [Int.MAX_VALUE].
          * @suppress
          * */
         @JvmStatic
