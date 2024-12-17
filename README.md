@@ -3,7 +3,6 @@
 [![badge-latest-release]][url-latest-release]
 
 [![badge-kotlin]][url-kotlin]
-[![badge-immutable]][url-immutable]
 
 ![badge-platform-android]
 ![badge-platform-jvm]
@@ -306,7 +305,6 @@ dependencies {
 
 <!-- TAG_DEPENDENCIES -->
 [badge-kotlin]: https://img.shields.io/badge/kotlin-1.9.24-blue.svg?logo=kotlin
-[badge-immutable]: https://img.shields.io/badge/immutable-0.1.4-blue.svg?style=flat
 
 <!-- TAG_PLATFORMS -->
 [badge-platform-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
@@ -328,4 +326,3 @@ dependencies {
 [url-latest-release]: https://github.com/05nelsonm/encoding/releases/latest
 [url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [url-kotlin]: https://kotlinlang.org
-[url-immutable]: https://github.com/05nelsonm/immutable

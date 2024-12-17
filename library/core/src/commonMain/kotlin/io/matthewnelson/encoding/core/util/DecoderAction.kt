@@ -15,8 +15,6 @@
  **/
 package io.matthewnelson.encoding.core.util
 
-import io.matthewnelson.immutable.collections.toImmutableList
-import io.matthewnelson.immutable.collections.toImmutableSet
 import kotlin.jvm.JvmField
 
 /**
@@ -117,10 +115,10 @@ public fun interface DecoderAction {
                     iterable
                 } else {
                     iterable.mapTo(LinkedHashSet(1, 1.0f)) { it }
-                }.toImmutableSet()
+                }.toSet()
 
                 set to action
-            }.toImmutableList()
+            }.toList()
 
             this.actions = converted
         }

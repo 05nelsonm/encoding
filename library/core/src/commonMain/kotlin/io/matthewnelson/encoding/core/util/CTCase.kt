@@ -15,7 +15,6 @@
  **/
 package io.matthewnelson.encoding.core.util
 
-import io.matthewnelson.preimmutable.collections.toImmutableSet
 import kotlin.jvm.JvmField
 
 /**
@@ -126,7 +125,7 @@ public constructor(table: CharSequence) {
 
         require(u.size == l.size) { "uppers.size[${u.size}] != lowers.size[${l.size}] (invalid character input)." }
 
-        uppers = u.toImmutableSet()
-        lowers = l.toImmutableSet()
+        uppers = u.toSet()
+        lowers = l.toSet()
     }
 }

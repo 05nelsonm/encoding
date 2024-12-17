@@ -54,7 +54,6 @@ kmpConfiguration {
             sourceSetMain {
                 dependencies {
                     implementation(libs.benchmark.runtime)
-                    implementation(libs.immutable.collections)
                     implementation(project(":library:base16"))
                     implementation(project(":library:base32"))
                     implementation(project(":library:base64"))
