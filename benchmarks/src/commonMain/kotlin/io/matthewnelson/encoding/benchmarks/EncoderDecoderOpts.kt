@@ -118,9 +118,9 @@ open class Base32HexBenchmark: EncoderDecoderBenchmarkBase() {
 @Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
 open class Base64Benchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
-    @Param("2:84:$TIME_QUICK", "w:22:$TIME_QUICK", "2:84:$TIME_CONST", "w:22:$TIME_CONST")
+    @Param("2:84:$TIME_CONST", "w:22:$TIME_CONST")
     override var params: String = "<Char>:<Byte>:<isConstantTime>"
     override fun encoder(isConstantTime: Boolean): EncoderDecoder<*> {
-        return Base64 { this.isConstantTime = isConstantTime }
+        return Base64()
     }
 }
