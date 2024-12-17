@@ -15,19 +15,20 @@
  **/
 package io.matthewnelson.encoding.core.util
 
-import io.matthewnelson.immutable.collections.toImmutableList
-import io.matthewnelson.immutable.collections.toImmutableSet
 import kotlin.jvm.JvmField
 
 /**
  * An action for decoding
  *
  * @see [Parser]
+ * @suppress
  * */
+@Deprecated("Implementation is incredibly slow. Do not use.")
 public fun interface DecoderAction {
 
     /**
      * Convert decoder input character to its bitwise integer value.
+     * @suppress
      * */
     public fun convert(input: Char): Int
 
@@ -72,7 +73,10 @@ public fun interface DecoderAction {
      *     }
      *
      * @param [action] Pairs of character ranges and their associated [DecoderAction]
+     * @suppress
      * */
+    @Suppress("DEPRECATION")
+    @Deprecated("Implementation is incredibly slow. Do not use.")
     public class Parser(vararg action: Pair<Iterable<Char>, DecoderAction>) {
 
         @JvmField
@@ -87,6 +91,7 @@ public fun interface DecoderAction {
          *   loops early in the event a match is found.
          * @return The result of [DecoderAction.convert], or `null` if no
          *   match was found.
+         * @suppress
          * */
         public fun parse(input: Char, isConstantTime: Boolean): Int? {
             var da: DecoderAction? = null
@@ -110,10 +115,10 @@ public fun interface DecoderAction {
                     iterable
                 } else {
                     iterable.mapTo(LinkedHashSet(1, 1.0f)) { it }
-                }.toImmutableSet()
+                }.toSet()
 
                 set to action
-            }.toImmutableList()
+            }.toList()
 
             this.actions = converted
         }

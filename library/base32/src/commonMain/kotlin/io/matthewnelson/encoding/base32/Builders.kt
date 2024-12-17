@@ -146,45 +146,12 @@ public class Base32CrockfordConfigBuilder {
     public constructor()
     public constructor(config: Base32.Crockford.Config?): this() {
         if (config == null) return
-        isConstantTime = config.isConstantTime
         isLenient = config.isLenient ?: true
         encodeToLowercase = config.encodeToLowercase
         hyphenInterval = config.hyphenInterval
         checkSymbol = config.checkSymbol
         finalizeWhenFlushed = config.finalizeWhenFlushed
     }
-
-    /**
-     * If true, will utilize constant-time operations when
-     * encoding/decoding data. This will be slower, but help
-     * mitigate potential timing attacks with sensitive data
-     * (such as private key material).
-     *
-     * If false, will not use constant time operations.
-     *
-     * e.g. (NOT constant-time operation)
-     *
-     *     fun String.containsChar(char: Char): Boolean {
-     *         for (c in this) {
-     *             if (c == char) return true
-     *         }
-     *         return false
-     *     }
-     *
-     * e.g. (YES constant-time operation)
-     *
-     *     fun String.containsChar(char: Char): Boolean {
-     *         var result = false
-     *         for (c in this) {
-     *             result = if (c == char) true else result
-     *         }
-     *         return result
-     *     }
-     *
-     * Default: `false`
-     * */
-    @JvmField
-    public var isConstantTime: Boolean = false
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
@@ -339,6 +306,11 @@ public class Base32CrockfordConfigBuilder {
      * Builds a [Base32.Crockford.Config] for the provided settings.
      * */
     public fun build(): Base32.Crockford.Config = Base32.Crockford.Config.from(this)
+
+    /** @suppress */
+    @JvmField
+    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    public var isConstantTime: Boolean = true
 }
 
 /**
@@ -352,44 +324,11 @@ public class Base32DefaultConfigBuilder {
     public constructor()
     public constructor(config: Base32.Default.Config?): this() {
         if (config == null) return
-        isConstantTime = config.isConstantTime
         isLenient = config.isLenient ?: true
         lineBreakInterval = config.lineBreakInterval
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
     }
-
-    /**
-     * If true, will utilize constant-time operations when
-     * encoding/decoding data. This will be slower, but help
-     * mitigate potential timing attacks with sensitive data
-     * (such as private key material).
-     *
-     * If false, will not use constant time operations.
-     *
-     * e.g. (NOT constant-time operation)
-     *
-     *     fun String.containsChar(char: Char): Boolean {
-     *         for (c in this) {
-     *             if (c == char) return true
-     *         }
-     *         return false
-     *     }
-     *
-     * e.g. (YES constant-time operation)
-     *
-     *     fun String.containsChar(char: Char): Boolean {
-     *         var result = false
-     *         for (c in this) {
-     *             result = if (c == char) true else result
-     *         }
-     *         return result
-     *     }
-     *
-     * Default: `false`
-     * */
-    @JvmField
-    public var isConstantTime: Boolean = false
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
@@ -475,6 +414,11 @@ public class Base32DefaultConfigBuilder {
      * Builds a [Base32.Default.Config] for the provided settings.
      * */
     public fun build(): Base32.Default.Config = Base32.Default.Config.from(this)
+
+    /** @suppress */
+    @JvmField
+    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    public var isConstantTime: Boolean = true
 }
 
 /**
@@ -488,44 +432,11 @@ public class Base32HexConfigBuilder {
     public constructor()
     public constructor(config: Base32.Hex.Config?): this() {
         if (config == null) return
-        isConstantTime = config.isConstantTime
         isLenient = config.isLenient ?: true
         lineBreakInterval = config.lineBreakInterval
         encodeToLowercase = config.encodeToLowercase
         padEncoded = config.padEncoded
     }
-
-    /**
-     * If true, will utilize constant-time operations when
-     * encoding/decoding data. This will be slower, but help
-     * mitigate potential timing attacks with sensitive data
-     * (such as private key material).
-     *
-     * If false, will not use constant time operations.
-     *
-     * e.g. (NOT constant-time operation)
-     *
-     *     fun String.containsChar(char: Char): Boolean {
-     *         for (c in this) {
-     *             if (c == char) return true
-     *         }
-     *         return false
-     *     }
-     *
-     * e.g. (YES constant-time operation)
-     *
-     *     fun String.containsChar(char: Char): Boolean {
-     *         var result = false
-     *         for (c in this) {
-     *             result = if (c == char) true else result
-     *         }
-     *         return result
-     *     }
-     *
-     * Default: `false`
-     * */
-    @JvmField
-    public var isConstantTime: Boolean = false
 
     /**
      * If true, spaces and new lines ('\n', '\r', ' ', '\t')
@@ -611,4 +522,9 @@ public class Base32HexConfigBuilder {
      * Builds a [Base32.Hex.Config] for the provided settings.
      * */
     public fun build(): Base32.Hex.Config = Base32.Hex.Config.from(this)
+
+    /** @suppress */
+    @JvmField
+    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    public var isConstantTime: Boolean = true
 }

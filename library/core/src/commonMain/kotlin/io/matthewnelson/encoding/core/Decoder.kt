@@ -35,24 +35,13 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * Creates a new [Decoder.Feed], outputting decoded data to
      * the supplied [Decoder.OutFeed].
      *
-     * e.g. (Reading a file of encoded data)
+     * e.g.
      *
-     *     val sb = StringBuilder()
-     *     file.inputStream().reader().use { iStream ->
-     *         myDecoder.newDecoderFeed { decodedByte ->
-     *             sb.append(decodedByte.toInt().toChar())
-     *         }.use { feed ->
-     *             val buffer = CharArray(4096)
-     *             while (true) {
-     *                 val read = iStream.read(buffer)
-     *                 if (read == -1) break
-     *                 for (i in 0 until read) {
-     *                     feed.consume(buffer[i])
-     *                 }
-     *             }
-     *         }
+     *     myDecoder.newDecoderFeed { decodedByte ->
+     *         println(decodedByte)
+     *     }.use { feed ->
+     *         "MYencoDEdTEXt".forEach { c -> feed.consume(c) }
      *     }
-     *     println(sb.toString())
      *
      * @see [Decoder.Feed]
      * */

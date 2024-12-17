@@ -12,7 +12,7 @@ final class io.matthewnelson.encoding.base16/Base16 : io.matthewnelson.encoding.
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base16/Base16.Config|null[0]
         final val encodeToLowercase // io.matthewnelson.encoding.base16/Base16.Config.encodeToLowercase|{}encodeToLowercase[0]
             final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
-        final val isConstantTime // io.matthewnelson.encoding.base16/Base16.Config.isConstantTime|{}isConstantTime[0]
+        final val isConstantTime // io.matthewnelson.encoding.base16/Base16.Config.isConstantTime|<get-isConstantTime>(){}[0]
             final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16.Config.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
     }
 
@@ -31,7 +31,7 @@ final class io.matthewnelson.encoding.base16/Base16ConfigBuilder { // io.matthew
     final var encodeToLowercase // io.matthewnelson.encoding.base16/Base16ConfigBuilder.encodeToLowercase|<set-encodeToLowercase>(kotlin.Boolean){}[0]
         final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16ConfigBuilder.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
         final fun <set-encodeToLowercase>(kotlin/Boolean) // io.matthewnelson.encoding.base16/Base16ConfigBuilder.encodeToLowercase.<set-encodeToLowercase>|<set-encodeToLowercase>(kotlin.Boolean){}[0]
-    final var isConstantTime // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isConstantTime|<set-isConstantTime>(kotlin.Boolean){}[0]
+    final var isConstantTime // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isConstantTime|{}isConstantTime[0]
         final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
         final fun <set-isConstantTime>(kotlin/Boolean) // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isConstantTime.<set-isConstantTime>|<set-isConstantTime>(kotlin.Boolean){}[0]
     final var isLenient // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isLenient|<set-isLenient>(kotlin.Boolean){}[0]

@@ -17,8 +17,5 @@ package io.matthewnelson.encoding.benchmarks
 
 const val ENC_ITERATIONS_WARMUP = 5
 const val ENC_ITERATIONS_MEASURE = 5
-const val ENC_TIME_WARMUP = 1
+const val ENC_TIME_WARMUP = 2
 const val ENC_TIME_MEASURE = 3
-
-const val TIME_QUICK = "quick-time"
-const val TIME_CONST = "const-time"

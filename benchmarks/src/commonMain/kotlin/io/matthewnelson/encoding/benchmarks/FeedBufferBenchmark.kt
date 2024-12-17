@@ -26,15 +26,10 @@ import kotlinx.benchmark.*
 open class FeedBufferBenchmark {
 
     private val buffer = object : FeedBuffer(
-        blockSize = 3,
+        blockSize = 10,
         flush = Flush { _ -> },
         finalize = Finalize { _, _ -> }
     ) {}
-
-    @TearDown
-    fun finalize() {
-        buffer.finalize()
-    }
 
     @Benchmark
     fun update() {

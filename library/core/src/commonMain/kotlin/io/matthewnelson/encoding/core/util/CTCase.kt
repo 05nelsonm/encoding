@@ -15,7 +15,6 @@
  **/
 package io.matthewnelson.encoding.core.util
 
-import io.matthewnelson.immutable.collections.toImmutableSet
 import kotlin.jvm.JvmField
 
 /**
@@ -50,19 +49,23 @@ import kotlin.jvm.JvmField
  * @param [table] The decoding table (e.g. `ABCDEFGHIJKLMNOPQRSTUVWXYZ234567`)
  * @throws [IllegalArgumentException] if table contains a letter that has no
  *   corresponding lowercase value.
+ * @suppress
  * */
+@Deprecated("Implementation is incredibly slow. Diff ASCII values instead.")
 public class CTCase
 @Throws(IllegalArgumentException::class)
 public constructor(table: CharSequence) {
 
     /**
      * Uppercase letters
+     * @suppress
      * */
     @JvmField
     public val uppers: Set<Char>
 
     /**
      * Lowercase letters corresponding to [uppers]
+     * @suppress
      * */
     @JvmField
     public val lowers: Set<Char>
@@ -70,6 +73,7 @@ public constructor(table: CharSequence) {
     /**
      * If the provided [char] exists within [lowers], its corresponding
      * uppercase value is returned. If nothing is found, `null` is returned.
+     * @suppress
      * */
     public fun uppercase(char: Char): Char? {
         val iLower = lowers.iterator()
@@ -89,6 +93,7 @@ public constructor(table: CharSequence) {
     /**
      * If the provided [char] exists within [uppers], its corresponding
      * lowercase value is returned. If nothing is found, `null` is returned.
+     * @suppress
      * */
     public fun lowercase(char: Char): Char? {
         val iLower = lowers.iterator()
@@ -120,7 +125,7 @@ public constructor(table: CharSequence) {
 
         require(u.size == l.size) { "uppers.size[${u.size}] != lowers.size[${l.size}] (invalid character input)." }
 
-        uppers = u.toImmutableSet()
-        lowers = l.toImmutableSet()
+        uppers = u.toSet()
+        lowers = l.toSet()
     }
 }

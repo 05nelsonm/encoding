@@ -19,13 +19,5 @@ plugins {
 }
 
 kmpConfiguration {
-    configureShared(java9ModuleName = "io.matthewnelson.encoding.core", publish = true) {
-        common {
-            sourceSetMain {
-                dependencies {
-                    implementation(libs.immutable.collections)
-                }
-            }
-        }
-    }
+    configureShared(java9ModuleName = "io.matthewnelson.encoding.core", publish = true) {}
 }
