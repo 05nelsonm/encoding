@@ -27,25 +27,23 @@ import kotlinx.benchmark.*
 
 abstract class EncoderDecoderBenchmarkBase {
 
-    // "<Char>:<Byte>:<isConstantTime>"
+    // "<Char>:<Byte>"
     abstract var params: String
-    protected abstract fun encoder(isConstantTime: Boolean): EncoderDecoder<*>
+    protected abstract val encoder: EncoderDecoder<*>
 
     private var byte: Byte = 0
     private var char = '_'
-    private var feedDecoder: Decoder<*>.Feed = Base16.newDecoderFeed {}.apply { close() }
-    private var feedEncoder: Encoder<*>.Feed = Base16.newEncoderFeed {}.apply { close() }
+    private val feedDecoder: Decoder<*>.Feed by lazy { encoder.newDecoderFeed {} }
+    private val feedEncoder: Encoder<*>.Feed by lazy { encoder.newEncoderFeed {} }
 
     @Setup
     fun setup() {
-        val encoder = params.split(':').let { params ->
+        params.split(':').let { params ->
             char = params[0][0]
             byte = params[1].toByte()
-            encoder(params[2] == TIME_CONST)
         }
-
-        feedDecoder = encoder.newDecoderFeed {}
-        feedEncoder = encoder.newEncoderFeed {}
+        feedDecoder
+        feedEncoder
     }
 
     @Benchmark
@@ -62,11 +60,9 @@ abstract class EncoderDecoderBenchmarkBase {
 @Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
 open class Base16Benchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEF
-    @Param("3:0:$TIME_CONST", "d:122:$TIME_CONST")
-    override var params: String = "<Char>:<Byte>:<isConstantTime>"
-    override fun encoder(isConstantTime: Boolean): EncoderDecoder<*> {
-        return Base16()
-    }
+    @Param("3:0", "d:122")
+    override var params: String = "<Char>:<Byte>"
+    override val encoder: EncoderDecoder<*> = Base16()
 }
 
 @State(Scope.Benchmark)
@@ -76,11 +72,9 @@ open class Base16Benchmark: EncoderDecoderBenchmarkBase() {
 @Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
 open class Base32CrockfordBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEFGHJKMNPQRSTVWXYZ
-    @Param("3:-6:$TIME_QUICK", "x:115:$TIME_QUICK", "3:-6:$TIME_CONST", "x:115:$TIME_CONST")
-    override var params: String = "<Char>:<Byte>:<isConstantTime>"
-    override fun encoder(isConstantTime: Boolean): EncoderDecoder<*> {
-        return Base32Crockford { this.isConstantTime = isConstantTime }
-    }
+    @Param("3:-6", "x:115")
+    override var params: String = "<Char>:<Byte>"
+    override val encoder: EncoderDecoder<*> = Base32Crockford()
 }
 
 @State(Scope.Benchmark)
@@ -90,11 +84,9 @@ open class Base32CrockfordBenchmark: EncoderDecoderBenchmarkBase() {
 @Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
 open class Base32DefaultBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: ABCDEFGHIJKLMNOPQRSTUVWXYZ234567
-    @Param("C:-123:$TIME_QUICK", "w:15:$TIME_QUICK", "C:-123:$TIME_CONST", "w:15:$TIME_CONST")
-    override var params: String = "<Char>:<Byte>:<isConstantTime>"
-    override fun encoder(isConstantTime: Boolean): EncoderDecoder<*> {
-        return Base32Default { this.isConstantTime = isConstantTime }
-    }
+    @Param("C:-123", "w:15")
+    override var params: String = "<Char>:<Byte>"
+    override val encoder: EncoderDecoder<*> = Base32Default()
 }
 
 @State(Scope.Benchmark)
@@ -104,11 +96,9 @@ open class Base32DefaultBenchmark: EncoderDecoderBenchmarkBase() {
 @Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
 open class Base32HexBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEFGHIJKLMNOPQRSTUV
-    @Param("A:-12:$TIME_QUICK", "r:42:$TIME_QUICK", "A:-12:$TIME_CONST", "r:42:$TIME_CONST")
-    override var params: String = "<Char>:<Byte>:<isConstantTime>"
-    override fun encoder(isConstantTime: Boolean): EncoderDecoder<*> {
-        return Base32Hex { this.isConstantTime = isConstantTime }
-    }
+    @Param("A:-12", "r:42")
+    override var params: String = "<Char>:<Byte>"
+    override val encoder: EncoderDecoder<*> = Base32Hex()
 }
 
 @State(Scope.Benchmark)
@@ -118,9 +108,7 @@ open class Base32HexBenchmark: EncoderDecoderBenchmarkBase() {
 @Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
 open class Base64Benchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
-    @Param("2:84:$TIME_CONST", "w:22:$TIME_CONST")
-    override var params: String = "<Char>:<Byte>:<isConstantTime>"
-    override fun encoder(isConstantTime: Boolean): EncoderDecoder<*> {
-        return Base64()
-    }
+    @Param("2:84", "w:22")
+    override var params: String = "<Char>:<Byte>"
+    override val encoder: EncoderDecoder<*> = Base64()
 }

@@ -27,7 +27,6 @@ import kotlin.test.*
 class Base32CrockfordUnitTest: BaseNEncodingTest() {
 
     private val validCheckSymbols = listOf('*', '~', '$', '=', 'U', 'u')
-    private var useConstantTime = false
     private var useLowercase = false
     private var symbol: Char? = null
         set(value) {
@@ -39,7 +38,6 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
         }
 
     private fun base32(): Base32.Crockford = Base32Crockford {
-        isConstantTime = useConstantTime
         encodeToLowercase = useLowercase
         checkSymbol(symbol)
     }
@@ -284,21 +282,15 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     @Test
     fun givenString_whenEncoded_MatchesSpec() {
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
-        useConstantTime = true
-        checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 
     @Test
     fun givenBadEncoding_whenDecoded_ReturnsNull() {
         checkDecodeFailureForDataSet(decodeFailureDataSet)
-        useConstantTime = true
-        checkDecodeFailureForDataSet(decodeFailureDataSet)
     }
 
     @Test
     fun givenEncodedData_whenDecoded_MatchesSpec() {
-        checkDecodeSuccessForDataSet(decodeSuccessDataSet)
-        useConstantTime = true
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
     }
 
@@ -316,9 +308,6 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenEncodedDataWithCheckSymbol_whenDecodedWithCheckSymbolExpressed_returnsExpected() {
         for (symbol in validCheckSymbols) {
             this.symbol = symbol
-            useConstantTime = false
-            checkEncodeSuccessForDataSet(getEncodeSuccessDataSetWithCheckSymbolExpected(symbol))
-            useConstantTime = true
             checkEncodeSuccessForDataSet(getEncodeSuccessDataSetWithCheckSymbolExpected(symbol))
         }
     }
@@ -327,9 +316,6 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenString_whenEncodedWithCheckSymbolExpressed_returnsExpected() {
         for (symbol in validCheckSymbols) {
             this.symbol = symbol
-            useConstantTime = false
-            checkDecodeSuccessForDataSet(getDecodeSuccessDataSetWithCheckSymbolExpected(symbol))
-            useConstantTime = true
             checkDecodeSuccessForDataSet(getDecodeSuccessDataSetWithCheckSymbolExpected(symbol))
         }
     }
@@ -351,14 +337,10 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     @Test
     fun givenUniversalDecoderParameters_whenChecked_areSuccessful() {
         checkUniversalDecoderParameters()
-        useConstantTime = true
-        checkUniversalDecoderParameters()
     }
 
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
-        checkUniversalEncoderParameters()
-        useConstantTime = true
         checkUniversalEncoderParameters()
     }
 
@@ -374,8 +356,6 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
         }
 
         checkEncodeSuccessForDataSet(lowercaseData)
-        useConstantTime = true
-        checkEncodeSuccessForDataSet(lowercaseData)
     }
 
     @Test
@@ -387,27 +367,20 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     @Test
     fun givenBase32Crockford_whenDecodeEncode_thenReturnsSameValue() {
         val expected = "AHM6A83HENMP6TS0C9S6YXVE41K6YY10D9TPTW3K41QQCSBJ41T6GS90DHGQMY90CHQPEBG"
-        listOf(false, true).forEach { ct ->
-            useConstantTime = ct
-            val encoder = base32()
-            val decoded = expected.decodeToByteArray(encoder)
-            val actual = decoded.encodeToString(encoder)
-            assertEquals(expected, actual)
-        }
+        val encoder = base32()
+        val decoded = expected.decodeToByteArray(encoder)
+        val actual = decoded.encodeToString(encoder)
+        assertEquals(expected, actual)
     }
 
     @Test
     fun givenBase32Crockford_whenEncodeDecodeRandomData_thenBytesMatch() {
-        checkRandomData()
-        useConstantTime = true
         checkRandomData()
     }
 
     @Test
     fun givenBase32CrockfordLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
         useLowercase = true
-        checkRandomData()
-        useConstantTime = true
         checkRandomData()
     }
 

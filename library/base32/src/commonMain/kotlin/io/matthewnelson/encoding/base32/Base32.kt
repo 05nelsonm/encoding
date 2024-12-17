@@ -22,7 +22,7 @@ import io.matthewnelson.encoding.base32.internal.encodeOutSize
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
 import io.matthewnelson.encoding.base32.internal.toBits
 import io.matthewnelson.encoding.core.*
-import io.matthewnelson.encoding.core.util.*
+import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmSynthetic
@@ -91,8 +91,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val checkSymbol: Char?,
             @JvmField
             public val finalizeWhenFlushed: Boolean,
-            @JvmField
-            public val isConstantTime: Boolean,
         ): EncoderDecoder.Config(
             isLenient = isLenient,
             lineBreakInterval = 0,
@@ -191,10 +189,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         hyphenInterval = if (builder.hyphenInterval > 0) builder.hyphenInterval else 0,
                         checkSymbol = builder.checkSymbol,
                         finalizeWhenFlushed = builder.finalizeWhenFlushed,
-                        isConstantTime = builder.isConstantTime
                     )
                 }
             }
+
+            /**
+             * Implementation is always constant-time. Performance impact is negligible.
+             * @suppress
+             * */
+            @JvmField
+            public val isConstantTime: Boolean = true
         }
 
         /**
@@ -232,138 +236,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Crockford.Config>.Feed {
                 return DELEGATE.newEncoderFeedProtected(out)
             }
-
-            private val CT_CASE = CTCase(table = CHARS_UPPER)
-
-            private val UC_PARSER = DecoderAction.Parser(
-                '0'..'9' to DecoderAction { char ->
-                    // char ASCII value
-                    //  0    48    0
-                    //  9    57    9 (ASCII - 48)
-                    char.code - 48
-                },
-                'A'..'H' to DecoderAction { char ->
-                    // char ASCII value
-                    //  A    65    10
-                    //  H    72    17 (ASCII - 55)
-                    char.code - 55
-                },
-                setOf('I', 'L') to DecoderAction { _ ->
-                    // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
-
-                    // char ASCII value
-                    //  1    49    1 (ASCII - 48)
-                    '1'.code - 48
-                },
-                'J'..'K' to DecoderAction { char ->
-                    // char ASCII value
-                    //  J    74    18
-                    //  K    75    19 (ASCII - 56)
-                    char.code - 56
-                },
-                'M'..'N' to DecoderAction { char ->
-                    // char ASCII value
-                    //  M    77    20
-                    //  N    78    21 (ASCII - 57)
-                    char.code - 57
-                },
-                setOf('O') to DecoderAction { _ ->
-                    // Crockford treats characters 'O' and 'o' as 0
-
-                    // char ASCII value
-                    //  0    48    0 (ASCII - 48)
-                    '0'.code - 48
-                },
-                'P'..'T' to DecoderAction { char ->
-                    // char ASCII value
-                    //  P    80    22
-                    //  T    84    26 (ASCII - 58)
-                    char.code - 58
-                },
-                'V'..'Z' to DecoderAction { char ->
-                    // char ASCII value
-                    //  V    86    27
-                    //  Z    90    31 (ASCII - 59)
-                    char.code - 59
-                },
-                'a'..'h' to DecoderAction { char ->
-                    // char ASCII value
-                    //  A    65    10
-                    //  H    72    17 (ASCII - 55)
-                    char.uppercaseChar().code - 55
-                },
-                setOf('i', 'l') to DecoderAction { _ ->
-                    // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
-
-                    // char ASCII value
-                    //  1    49    1 (ASCII - 48)
-                    '1'.code - 48
-                },
-                'j'..'k' to DecoderAction { char ->
-                    // char ASCII value
-                    //  J    74    18
-                    //  K    75    19 (ASCII - 56)
-                    char.uppercaseChar().code - 56
-                },
-                'm'..'n' to DecoderAction { char ->
-                    // char ASCII value
-                    //  M    77    20
-                    //  N    78    21 (ASCII - 57)
-                    char.uppercaseChar().code - 57
-                },
-                setOf('o') to DecoderAction { _ ->
-                    // Crockford treats characters 'O' and 'o' as 0
-
-                    // char ASCII value
-                    //  0    48    0 (ASCII - 48)
-                    '0'.code - 48
-                },
-                'p'..'t' to DecoderAction { char ->
-                    // char ASCII value
-                    //  P    80    22
-                    //  T    84    26 (ASCII - 58)
-                    char.uppercaseChar().code - 58
-                },
-                'v'..'z' to DecoderAction { char ->
-                    // char ASCII value
-                    //  V    86    27
-                    //  Z    90    31 (ASCII - 59)
-                    char.uppercaseChar().code - 59
-                },
-            )
-
-            // Assume input will be lowercase letters. Reorder
-            // actions to check lowercase before uppercase.
-            private val LC_PARSER = DecoderAction.Parser(
-                UC_PARSER.actions[0],
-                UC_PARSER.actions[8],
-                UC_PARSER.actions[9],
-                UC_PARSER.actions[10],
-                UC_PARSER.actions[11],
-                UC_PARSER.actions[12],
-                UC_PARSER.actions[13],
-                UC_PARSER.actions[14],
-                UC_PARSER.actions[1],
-                UC_PARSER.actions[2],
-                UC_PARSER.actions[3],
-                UC_PARSER.actions[4],
-                UC_PARSER.actions[5],
-                UC_PARSER.actions[6],
-                UC_PARSER.actions[7],
-            )
-
-            // Do not include lowercase letter actions. Constant time
-            // operations will uppercase the input on every invocation.
-            private val CT_PARSER = DecoderAction.Parser(
-                UC_PARSER.actions[0],
-                UC_PARSER.actions[1],
-                UC_PARSER.actions[2],
-                UC_PARSER.actions[3],
-                UC_PARSER.actions[4],
-                UC_PARSER.actions[5],
-                UC_PARSER.actions[6],
-                UC_PARSER.actions[7],
-            )
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
@@ -371,52 +243,135 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
                 private var isCheckSymbolSet = false
                 private val buffer = DecodingBuffer(out)
-                private val parser = when {
-                    config.isConstantTime -> CT_PARSER
-                    config.encodeToLowercase -> LC_PARSER
-                    else -> UC_PARSER
-                }
 
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
                     if (isCheckSymbolSet) {
-                        // If the set checkByte was not intended, it's only a valid
-                        // as the very last character and the previous update call
-                        // was invalid.
-                        throw EncodingException(
-                            "Checksymbol[${config.checkSymbol}] was set, but decoding is still being attempted."
-                        )
+                        // If the set checkByte was not intended, it's only valid as the
+                        // very last character and the previous update call was invalid.
+                        throw EncodingException("CheckSymbol[${config.checkSymbol}] was set")
                     }
 
-                    val char = if (config.isConstantTime) {
-                        CT_CASE.uppercase(input) ?: input
-                    } else {
-                        input
+                    // Crockford allows for insertion of hyphens,
+                    // which are to be ignored when decoding.
+                    if (input == '-') return
+
+                    val code = input.code
+
+                    val ge0: Byte = if (code >= '0'.code) 1 else 0
+                    val le9: Byte = if (code <= '9'.code) 1 else 0
+
+                    val geA: Byte = if (code >= 'A'.code) 1 else 0
+                    val leH: Byte = if (code <= 'H'.code) 1 else 0
+                    val eqI: Byte = if (code == 'I'.code) 1 else 0
+                    val eqL: Byte = if (code == 'L'.code) 1 else 0
+                    val eqJ: Byte = if (code == 'J'.code) 1 else 0
+                    val eqK: Byte = if (code == 'K'.code) 1 else 0
+                    val eqM: Byte = if (code == 'M'.code) 1 else 0
+                    val eqN: Byte = if (code == 'N'.code) 1 else 0
+                    val eqO: Byte = if (code == 'O'.code) 1 else 0
+                    val geP: Byte = if (code >= 'P'.code) 1 else 0
+                    val leT: Byte = if (code <= 'T'.code) 1 else 0
+                    val geV: Byte = if (code >= 'V'.code) 1 else 0
+                    val leZ: Byte = if (code <= 'Z'.code) 1 else 0
+
+                    val gea: Byte = if (code >= 'a'.code) 1 else 0
+                    val leh: Byte = if (code <= 'h'.code) 1 else 0
+                    val eqi: Byte = if (code == 'i'.code) 1 else 0
+                    val eql: Byte = if (code == 'l'.code) 1 else 0
+                    val eqj: Byte = if (code == 'j'.code) 1 else 0
+                    val eqk: Byte = if (code == 'k'.code) 1 else 0
+                    val eqm: Byte = if (code == 'm'.code) 1 else 0
+                    val eqn: Byte = if (code == 'n'.code) 1 else 0
+                    val eqo: Byte = if (code == 'o'.code) 1 else 0
+                    val gep: Byte = if (code >= 'p'.code) 1 else 0
+                    val let: Byte = if (code <= 't'.code) 1 else 0
+                    val gev: Byte = if (code >= 'v'.code) 1 else 0
+                    val lez: Byte = if (code <= 'z'.code) 1 else 0
+
+                    var diff = 0
+
+                    // char ASCII value
+                    //  0     48    0
+                    //  9     57    9 (ASCII - 48)
+                    diff += if (ge0 + le9 == 2) -48 else 0
+
+                    // char ASCII value
+                    //  A     65   10
+                    //  H     72   17 (ASCII - 55)
+                    diff += if (geA + leH == 2) -55 else 0
+
+                    // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
+                    val h = 1 - code
+                    diff += if (eqI + eqi + eqL + eql == 1) h else 0
+
+                    // char ASCII value
+                    //  J     74   18
+                    //  K     75   19 (ASCII - 56)
+                    diff += if (eqJ + eqK == 1) -56 else 0
+
+                    // char ASCII value
+                    //  M     77   20
+                    //  N     78   21 (ASCII - 57)
+                    diff += if (eqM + eqN == 1) -57 else 0
+
+                    // Crockford treats characters 'O' and 'o' as 0
+                    val k = 0 - code
+                    diff += if (eqO + eqo == 1) k else 0
+
+                    // char ASCII value
+                    //  P     80   22
+                    //  T     84   26 (ASCII - 58)
+                    diff += if (geP + leT == 2) -58 else 0
+
+                    // char ASCII value
+                    //  V     86   27
+                    //  Z     90   31 (ASCII - 59)
+                    diff += if (geV + leZ == 2) -59 else 0
+
+                    // char ASCII value
+                    //  a     97   10
+                    //  h    104   17 (ASCII - 87)
+                    diff += if (gea + leh == 2) -87 else 0
+
+                    // char ASCII value
+                    //  j    106   18
+                    //  k    107   19 (ASCII - 88)
+                    diff += if (eqj + eqk == 1) -88 else 0
+
+                    // char ASCII value
+                    //  m    109   20
+                    //  n    110   21 (ASCII - 89)
+                    diff += if (eqm + eqn == 1) -89 else 0
+
+                    // char ASCII value
+                    //  p    112   22
+                    //  t    116   26 (ASCII - 90)
+                    diff += if (gep + let == 2) -90 else 0
+
+                    // char ASCII value
+                    //  v    118   27
+                    //  z    122   31 (ASCII - 91)
+                    diff += if (gev + lez == 2) -91 else 0
+
+                    if (diff != 0) {
+                        buffer.update(code + diff)
+                        return
                     }
 
-                    val bits = parser.parse(char, isConstantTime = config.isConstantTime)
-
-                    if (bits == null) {
-                        // Crockford allows for insertion of hyphens,
-                        // which are to be ignored when decoding.
-                        if (input == '-') return
-
-                        if (!input.isCheckSymbol(isConstantTime = config.isConstantTime)) {
-                            throw EncodingException("Char[${input}] is not a valid Base32 Crockford character")
-                        }
-
-                        if (config.checkSymbol?.uppercaseChar() == input.uppercaseChar()) {
-                            isCheckSymbolSet = true
-                            return
-                        }
-
-                        throw EncodingException(
-                            "Char[${input}] IS a checkSymbol, but did " +
-                            "not match config's Checksymbol[${config.checkSymbol}]"
-                        )
+                    if (!input.isCheckSymbol()) {
+                        throw EncodingException("Char[${input}] is not a valid Base32 Crockford character")
                     }
 
-                    buffer.update(bits)
+                    if (config.checkSymbol?.uppercaseChar() == input.uppercaseChar()) {
+                        isCheckSymbolSet = true
+                        return
+                    }
+
+                    throw EncodingException(
+                        "Char[${input}] IS a checkSymbol, but did " +
+                        "not match config's Checksymbol[${config.checkSymbol}]"
+                    )
                 }
 
                 @Throws(EncodingException::class)
@@ -444,18 +399,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         out.output(byte)
                         outputHyphenOnNext = config.hyphenInterval > 0 && ++outCount == config.hyphenInterval
                     },
-                    table = if (config.encodeToLowercase) {
-                        CHARS_LOWER
-                    } else {
-                        CHARS_UPPER
-                    },
-                    isConstantTime = config.isConstantTime,
+                    table = if (config.encodeToLowercase) CHARS_LOWER else CHARS_UPPER,
                     paddingChar = null,
                 )
 
-                override fun consumeProtected(input: Byte) {
-                    buffer.update(input.toInt())
-                }
+                override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
 
                 override fun doFinalProtected() {
                     buffer.finalize()
@@ -533,8 +481,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-            @JvmField
-            public val isConstantTime: Boolean,
         ): EncoderDecoder.Config(
             isLenient = isLenient,
             lineBreakInterval = lineBreakInterval,
@@ -570,10 +516,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         lineBreakInterval = builder.lineBreakInterval,
                         encodeToLowercase = builder.encodeToLowercase,
                         padEncoded = builder.padEncoded,
-                        isConstantTime = builder.isConstantTime,
                     )
                 }
             }
+
+            /**
+             * Implementation is always constant-time. Performance impact is negligible.
+             * @suppress
+             * */
+            @JvmField
+            public val isConstantTime: Boolean = true
         }
 
         /**
@@ -611,74 +563,50 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Default.Config>.Feed {
                 return DELEGATE.newEncoderFeedProtected(out)
             }
-
-            private val CT_CASE = CTCase(table = CHARS_UPPER)
-
-            private val UC_PARSER = DecoderAction.Parser(
-                '2'..'7' to DecoderAction { char ->
-                    // char ASCII value
-                    //  2    50    26
-                    //  7    55    31 (ASCII - 24)
-                    char.code - 24
-                },
-                CT_CASE.uppers to DecoderAction { char ->
-                    // char ASCII value
-                    //  A    65    0
-                    //  Z    90    25 (ASCII - 65)
-                    char.code - 65
-                },
-                CT_CASE.lowers to DecoderAction { char ->
-                    // char ASCII value
-                    //  A    65    0
-                    //  Z    90    25 (ASCII - 65)
-                    char.uppercaseChar().code - 65
-                },
-            )
-
-            // Assume input will be lowercase letters. Reorder
-            // actions to check lowercase before uppercase.
-            private val LC_PARSER = DecoderAction.Parser(
-                UC_PARSER.actions[0],
-                UC_PARSER.actions[2],
-                UC_PARSER.actions[1],
-            )
-
-            // Do not include lowercase letter actions. Constant time
-            // operations will uppercase the input on every invocation.
-            private val CT_PARSER = DecoderAction.Parser(
-                UC_PARSER.actions[0],
-                UC_PARSER.actions[1],
-            )
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
             return object : Decoder<Default.Config>.Feed() {
 
                 private val buffer = DecodingBuffer(out)
-                private val parser = when {
-                    config.isConstantTime -> CT_PARSER
-                    config.encodeToLowercase -> LC_PARSER
-                    else -> UC_PARSER
-                }
 
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
-                    val char = if (config.isConstantTime) {
-                        CT_CASE.uppercase(input) ?: input
-                    } else {
-                        input
+                    val code = input.code
+
+                    val ge2: Byte = if (code >= '2'.code) 1 else 0
+                    val le7: Byte = if (code <= '7'.code) 1 else 0
+                    val geA: Byte = if (code >= 'A'.code) 1 else 0
+                    val leZ: Byte = if (code <= 'Z'.code) 1 else 0
+                    val gea: Byte = if (code >= 'a'.code) 1 else 0
+                    val lez: Byte = if (code <= 'z'.code) 1 else 0
+
+                    var diff = 0
+
+                    // char ASCII value
+                    //  2     50   26
+                    //  7     55   31 (ASCII - 24)
+                    diff += if (ge2 + le7 == 2) -24 else 0
+
+                    // char ASCII value
+                    //  A     65    0
+                    //  Z     90   25 (ASCII - 65)
+                    diff += if (geA + leZ == 2) -65 else 0
+
+                    // char ASCII value
+                    //  a     97   0
+                    //  z    122   25 (ASCII - 97)
+                    diff += if (gea + lez == 2) -97 else 0
+
+                    if (diff == 0) {
+                        throw EncodingException("Char[${input}] is not a valid Base32 Default character")
                     }
 
-                    val bits = parser.parse(char, isConstantTime = config.isConstantTime)
-                        ?: throw EncodingException("Char[${input}] is not a valid Base32 Default character")
-
-                    buffer.update(bits)
+                    buffer.update(code + diff)
                 }
 
                 @Throws(EncodingException::class)
-                override fun doFinalProtected() {
-                    buffer.finalize()
-                }
+                override fun doFinalProtected() { buffer.finalize() }
             }
         }
 
@@ -687,26 +615,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
                 private val buffer = EncodingBuffer(
                     out = out,
-                    table = if (config.encodeToLowercase) {
-                        CHARS_LOWER
-                    } else {
-                        CHARS_UPPER
-                    },
-                    isConstantTime = config.isConstantTime,
-                    paddingChar = if (config.padEncoded) {
-                        config.paddingChar
-                    } else {
-                        null
-                    },
+                    table = if (config.encodeToLowercase) CHARS_LOWER else CHARS_UPPER,
+                    paddingChar = if (config.padEncoded) config.paddingChar else null,
                 )
 
-                override fun consumeProtected(input: Byte) {
-                    buffer.update(input.toInt())
-                }
+                override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
 
-                override fun doFinalProtected() {
-                    buffer.finalize()
-                }
+                override fun doFinalProtected() { buffer.finalize() }
             }
         }
 
@@ -762,8 +677,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeToLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-            @JvmField
-            public val isConstantTime: Boolean,
         ): EncoderDecoder.Config(
             isLenient = isLenient,
             lineBreakInterval = lineBreakInterval,
@@ -799,10 +712,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         lineBreakInterval = builder.lineBreakInterval,
                         encodeToLowercase = builder.encodeToLowercase,
                         padEncoded = builder.padEncoded,
-                        isConstantTime = builder.isConstantTime,
                     )
                 }
             }
+
+            /**
+             * Implementation is always constant-time. Performance impact is negligible.
+             * @suppress
+             * */
+            @JvmField
+            public val isConstantTime: Boolean = true
         }
 
         /**
@@ -840,74 +759,50 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             override fun newEncoderFeedProtected(out: OutFeed): Encoder<Hex.Config>.Feed {
                 return DELEGATE.newEncoderFeedProtected(out)
             }
-
-            private val CT_CASE = CTCase(table = CHARS_UPPER)
-
-            private val UC_PARSER = DecoderAction.Parser(
-                '0'..'9' to DecoderAction { char ->
-                    // char ASCII value
-                    //  0    48    0
-                    //  9    57    9 (ASCII - 48)
-                    char.code - 48
-                },
-                CT_CASE.uppers to DecoderAction { char ->
-                    // char ASCII value
-                    //  A    65    10
-                    //  V    86    31 (ASCII - 55)
-                    char.code - 55
-                },
-                CT_CASE.lowers to DecoderAction { char ->
-                    // char ASCII value
-                    //  A    65    10
-                    //  V    86    31 (ASCII - 55)
-                    char.uppercaseChar().code - 55
-                },
-            )
-
-            // Assume input will be lowercase letters. Reorder
-            // actions to check lowercase before uppercase.
-            private val LC_PARSER = DecoderAction.Parser(
-                UC_PARSER.actions[0],
-                UC_PARSER.actions[2],
-                UC_PARSER.actions[1],
-            )
-
-            // Do not include lowercase letter actions. Constant time
-            // operations will uppercase the input on every invocation.
-            private val CT_PARSER = DecoderAction.Parser(
-                UC_PARSER.actions[0],
-                UC_PARSER.actions[1],
-            )
         }
 
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
             return object : Decoder<Hex.Config>.Feed() {
 
                 private val buffer = DecodingBuffer(out)
-                private val parser = when {
-                    config.isConstantTime -> CT_PARSER
-                    config.encodeToLowercase -> LC_PARSER
-                    else -> UC_PARSER
-                }
 
                 @Throws(EncodingException::class)
                 override fun consumeProtected(input: Char) {
-                    val char = if (config.isConstantTime) {
-                        CT_CASE.uppercase(input) ?: input
-                    } else {
-                        input
+                    val code = input.code
+
+                    val ge0: Byte = if (code >= '0'.code) 1 else 0
+                    val le9: Byte = if (code <= '9'.code) 1 else 0
+                    val geA: Byte = if (code >= 'A'.code) 1 else 0
+                    val leV: Byte = if (code <= 'V'.code) 1 else 0
+                    val gea: Byte = if (code >= 'a'.code) 1 else 0
+                    val lev: Byte = if (code <= 'v'.code) 1 else 0
+
+                    var diff = 0
+
+                    // char ASCII value
+                    //  0     48    0
+                    //  9     57    9 (ASCII - 48)
+                    diff += if (ge0 + le9 == 2) -48 else 0
+
+                    // char ASCII value
+                    //  A     65   10
+                    //  V     86   31 (ASCII - 55)
+                    diff += if (geA + leV == 2) -55 else 0
+
+                    // char ASCII value
+                    //  a     97   10
+                    //  v    118   31 (ASCII - 87)
+                    diff += if (gea + lev == 2) -87 else 0
+
+                    if (diff == 0) {
+                        throw EncodingException("Char[${input}] is not a valid Base32 Hex character")
                     }
 
-                    val bits = parser.parse(char, isConstantTime = config.isConstantTime)
-                        ?: throw EncodingException("Char[${input}] is not a valid Base32 Hex character")
-
-                    buffer.update(bits)
+                    buffer.update(code + diff)
                 }
 
                 @Throws(EncodingException::class)
-                override fun doFinalProtected() {
-                    buffer.finalize()
-                }
+                override fun doFinalProtected() { buffer.finalize() }
             }
         }
 
@@ -916,260 +811,18 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
                 private val buffer = EncodingBuffer(
                     out = out,
-                    table = if (config.encodeToLowercase) {
-                        CHARS_LOWER
-                    } else {
-                        CHARS_UPPER
-                    },
-                    isConstantTime = config.isConstantTime,
-                    paddingChar = if (config.padEncoded) {
-                        config.paddingChar
-                    } else {
-                        null
-                    },
+                    table = if (config.encodeToLowercase) CHARS_LOWER else CHARS_UPPER,
+                    paddingChar = if (config.padEncoded) config.paddingChar else null,
                 )
 
-                override fun consumeProtected(input: Byte) {
-                    buffer.update(input.toInt())
-                }
+                override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
 
-                override fun doFinalProtected() {
-                    buffer.finalize()
-                }
+                override fun doFinalProtected() { buffer.finalize() }
             }
         }
 
         protected override fun name(): String = "Base32.Hex"
     }
-
-    private inner class EncodingBuffer(
-        out: Encoder.OutFeed,
-        table: CharSequence,
-        isConstantTime: Boolean,
-        paddingChar: Char?,
-    ): FeedBuffer(
-        blockSize = 5,
-        flush = { buffer ->
-            var bitBuffer = 0L
-
-            // Append each char's 8 bits to the bitBuffer
-            for (bits in buffer) {
-                bitBuffer =  (bitBuffer shl  8) + bits.toByte().toBits()
-            }
-
-            // For every 5 bytes of input, we accumulate
-            // 40 bits of output. Emit 8 characters.
-            val i1 = (bitBuffer shr 35 and 0x1fL).toInt() // 40-1*5 = 35
-            val i2 = (bitBuffer shr 30 and 0x1fL).toInt() // 40-2*5 = 30
-            val i3 = (bitBuffer shr 25 and 0x1fL).toInt() // 40-3*5 = 25
-            val i4 = (bitBuffer shr 20 and 0x1fL).toInt() // 40-4*5 = 20
-            val i5 = (bitBuffer shr 15 and 0x1fL).toInt() // 40-5*5 = 15
-            val i6 = (bitBuffer shr 10 and 0x1fL).toInt() // 40-6*5 = 10
-            val i7 = (bitBuffer shr  5 and 0x1fL).toInt() // 40-7*5 =  5
-            val i8 = (bitBuffer        and 0x1fL).toInt() // 40-8*5 =  0
-
-            if (isConstantTime) {
-                var c1: Char? = null
-                var c2: Char? = null
-                var c3: Char? = null
-                var c4: Char? = null
-                var c5: Char? = null
-                var c6: Char? = null
-                var c7: Char? = null
-                var c8: Char? = null
-
-                table.forEachIndexed { index, c ->
-                    c1 = if (index == i1) c else c1
-                    c2 = if (index == i2) c else c2
-                    c3 = if (index == i3) c else c3
-                    c4 = if (index == i4) c else c4
-                    c5 = if (index == i5) c else c5
-                    c6 = if (index == i6) c else c6
-                    c7 = if (index == i7) c else c7
-                    c8 = if (index == i8) c else c8
-                }
-
-                out.output(c1!!)
-                out.output(c2!!)
-                out.output(c3!!)
-                out.output(c4!!)
-                out.output(c5!!)
-                out.output(c6!!)
-                out.output(c7!!)
-                out.output(c8!!)
-            } else {
-                out.output(table[i1])
-                out.output(table[i2])
-                out.output(table[i3])
-                out.output(table[i4])
-                out.output(table[i5])
-                out.output(table[i6])
-                out.output(table[i7])
-                out.output(table[i8])
-            }
-        },
-        finalize = { modulus, buffer ->
-            var bitBuffer = 0L
-
-            // Append each char remaining in the buffer to the bitBuffer
-            for (i in 0 until modulus) {
-                bitBuffer =  (bitBuffer shl  8) + buffer[i].toByte().toBits()
-            }
-
-            val padCount: Int = when (modulus) {
-                0 -> { 0 }
-                1 -> {
-                    // 8*1 = 8 bits
-                    val i1 = (bitBuffer shr  3 and 0x1fL).toInt() // 8-1*5 = 3
-                    val i2 = (bitBuffer shl  2 and 0x1fL).toInt() // 5-3 = 2
-
-                    if (isConstantTime) {
-                        var c1: Char? = null
-                        var c2: Char? = null
-
-                        table.forEachIndexed { index, c ->
-                            c1 = if (index == i1) c else c1
-                            c2 = if (index == i2) c else c2
-                        }
-
-                        out.output(c1!!)
-                        out.output(c2!!)
-                    } else {
-                        out.output(table[i1])
-                        out.output(table[i2])
-                    }
-
-                    6
-                }
-                2 -> {
-                    // 8*2 = 16 bits
-                    val i1 = (bitBuffer shr 11 and 0x1fL).toInt() // 16-1*5 = 11
-                    val i2 = (bitBuffer shr  6 and 0x1fL).toInt() // 16-2*5 = 6
-                    val i3 = (bitBuffer shr  1 and 0x1fL).toInt() // 16-3*5 = 1
-                    val i4 = (bitBuffer shl  4 and 0x1fL).toInt() // 5-1 = 4
-
-                    if (isConstantTime) {
-                        var c1: Char? = null
-                        var c2: Char? = null
-                        var c3: Char? = null
-                        var c4: Char? = null
-
-                        table.forEachIndexed { index, c ->
-                            c1 = if (index == i1) c else c1
-                            c2 = if (index == i2) c else c2
-                            c3 = if (index == i3) c else c3
-                            c4 = if (index == i4) c else c4
-                        }
-
-                        out.output(c1!!)
-                        out.output(c2!!)
-                        out.output(c3!!)
-                        out.output(c4!!)
-                    } else {
-                        out.output(table[i1])
-                        out.output(table[i2])
-                        out.output(table[i3])
-                        out.output(table[i4])
-                    }
-
-                    4
-                }
-                3 -> {
-                    // 8*3 = 24 bits
-                    val i1 = (bitBuffer shr 19 and 0x1fL).toInt() // 24-1*5 = 19
-                    val i2 = (bitBuffer shr 14 and 0x1fL).toInt() // 24-2*5 = 14
-                    val i3 = (bitBuffer shr  9 and 0x1fL).toInt() // 24-3*5 = 9
-                    val i4 = (bitBuffer shr  4 and 0x1fL).toInt() // 24-4*5 = 4
-                    val i5 = (bitBuffer shl  1 and 0x1fL).toInt() // 5-4 = 1
-
-                    if (isConstantTime) {
-                        var c1: Char? = null
-                        var c2: Char? = null
-                        var c3: Char? = null
-                        var c4: Char? = null
-                        var c5: Char? = null
-
-                        table.forEachIndexed { index, c ->
-                            c1 = if (index == i1) c else c1
-                            c2 = if (index == i2) c else c2
-                            c3 = if (index == i3) c else c3
-                            c4 = if (index == i4) c else c4
-                            c5 = if (index == i5) c else c5
-                        }
-
-                        out.output(c1!!)
-                        out.output(c2!!)
-                        out.output(c3!!)
-                        out.output(c4!!)
-                        out.output(c5!!)
-                    } else {
-                        out.output(table[i1])
-                        out.output(table[i2])
-                        out.output(table[i3])
-                        out.output(table[i4])
-                        out.output(table[i5])
-                    }
-
-                    3
-                }
-                // 4
-                else -> {
-                    // 8*4 = 32 bits
-                    val i1 = (bitBuffer shr 27 and 0x1fL).toInt() // 32-1*5 = 27
-                    val i2 = (bitBuffer shr 22 and 0x1fL).toInt() // 32-2*5 = 22
-                    val i3 = (bitBuffer shr 17 and 0x1fL).toInt() // 32-3*5 = 17
-                    val i4 = (bitBuffer shr 12 and 0x1fL).toInt() // 32-4*5 = 12
-                    val i5 = (bitBuffer shr  7 and 0x1fL).toInt() // 32-5*5 = 7
-                    val i6 = (bitBuffer shr  2 and 0x1fL).toInt() // 32-6*5 = 2
-                    val i7 = (bitBuffer shl  3 and 0x1fL).toInt() // 5-2 = 3
-
-                    if (isConstantTime) {
-                        var c1: Char? = null
-                        var c2: Char? = null
-                        var c3: Char? = null
-                        var c4: Char? = null
-                        var c5: Char? = null
-                        var c6: Char? = null
-                        var c7: Char? = null
-
-                        table.forEachIndexed { index, c ->
-                            c1 = if (index == i1) c else c1
-                            c2 = if (index == i2) c else c2
-                            c3 = if (index == i3) c else c3
-                            c4 = if (index == i4) c else c4
-                            c5 = if (index == i5) c else c5
-                            c6 = if (index == i6) c else c6
-                            c7 = if (index == i7) c else c7
-                        }
-
-                        out.output(c1!!)
-                        out.output(c2!!)
-                        out.output(c3!!)
-                        out.output(c4!!)
-                        out.output(c5!!)
-                        out.output(c6!!)
-                        out.output(c7!!)
-                    } else {
-                        out.output(table[i1])
-                        out.output(table[i2])
-                        out.output(table[i3])
-                        out.output(table[i4])
-                        out.output(table[i5])
-                        out.output(table[i6])
-                        out.output(table[i7])
-                    }
-
-                    1
-                }
-            }
-
-            if (paddingChar != null) {
-                repeat(padCount) {
-                    out.output(paddingChar)
-                }
-            }
-        },
-    )
 
     private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 8,
@@ -1241,5 +894,118 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 }
             }
         }
+    )
+
+    private inner class EncodingBuffer(
+        out: Encoder.OutFeed,
+        table: CharSequence,
+        paddingChar: Char?,
+    ): FeedBuffer(
+        blockSize = 5,
+        flush = { buffer ->
+            var bitBuffer = 0L
+
+            // Append each char's 8 bits to the bitBuffer
+            for (bits in buffer) {
+                bitBuffer =  (bitBuffer shl  8) + bits.toByte().toBits()
+            }
+
+            // For every 5 bytes of input, we accumulate
+            // 40 bits of output. Emit 8 characters.
+            val i1 = (bitBuffer shr 35 and 0x1fL).toInt() // 40-1*5 = 35
+            val i2 = (bitBuffer shr 30 and 0x1fL).toInt() // 40-2*5 = 30
+            val i3 = (bitBuffer shr 25 and 0x1fL).toInt() // 40-3*5 = 25
+            val i4 = (bitBuffer shr 20 and 0x1fL).toInt() // 40-4*5 = 20
+            val i5 = (bitBuffer shr 15 and 0x1fL).toInt() // 40-5*5 = 15
+            val i6 = (bitBuffer shr 10 and 0x1fL).toInt() // 40-6*5 = 10
+            val i7 = (bitBuffer shr  5 and 0x1fL).toInt() // 40-7*5 =  5
+            val i8 = (bitBuffer        and 0x1fL).toInt() // 40-8*5 =  0
+
+            out.output(table[i1])
+            out.output(table[i2])
+            out.output(table[i3])
+            out.output(table[i4])
+            out.output(table[i5])
+            out.output(table[i6])
+            out.output(table[i7])
+            out.output(table[i8])
+        },
+        finalize = { modulus, buffer ->
+            var bitBuffer = 0L
+
+            // Append each char remaining in the buffer to the bitBuffer
+            for (i in 0 until modulus) {
+                bitBuffer =  (bitBuffer shl  8) + buffer[i].toByte().toBits()
+            }
+
+            val padCount: Int = when (modulus) {
+                0 -> { 0 }
+                1 -> {
+                    // 8*1 = 8 bits
+                    val i1 = (bitBuffer shr  3 and 0x1fL).toInt() // 8-1*5 = 3
+                    val i2 = (bitBuffer shl  2 and 0x1fL).toInt() // 5-3 = 2
+
+                    out.output(table[i1])
+                    out.output(table[i2])
+
+                    6
+                }
+                2 -> {
+                    // 8*2 = 16 bits
+                    val i1 = (bitBuffer shr 11 and 0x1fL).toInt() // 16-1*5 = 11
+                    val i2 = (bitBuffer shr  6 and 0x1fL).toInt() // 16-2*5 = 6
+                    val i3 = (bitBuffer shr  1 and 0x1fL).toInt() // 16-3*5 = 1
+                    val i4 = (bitBuffer shl  4 and 0x1fL).toInt() // 5-1 = 4
+
+                    out.output(table[i1])
+                    out.output(table[i2])
+                    out.output(table[i3])
+                    out.output(table[i4])
+
+                    4
+                }
+                3 -> {
+                    // 8*3 = 24 bits
+                    val i1 = (bitBuffer shr 19 and 0x1fL).toInt() // 24-1*5 = 19
+                    val i2 = (bitBuffer shr 14 and 0x1fL).toInt() // 24-2*5 = 14
+                    val i3 = (bitBuffer shr  9 and 0x1fL).toInt() // 24-3*5 = 9
+                    val i4 = (bitBuffer shr  4 and 0x1fL).toInt() // 24-4*5 = 4
+                    val i5 = (bitBuffer shl  1 and 0x1fL).toInt() // 5-4 = 1
+
+                    out.output(table[i1])
+                    out.output(table[i2])
+                    out.output(table[i3])
+                    out.output(table[i4])
+                    out.output(table[i5])
+
+                    3
+                }
+                // 4
+                else -> {
+                    // 8*4 = 32 bits
+                    val i1 = (bitBuffer shr 27 and 0x1fL).toInt() // 32-1*5 = 27
+                    val i2 = (bitBuffer shr 22 and 0x1fL).toInt() // 32-2*5 = 22
+                    val i3 = (bitBuffer shr 17 and 0x1fL).toInt() // 32-3*5 = 17
+                    val i4 = (bitBuffer shr 12 and 0x1fL).toInt() // 32-4*5 = 12
+                    val i5 = (bitBuffer shr  7 and 0x1fL).toInt() // 32-5*5 = 7
+                    val i6 = (bitBuffer shr  2 and 0x1fL).toInt() // 32-6*5 = 2
+                    val i7 = (bitBuffer shl  3 and 0x1fL).toInt() // 5-2 = 3
+
+                    out.output(table[i1])
+                    out.output(table[i2])
+                    out.output(table[i3])
+                    out.output(table[i4])
+                    out.output(table[i5])
+                    out.output(table[i6])
+                    out.output(table[i7])
+
+                    1
+                }
+            }
+
+            if (paddingChar != null) {
+                repeat(padCount) { out.output(paddingChar) }
+            }
+        },
     )
 }

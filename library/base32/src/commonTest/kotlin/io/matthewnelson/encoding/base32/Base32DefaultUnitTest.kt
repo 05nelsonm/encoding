@@ -26,12 +26,10 @@ import kotlin.test.assertEquals
 
 class Base32DefaultUnitTest: BaseNEncodingTest() {
 
-    private var useConstantTime = false
     private var useLowercase = false
     private var usePadding = true
 
     private fun base32(): Base32.Default = Base32Default {
-        isConstantTime = useConstantTime
         encodeToLowercase = useLowercase
         padEncoded = usePadding
     }
@@ -139,35 +137,25 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
     @Test
     fun givenString_whenEncoded_MatchesRfc4648Spec() {
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
-        useConstantTime = true
-        checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 
     @Test
     fun givenBadEncoding_whenDecoded_ReturnsNull() {
-        checkDecodeFailureForDataSet(decodeFailureDataSet)
-        useConstantTime = true
         checkDecodeFailureForDataSet(decodeFailureDataSet)
     }
 
     @Test
     fun givenEncodedData_whenDecoded_MatchesRfc4648Spec() {
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
-        useConstantTime = true
-        checkDecodeSuccessForDataSet(decodeSuccessDataSet)
     }
 
     @Test
     fun givenUniversalDecoderParameters_whenChecked_areSuccessful() {
         checkUniversalDecoderParameters()
-        useConstantTime = true
-        checkUniversalDecoderParameters()
     }
 
     @Test
     fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
-        checkUniversalEncoderParameters()
-        useConstantTime = true
         checkUniversalEncoderParameters()
     }
 
@@ -183,8 +171,6 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
         }
 
         checkEncodeSuccessForDataSet(noPadData)
-        useConstantTime = true
-        checkEncodeSuccessForDataSet(noPadData)
     }
 
     @Test
@@ -199,8 +185,6 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
         }
 
         checkEncodeSuccessForDataSet(lowercaseData)
-        useConstantTime = true
-        checkEncodeSuccessForDataSet(lowercaseData)
     }
 
     @Test
@@ -212,27 +196,20 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
     @Test
     fun givenBase32Default_whenDecodeEncode_thenReturnsSameValue() {
         val expected = "OBTDFCGTEKTGXPVR23DA7YFDEB5IZGLEHJH5GIIVBKGL5S2HNNRQ===="
-        listOf(false, true).forEach { ct ->
-            useConstantTime = ct
-            val encoder = base32()
-            val decoded = expected.decodeToByteArray(encoder)
-            val actual = decoded.encodeToString(encoder)
-            assertEquals(expected, actual)
-        }
+        val encoder = base32()
+        val decoded = expected.decodeToByteArray(encoder)
+        val actual = decoded.encodeToString(encoder)
+        assertEquals(expected, actual)
     }
 
     @Test
     fun givenBase32Default_whenEncodeDecodeRandomData_thenBytesMatch() {
-        checkRandomData()
-        useConstantTime = true
         checkRandomData()
     }
 
     @Test
     fun givenBase32DefaultLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
         useLowercase = true
-        checkRandomData()
-        useConstantTime = true
         checkRandomData()
     }
 
