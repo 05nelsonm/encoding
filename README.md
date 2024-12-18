@@ -1,6 +1,6 @@
 # encoding
 [![badge-license]][url-license]
-[![badge-latest-release]][url-latest-release]
+[![badge-latest]][url-latest]
 
 [![badge-kotlin]][url-kotlin]
 
@@ -22,17 +22,19 @@
 
 Configurable, streamable, efficient and extensible Encoding/Decoding for Kotlin Multiplatform.
 
+API docs available at [https://encoding.matthewnelson.io][url-docs]
+
 **Base16 (a.k.a. "hex")**
- - [RFC 4648 section 8](https://www.ietf.org/rfc/rfc4648.html#section-8)
+ - [RFC 4648 section 8][url-rfc-s8]
 
 **Base32**
- - [Crockford](https://www.crockford.com/base32.html)
- - Default [RFC 4648 section 6](https://www.ietf.org/rfc/rfc4648.html#section-6)
- - Hex [RFC 4648 section 7](https://www.ietf.org/rfc/rfc4648.html#section-7)
+ - [Crockford][url-crockford]
+ - Default [RFC 4648 section 6][url-rfc-s6]
+ - Hex [RFC 4648 section 7][url-rfc-s7]
 
 **Base64**
- - Default [RFC 4648 section 4](https://www.ietf.org/rfc/rfc4648.html#section-4)
- - UrlSafe [RFC 4648 section 5](https://www.ietf.org/rfc/rfc4648.html#section-5)
+ - Default [RFC 4648 section 4][url-rfc-s4]
+ - UrlSafe [RFC 4648 section 5][url-rfc-s5]
 
 ### Usage
 
@@ -164,10 +166,10 @@ val sb = StringBuilder()
 val out = LineBreakOutFeed(interval = 64) { char -> sb.append(char) }
 
 Base64.Default.newEncoderFeed(out).use { feed ->
-    "Hello World 1!".forEach { c -> feed.consume(c.code.toByte())  }
+    "Hello World 1!".encodeToByteArray().forEach { b -> feed.consume(b)  }
     feed.flush()
     out.output('.')
-    "Hello World 2!".forEach { c -> feed.consume(c.code.toByte())  }
+    "Hello World 2!".encodeToByteArray().forEach { b -> feed.consume(b)  }
 }
 
 println(sb.toString())
@@ -256,8 +258,7 @@ file.inputStream().reader().use { iStreamReader ->
 println(sb.toString())
 ```
 
-**Alternatively, create your own `EncoderDecoder`(s) using the abstractions provided by `encoding-core`!**
-
+**Alternatively, create your own `EncoderDecoder`(s) using the abstractions provided by `encoding-core`**
 
 ### Sample
 
@@ -270,7 +271,7 @@ See [sample project](sample/README.md)
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "2.3.0"
+    val encoding = "2.3.1"
     implementation("io.matthewnelson.encoding:base16:$encoding")
     implementation("io.matthewnelson.encoding:base32:$encoding")
     implementation("io.matthewnelson.encoding:base64:$encoding")
@@ -287,7 +288,7 @@ Alternatively, you can use the BOM.
 // build.gradle.kts
 dependencies {
     // define the BOM and its version
-    implementation(platform("io.matthewnelson.encoding:bom:2.3.0"))
+    implementation(platform("io.matthewnelson.encoding:bom:2.3.1"))
 
     // define artifacts without version
     implementation("io.matthewnelson.encoding:base16")
@@ -300,7 +301,7 @@ dependencies {
 ```
 
 <!-- TAG_VERSION -->
-[badge-latest-release]: https://img.shields.io/badge/latest--release-2.3.0-blue.svg?style=flat
+[badge-latest]: https://img.shields.io/badge/latest--release-2.3.1-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 <!-- TAG_DEPENDENCIES -->
@@ -323,6 +324,13 @@ dependencies {
 [badge-support-js-ir]: https://img.shields.io/badge/support-[js--IR]-AAC4E0.svg?style=flat
 [badge-support-linux-arm]: http://img.shields.io/badge/support-[LinuxArm]-2D3F6C.svg?style=flat
 
-[url-latest-release]: https://github.com/05nelsonm/encoding/releases/latest
-[url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
+[url-crockford]: https://www.crockford.com/base32.html
+[url-docs]: https://encoding.matthewnelson.io]
 [url-kotlin]: https://kotlinlang.org
+[url-latest]: https://github.com/05nelsonm/encoding/releases/latest
+[url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
+[url-rfc-s4]: https://www.ietf.org/rfc/rfc4648.html#section-4
+[url-rfc-s5]: https://www.ietf.org/rfc/rfc4648.html#section-5
+[url-rfc-s6]: https://www.ietf.org/rfc/rfc4648.html#section-6
+[url-rfc-s7]: https://www.ietf.org/rfc/rfc4648.html#section-7
+[url-rfc-s8]: https://www.ietf.org/rfc/rfc4648.html#section-8

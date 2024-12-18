@@ -2,6 +2,9 @@
 
 Benchmarks for tracking performance of `encoding` implementation.
 
+**NOTE:** Benchmarking is run on every Pull Request. Results can be viewed for each 
+workflow run on the [GitHub Actions][url-actions] tab of the repository.
+
 - Run All platforms:
   ```shell
   ./gradlew benchmark
@@ -9,20 +12,22 @@ Benchmarks for tracking performance of `encoding` implementation.
 
 - Run Jvm:
   ```shell
-  ./gradlew benchmark -PKMP_TARGETS="JVM"
+  ./gradlew jvmBenchmark
   ```
 
 - Run Js:
   ```shell
-  ./gradlew benchmark -PKMP_TARGETS="JS"
+  ./gradlew jsBenchmark
   ```
 
 - Run WasmJs:
   ```shell
-  ./gradlew benchmark -PKMP_TARGETS="WASM_JS"
+  ./gradlew wasmJsBenchmark
   ```
 
 - Run Native:
   ```shell
-  ./gradlew benchmark -PKMP_TARGETS="LINUX_ARM64,LINUX_X64,MACOS_ARM64,MACOS_X64,MINGW_X64"
+  ./gradlew nativeHostBenchmark
   ```
+
+[url-actions]: https://github.com/05nelsonm/encoding/actions/

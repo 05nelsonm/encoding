@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## Version 2.3.1 (2024-12-18)
+ - Fixes performance issues introduced in `2.3.0` [[#162]][162]:
+     - Deprecates the following which were introduced in `2.3.0`:
+         - `CTCase` class
+         - `DecoderAction` functional interface
+         - `DecoderAction.Parser` class
+         - `Base16ConfigBuilder.isconstantTime` variable
+         - `Base32CrockfordConfigBuilder.isconstantTime` variable
+         - `Base32HexConfigBuilder.isconstantTime` variable
+         - `Base64ConfigBuilder.isconstantTime` variable
+     - All encoders (Base16/32/64) are now written in a constant-time 
+       manner. Performance impact when compared to `2.2.2` was "negligible" (in 
+       the neighborhood of ~4% depending on platform), given the implications.
+ - Adds benchmarking to repository [[#160]][160]
+
 ## Version 2.3.0 (2024-12-15)
  - Fixes `Encoder.Companion` extension function `ByteArray.encodeToString` not zeroing
    out its local `StringBuilder` before returning encoded data. [[#155]][155]
@@ -213,4 +228,6 @@
 [156]: https://github.com/05nelsonm/encoding/pull/156
 [157]: https://github.com/05nelsonm/encoding/pull/157
 [158]: https://github.com/05nelsonm/encoding/pull/158
+[160]: https://github.com/05nelsonm/encoding/pull/160
+[162]: https://github.com/05nelsonm/encoding/pull/162
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
