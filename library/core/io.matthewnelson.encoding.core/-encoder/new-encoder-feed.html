@@ -41,7 +41,7 @@
 <a class="library-name--link" href="../../../../index.html">
                             encoding
                     </a>            </div>
-            <div class="library-version">2.3.0
+            <div class="library-version">2.3.1
             </div>
         </div>
         <div class="filter-section" id="filter-section">
@@ -63,15 +63,15 @@
   <div class="cover ">
     <h1 class="cover"><span>new</span><wbr><span>Encoder</span><wbr><span><span>Feed</span></span></h1>
   </div>
-  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="new-encoder-feed.html"><span class="token function">newEncoderFeed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">out<span class="token operator">: </span><a href="-out-feed/index.html">Encoder.OutFeed</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-feed/index.html">Encoder.Feed</a><span class="token operator">&lt;</span><a href="index.html">C</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/Encoder.kt#L55">source</a>)</span></span></div><p class="paragraph">Creates a new <a href="-feed/index.html">Encoder.Feed</a>, outputting encoded data to the supplied <a href="-out-feed/index.html">Encoder.OutFeed</a>.</p><p class="paragraph">e.g. (Writing encoded data to a file)</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">file.outputStream().use { oStream -&gt;
-    myEncoder.newEncoderFeed { encodedChar -&gt;
-        oStream.write(encodedChar.code)
-    }.use { feed -&gt;
-        "Hello World!".forEach { c -&gt;
-            feed.consume(c.code.toByte())
-        }
-    }
-}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-feed/index.html"><span>Encoder.</span><wbr><span>Feed</span></a></div></span></div><div></div></div></div></div></div></div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="new-encoder-feed.html"><span class="token function">newEncoderFeed</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">out<span class="token operator">: </span><a href="-out-feed/index.html">Encoder.OutFeed</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-feed/index.html">Encoder.Feed</a><span class="token operator">&lt;</span><a href="index.html">C</a><span class="token operator">&gt;</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/Encoder.kt#L55">source</a>)</span></span></div><p class="paragraph">Creates a new <a href="-feed/index.html">Encoder.Feed</a>, outputting encoded data to the supplied <a href="-out-feed/index.html">Encoder.OutFeed</a>.</p><p class="paragraph">e.g.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">val sb = StringBuilder()
+myEncoder.newEncoderFeed { encodedChar -&gt;
+    sb.append(encodedChar)
+}.use { feed -&gt;
+    "Hello World!"
+        .encodeToByteArray()
+        .forEach { b -&gt; feed.consume(b) }
+}
+println(sb.toString())</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":library:core:dokkaHtmlPartial/commonMain" data-filterable-set=":library:core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="-feed/index.html"><span>Encoder.</span><wbr><span>Feed</span></a></div></span></div><div></div></div></div></div></div></div>
 </div>
       <div class="footer">
         <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
