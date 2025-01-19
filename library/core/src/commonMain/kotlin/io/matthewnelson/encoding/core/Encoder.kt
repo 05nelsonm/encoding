@@ -80,6 +80,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [EncoderDecoder.Feed.doFinal]
      * */
     public abstract inner class Feed: EncoderDecoder.Feed<C>(config) {
+
         private var isClosed = false
 
         /**
@@ -124,11 +125,12 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
         public final override fun close() { isClosed = true }
         public final override fun isClosed(): Boolean = isClosed
-        /** @suppress */
-        public final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
 
         protected abstract fun consumeProtected(input: Byte)
         protected abstract override fun doFinalProtected()
+
+        /** @suppress */
+        public final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
     }
 
     /**
