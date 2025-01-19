@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("unused")
+
 package io.matthewnelson.encoding.benchmarks
 
 import io.matthewnelson.encoding.base16.Base16
@@ -56,8 +58,8 @@ abstract class EncoderDecoderBenchmarkBase {
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
-@Warmup(iterations = ENC_ITERATIONS_WARMUP, time = ENC_TIME_WARMUP)
-@Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
+@Warmup(iterations = ITERATIONS_WARMUP, time = TIME_WARMUP)
+@Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
 open class Base16Benchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEF
     @Param("3:0", "d:122")
@@ -68,8 +70,8 @@ open class Base16Benchmark: EncoderDecoderBenchmarkBase() {
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
-@Warmup(iterations = ENC_ITERATIONS_WARMUP, time = ENC_TIME_WARMUP)
-@Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
+@Warmup(iterations = ITERATIONS_WARMUP, time = TIME_WARMUP)
+@Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
 open class Base32CrockfordBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEFGHJKMNPQRSTVWXYZ
     @Param("3:-6", "x:115")
@@ -80,8 +82,8 @@ open class Base32CrockfordBenchmark: EncoderDecoderBenchmarkBase() {
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
-@Warmup(iterations = ENC_ITERATIONS_WARMUP, time = ENC_TIME_WARMUP)
-@Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
+@Warmup(iterations = ITERATIONS_WARMUP, time = TIME_WARMUP)
+@Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
 open class Base32DefaultBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: ABCDEFGHIJKLMNOPQRSTUVWXYZ234567
     @Param("C:-123", "w:15")
@@ -92,8 +94,8 @@ open class Base32DefaultBenchmark: EncoderDecoderBenchmarkBase() {
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
-@Warmup(iterations = ENC_ITERATIONS_WARMUP, time = ENC_TIME_WARMUP)
-@Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
+@Warmup(iterations = ITERATIONS_WARMUP, time = TIME_WARMUP)
+@Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
 open class Base32HexBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEFGHIJKLMNOPQRSTUV
     @Param("A:-12", "r:42")
@@ -104,8 +106,8 @@ open class Base32HexBenchmark: EncoderDecoderBenchmarkBase() {
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
-@Warmup(iterations = ENC_ITERATIONS_WARMUP, time = ENC_TIME_WARMUP)
-@Measurement(iterations = ENC_ITERATIONS_MEASURE, time = ENC_TIME_MEASURE)
+@Warmup(iterations = ITERATIONS_WARMUP, time = TIME_WARMUP)
+@Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
 open class Base64Benchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
     @Param("2:84", "w:22")

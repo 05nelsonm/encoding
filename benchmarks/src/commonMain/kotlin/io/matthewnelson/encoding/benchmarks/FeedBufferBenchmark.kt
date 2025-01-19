@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("unused")
+
 package io.matthewnelson.encoding.benchmarks
 
 import io.matthewnelson.encoding.core.util.FeedBuffer
@@ -20,9 +22,9 @@ import kotlinx.benchmark.*
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
-@Warmup(iterations = 5, time = 1)
-@Measurement(iterations = 5, time = 2)
 @OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@Warmup(iterations = ITERATIONS_WARMUP, time = TIME_WARMUP)
+@Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
 open class FeedBufferBenchmark {
 
     private val buffer = object : FeedBuffer(
@@ -32,7 +34,5 @@ open class FeedBufferBenchmark {
     ) {}
 
     @Benchmark
-    fun update() {
-        repeat(buffer.blockSize) { buffer.update(it) }
-    }
+    fun update() { buffer.update(42) }
 }
