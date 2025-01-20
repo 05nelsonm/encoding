@@ -110,10 +110,10 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             }
 
             if (lineBreakInterval > 0) {
-                var lineBreakCount: Float = (outSize / lineBreakInterval) - 1F
+                var lineBreakCount: Double = (outSize / lineBreakInterval) - 1.0
 
-                if (lineBreakCount > 0F) {
-                    if (lineBreakCount.rem(1) > 0F) {
+                if (lineBreakCount > 0.0) {
+                    if (lineBreakCount.rem(1.0) > 0.0) {
                         lineBreakCount++
                     }
 
@@ -303,16 +303,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             public val name: String = name.trim()
 
             /** @suppress */
-            override fun equals(other: Any?): Boolean {
-                return  other is Setting
-                        && other.name == name
-            }
-
+            override fun equals(other: Any?): Boolean = other is Setting && other.name == name
             /** @suppress */
-            override fun hashCode(): Int {
-                return 17 * 31 + name.hashCode()
-            }
-
+            override fun hashCode(): Int = 17 * 31 + name.hashCode()
             /** @suppress */
             override fun toString(): String = "$name: $value"
         }

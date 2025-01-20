@@ -61,12 +61,10 @@ constructor(
      * to output data once the [buffer] fills.
      * */
     public fun update(input: Int) {
-        buffer[count] = input
-
-        if (++count % blockSize == 0) {
-            flush.invoke(buffer)
-            count = 0
-        }
+        buffer[count++] = input
+        if (count != blockSize) return
+        flush.invoke(buffer)
+        count = 0
     }
 
     /**

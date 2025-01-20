@@ -25,6 +25,8 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.math.min
 
+private const val MAX_ENCODE_OUT_SIZE: Long = Int.MAX_VALUE.toLong()
+
 @Suppress("NOTHING_TO_INLINE")
 @Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
@@ -37,32 +39,25 @@ internal inline fun <C: Config> Decoder<C>.decode(
     }
 
     val size = config.decodeOutMaxSizeOrFail(input)
-    val ba = ByteArray(size)
+    val a = ByteArray(size)
 
     var i = 0
     try {
-        newDecoderFeed { decodedByte ->
-            try {
-                ba[i++] = decodedByte
-            } catch (e: IndexOutOfBoundsException) {
-                // Something is wrong with the encoder's pre-calculation
-                throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", e)
-            }
-        }.use { feed ->
-            action.invoke(feed)
-        }
+        newDecoderFeed(out = { b -> a[i++] = b }).use { feed -> action.invoke(feed) }
     } catch (t: Throwable) {
-        ba.fill(0, toIndex = min(ba.size, i))
+        a.fill(0, toIndex = min(a.size, i))
+        if (t is IndexOutOfBoundsException && i >= size) {
+            // Something is wrong with the encoder's pre-calculation
+            throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", t)
+        }
         throw t
     }
 
-    return if (i == size) {
-        ba
-    } else {
-        val copy = ba.copyOf(i)
-        ba.fill(0, toIndex = i)
-        copy
-    }
+    if (i == size) return a
+
+    val copy = a.copyOf(i)
+    a.fill(0, i)
+    return copy
 }
 
 /**
@@ -80,8 +75,8 @@ internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
     }
 
     val outSize = config.encodeOutSize(size.toLong())
-    if (outSize > Int.MAX_VALUE.toLong()) {
-        throw Config.outSizeExceedsMaxEncodingSizeException(outSize, Int.MAX_VALUE)
+    if (outSize > MAX_ENCODE_OUT_SIZE) {
+        throw Config.outSizeExceedsMaxEncodingSizeException(outSize, MAX_ENCODE_OUT_SIZE)
     }
 
     return block.invoke(outSize.toInt())
@@ -93,10 +88,7 @@ internal inline fun <C: Config> Encoder<C>.encode(
     out: Encoder.OutFeed,
 ) {
     if (data.isEmpty()) return
-
-    newEncoderFeed(out).use { feed ->
-        data.forEach { b -> feed.consume(b) }
-    }
+    newEncoderFeed(out).use { feed -> data.forEach { b -> feed.consume(b) } }
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -105,8 +97,6 @@ internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException 
 }
 
 @Suppress("NOTHING_TO_INLINE", "UnusedReceiverParameter")
-internal inline fun Config.calculatedOutputNegativeEncodingSizeException(
-    outSize: Number
-): EncodingSizeException {
+internal inline fun Config.calculatedOutputNegativeEncodingSizeException(outSize: Number): EncodingSizeException {
     return EncodingSizeException("Calculated output of Size[$outSize] was negative")
 }

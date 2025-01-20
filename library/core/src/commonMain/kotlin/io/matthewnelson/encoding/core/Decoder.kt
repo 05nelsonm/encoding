@@ -70,6 +70,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * @see [EncoderDecoder.Feed.doFinal]
      * */
     public abstract inner class Feed: EncoderDecoder.Feed<C>(config) {
+
         private var isClosed = false
         private var isPaddingSet = false
 
@@ -138,11 +139,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
         public final override fun close() { isClosed = true }
         public final override fun isClosed(): Boolean = isClosed
-        /** @suppress */
-        public final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
 
         @Throws(EncodingException::class)
         protected abstract fun consumeProtected(input: Char)
+
+        /** @suppress */
+        public final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
     }
 
     /**
