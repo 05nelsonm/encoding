@@ -53,7 +53,7 @@ apiValidation {
     if (CHECK_PUBLICATION) {
         ignoredProjects.add("check-publication")
     } else {
-        ignoredProjects.add("benchmarks")
+//        ignoredProjects.add("benchmarks")
         ignoredProjects.add("sample")
         ignoredProjects.add("test")
     }

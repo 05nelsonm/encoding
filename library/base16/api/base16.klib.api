@@ -12,7 +12,7 @@ final class io.matthewnelson.encoding.base16/Base16 : io.matthewnelson.encoding.
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base16/Base16.Config|null[0]
         final val encodeToLowercase // io.matthewnelson.encoding.base16/Base16.Config.encodeToLowercase|{}encodeToLowercase[0]
             final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
-        final val isConstantTime // io.matthewnelson.encoding.base16/Base16.Config.isConstantTime|<get-isConstantTime>(){}[0]
+        final val isConstantTime // io.matthewnelson.encoding.base16/Base16.Config.isConstantTime|{}isConstantTime[0]
             final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16.Config.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
     }
 
@@ -28,16 +28,16 @@ final class io.matthewnelson.encoding.base16/Base16ConfigBuilder { // io.matthew
     constructor <init>() // io.matthewnelson.encoding.base16/Base16ConfigBuilder.<init>|<init>(){}[0]
     constructor <init>(io.matthewnelson.encoding.base16/Base16.Config?) // io.matthewnelson.encoding.base16/Base16ConfigBuilder.<init>|<init>(io.matthewnelson.encoding.base16.Base16.Config?){}[0]
 
-    final var encodeToLowercase // io.matthewnelson.encoding.base16/Base16ConfigBuilder.encodeToLowercase|<set-encodeToLowercase>(kotlin.Boolean){}[0]
+    final var encodeToLowercase // io.matthewnelson.encoding.base16/Base16ConfigBuilder.encodeToLowercase|{}encodeToLowercase[0]
         final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16ConfigBuilder.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
         final fun <set-encodeToLowercase>(kotlin/Boolean) // io.matthewnelson.encoding.base16/Base16ConfigBuilder.encodeToLowercase.<set-encodeToLowercase>|<set-encodeToLowercase>(kotlin.Boolean){}[0]
     final var isConstantTime // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isConstantTime|{}isConstantTime[0]
         final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
         final fun <set-isConstantTime>(kotlin/Boolean) // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isConstantTime.<set-isConstantTime>|<set-isConstantTime>(kotlin.Boolean){}[0]
-    final var isLenient // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isLenient|<set-isLenient>(kotlin.Boolean){}[0]
+    final var isLenient // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isLenient|{}isLenient[0]
         final fun <get-isLenient>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isLenient.<get-isLenient>|<get-isLenient>(){}[0]
         final fun <set-isLenient>(kotlin/Boolean) // io.matthewnelson.encoding.base16/Base16ConfigBuilder.isLenient.<set-isLenient>|<set-isLenient>(kotlin.Boolean){}[0]
-    final var lineBreakInterval // io.matthewnelson.encoding.base16/Base16ConfigBuilder.lineBreakInterval|<set-lineBreakInterval>(kotlin.Byte){}[0]
+    final var lineBreakInterval // io.matthewnelson.encoding.base16/Base16ConfigBuilder.lineBreakInterval|{}lineBreakInterval[0]
         final fun <get-lineBreakInterval>(): kotlin/Byte // io.matthewnelson.encoding.base16/Base16ConfigBuilder.lineBreakInterval.<get-lineBreakInterval>|<get-lineBreakInterval>(){}[0]
         final fun <set-lineBreakInterval>(kotlin/Byte) // io.matthewnelson.encoding.base16/Base16ConfigBuilder.lineBreakInterval.<set-lineBreakInterval>|<set-lineBreakInterval>(kotlin.Byte){}[0]
 
@@ -48,7 +48,7 @@ final class io.matthewnelson.encoding.base16/Base16ConfigBuilder { // io.matthew
 final fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base16/encodeBase16ToByteArray(): kotlin/ByteArray // io.matthewnelson.component.encoding.base16/encodeBase16ToByteArray|encodeBase16ToByteArray@kotlin.ByteArray(){}[0]
 final fun (kotlin/CharArray).io.matthewnelson.component.encoding.base16/decodeBase16ToArray(): kotlin/ByteArray? // io.matthewnelson.component.encoding.base16/decodeBase16ToArray|decodeBase16ToArray@kotlin.CharArray(){}[0]
 final fun io.matthewnelson.encoding.base16/Base16(io.matthewnelson.encoding.base16/Base16.Config?, kotlin/Function1<io.matthewnelson.encoding.base16/Base16ConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base16/Base16 // io.matthewnelson.encoding.base16/Base16|Base16(io.matthewnelson.encoding.base16.Base16.Config?;kotlin.Function1<io.matthewnelson.encoding.base16.Base16ConfigBuilder,kotlin.Unit>){}[0]
-final fun io.matthewnelson.encoding.base16/Base16(kotlin/Boolean =...): io.matthewnelson.encoding.base16/Base16 // io.matthewnelson.encoding.base16/Base16|Base16(kotlin.Boolean){}[0]
+final fun io.matthewnelson.encoding.base16/Base16(kotlin/Boolean = ...): io.matthewnelson.encoding.base16/Base16 // io.matthewnelson.encoding.base16/Base16|Base16(kotlin.Boolean){}[0]
 final fun io.matthewnelson.encoding.base16/Base16(kotlin/Function1<io.matthewnelson.encoding.base16/Base16ConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base16/Base16 // io.matthewnelson.encoding.base16/Base16|Base16(kotlin.Function1<io.matthewnelson.encoding.base16.Base16ConfigBuilder,kotlin.Unit>){}[0]
 final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base16/encodeBase16(): kotlin/String // io.matthewnelson.component.encoding.base16/encodeBase16|encodeBase16@kotlin.ByteArray(){}[0]
 final inline fun (kotlin/ByteArray).io.matthewnelson.component.encoding.base16/encodeBase16ToCharArray(): kotlin/CharArray // io.matthewnelson.component.encoding.base16/encodeBase16ToCharArray|encodeBase16ToCharArray@kotlin.ByteArray(){}[0]
