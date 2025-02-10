@@ -15,20 +15,21 @@
 set -e
 
 readonly DIR_SCRIPT="$( cd "$( dirname "$0" )" >/dev/null && pwd )"
+readonly REPO_NAME="encoding"
 
-trap 'rm -rf "$DIR_SCRIPT/encoding"' EXIT
+trap 'rm -rf "$DIR_SCRIPT/$REPO_NAME"' EXIT
 
 cd "$DIR_SCRIPT"
-git clone -b gh-pages --single-branch https://github.com/05nelsonm/encoding.git
-rm -rf "$DIR_SCRIPT/encoding/"*
-echo "encoding.matthewnelson.io" > "$DIR_SCRIPT/encoding/CNAME"
+git clone -b gh-pages --single-branch https://github.com/05nelsonm/$REPO_NAME.git
+rm -rf "$DIR_SCRIPT/$REPO_NAME/"*
+echo "$REPO_NAME.matthewnelson.io" > "$DIR_SCRIPT/$REPO_NAME/CNAME"
 
 cd ..
 ./gradlew clean -DKMP_TARGETS_ALL
-./gradlew dokkaHtmlMultiModule --no-build-cache -DKMP_TARGETS_ALL
-cp -aR build/dokka/htmlMultiModule/* gh-pages/encoding
+./gradlew dokkaGenerate --no-build-cache -DKMP_TARGETS_ALL
+cp -aR build/dokka/html/* gh-pages/$REPO_NAME
 
-cd "$DIR_SCRIPT/encoding"
+cd "$DIR_SCRIPT/$REPO_NAME"
 sed -i "s|module:|module:library/|g" "package-list"
 
 git add --all

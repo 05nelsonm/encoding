@@ -76,8 +76,6 @@ abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.mat
     }
 
     sealed class <#A1: io.matthewnelson.encoding.core/EncoderDecoder.Config> Feed { // io.matthewnelson.encoding.core/EncoderDecoder.Feed|null[0]
-        constructor <init>(#A1) // io.matthewnelson.encoding.core/EncoderDecoder.Feed.<init>|<init>(1:0){}[0]
-
         final val config // io.matthewnelson.encoding.core/EncoderDecoder.Feed.config|{}config[0]
             final fun <get-config>(): #A1 // io.matthewnelson.encoding.core/EncoderDecoder.Feed.config.<get-config>|<get-config>(){}[0]
 
@@ -158,8 +156,6 @@ open class io.matthewnelson.encoding.core/EncodingSizeException : io.matthewnels
 }
 
 sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matthewnelson.encoding.core/Decoder { // io.matthewnelson.encoding.core/Decoder|null[0]
-    constructor <init>(#A) // io.matthewnelson.encoding.core/Decoder.<init>|<init>(1:0){}[0]
-
     final val config // io.matthewnelson.encoding.core/Decoder.config|{}config[0]
         final fun <get-config>(): #A // io.matthewnelson.encoding.core/Decoder.config.<get-config>|<get-config>(){}[0]
 
@@ -192,8 +188,6 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
 }
 
 sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matthewnelson.encoding.core/Encoder : io.matthewnelson.encoding.core/Decoder<#A> { // io.matthewnelson.encoding.core/Encoder|null[0]
-    constructor <init>(#A) // io.matthewnelson.encoding.core/Encoder.<init>|<init>(1:0){}[0]
-
     abstract fun newEncoderFeedProtected(io.matthewnelson.encoding.core/Encoder.OutFeed): io.matthewnelson.encoding.core/Encoder.Feed<#A> // io.matthewnelson.encoding.core/Encoder.newEncoderFeedProtected|newEncoderFeedProtected(io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
     final fun newEncoderFeed(io.matthewnelson.encoding.core/Encoder.OutFeed): io.matthewnelson.encoding.core/Encoder.Feed<#A> // io.matthewnelson.encoding.core/Encoder.newEncoderFeed|newEncoderFeed(io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
 

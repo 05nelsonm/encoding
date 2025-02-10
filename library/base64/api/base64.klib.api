@@ -12,7 +12,7 @@ final class io.matthewnelson.encoding.base64/Base64 : io.matthewnelson.encoding.
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base64/Base64.Config|null[0]
         final val encodeToUrlSafe // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe|{}encodeToUrlSafe[0]
             final fun <get-encodeToUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe.<get-encodeToUrlSafe>|<get-encodeToUrlSafe>(){}[0]
-        final val isConstantTime // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime|<get-isConstantTime>(){}[0]
+        final val isConstantTime // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime|{}isConstantTime[0]
             final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
         final val padEncoded // io.matthewnelson.encoding.base64/Base64.Config.padEncoded|{}padEncoded[0]
             final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
@@ -33,19 +33,19 @@ final class io.matthewnelson.encoding.base64/Base64ConfigBuilder { // io.matthew
     constructor <init>() // io.matthewnelson.encoding.base64/Base64ConfigBuilder.<init>|<init>(){}[0]
     constructor <init>(io.matthewnelson.encoding.base64/Base64.Config?) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.<init>|<init>(io.matthewnelson.encoding.base64.Base64.Config?){}[0]
 
-    final var encodeToUrlSafe // io.matthewnelson.encoding.base64/Base64ConfigBuilder.encodeToUrlSafe|<set-encodeToUrlSafe>(kotlin.Boolean){}[0]
+    final var encodeToUrlSafe // io.matthewnelson.encoding.base64/Base64ConfigBuilder.encodeToUrlSafe|{}encodeToUrlSafe[0]
         final fun <get-encodeToUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64ConfigBuilder.encodeToUrlSafe.<get-encodeToUrlSafe>|<get-encodeToUrlSafe>(){}[0]
         final fun <set-encodeToUrlSafe>(kotlin/Boolean) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.encodeToUrlSafe.<set-encodeToUrlSafe>|<set-encodeToUrlSafe>(kotlin.Boolean){}[0]
     final var isConstantTime // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isConstantTime|{}isConstantTime[0]
         final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
         final fun <set-isConstantTime>(kotlin/Boolean) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isConstantTime.<set-isConstantTime>|<set-isConstantTime>(kotlin.Boolean){}[0]
-    final var isLenient // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isLenient|<set-isLenient>(kotlin.Boolean){}[0]
+    final var isLenient // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isLenient|{}isLenient[0]
         final fun <get-isLenient>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isLenient.<get-isLenient>|<get-isLenient>(){}[0]
         final fun <set-isLenient>(kotlin/Boolean) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.isLenient.<set-isLenient>|<set-isLenient>(kotlin.Boolean){}[0]
-    final var lineBreakInterval // io.matthewnelson.encoding.base64/Base64ConfigBuilder.lineBreakInterval|<set-lineBreakInterval>(kotlin.Byte){}[0]
+    final var lineBreakInterval // io.matthewnelson.encoding.base64/Base64ConfigBuilder.lineBreakInterval|{}lineBreakInterval[0]
         final fun <get-lineBreakInterval>(): kotlin/Byte // io.matthewnelson.encoding.base64/Base64ConfigBuilder.lineBreakInterval.<get-lineBreakInterval>|<get-lineBreakInterval>(){}[0]
         final fun <set-lineBreakInterval>(kotlin/Byte) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.lineBreakInterval.<set-lineBreakInterval>|<set-lineBreakInterval>(kotlin.Byte){}[0]
-    final var padEncoded // io.matthewnelson.encoding.base64/Base64ConfigBuilder.padEncoded|<set-padEncoded>(kotlin.Boolean){}[0]
+    final var padEncoded // io.matthewnelson.encoding.base64/Base64ConfigBuilder.padEncoded|{}padEncoded[0]
         final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64ConfigBuilder.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
         final fun <set-padEncoded>(kotlin/Boolean) // io.matthewnelson.encoding.base64/Base64ConfigBuilder.padEncoded.<set-padEncoded>|<set-padEncoded>(kotlin.Boolean){}[0]
 
@@ -54,16 +54,14 @@ final class io.matthewnelson.encoding.base64/Base64ConfigBuilder { // io.matthew
 }
 
 sealed class io.matthewnelson.component.base64/Base64 { // io.matthewnelson.component.base64/Base64|null[0]
-    constructor <init>() // io.matthewnelson.component.base64/Base64.<init>|<init>(){}[0]
-
     final class UrlSafe : io.matthewnelson.component.base64/Base64 { // io.matthewnelson.component.base64/Base64.UrlSafe|null[0]
-        constructor <init>(kotlin/Boolean =...) // io.matthewnelson.component.base64/Base64.UrlSafe.<init>|<init>(kotlin.Boolean){}[0]
+        constructor <init>(kotlin/Boolean = ...) // io.matthewnelson.component.base64/Base64.UrlSafe.<init>|<init>(kotlin.Boolean){}[0]
 
         final val pad // io.matthewnelson.component.base64/Base64.UrlSafe.pad|{}pad[0]
             final fun <get-pad>(): kotlin/Boolean // io.matthewnelson.component.base64/Base64.UrlSafe.pad.<get-pad>|<get-pad>(){}[0]
 
         final fun component1(): kotlin/Boolean // io.matthewnelson.component.base64/Base64.UrlSafe.component1|component1(){}[0]
-        final fun copy(kotlin/Boolean =...): io.matthewnelson.component.base64/Base64.UrlSafe // io.matthewnelson.component.base64/Base64.UrlSafe.copy|copy(kotlin.Boolean){}[0]
+        final fun copy(kotlin/Boolean = ...): io.matthewnelson.component.base64/Base64.UrlSafe // io.matthewnelson.component.base64/Base64.UrlSafe.copy|copy(kotlin.Boolean){}[0]
         final fun equals(kotlin/Any?): kotlin/Boolean // io.matthewnelson.component.base64/Base64.UrlSafe.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // io.matthewnelson.component.base64/Base64.UrlSafe.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // io.matthewnelson.component.base64/Base64.UrlSafe.toString|toString(){}[0]
@@ -80,14 +78,14 @@ sealed class io.matthewnelson.component.base64/Base64 { // io.matthewnelson.comp
     }
 }
 
-final fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64ToByteArray(io.matthewnelson.component.base64/Base64.Default =...): kotlin/ByteArray // io.matthewnelson.component.base64/encodeBase64ToByteArray|encodeBase64ToByteArray@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.Default){}[0]
+final fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64ToByteArray(io.matthewnelson.component.base64/Base64.Default = ...): kotlin/ByteArray // io.matthewnelson.component.base64/encodeBase64ToByteArray|encodeBase64ToByteArray@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.Default){}[0]
 final fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64ToByteArray(io.matthewnelson.component.base64/Base64.UrlSafe): kotlin/ByteArray // io.matthewnelson.component.base64/encodeBase64ToByteArray|encodeBase64ToByteArray@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.UrlSafe){}[0]
 final fun (kotlin/CharArray).io.matthewnelson.component.base64/decodeBase64ToArray(): kotlin/ByteArray? // io.matthewnelson.component.base64/decodeBase64ToArray|decodeBase64ToArray@kotlin.CharArray(){}[0]
 final fun io.matthewnelson.encoding.base64/Base64(io.matthewnelson.encoding.base64/Base64.Config?, kotlin/Function1<io.matthewnelson.encoding.base64/Base64ConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64|Base64(io.matthewnelson.encoding.base64.Base64.Config?;kotlin.Function1<io.matthewnelson.encoding.base64.Base64ConfigBuilder,kotlin.Unit>){}[0]
-final fun io.matthewnelson.encoding.base64/Base64(kotlin/Boolean =...): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64|Base64(kotlin.Boolean){}[0]
+final fun io.matthewnelson.encoding.base64/Base64(kotlin/Boolean = ...): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64|Base64(kotlin.Boolean){}[0]
 final fun io.matthewnelson.encoding.base64/Base64(kotlin/Function1<io.matthewnelson.encoding.base64/Base64ConfigBuilder, kotlin/Unit>): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64|Base64(kotlin.Function1<io.matthewnelson.encoding.base64.Base64ConfigBuilder,kotlin.Unit>){}[0]
-final inline fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64(io.matthewnelson.component.base64/Base64.Default =...): kotlin/String // io.matthewnelson.component.base64/encodeBase64|encodeBase64@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.Default){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64(io.matthewnelson.component.base64/Base64.Default = ...): kotlin/String // io.matthewnelson.component.base64/encodeBase64|encodeBase64@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.Default){}[0]
 final inline fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64(io.matthewnelson.component.base64/Base64.UrlSafe): kotlin/String // io.matthewnelson.component.base64/encodeBase64|encodeBase64@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.UrlSafe){}[0]
-final inline fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64ToCharArray(io.matthewnelson.component.base64/Base64.Default =...): kotlin/CharArray // io.matthewnelson.component.base64/encodeBase64ToCharArray|encodeBase64ToCharArray@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.Default){}[0]
+final inline fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64ToCharArray(io.matthewnelson.component.base64/Base64.Default = ...): kotlin/CharArray // io.matthewnelson.component.base64/encodeBase64ToCharArray|encodeBase64ToCharArray@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.Default){}[0]
 final inline fun (kotlin/ByteArray).io.matthewnelson.component.base64/encodeBase64ToCharArray(io.matthewnelson.component.base64/Base64.UrlSafe): kotlin/CharArray // io.matthewnelson.component.base64/encodeBase64ToCharArray|encodeBase64ToCharArray@kotlin.ByteArray(io.matthewnelson.component.base64.Base64.UrlSafe){}[0]
 final inline fun (kotlin/String).io.matthewnelson.component.base64/decodeBase64ToArray(): kotlin/ByteArray? // io.matthewnelson.component.base64/decodeBase64ToArray|decodeBase64ToArray@kotlin.String(){}[0]
