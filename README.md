@@ -325,7 +325,7 @@ dependencies {
 [badge-support-linux-arm]: http://img.shields.io/badge/support-[LinuxArm]-2D3F6C.svg?style=flat
 
 [url-crockford]: https://www.crockford.com/base32.html
-[url-docs]: https://encoding.matthewnelson.io]
+[url-docs]: https://encoding.matthewnelson.io
 [url-kotlin]: https://kotlinlang.org
 [url-latest]: https://github.com/05nelsonm/encoding/releases/latest
 [url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
