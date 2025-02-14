@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Version 2.4.0 (2024-02-14)
+ - Update dependencies [[#166]][166]:
+     - Kotlin `1.9.24` -> `2.1.10`
+
 ## Version 2.3.1 (2024-12-18)
  - Fixes performance issues introduced in `2.3.0` [[#162]][162]:
      - Deprecates the following which were introduced in `2.3.0`:
@@ -230,4 +234,5 @@
 [158]: https://github.com/05nelsonm/encoding/pull/158
 [160]: https://github.com/05nelsonm/encoding/pull/160
 [162]: https://github.com/05nelsonm/encoding/pull/162
+[166]: https://github.com/05nelsonm/encoding/pull/166
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
