@@ -16,6 +16,8 @@
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
+import org.jetbrains.kotlin.gradle.targets.wasm.yarn.WasmYarnPlugin
+import org.jetbrains.kotlin.gradle.targets.wasm.yarn.WasmYarnRootExtension
 
 plugins {
     alias(libs.plugins.benchmark) apply(false)
@@ -38,15 +40,20 @@ allprojects {
 val CHECK_PUBLICATION = findProperty("CHECK_PUBLICATION") != null
 
 plugins.withType<YarnPlugin> {
-    the<YarnRootExtension>().lockFileDirectory = rootDir.resolve(".kotlin-js-store")
-    if (CHECK_PUBLICATION) {
-        the<YarnRootExtension>().yarnLockMismatchReport = YarnLockMismatchReport.NONE
+    the<YarnRootExtension>().apply {
+        lockFileDirectory = rootDir.resolve(".kotlin-js-store").resolve("js")
+        if (CHECK_PUBLICATION) yarnLockMismatchReport = YarnLockMismatchReport.NONE
+    }
+}
+
+plugins.withType<WasmYarnPlugin> {
+    the<WasmYarnRootExtension>().apply {
+        lockFileDirectory = rootDir.resolve(".kotlin-js-store").resolve("wasm")
+        if (CHECK_PUBLICATION) yarnLockMismatchReport = YarnLockMismatchReport.NONE
     }
 }
 
 apiValidation {
-    // Only enable when selectively enabled targets are not being passed via cli.
-    // See https://github.com/Kotlin/binary-compatibility-validator/issues/269
     @OptIn(kotlinx.validation.ExperimentalBCVApi::class)
     klib.enabled = findProperty("KMP_TARGETS") == null
 
