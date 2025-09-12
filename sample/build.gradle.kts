@@ -32,10 +32,6 @@ kmpConfiguration {
                     mainClass.set("MainKt")
                 }
             }
-
-            kotlinJvmTarget = JavaVersion.VERSION_1_8
-            compileSourceCompatibility = JavaVersion.VERSION_1_8
-            compileTargetCompatibility = JavaVersion.VERSION_1_8
         }
 
         fun <T: KotlinNativeTarget> KmpTarget<T>.setup() {
