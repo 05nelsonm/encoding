@@ -1,6 +1,11 @@
 # CHANGELOG
 
-## Version 2.4.0 (2024-02-14)
+## Version 2.5.0 (2025-09-19)
+ - Update dependencies [[#167]][167]:
+     - Kotlin `2.1.10` -> `2.2.20`
+ - Lower supported `KotlinVersion` to `1.8` [[#168]][168]
+
+## Version 2.4.0 (2025-02-14)
  - Update dependencies [[#166]][166]:
      - Kotlin `1.9.24` -> `2.1.10`
 
@@ -235,4 +240,6 @@
 [160]: https://github.com/05nelsonm/encoding/pull/160
 [162]: https://github.com/05nelsonm/encoding/pull/162
 [166]: https://github.com/05nelsonm/encoding/pull/166
+[167]: https://github.com/05nelsonm/encoding/pull/167
+[168]: https://github.com/05nelsonm/encoding/pull/168
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
