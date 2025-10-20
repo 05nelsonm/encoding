@@ -17,6 +17,7 @@
 
 package io.matthewnelson.encoding.benchmarks
 
+import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkMode
@@ -27,6 +28,7 @@ import kotlinx.benchmark.OutputTimeUnit
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
 import kotlinx.benchmark.Warmup
+import kotlin.random.Random
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -35,11 +37,13 @@ import kotlinx.benchmark.Warmup
 @Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
 open class DecoderInputBenchmark {
 
-    private val array = CharArray(50)
+    private val array = CharArray(50) {
+        val i = Random.nextInt(0, Base16.CHARS_UPPER.length)
+        Base16.CHARS_UPPER[i]
+    }
+    private val i = Random.nextInt(0, array.size)
     private val input = DecoderInput(array)
 
     @Benchmark
-    fun get() {
-        for (i in 0 until array.size) { input[i] }
-    }
+    fun get() { input[i] }
 }

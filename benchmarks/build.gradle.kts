@@ -35,7 +35,7 @@ kmpConfiguration {
 
         jvm { register() }
 
-        js { target { browser(); nodejs() }; register() }
+//        js { target { browser(); nodejs() }; register() }
         wasmJs { target { browser(); nodejs() }; register() }
 
         val nativeHost = "nativeHost"
