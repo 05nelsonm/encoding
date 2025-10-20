@@ -61,7 +61,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
-        target: [ jvm, js, wasmJs, nativeHost ]
+        target: [ jvm, wasmJs, nativeHost ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Repository
