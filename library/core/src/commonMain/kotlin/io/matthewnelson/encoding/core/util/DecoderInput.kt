@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("UNUSED")
+
 package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.Decoder
@@ -31,27 +33,22 @@ import kotlin.jvm.JvmSynthetic
  * */
 public class DecoderInput {
 
-    private val input: Any
     @get:JvmSynthetic
     internal val size: Int
+    private val _get: (Int) -> Char
 
-    private constructor(input: Any, size: Int) { this.input = input; this.size = size }
-    public constructor(input: CharSequence): this(input, input.length)
-    public constructor(input: CharArray): this(input, input.size)
+    private constructor(size: Int, get: (Int) -> Char) { this.size = size; this._get = get }
+    public constructor(input: CharSequence): this(input.length, get = input::get)
+    public constructor(input: CharArray): this(input.size, get = input::get)
 
     /** @suppress */
     @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
-    public constructor(input: ByteArray): this(input, input.size)
+    public constructor(input: ByteArray): this(input.size, get = { i -> input[i].toInt().toChar() })
 
     @Throws(EncodingException::class)
     public operator fun get(index: Int): Char {
-        return try {
-            when (input) {
-                is CharSequence -> input[index]
-                is CharArray -> input[index]
-                is ByteArray -> input[index].toInt().toChar()
-                else -> throw EncodingException("DecoderInput type not known")
-            }
+        try {
+            return _get(index)
         } catch (e: IndexOutOfBoundsException) {
             throw EncodingException("Index out of bounds", e)
         }
