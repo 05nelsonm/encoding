@@ -296,45 +296,48 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
         public var currentSize: Long = 0L
             private set
 
-        private var cBuf: Int? = null
+        private var buf = 0
+        private var hasBuffered = false
 
         /**
          * TODO
          * */
         public operator fun plus(input: Char) {
-            val c = cBuf ?: run {
-                cBuf = input.code
+            if (!hasBuffered) {
+                buf = input.code
+                hasBuffered = true
                 return
             }
+            val c = buf
             val cNext = input.code
 
             if (c < 0x0080) {
-                cBuf = cNext
+                buf = cNext
                 currentSize += 1
                 return
             }
             if (c < 0x0800) {
-                cBuf = cNext
+                buf = cNext
                 currentSize += 2
                 return
             }
             if (c < 0xd800 || c > 0xdfff) {
-                cBuf = cNext
+                buf = cNext
                 currentSize += 3
                 return
             }
             if (c > 0xdbff) {
-                cBuf = cNext
+                buf = cNext
                 currentSize += strategy.sizeOrThrow()
                 return
             }
             if (cNext < 0xdc00 || cNext > 0xdfff) {
-                cBuf = cNext
+                buf = cNext
                 currentSize += strategy.sizeOrThrow()
                 return
             }
 
-            cBuf = null
+            hasBuffered = false
             currentSize += 4
         }
 
@@ -342,10 +345,12 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
          * TODO
          * */
         public fun doFinal(): Long {
+            val c = buf
             val s = currentSize
+            buf = 0
             currentSize = 0
-            val c = cBuf ?: return s
-            cBuf = null
+            if (!hasBuffered) return s
+            hasBuffered = false
             if (c < 0x0080) return s + 1
             if (c < 0x0800) return s + 2
             if (c < 0xd800 || c > 0xdfff) return s + 3
@@ -366,45 +371,48 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
 
     private inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
 
-        private var cBuf: Int? = null
+        private var buf = 0
+        private var hasBuffered = false
 
         override fun consumeProtected(input: Char) {
-            val c = cBuf ?: run {
-                cBuf = input.code
+            if (!hasBuffered) {
+                buf = input.code
+                hasBuffered = true
                 return
             }
+            val c = buf
             val cNext = input.code
 
             if (c < 0x0080) {
-                cBuf = cNext
+                buf = cNext
                 out.output(c.toByte())
                 return
             }
             if (c < 0x0800) {
-                cBuf = cNext
+                buf = cNext
                 out.output((c  shr  6          or 0xc0).toByte())
                 out.output((c         and 0x3f or 0x80).toByte())
                 return
             }
             if (c < 0xd800 || c > 0xdfff) {
-                cBuf = cNext
+                buf = cNext
                 out.output((c  shr 12          or 0xe0).toByte())
                 out.output((c  shr  6 and 0x3f or 0x80).toByte())
                 out.output((c         and 0x3f or 0x80).toByte())
                 return
             }
             if (c > 0xdbff) {
-                cBuf = cNext
+                buf = cNext
                 config.replacementStrategy.doOutput(out)
                 return
             }
             if (cNext < 0xdc00 || cNext > 0xdfff) {
-                cBuf = cNext
+                buf = cNext
                 config.replacementStrategy.doOutput(out)
                 return
             }
 
-            cBuf = null
+            hasBuffered = false
             val cp = ((c shl 10) + cNext) + (0x010000 - (0xd800 shl 10) - 0xdc00)
             out.output((cp shr 18          or 0xf0).toByte())
             out.output((cp shr 12 and 0x3f or 0x80).toByte())
@@ -413,8 +421,10 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
         }
 
         override fun doFinalProtected() {
-            val c = cBuf ?: return
-            cBuf = null
+            val c = buf
+            buf = 0
+            if (!hasBuffered) return
+            hasBuffered = false
             if (c < 0x0080) {
                 out.output(c.toByte())
                 return
