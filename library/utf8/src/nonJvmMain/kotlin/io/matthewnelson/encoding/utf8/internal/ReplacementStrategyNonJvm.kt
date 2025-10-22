@@ -19,7 +19,8 @@ package io.matthewnelson.encoding.utf8.internal
 
 import io.matthewnelson.encoding.utf8.UTF8
 
-internal expect inline fun UTF8.ReplacementStrategy.Companion.initKotlin(
+// nonJvm
+internal actual inline fun UTF8.ReplacementStrategy.Companion.initializeKotlin(
     U_0034: UTF8.ReplacementStrategy,
     U_FFFD: UTF8.ReplacementStrategy,
-): UTF8.ReplacementStrategy
+): UTF8.ReplacementStrategy = U_FFFD

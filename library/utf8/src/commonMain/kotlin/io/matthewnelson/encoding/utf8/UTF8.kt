@@ -20,9 +20,10 @@ package io.matthewnelson.encoding.utf8
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder
-import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
-import io.matthewnelson.encoding.utf8.internal.initKotlin
+import io.matthewnelson.encoding.utf8.internal.doOutput
+import io.matthewnelson.encoding.utf8.internal.initializeKotlin
+import io.matthewnelson.encoding.utf8.internal.sizeOrThrow
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -87,7 +88,7 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
     /**
      * TODO
      * */
-    public abstract class ReplacementStrategy private constructor(
+    public class ReplacementStrategy private constructor(
 
         /**
          * TODO
@@ -102,54 +103,33 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
              * TODO
              * */
             @JvmField
-            public val U_0034: ReplacementStrategy = object : ReplacementStrategy(size = 1) {
-                override fun doOutput(out: Decoder.OutFeed) {
-                    out.output('?'.code.toByte())
-                }
-                override fun toString(): String = "UTF8.ReplacementStrategy[U+0034]"
-            }
+            public val U_0034: ReplacementStrategy = ReplacementStrategy(size = 1)
 
             /**
              * TODO
              * */
             @JvmField
-            public val U_FFFD: ReplacementStrategy = object : ReplacementStrategy(size = 3) {
-                override fun doOutput(out: Decoder.OutFeed) {
-                    out.output(0xef.toByte())
-                    out.output(0xbf.toByte())
-                    out.output(0xbd.toByte())
-                }
-                override fun toString(): String = "UTF8.ReplacementStrategy[U+FFFD]"
-            }
+            public val U_FFFD: ReplacementStrategy = ReplacementStrategy(size = 3)
 
             /**
              * TODO
              * */
             @JvmField
-            public val KOTLIN: ReplacementStrategy = initKotlin(U_0034, U_FFFD)
+            public val KOTLIN: ReplacementStrategy = initializeKotlin(U_0034, U_FFFD)
 
             /**
              * TODO
              * */
             @JvmField
-            public val THROW: ReplacementStrategy = object : ReplacementStrategy(size = 0) {
-                override fun doOutput(out: Decoder.OutFeed) {
-                    throw EncodingException("Malformed UTF-8 character sequence")
-                }
-                override fun sizeOrThrow(): Int {
-                    throw EncodingException("Malformed UTF-8 character sequence")
-                }
-                override fun toString(): String = "UTF8.ReplacementStrategy[THROW]"
-            }
+            public val THROW: ReplacementStrategy = ReplacementStrategy(size = 0)
         }
 
-        @Throws(EncodingException::class)
-        internal abstract fun doOutput(out: Decoder.OutFeed)
-        @Throws(EncodingException::class)
-        internal open fun sizeOrThrow(): Int = size
-
         /** @suppress */
-        public abstract override fun toString(): String
+        public override fun toString(): String = when (size) {
+            U_0034.size -> "UTF8.ReplacementStrategy[U+0034]"
+            U_FFFD.size -> "UTF8.ReplacementStrategy[U+FFFD]"
+            else        -> "UTF8.ReplacementStrategy[THROW]"
+        }
     }
 
     /**

@@ -11,24 +11,6 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
     final fun newDecoderFeedProtected(io.matthewnelson.encoding.core/Decoder.OutFeed): io.matthewnelson.encoding.core/Decoder.Feed<io.matthewnelson.encoding.utf8/UTF8.Config> // io.matthewnelson.encoding.utf8/UTF8.newDecoderFeedProtected|newDecoderFeedProtected(io.matthewnelson.encoding.core.Decoder.OutFeed){}[0]
     final fun newEncoderFeedProtected(io.matthewnelson.encoding.core/Encoder.OutFeed): io.matthewnelson.encoding.core/Encoder.Feed<io.matthewnelson.encoding.utf8/UTF8.Config> // io.matthewnelson.encoding.utf8/UTF8.newEncoderFeedProtected|newEncoderFeedProtected(io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
 
-    abstract class ReplacementStrategy { // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy|null[0]
-        final val size // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.size|{}size[0]
-            final fun <get-size>(): kotlin/Int // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.size.<get-size>|<get-size>(){}[0]
-
-        abstract fun toString(): kotlin/String // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.toString|toString(){}[0]
-
-        final object Companion { // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion|null[0]
-            final val KOTLIN // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.KOTLIN|{}KOTLIN[0]
-                final fun <get-KOTLIN>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.KOTLIN.<get-KOTLIN>|<get-KOTLIN>(){}[0]
-            final val THROW // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.THROW|{}THROW[0]
-                final fun <get-THROW>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.THROW.<get-THROW>|<get-THROW>(){}[0]
-            final val U_0034 // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_0034|{}U_0034[0]
-                final fun <get-U_0034>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_0034.<get-U_0034>|<get-U_0034>(){}[0]
-            final val U_FFFD // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_FFFD|{}U_FFFD[0]
-                final fun <get-U_FFFD>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_FFFD.<get-U_FFFD>|<get-U_FFFD>(){}[0]
-        }
-    }
-
     final class Builder { // io.matthewnelson.encoding.utf8/UTF8.Builder|null[0]
         constructor <init>() // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(){}[0]
         constructor <init>(io.matthewnelson.encoding.utf8/UTF8.Config?) // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8.Config?){}[0]
@@ -64,6 +46,24 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.utf8/UTF8.Config|null[0]
         final val replacementStrategy // io.matthewnelson.encoding.utf8/UTF8.Config.replacementStrategy|{}replacementStrategy[0]
             final fun <get-replacementStrategy>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.Config.replacementStrategy.<get-replacementStrategy>|<get-replacementStrategy>(){}[0]
+    }
+
+    final class ReplacementStrategy { // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy|null[0]
+        final val size // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.size|{}size[0]
+            final fun <get-size>(): kotlin/Int // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.size.<get-size>|<get-size>(){}[0]
+
+        final fun toString(): kotlin/String // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.toString|toString(){}[0]
+
+        final object Companion { // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion|null[0]
+            final val KOTLIN // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.KOTLIN|{}KOTLIN[0]
+                final fun <get-KOTLIN>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.KOTLIN.<get-KOTLIN>|<get-KOTLIN>(){}[0]
+            final val THROW // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.THROW|{}THROW[0]
+                final fun <get-THROW>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.THROW.<get-THROW>|<get-THROW>(){}[0]
+            final val U_0034 // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_0034|{}U_0034[0]
+                final fun <get-U_0034>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_0034.<get-U_0034>|<get-U_0034>(){}[0]
+            final val U_FFFD // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_FFFD|{}U_FFFD[0]
+                final fun <get-U_FFFD>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy.Companion.U_FFFD.<get-U_FFFD>|<get-U_FFFD>(){}[0]
+        }
     }
 
     final object Default : io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Default|null[0]

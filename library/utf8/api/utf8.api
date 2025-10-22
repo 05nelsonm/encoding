@@ -52,15 +52,14 @@ public final class io/matthewnelson/encoding/utf8/UTF8$Config : io/matthewnelson
 public final class io/matthewnelson/encoding/utf8/UTF8$Default : io/matthewnelson/encoding/utf8/UTF8 {
 }
 
-public abstract class io/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy {
+public final class io/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy {
 	public static final field Companion Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy$Companion;
 	public static final field KOTLIN Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public static final field THROW Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public static final field U_0034 Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public static final field U_FFFD Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public final field size I
-	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public abstract fun toString ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy$Companion {
