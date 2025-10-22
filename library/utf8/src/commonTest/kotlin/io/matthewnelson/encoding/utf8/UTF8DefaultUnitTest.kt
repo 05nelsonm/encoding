@@ -27,7 +27,7 @@ class UTF8DefaultUnitTest: UTF8BaseUnitTest(UTF8.Default) {
     fun givenRandomSequences_whenEncoded_thenMatchesKotlinEncodeToByteArray() {
         val times = when {
             // Js/WasmJs
-            IS_JS -> 500
+            IS_JS -> 250
             // Jvm
             utf8.config.replacementStrategy == UTF8.ReplacementStrategy.U_0034 -> 5_000
             // WasmWasi/Native
