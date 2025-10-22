@@ -63,11 +63,9 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
         public constructor(): this(other = null)
         public constructor(other: Config?) {
             if (other == null) return
-            _alwaysUsePreProcessing = other.alwaysUsePreProcessing
             _replacementStrategy = other.replacementStrategy
         }
 
-        internal var _alwaysUsePreProcessing: Boolean = Config.DEFAULT.alwaysUsePreProcessing
         internal var _replacementStrategy = Config.DEFAULT.replacementStrategy
 
         /**
@@ -75,14 +73,6 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
          * */
         public fun replacement(strategy: ReplacementStrategy): Builder {
             _replacementStrategy = strategy
-            return this
-        }
-
-        /**
-         * TODO
-         * */
-        public fun preProcessing(alwaysUse: Boolean): Builder {
-            _alwaysUsePreProcessing = alwaysUse
             return this
         }
 
@@ -171,12 +161,6 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
          * TODO
          * */
         @JvmField
-        public val alwaysUsePreProcessing: Boolean,
-
-        /**
-         * TODO
-         * */
-        @JvmField
         public val replacementStrategy: ReplacementStrategy,
     ): EncoderDecoder.Config(isLenient = null, lineBreakInterval = -1, paddingChar = null) {
 
@@ -188,18 +172,8 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
             encodedSize: Int,
             input: DecoderInput,
         ): Int {
-            // TODO: Annotate EncoderDecoder.Config.encodeOutSize with new exception
-            run {
-                if (alwaysUsePreProcessing) return@run
-                val s = decodeOutMaxSizeProtected(encodedSize.toLong())
-                if (s in 0L..Int.MAX_VALUE.toLong()) return s.toInt()
-                // TODO: If (constantTime) return Int.MIN_VALUE
-                // Try pre-processing to see if it can fit.
-            }
-            val pp = CharPreProcessor(replacementStrategy)
-            var i = 0
-            while (i < encodedSize) { pp + input[i++] }
-            return pp.doFinal().toInt()
+            val s = decodeOutMaxSizeProtected(encodedSize.toLong())
+            return if (s in 0L..Int.MAX_VALUE.toLong()) s.toInt() else Int.MIN_VALUE
         }
 
         protected override fun encodeOutSizeProtected(
@@ -209,7 +183,6 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
         }
 
         protected override fun toStringAddSettings(): Set<Setting> = buildSet {
-            add(Setting("alwaysUsePreProcessing", alwaysUsePreProcessing))
             add(Setting("replacementStrategy", replacementStrategy))
         }
 
@@ -219,19 +192,13 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
 
             @JvmSynthetic
             internal fun build(b: Builder): UTF8 {
-                val alwaysUsePreProcessing = b._alwaysUsePreProcessing
                 val replacementStrategy = b._replacementStrategy
                 // TODO: If constantTime, ensure alwaysUsePreProcessing = false
 
-                if (
-                    alwaysUsePreProcessing == DEFAULT.alwaysUsePreProcessing
-                ) {
-                    if (replacementStrategy == DEFAULT.replacementStrategy) return Default
-                    if (replacementStrategy == THROW.replacementStrategy) return ThrowOnInvalid
-                }
+                if (replacementStrategy == DEFAULT.replacementStrategy) return Default
+                if (replacementStrategy == THROW.replacementStrategy) return ThrowOnInvalid
 
                 val config = Config(
-                    alwaysUsePreProcessing,
                     replacementStrategy,
                 )
 
@@ -240,13 +207,11 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
 
             @get:JvmSynthetic
             internal val DEFAULT: Config = Config(
-                alwaysUsePreProcessing = false,
                 replacementStrategy = ReplacementStrategy.KOTLIN,
             )
 
             @get:JvmSynthetic
             internal val THROW: Config = Config(
-                alwaysUsePreProcessing = DEFAULT.alwaysUsePreProcessing,
                 replacementStrategy = ReplacementStrategy.THROW,
             )
         }
@@ -333,6 +298,9 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
 
         private var cBuf: Int? = null
 
+        /**
+         * TODO
+         * */
         public operator fun plus(input: Char) {
             val c = cBuf ?: run {
                 cBuf = input.code
@@ -370,6 +338,9 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
             currentSize += 4
         }
 
+        /**
+         * TODO
+         * */
         public fun doFinal(): Long {
             val s = currentSize
             currentSize = 0
@@ -394,6 +365,7 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
     }
 
     private inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
+
         private var cBuf: Int? = null
 
         override fun consumeProtected(input: Char) {

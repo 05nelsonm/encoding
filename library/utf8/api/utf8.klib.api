@@ -34,7 +34,6 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
         constructor <init>(io.matthewnelson.encoding.utf8/UTF8.Config?) // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8.Config?){}[0]
 
         final fun build(): io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Builder.build|build(){}[0]
-        final fun preProcessing(kotlin/Boolean): io.matthewnelson.encoding.utf8/UTF8.Builder // io.matthewnelson.encoding.utf8/UTF8.Builder.preProcessing|preProcessing(kotlin.Boolean){}[0]
         final fun replacement(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): io.matthewnelson.encoding.utf8/UTF8.Builder // io.matthewnelson.encoding.utf8/UTF8.Builder.replacement|replacement(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
     }
 
@@ -63,8 +62,6 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
     }
 
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.utf8/UTF8.Config|null[0]
-        final val alwaysUsePreProcessing // io.matthewnelson.encoding.utf8/UTF8.Config.alwaysUsePreProcessing|{}alwaysUsePreProcessing[0]
-            final fun <get-alwaysUsePreProcessing>(): kotlin/Boolean // io.matthewnelson.encoding.utf8/UTF8.Config.alwaysUsePreProcessing.<get-alwaysUsePreProcessing>|<get-alwaysUsePreProcessing>(){}[0]
         final val replacementStrategy // io.matthewnelson.encoding.utf8/UTF8.Config.replacementStrategy|{}replacementStrategy[0]
             final fun <get-replacementStrategy>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.Config.replacementStrategy.<get-replacementStrategy>|<get-replacementStrategy>(){}[0]
     }
