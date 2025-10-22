@@ -59,7 +59,6 @@ public fun Base16(
 @JvmOverloads
 public fun Base16(strict: Boolean = false): Base16 = Base16 { if (strict) strict() }
 
-
 /**
  * Builder for creating a [Base16.Config].
  *

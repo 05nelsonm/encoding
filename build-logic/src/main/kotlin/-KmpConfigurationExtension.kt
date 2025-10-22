@@ -37,7 +37,16 @@ fun KmpConfigurationExtension.configureShared(
             java9ModuleInfoName = java9ModuleName
         }
 
-        js()
+        js {
+            target {
+                browser()
+                nodejs {
+                    testTask {
+                        useMocha { timeout = "30s" }
+                    }
+                }
+            }
+        }
         @OptIn(ExperimentalWasmDsl::class)
         wasmJs {
             target {

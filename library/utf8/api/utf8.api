@@ -1,0 +1,74 @@
+public class io/matthewnelson/encoding/utf8/UTF8 : io/matthewnelson/encoding/core/EncoderDecoder {
+	public static final field Default Lio/matthewnelson/encoding/utf8/UTF8$Default;
+	public synthetic fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$Config;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected final fun name ()Ljava/lang/String;
+	protected final fun newDecoderFeedProtected (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
+	protected final fun newEncoderFeedProtected (Lio/matthewnelson/encoding/core/Encoder$OutFeed;)Lio/matthewnelson/encoding/core/Encoder$Feed;
+}
+
+public final class io/matthewnelson/encoding/utf8/UTF8$Builder {
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$Config;)V
+	public final fun build ()Lio/matthewnelson/encoding/utf8/UTF8;
+	public final fun preProcessing (Z)Lio/matthewnelson/encoding/utf8/UTF8$Builder;
+	public final fun replacement (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)Lio/matthewnelson/encoding/utf8/UTF8$Builder;
+}
+
+public final class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor {
+	public static final field Companion Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor$Companion;
+	public fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$Config;)V
+	public fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)V
+	public fun <init> (Lio/matthewnelson/encoding/utf8/UTF8;)V
+	public final fun currentSize ()J
+	public final fun doFinal ()J
+	public final fun plus (C)V
+	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8;)J
+	public static final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public static final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public static final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8;)J
+	public static final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public static final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public static final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8;)J
+}
+
+public final class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor$Companion {
+	public final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8;)J
+	public final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8;)J
+	public final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8;)J
+}
+
+public final class io/matthewnelson/encoding/utf8/UTF8$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public final field alwaysUsePreProcessing Z
+	public final field replacementStrategy Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
+	public synthetic fun <init> (ZLio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class io/matthewnelson/encoding/utf8/UTF8$Default : io/matthewnelson/encoding/utf8/UTF8 {
+}
+
+public abstract class io/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy {
+	public static final field Companion Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy$Companion;
+	public static final field KOTLIN Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
+	public static final field THROW Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
+	public static final field U_0034 Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
+	public static final field U_FFFD Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
+	public final field size I
+	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun toString ()Ljava/lang/String;
+}
+
+public final class io/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy$Companion {
+}
+
+public final class io/matthewnelson/encoding/utf8/UTF8$ThrowOnInvalid : io/matthewnelson/encoding/utf8/UTF8 {
+	public static final field INSTANCE Lio/matthewnelson/encoding/utf8/UTF8$ThrowOnInvalid;
+}
+
