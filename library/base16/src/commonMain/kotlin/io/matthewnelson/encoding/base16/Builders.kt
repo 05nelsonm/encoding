@@ -104,6 +104,9 @@ public class Base16ConfigBuilder {
         return this
     }
 
+    /**
+     * Refer to [Base16.Builder.build] documentation.
+     * */
     public fun build(): Config = buildCompat().config
 
     @JvmSynthetic

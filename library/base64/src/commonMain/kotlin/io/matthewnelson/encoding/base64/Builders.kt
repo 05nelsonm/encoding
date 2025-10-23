@@ -109,6 +109,9 @@ public class Base64ConfigBuilder {
         return this
     }
 
+    /**
+     * Refer to [Base64.Builder.build] documentation.
+     * */
     public fun build(): Base64.Config = buildCompat().config
 
     @JvmSynthetic

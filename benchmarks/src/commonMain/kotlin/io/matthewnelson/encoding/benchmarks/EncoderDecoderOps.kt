@@ -18,9 +18,7 @@
 package io.matthewnelson.encoding.benchmarks
 
 import io.matthewnelson.encoding.base16.Base16
-import io.matthewnelson.encoding.base32.Base32Crockford
-import io.matthewnelson.encoding.base32.Base32Default
-import io.matthewnelson.encoding.base32.Base32Hex
+import io.matthewnelson.encoding.base32.Base32
 import io.matthewnelson.encoding.base64.Base64
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
@@ -76,7 +74,7 @@ open class Base32CrockfordBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEFGHJKMNPQRSTVWXYZ
     @Param("3:-6", "x:115")
     override var params: String = "<Char>:<Byte>"
-    override val encoder: EncoderDecoder<*> = Base32Crockford()
+    override val encoder: EncoderDecoder<*> = Base32.Crockford.Builder {}
 }
 
 @State(Scope.Benchmark)
@@ -88,7 +86,7 @@ open class Base32DefaultBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: ABCDEFGHIJKLMNOPQRSTUVWXYZ234567
     @Param("C:-123", "w:15")
     override var params: String = "<Char>:<Byte>"
-    override val encoder: EncoderDecoder<*> = Base32Default()
+    override val encoder: EncoderDecoder<*> = Base32.Default.Builder {}
 }
 
 @State(Scope.Benchmark)
@@ -100,7 +98,7 @@ open class Base32HexBenchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEFGHIJKLMNOPQRSTUV
     @Param("A:-12", "r:42")
     override var params: String = "<Char>:<Byte>"
-    override val encoder: EncoderDecoder<*> = Base32Hex()
+    override val encoder: EncoderDecoder<*> = Base32.Hex.Builder {}
 }
 
 @State(Scope.Benchmark)

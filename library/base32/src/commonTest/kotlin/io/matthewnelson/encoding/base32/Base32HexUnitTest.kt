@@ -29,9 +29,9 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     private var useLowercase = false
     private var usePadding = true
 
-    private fun base32(): Base32.Hex = Base32Hex {
-        encodeToLowercase = useLowercase
-        padEncoded = usePadding
+    private fun base32(): Base32.Hex = Base32.Hex.Builder {
+        encodeToLowercase(useLowercase)
+        padEncoded(usePadding)
     }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
