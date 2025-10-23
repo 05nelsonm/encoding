@@ -19,10 +19,10 @@ public final class io/matthewnelson/encoding/base16/Base16$Builder {
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
 	public final fun build ()Lio/matthewnelson/encoding/base16/Base16;
-	public final fun encodeToLowercase (Z)Lio/matthewnelson/encoding/base16/Base16$Builder;
+	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base16/Base16$Builder;
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base16/Base16$Builder;
 	public final fun lineBreak (B)Lio/matthewnelson/encoding/base16/Base16$Builder;
-	public final fun strict ()Lio/matthewnelson/encoding/base16/Base16$Builder;
+	public final fun strictSpec ()Lio/matthewnelson/encoding/base16/Base16$Builder;
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Companion : io/matthewnelson/encoding/core/EncoderDecoder {

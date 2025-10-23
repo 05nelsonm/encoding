@@ -14,10 +14,10 @@ final class io.matthewnelson.encoding.base16/Base16 : io.matthewnelson.encoding.
         constructor <init>(io.matthewnelson.encoding.base16/Base16.Config?) // io.matthewnelson.encoding.base16/Base16.Builder.<init>|<init>(io.matthewnelson.encoding.base16.Base16.Config?){}[0]
 
         final fun build(): io.matthewnelson.encoding.base16/Base16 // io.matthewnelson.encoding.base16/Base16.Builder.build|build(){}[0]
-        final fun encodeToLowercase(kotlin/Boolean): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.encodeToLowercase|encodeToLowercase(kotlin.Boolean){}[0]
+        final fun encodeLowercase(kotlin/Boolean): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.encodeLowercase|encodeLowercase(kotlin.Boolean){}[0]
         final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.isLenient|isLenient(kotlin.Boolean){}[0]
         final fun lineBreak(kotlin/Byte): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.lineBreak|lineBreak(kotlin.Byte){}[0]
-        final fun strict(): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.strict|strict(){}[0]
+        final fun strictSpec(): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.strictSpec|strictSpec(){}[0]
     }
 
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base16/Base16.Config|null[0]

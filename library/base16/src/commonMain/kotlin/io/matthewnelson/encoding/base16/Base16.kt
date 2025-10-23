@@ -33,13 +33,36 @@ import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
- * TODO
+ * Base16 (aka "hex") encoding/decoding in accordance with [RFC 4648 section 8](https://www.ietf.org/rfc/rfc4648.html#section-8).
+ *
+ * **NOTE:** All instances decode both [CHARS_UPPER] and [CHARS_LOWER] interchangeably;
+ * no special configuration is needed.
+ *
+ * e.g.
+ *
+ *     val base16 = Base16.Builder {
+ *         isLenient(enable = true)
+ *         lineBreak(interval = 64)
+ *         encodeLowercase(enable = true)
+ *     }
+ *
+ *     val text = "Hello World!"
+ *     val bytes = text.encodeToByteArray()
+ *     val encoded = bytes.encodeToString(base16)
+ *     println(encoded) // 48656c6c6f20576f726c6421
+ *
+ *     // Alternatively, use the static implementation containing
+ *     // a default configuration, instead of creating your own.
+ *     val decoded = encoded.decodeToByteArray(Base16).decodeToString()
+ *     assertEquals(text, decoded)
+ *
+ * @see [Builder]
+ * @see [Companion.Builder]
+ * @see [Encoder.Companion]
+ * @see [Decoder.Companion]
  * */
 public class Base16: EncoderDecoder<Base16.Config> {
 
-    /**
-     * TODO
-     * */
     public class Builder {
 
         public constructor(): this(other = null)
@@ -47,7 +70,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             if (other == null) return
             this._isLenient = other.isLenient ?: true
             this._lineBreakInterval = other.lineBreakInterval
-            this._encodeToLowercase = other.encodeToLowercase
+            this._encodeLowercase = other.encodeToLowercase
         }
 
         @JvmSynthetic
@@ -55,40 +78,86 @@ public class Base16: EncoderDecoder<Base16.Config> {
         @JvmSynthetic
         internal var _lineBreakInterval: Byte = 0
         @JvmSynthetic
-        internal var _encodeToLowercase: Boolean = false
+        internal var _encodeLowercase: Boolean = false
 
         /**
-         * TODO
+         * DEFAULT: `true`
+         *
+         * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
+         * allowed but ignored) during decoding operations. This is non-compliant with
+         * `RFC 4648`.
+         *
+         * If `false`, an [EncodingException] will be thrown.
          * */
         public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
         /**
-         * TODO
+         * DEFAULT: `0` (i.e. disabled)
+         *
+         * If greater than `0`, when [interval] number of encoded characters have been
+         * output, the next encoded character will be preceded with the new line character
+         * `\n`. This is non-compliant with `RFC 4648`.
+         *
+         * A great value is `64`, and is the default value used for [Base16.Companion.config].
+         *
+         * **NOTE:** This setting is ignored if [isLenient] is set to `false`.
+         *
+         * e.g.
+         *
+         *     isLenient(enable = true)
+         *     lineBreak(interval = 0)
+         *     // 48656C6C6F20576F726C6421
+         *
+         *     isLenient(enable = true)
+         *     lineBreak(interval = 16)
+         *     // 48656C6C6F20576F
+         *     // 726C6421
+         *
+         *     isLenient(enable = false)
+         *     lineBreak(interval = 16)
+         *     // 48656C6C6F20576F726C6421
          * */
         public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
         /**
-         * TODO
+         * DEFAULT: `false`
+         *
+         * If `true`, lowercase characters from table [Base16.CHARS_LOWER] will be output
+         * during encoding operations. This is non-compliant with `RFC 4648`.
+         *
+         * If `false`, uppercase characters from table [Base16.CHARS_UPPER] will be output
+         * during encoding operations.
+         *
+         * **NOTE:** This does not affect decoding operations. [Base16] is designed to accept
+         * characters from both tables when decoding (as specified in `RFC 4648`).
          * */
-        public fun encodeToLowercase(enable: Boolean): Builder = apply { _encodeToLowercase = enable }
+        public fun encodeLowercase(enable: Boolean): Builder = apply { _encodeLowercase = enable }
 
         /**
-         * TODO
+         * Helper for configuring the builder with settings which are compliant with the
+         * `RFC 4648` specification.
+         *
+         *  - [isLenient] will be set to `false`.
+         *  - [lineBreak] will be set to `0`.
+         *  - [encodeLowercase] will be set to `false`.
          * */
-        public fun strict(): Builder = apply {
+        public fun strictSpec(): Builder = apply {
             _isLenient = false
             _lineBreakInterval = 0
-            _encodeToLowercase = false
+            _encodeLowercase = false
         }
 
         /**
-         * TODO
+         * Commits configured options to [Config], creating the [Base16] instance.
          * */
         public fun build(): Base16 = Config.build(this)
     }
 
     /**
-     * TODO
+     * Holder of a configuration for the [Base16] encoder/decoder instance.
+     *
+     * @see [Builder]
+     * @see [Companion.Builder]
      * */
     public class Config private constructor(
         isLenient: Boolean,
@@ -138,7 +207,8 @@ public class Base16: EncoderDecoder<Base16.Config> {
     }
 
     /**
-     * TODO
+     * A static instance of [EncoderDecoder] configured with a [Base16.Builder.lineBreak]
+     * interval of `64`, and remaining [Base16.Builder] `DEFAULT` values.
      * */
     public companion object: EncoderDecoder<Base16.Config>(config = Base16.Config.DEFAULT) {
 
@@ -153,7 +223,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         public const val CHARS_LOWER: String = "0123456789abcdef"
 
         /**
-         * TODO
+         * Syntactic sugar for Kotlin consumers that like lambdas.
          * */
         @JvmStatic
         @JvmName("-Builder")
@@ -164,7 +234,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
 
         /**
-         * TODO
+         * Syntactic sugar for Kotlin consumers that like lambdas.
          * */
         @JvmStatic
         @JvmName("-Builder")

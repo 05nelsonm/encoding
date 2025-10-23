@@ -27,7 +27,7 @@ class Base16UnitTest: BaseNEncodingTest() {
     private var useLowercase = false
 
     private fun base16(): Base16 = Base16.Builder {
-        encodeToLowercase(useLowercase)
+        encodeLowercase(useLowercase)
     }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(

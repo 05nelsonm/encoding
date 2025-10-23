@@ -26,10 +26,10 @@ internal inline fun ((Boolean, Byte, Boolean) -> Base16.Config).build(
     if (
         b._isLenient == Base16.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base16.DELEGATE.config.lineBreakInterval
-        && b._encodeToLowercase == Base16.DELEGATE.config.encodeToLowercase
+        && b._encodeLowercase == Base16.DELEGATE.config.encodeToLowercase
     ) {
         return Base16.DELEGATE
     }
-    val config = this(b._isLenient, b._lineBreakInterval, b._encodeToLowercase)
+    val config = this(b._isLenient, b._lineBreakInterval, b._encodeLowercase)
     return base16(config)
 }

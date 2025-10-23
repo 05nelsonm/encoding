@@ -55,7 +55,7 @@ public fun Base16(
  * */
 @JvmOverloads
 @Deprecated("Use Base16.Builder or Base16.Companion.Builder")
-public fun Base16(strict: Boolean = false): Base16 = Base16.Builder { if (strict) strict() }
+public fun Base16(strict: Boolean = false): Base16 = Base16.Builder { if (strict) strictSpec() }
 
 /**
  * DEPRECATED
@@ -73,7 +73,7 @@ public class Base16ConfigBuilder {
         compat = Base16.Builder(other = config)
         isLenient = compat._isLenient
         lineBreakInterval = compat._lineBreakInterval
-        encodeToLowercase = compat._encodeToLowercase
+        encodeToLowercase = compat._encodeLowercase
     }
 
     /**
@@ -89,13 +89,13 @@ public class Base16ConfigBuilder {
     public var lineBreakInterval: Byte = 0
 
     /**
-     * Refer to [Base16.Builder.encodeToLowercase] documentation.
+     * Refer to [Base16.Builder.encodeLowercase] documentation.
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false
 
     /**
-     * Refer to [Base16.Builder.strict] documentation.
+     * Refer to [Base16.Builder.strictSpec] documentation.
      * */
     public fun strict(): Base16ConfigBuilder {
         isLenient = false
@@ -113,7 +113,7 @@ public class Base16ConfigBuilder {
     internal fun buildCompat(): Base16 = compat
         .isLenient(isLenient)
         .lineBreak(lineBreakInterval)
-        .encodeToLowercase(encodeToLowercase)
+        .encodeLowercase(encodeToLowercase)
         .build()
 
     /** @suppress */
