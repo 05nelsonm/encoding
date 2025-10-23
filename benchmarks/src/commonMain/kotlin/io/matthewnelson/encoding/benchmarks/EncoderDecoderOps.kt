@@ -64,7 +64,7 @@ open class Base16Benchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: 0123456789ABCDEF
     @Param("3:0", "d:122")
     override var params: String = "<Char>:<Byte>"
-    override val encoder: EncoderDecoder<*> = Base16()
+    override val encoder: EncoderDecoder<*> = Base16.Builder {}
 }
 
 @State(Scope.Benchmark)

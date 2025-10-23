@@ -13,72 +13,89 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
+@file:Suppress("FunctionName", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.base16
 
-import io.matthewnelson.encoding.core.*
+import io.matthewnelson.encoding.base16.internal.build
+import io.matthewnelson.encoding.core.Decoder
+import io.matthewnelson.encoding.core.Encoder
+import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
- * Base16 (aka "hex") encoding/decoding in accordance with
- * RFC 4648 section 8.
- *
- * https://www.ietf.org/rfc/rfc4648.html#section-8
- *
- * e.g.
- *
- *     val base16 = Base16 {
- *         isLenient = true
- *         lineBreakInterval = 64
- *         encodeToLowercase = true
- *     }
- *
- *     val text = "Hello World!"
- *     val bytes = text.encodeToByteArray()
- *     val encoded = bytes.encodeToString(base16)
- *     println(encoded) // 48656c6c6f20576f726c6421
- *
- *     // Alternatively, use the static implementaton instead of
- *     // configuring your own settings.
- *     val decoded = encoded.decodeToByteArray(Base16).decodeToString()
- *     assertEquals(text, decoded)
- *
- * @see [io.matthewnelson.encoding.base16.Base16]
- * @see [Base16.Config]
- * @see [Base16.CHARS_UPPER]
- * @see [Base16.CHARS_LOWER]
- * @see [Base16.Companion]
- * @see [EncoderDecoder]
- * @see [Decoder.decodeToByteArray]
- * @see [Decoder.decodeToByteArrayOrNull]
- * @see [Encoder.encodeToString]
- * @see [Encoder.encodeToCharArray]
- * @see [Encoder.encodeToByteArray]
+ * TODO
  * */
-public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config) {
+public class Base16: EncoderDecoder<Base16.Config> {
 
     /**
-     * Configuration for [Base16] encoding/decoding.
-     *
-     * Use [Base16ConfigBuilder] to create.
-     *
-     * @see [Base16ConfigBuilder]
-     * @see [EncoderDecoder.Config]
+     * TODO
+     * */
+    public class Builder {
+
+        public constructor(): this(other = null)
+        public constructor(other: Config?) {
+            if (other == null) return
+            this._isLenient = other.isLenient ?: true
+            this._lineBreakInterval = other.lineBreakInterval
+            this._encodeToLowercase = other.encodeToLowercase
+        }
+
+        @JvmSynthetic
+        internal var _isLenient: Boolean = true
+        @JvmSynthetic
+        internal var _lineBreakInterval: Byte = 0
+        @JvmSynthetic
+        internal var _encodeToLowercase: Boolean = false
+
+        /**
+         * TODO
+         * */
+        public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
+
+        /**
+         * TODO
+         * */
+        public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
+
+        /**
+         * TODO
+         * */
+        public fun encodeToLowercase(enable: Boolean): Builder = apply { _encodeToLowercase = enable }
+
+        /**
+         * TODO
+         * */
+        public fun strict(): Builder = apply {
+            _isLenient = false
+            _lineBreakInterval = 0
+            _encodeToLowercase = false
+        }
+
+        /**
+         * TODO
+         * */
+        public fun build(): Base16 = Config.build(this)
+    }
+
+    /**
+     * TODO
      * */
     public class Config private constructor(
         isLenient: Boolean,
         lineBreakInterval: Byte,
         @JvmField
         public val encodeToLowercase: Boolean,
-    ): EncoderDecoder.Config(
-        isLenient = isLenient,
-        lineBreakInterval = lineBreakInterval,
-        paddingChar = null
-    ) {
+    ): EncoderDecoder.Config(isLenient, lineBreakInterval, null) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L
@@ -88,57 +105,42 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             return encodedSize / 2
         }
 
-        @Throws(EncodingSizeException::class)
         protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-            if (unEncodedSize > (Long.MAX_VALUE / 2)) {
+            if (unEncodedSize > MAX_UNENCODED_SIZE) {
                 throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
             }
-
             return unEncodedSize * 2L
         }
 
-        protected override fun toStringAddSettings(): Set<Setting> {
-            return LinkedHashSet<Setting>(3, 1.0f).apply {
-                add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
-                add(Setting(name = "isConstantTime", value = isConstantTime))
-            }
+        protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+            add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+            add(Setting(name = "isConstantTime", value = isConstantTime))
         }
 
         internal companion object {
 
+            private const val MAX_UNENCODED_SIZE: Long = Long.MAX_VALUE / 2
+
             @JvmSynthetic
-            internal fun from(builder: Base16ConfigBuilder): Config {
-                return Config(
-                    isLenient = builder.isLenient,
-                    lineBreakInterval = builder.lineBreakInterval,
-                    encodeToLowercase = builder.encodeToLowercase,
-                )
-            }
+            internal fun build(b: Builder): Base16 = ::Config.build(b, ::Base16)
+
+            @get:JvmSynthetic
+            internal val DEFAULT: Config = Config(
+                isLenient = true,
+                lineBreakInterval = 64,
+                encodeToLowercase = false,
+            )
         }
 
-        /**
-         * Implementation is always constant-time. Performance impact is negligible.
-         * @suppress
-         * */
+        /** @suppress */
         @JvmField
         public val isConstantTime: Boolean = true
     }
 
     /**
-     * Doubles as a static implementation with default settings
-     * and a lineBreakInterval of 64.
-     *
-     * e.g.
-     *
-     *     val encoded = "Hello World!"
-     *         .encodeToByteArray()
-     *         .encodeToString(Base16)
-     *
-     *     println(encoded) // 48656C6C6F20576F726C6421
+     * TODO
      * */
-    public companion object: EncoderDecoder<Base16.Config>(
-        config = Base16ConfigBuilder().apply { lineBreakInterval = 64 }.build()
-    ) {
+    public companion object: EncoderDecoder<Base16.Config>(config = Base16.Config.DEFAULT) {
 
         /**
          * Uppercase Base16 encoding characters.
@@ -150,22 +152,48 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
          * */
         public const val CHARS_LOWER: String = "0123456789abcdef"
 
-        private val DELEGATE = Base16(config)
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @JvmName("-Builder")
+        @OptIn(ExperimentalContracts::class)
+        public inline fun Builder(block: Builder.() -> Unit): Base16 {
+            contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+            return Builder(other = null, block)
+        }
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @JvmName("-Builder")
+        @OptIn(ExperimentalContracts::class)
+        public inline fun Builder(other: Base16.Config?, block: Builder.() -> Unit): Base16 {
+            contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+            return Builder(other).apply(block).build()
+        }
+
+        @get:JvmSynthetic
+        internal val DELEGATE = Base16(config)
         protected override fun name(): String = DELEGATE.name()
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base16.Config>.Feed {
             return DELEGATE.newDecoderFeedProtected(out)
         }
-        protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base16.Config>.Feed {
+        protected override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Base16.Config>.Feed {
             return DELEGATE.newEncoderFeedProtected(out)
         }
+
+        private const val NAME = "Base16"
     }
 
-    protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
+    protected final override fun name(): String = NAME
+
+    protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
         return object : Decoder<Config>.Feed() {
 
             private val buffer = DecodingBuffer(out)
 
-            @Throws(EncodingException::class)
             override fun consumeProtected(input: Char) {
                 val code = input.code
 
@@ -200,12 +228,11 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
                 buffer.update(code + diff)
             }
 
-            @Throws(EncodingException::class)
             override fun doFinalProtected() { buffer.finalize() }
         }
     }
 
-    protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Config>.Feed {
+    protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Config>.Feed {
         return object : Encoder<Config>.Feed() {
 
             private val table = if (config.encodeToLowercase) CHARS_LOWER else CHARS_UPPER
@@ -226,8 +253,6 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
         }
     }
 
-    protected override fun name(): String = "Base16"
-
     private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 2,
         flush = { buffer ->
@@ -244,4 +269,7 @@ public class Base16(config: Base16.Config): EncoderDecoder<Base16.Config>(config
             }
         }
     )
+
+    // TODO: Deprecate & replace (Issue #172)
+    public constructor(config: Config): super(config)
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("ConvertTwoComparisonsToRangeCheck", "FunctionName", "NOTHING_TO_INLINE", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
+@file:Suppress("ConvertTwoComparisonsToRangeCheck", "FunctionName", "NOTHING_TO_INLINE", "PropertyName", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.utf8
 
@@ -35,10 +35,6 @@ import kotlin.jvm.JvmSynthetic
 
 /**
  * TODO
- *
- * @see [Builder]
- * @see [Default]
- * @see [ThrowOnInvalid]
  * */
 public open class UTF8: EncoderDecoder<UTF8.Config> {
 

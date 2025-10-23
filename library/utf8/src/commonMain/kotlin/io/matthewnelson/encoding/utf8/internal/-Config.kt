@@ -26,6 +26,6 @@ internal inline fun ((UTF8.ReplacementStrategy) -> UTF8.Config).build(
     if (b._replacementStrategy == UTF8.Default.config.replacementStrategy) return UTF8.Default
     if (b._replacementStrategy == UTF8.ThrowOnInvalid.config.replacementStrategy) return UTF8.ThrowOnInvalid
 
-    val c = this(b._replacementStrategy)
-    return utf8(c)
+    val config = this(b._replacementStrategy)
+    return utf8(config)
 }

@@ -26,7 +26,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base16())",
+        expression = "this.decodeToByteArrayOrNull(Base16.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -36,13 +36,13 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase16ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(Base16())
+    return decodeToByteArrayOrNull(Base16.Builder {})
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base16())",
+        expression = "this.decodeToByteArrayOrNull(Base16.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -51,13 +51,13 @@ public inline fun String.decodeBase16ToArray(): ByteArray? {
     level = DeprecationLevel.HIDDEN,
 )
 public fun CharArray.decodeBase16ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(Base16())
+    return decodeToByteArrayOrNull(Base16.Builder {})
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base16())",
+        expression = "this.encodeToString(Base16.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -67,13 +67,13 @@ public fun CharArray.decodeBase16ToArray(): ByteArray? {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16(): String {
-    return encodeToString(Base16())
+    return encodeToString(Base16.Builder {})
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToCharArray(Base16())",
+        expression = "this.encodeToCharArray(Base16.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
@@ -83,13 +83,13 @@ public inline fun ByteArray.encodeBase16(): String {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
-    return encodeToCharArray(Base16())
+    return encodeToCharArray(Base16.Builder {})
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     ReplaceWith(
-        expression = "this.encodeToByteArray(Base16())",
+        expression = "this.encodeToByteArray(Base16.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base16.Base16",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
@@ -99,5 +99,5 @@ public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
 )
 public fun ByteArray.encodeBase16ToByteArray(): ByteArray {
     @Suppress("DEPRECATION")
-    return encodeToByteArray(Base16())
+    return encodeToByteArray(Base16.Builder {})
 }
