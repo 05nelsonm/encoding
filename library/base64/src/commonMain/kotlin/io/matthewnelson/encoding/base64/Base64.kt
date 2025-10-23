@@ -13,67 +13,116 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("RemoveRedundantQualifierName", "SpellCheckingInspection")
+@file:Suppress("FunctionName", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.base64
 
-import io.matthewnelson.encoding.core.*
+import io.matthewnelson.encoding.base64.internal.build
+import io.matthewnelson.encoding.core.Decoder
+import io.matthewnelson.encoding.core.Encoder
+import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
+import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
- * Base64 encoding/decoding in accordance with
- * RFC 4648 section 4 & 5 (Default & UrlSafe)
- *
- * https://www.ietf.org/rfc/rfc4648.html#section-4
- * https://www.ietf.org/rfc/rfc4648.html#section-5
- *
- * Decodes both Default and UrlSafe, while encoding
- * to UrlSafe can be configured via the [Base64.Config].
- *
- * e.g.
- *
- *     val base64 = Base64 {
- *         isLenient = true
- *         lineBreakInterval = 64
- *         encodeToUrlSafe = false
- *         padEncoded = true
- *     }
- *
- *     val text = "Hello World!"
- *     val bytes = text.encodeToByteArray()
- *     val encoded = bytes.encodeToString(base64)
- *     println(encoded) // SGVsbG8gV29ybGQh
- *
- *     // Alternatively, use the static implementaton instead of
- *     // configuring your own settings.
- *     val decoded = encoded.decodeToByteArray(Base64.Default).decodeToString()
- *     assertEquals(text, decoded)
- *
- * @see [io.matthewnelson.encoding.base64.Base64]
- * @see [Base64.Config]
- * @see [Default.CHARS]
- * @see [UrlSafe.CHARS]
- * @see [Default]
- * @see [UrlSafe]
- * @see [EncoderDecoder]
- * @see [Decoder.decodeToByteArray]
- * @see [Decoder.decodeToByteArrayOrNull]
- * @see [Encoder.encodeToString]
- * @see [Encoder.encodeToCharArray]
- * @see [Encoder.encodeToByteArray]
+ * TODO
  * */
-public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config) {
+public class Base64: EncoderDecoder<Base64.Config> {
+
+    public companion object {
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @JvmName("-Builder")
+        @OptIn(ExperimentalContracts::class)
+        public inline fun Builder(block: Builder.() -> Unit): Base64 {
+            contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+            return Builder(other = null, block)
+        }
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @JvmName("-Builder")
+        @OptIn(ExperimentalContracts::class)
+        public inline fun Builder(other: Base64.Config?, block: Builder.() -> Unit): Base64 {
+            contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+            return Builder(other).apply(block).build()
+        }
+
+        private const val NAME = "Base64"
+    }
 
     /**
-     * Configuration for [Base64] encoding/decoding.
-     *
-     * Use [Base64ConfigBuilder] to create.
-     *
-     * @see [Base64ConfigBuilder]
-     * @see [EncoderDecoder.Config]
+     * TODO
+     * */
+    public class Builder {
+
+        public constructor(): this(other = null)
+        public constructor(other: Config?) {
+            if (other == null) return
+            this._isLenient = other.isLenient ?: true
+            this._lineBreakInterval = other.lineBreakInterval
+            this._encodeToUrlSafe = other.encodeToUrlSafe
+            this._padEncoded = other.padEncoded
+        }
+
+        @JvmSynthetic
+        internal var _isLenient: Boolean = true
+        @JvmSynthetic
+        internal var _lineBreakInterval: Byte = 0
+        @JvmSynthetic
+        internal var _encodeToUrlSafe: Boolean = false
+        @JvmSynthetic
+        internal var _padEncoded: Boolean = true
+
+        /**
+         * TODO
+         * */
+        public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
+
+        /**
+         * TODO
+         * */
+        public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
+
+        /**
+         * TODO
+         * */
+        public fun encodeUrlSafe(enable: Boolean): Builder = apply { _encodeToUrlSafe = enable }
+
+        /**
+         * TODO
+         * */
+        public fun padEncoded(enable: Boolean): Builder = apply { _padEncoded = enable }
+
+        /**
+         * TODO
+         * */
+        public fun strict(): Builder = apply {
+            _isLenient = false
+            _padEncoded = true
+        }
+
+        /**
+         * TODO
+         * */
+        public fun build(): Base64 = Config.build(this)
+    }
+
+    /**
+     * TODO
      * */
     public class Config private constructor(
         isLenient: Boolean,
@@ -82,22 +131,20 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
         public val encodeToUrlSafe: Boolean,
         @JvmField
         public val padEncoded: Boolean,
-    ): EncoderDecoder.Config(
-        isLenient = isLenient,
-        lineBreakInterval = lineBreakInterval,
-        paddingChar = '=',
-    ) {
+    ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+            // TODO: Check for overflow?
             return (encodedSize * 6L / 8L)
         }
 
-        @Throws(EncodingException::class)
         protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
+            // TODO: Check for overflow?
             return decodeOutMaxSizeProtected(encodedSize.toLong()).toInt()
         }
 
         protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
+            // TODO: Check for overflow?
             var outSize: Long = (unEncodedSize + 2L) / 3L * 4L
             if (padEncoded) return outSize
 
@@ -110,105 +157,88 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             return outSize
         }
 
-        protected override fun toStringAddSettings(): Set<Setting> {
-            return LinkedHashSet<Setting>(4, 1.0f).apply {
-                add(Setting(name = "encodeToUrlSafe", value = encodeToUrlSafe))
-                add(Setting(name = "padEncoded", value = padEncoded))
-                add(Setting(name = "isConstantTime", value = isConstantTime))
-            }
+        protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+            add(Setting(name = "encodeToUrlSafe", value = encodeToUrlSafe))
+            add(Setting(name = "padEncoded", value = padEncoded))
+            add(Setting(name = "isConstantTime", value = isConstantTime))
         }
 
         internal companion object {
 
             @JvmSynthetic
-            internal fun from(builder: Base64ConfigBuilder): Config {
-                return Config(
-                    isLenient = builder.isLenient,
-                    lineBreakInterval = builder.lineBreakInterval,
-                    encodeToUrlSafe = builder.encodeToUrlSafe,
-                    padEncoded = builder.padEncoded,
-                )
-            }
+            internal fun build(b: Builder): Base64 = ::Config.build(b, ::Base64)
+
+            @get:JvmSynthetic
+            internal val DEFAULT: Config = Config(
+                isLenient = true,
+                lineBreakInterval = 64,
+                encodeToUrlSafe = false,
+                padEncoded = true
+            )
+
+            @get:JvmSynthetic
+            internal val URL_SAFE: Config = Config(
+                isLenient = DEFAULT.isLenient ?: true,
+                lineBreakInterval = DEFAULT.lineBreakInterval,
+                encodeToUrlSafe = true,
+                padEncoded = DEFAULT.padEncoded,
+            )
         }
 
-        /**
-         * Implementation is always constant-time. Performance impact is negligible.
-         * @suppress
-         * */
+        /** @suppress */
         @JvmField
         public val isConstantTime: Boolean = true
     }
 
     /**
-     * Doubles as a static implementation with default settings
-     * and a lineBreakInterval of 64.
-     *
-     * e.g.
-     *
-     *     val encoded = "Hello World!"
-     *         .encodeToByteArray()
-     *         .encodeToString(Base64.Default)
-     *
-     *     println(encoded) // SGVsbG8gV29ybGQh
-     *
+     * TODO
      * */
-    public object Default: EncoderDecoder<Base64.Config>(
-        config = Base64ConfigBuilder().apply { lineBreakInterval = 64 }.build()
-    ) {
+    public object Default: EncoderDecoder<Base64.Config>(config = Base64.Config.DEFAULT) {
 
         /**
          * Base64 Default encoding characters.
          * */
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
-        private val DELEGATE = Base64(config)
+        @get:JvmSynthetic
+        internal val DELEGATE = Base64(config)
         override fun name(): String = DELEGATE.name()
         override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
             return DELEGATE.newDecoderFeedProtected(out)
         }
-        override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base64.Config>.Feed {
+        override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Base64.Config>.Feed {
             return DELEGATE.newEncoderFeedProtected(out)
         }
     }
 
     /**
-     * Doubles as a static implementation with default settings
-     * and a lineBreakInterval of 64.
-     *
-     * e.g.
-     *
-     *     val encoded = "Hello World!"
-     *         .encodeToByteArray()
-     *         .encodeToString(Base64.UrlSafe)
-     *
-     *     println(encoded) // SGVsbG8gV29ybGQh
-     *
+     * TODO
      * */
-    public object UrlSafe: EncoderDecoder<Base64.Config>(
-        config = Base64ConfigBuilder(Default.config).apply { encodeToUrlSafe = true }.build()
-    ) {
+    public object UrlSafe: EncoderDecoder<Base64.Config>(config = Base64.Config.URL_SAFE) {
 
         /**
          * Base64 UrlSafe encoding characters.
          * */
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
-        private val DELEGATE = Base64(config)
+        @get:JvmSynthetic
+        internal val DELEGATE = Base64(config)
         override fun name(): String = DELEGATE.name()
         override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
             return DELEGATE.newDecoderFeedProtected(out)
         }
-        override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base64.Config>.Feed {
+        override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Base64.Config>.Feed {
             return DELEGATE.newEncoderFeedProtected(out)
         }
     }
 
-    protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
+    protected final override fun name(): String = NAME
+
+    protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
         return object : Decoder<Base64.Config>.Feed() {
 
             private val buffer = DecodingBuffer(out)
 
-            @Throws(EncodingException::class)
             override fun consumeProtected(input: Char) {
                 val code = input.code
 
@@ -252,12 +282,11 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
                 buffer.update(code + diff)
             }
 
-            @Throws(EncodingException::class)
             override fun doFinalProtected() { buffer.finalize() }
         }
     }
 
-    protected override fun newEncoderFeedProtected(out: OutFeed): Encoder<Base64.Config>.Feed {
+    protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Base64.Config>.Feed {
         return object : Encoder<Base64.Config>.Feed() {
 
             private val buffer = EncodingBuffer(
@@ -271,8 +300,6 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             override fun doFinalProtected() { buffer.finalize() }
         }
     }
-
-    protected override fun name(): String = "Base64"
 
     private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
         blockSize = 4,
@@ -378,4 +405,7 @@ public class Base64(config: Base64.Config): EncoderDecoder<Base64.Config>(config
             }
         }
     )
+
+    // TODO: Deprecate & replace (Issue #172)
+    public constructor(config: Config): super(config)
 }

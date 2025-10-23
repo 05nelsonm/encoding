@@ -42,7 +42,26 @@ public final class io/matthewnelson/component/base64/Base64Kt {
 }
 
 public final class io/matthewnelson/encoding/base64/Base64 : io/matthewnelson/encoding/core/EncoderDecoder {
+	public static final field Companion Lio/matthewnelson/encoding/base64/Base64$Companion;
+	public static final fun -Builder (Lio/matthewnelson/encoding/base64/Base64$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
+	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
 	public fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;)V
+}
+
+public final class io/matthewnelson/encoding/base64/Base64$Builder {
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;)V
+	public final fun build ()Lio/matthewnelson/encoding/base64/Base64;
+	public final fun encodeUrlSafe (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
+	public final fun isLenient (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
+	public final fun lineBreak (B)Lio/matthewnelson/encoding/base64/Base64$Builder;
+	public final fun padEncoded (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
+	public final fun strict ()Lio/matthewnelson/encoding/base64/Base64$Builder;
+}
+
+public final class io/matthewnelson/encoding/base64/Base64$Companion {
+	public final fun -Builder (Lio/matthewnelson/encoding/base64/Base64$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
+	public final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
 }
 
 public final class io/matthewnelson/encoding/base64/Base64$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {

@@ -112,5 +112,5 @@ open class Base64Benchmark: EncoderDecoderBenchmarkBase() {
     // CHARS: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
     @Param("2:84", "w:22")
     override var params: String = "<Char>:<Byte>"
-    override val encoder: EncoderDecoder<*> = Base64()
+    override val encoder: EncoderDecoder<*> = Base64.Builder {}
 }

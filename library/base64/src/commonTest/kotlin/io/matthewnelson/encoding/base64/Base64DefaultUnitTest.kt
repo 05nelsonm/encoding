@@ -26,7 +26,7 @@ import kotlin.test.assertEquals
 
 class Base64DefaultUnitTest: BaseNEncodingTest() {
 
-    private fun base64(): Base64 = Base64()
+    private fun base64(): Base64 = Base64.Builder {}
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
         Data("SGVsbG8gV29ybGQ^", expected = null, message = "Character '^' should return null")

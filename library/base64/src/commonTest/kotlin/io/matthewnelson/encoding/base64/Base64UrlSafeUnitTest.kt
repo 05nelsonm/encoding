@@ -28,9 +28,9 @@ class Base64UrlSafeUnitTest: BaseNEncodingTest() {
 
     private var usePadding = true
 
-    private fun base64(): Base64 = Base64 {
-        encodeToUrlSafe = true
-        padEncoded = usePadding
+    private fun base64(): Base64 = Base64.Builder {
+        encodeUrlSafe(true)
+        padEncoded(usePadding)
     }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
