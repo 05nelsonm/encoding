@@ -66,7 +66,10 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
         }
     }
 
-    final object Default : io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Default|null[0]
+    final object Default : io.matthewnelson.encoding.utf8/UTF8 { // io.matthewnelson.encoding.utf8/UTF8.Default|null[0]
+        final inline fun Builder(io.matthewnelson.encoding.utf8/UTF8.Config?, kotlin/Function1<io.matthewnelson.encoding.utf8/UTF8.Builder, kotlin/Unit>): io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Default.Builder|Builder(io.matthewnelson.encoding.utf8.UTF8.Config?;kotlin.Function1<io.matthewnelson.encoding.utf8.UTF8.Builder,kotlin.Unit>){}[0]
+        final inline fun Builder(kotlin/Function1<io.matthewnelson.encoding.utf8/UTF8.Builder, kotlin/Unit>): io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Default.Builder|Builder(kotlin.Function1<io.matthewnelson.encoding.utf8.UTF8.Builder,kotlin.Unit>){}[0]
+    }
 
     final object ThrowOnInvalid : io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.ThrowOnInvalid|null[0]
 }

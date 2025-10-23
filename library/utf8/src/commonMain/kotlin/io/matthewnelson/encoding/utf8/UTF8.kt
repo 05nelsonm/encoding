@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("ConvertTwoComparisonsToRangeCheck", "NOTHING_TO_INLINE", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
+@file:Suppress("ConvertTwoComparisonsToRangeCheck", "FunctionName", "NOTHING_TO_INLINE", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
 
 package io.matthewnelson.encoding.utf8
 
@@ -21,9 +21,13 @@ import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.utf8.internal.build
 import io.matthewnelson.encoding.utf8.internal.doOutput
 import io.matthewnelson.encoding.utf8.internal.initializeKotlin
 import io.matthewnelson.encoding.utf8.internal.sizeOrThrow
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -36,7 +40,7 @@ import kotlin.jvm.JvmSynthetic
  * @see [Default]
  * @see [ThrowOnInvalid]
  * */
-public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.Config>(config) {
+public open class UTF8: EncoderDecoder<UTF8.Config> {
 
     /**
      * TODO
@@ -44,6 +48,28 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
     public companion object Default: UTF8(Config.DEFAULT) {
 
         // TODO: @JvmField public val CT: UTF8 = UTF8(Config.DEFAULT_CT)
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @JvmName("-Builder")
+        @OptIn(ExperimentalContracts::class)
+        public inline fun Builder(block: Builder.() -> Unit): UTF8 {
+            contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+            return Builder(other = null, block)
+        }
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @JvmName("-Builder")
+        @OptIn(ExperimentalContracts::class)
+        public inline fun Builder(other: UTF8.Config?, block: Builder.() -> Unit): UTF8 {
+            contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+            return Builder(other).apply(block).build()
+        }
 
         private const val NAME = "UTF-8"
     }
@@ -64,18 +90,16 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
         public constructor(): this(other = null)
         public constructor(other: Config?) {
             if (other == null) return
-            _replacementStrategy = other.replacementStrategy
+            this._replacementStrategy = other.replacementStrategy
         }
 
+        @JvmSynthetic
         internal var _replacementStrategy = Config.DEFAULT.replacementStrategy
 
         /**
          * TODO
          * */
-        public fun replacement(strategy: ReplacementStrategy): Builder {
-            _replacementStrategy = strategy
-            return this
-        }
+        public fun replacement(strategy: ReplacementStrategy): Builder = apply { _replacementStrategy = strategy }
 
         // TODO: constantTime
 
@@ -136,29 +160,20 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
      * TODO
      * */
     public class Config private constructor(
-
-        /**
-         * TODO
-         * */
         @JvmField
         public val replacementStrategy: ReplacementStrategy,
-    ): EncoderDecoder.Config(isLenient = null, lineBreakInterval = -1, paddingChar = null) {
+    ): EncoderDecoder.Config(null, -1, null) {
 
-        protected override fun decodeOutMaxSizeProtected(
-            encodedSize: Long,
-        ): Long = if (encodedSize > MAX_CHAR_LEN) Long.MIN_VALUE else encodedSize * 3
+        protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
+            return if (encodedSize > MAX_ENCODED_SIZE) Long.MIN_VALUE else encodedSize * 3
+        }
 
-        protected override fun decodeOutMaxSizeOrFailProtected(
-            encodedSize: Int,
-            input: DecoderInput,
-        ): Int {
+        protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
             val s = decodeOutMaxSizeProtected(encodedSize.toLong())
             return if (s in 0L..Int.MAX_VALUE.toLong()) s.toInt() else Int.MIN_VALUE
         }
 
-        protected override fun encodeOutSizeProtected(
-            unEncodedSize: Long,
-        ): Long {
+        protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             TODO("Not yet implemented")
         }
 
@@ -168,22 +183,10 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
 
         internal companion object {
 
-            private const val MAX_CHAR_LEN: Long = Long.MAX_VALUE / 3
+            private const val MAX_ENCODED_SIZE: Long = Long.MAX_VALUE / 3
 
             @JvmSynthetic
-            internal fun build(b: Builder): UTF8 {
-                val replacementStrategy = b._replacementStrategy
-                // TODO: If constantTime, ensure alwaysUsePreProcessing = false
-
-                if (replacementStrategy == DEFAULT.replacementStrategy) return Default
-                if (replacementStrategy == THROW.replacementStrategy) return ThrowOnInvalid
-
-                val config = Config(
-                    replacementStrategy,
-                )
-
-                return UTF8(config)
-            }
+            internal fun build(b: Builder): UTF8 = ::Config.build(b, ::UTF8)
 
             @get:JvmSynthetic
             internal val DEFAULT: Config = Config(
@@ -428,4 +431,6 @@ public open class UTF8 private constructor(config: Config): EncoderDecoder<UTF8.
             config.replacementStrategy.doOutput(out)
         }
     }
+
+    private constructor(config: Config): super(config)
 }

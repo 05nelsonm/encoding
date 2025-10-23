@@ -1,5 +1,7 @@
 public class io/matthewnelson/encoding/utf8/UTF8 : io/matthewnelson/encoding/core/EncoderDecoder {
 	public static final field Default Lio/matthewnelson/encoding/utf8/UTF8$Default;
+	public static final fun -Builder (Lio/matthewnelson/encoding/utf8/UTF8$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/utf8/UTF8;
+	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/utf8/UTF8;
 	public synthetic fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$Config;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	protected final fun name ()Ljava/lang/String;
 	protected final fun newDecoderFeedProtected (Lio/matthewnelson/encoding/core/Decoder$OutFeed;)Lio/matthewnelson/encoding/core/Decoder$Feed;
@@ -50,6 +52,8 @@ public final class io/matthewnelson/encoding/utf8/UTF8$Config : io/matthewnelson
 }
 
 public final class io/matthewnelson/encoding/utf8/UTF8$Default : io/matthewnelson/encoding/utf8/UTF8 {
+	public final fun -Builder (Lio/matthewnelson/encoding/utf8/UTF8$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/utf8/UTF8;
+	public final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/utf8/UTF8;
 }
 
 public final class io/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy {
