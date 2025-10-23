@@ -56,7 +56,7 @@ public final class io/matthewnelson/encoding/base64/Base64$Builder {
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
 	public final fun lineBreak (B)Lio/matthewnelson/encoding/base64/Base64$Builder;
 	public final fun padEncoded (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
-	public final fun strict ()Lio/matthewnelson/encoding/base64/Base64$Builder;
+	public final fun strictSpec ()Lio/matthewnelson/encoding/base64/Base64$Builder;
 }
 
 public final class io/matthewnelson/encoding/base64/Base64$Companion {

@@ -33,14 +33,46 @@ import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
- * TODO
+ * Base64 encoding/decoding in accordance with [RFC 4648 section 4](https://www.ietf.org/rfc/rfc4648.html#section-4)
+ * and [RFC 4648 section 5](https://www.ietf.org/rfc/rfc4648.html#section-5).
+ *
+ * **NOTE:** All instances decode both [Default.CHARS] and [UrlSafe.CHARS] interchangeably;
+ * no special configuration is needed.
+ *
+ * e.g.
+ *
+ *     val base64 = Base64.Builder {
+ *         isLenient(enable = true)
+ *         lineBreak(interval = 64)
+ *         encodeUrlSafe(enable = false)
+ *         padEncoded(enable = true)
+ *     }
+ *
+ *     val text = "Hello World!"
+ *     val bytes = text.encodeToByteArray()
+ *     val encoded = bytes.encodeToString(base64)
+ *     println(encoded) // SGVsbG8gV29ybGQh
+ *
+ *     // Alternatively, use the static implementation containing
+ *     // a default configuration, instead of creating your own.
+ *     var decoded = encoded.decodeToByteArray(Base64.Default).decodeToString()
+ *     assertEquals(text, decoded)
+ *     decoded = encoded.decodeToByteArray(Base64.UrlSafe).decodeToString()
+ *     assertEquals(text, decoded)
+ *
+ * @see [Builder]
+ * @see [Companion.Builder]
+ * @see [Default]
+ * @see [UrlSafe]
+ * @see [Encoder.Companion]
+ * @see [Decoder.Companion]
  * */
 public class Base64: EncoderDecoder<Base64.Config> {
 
     public companion object {
 
         /**
-         * TODO
+         * Syntactic sugar for Kotlin consumers that like lambdas.
          * */
         @JvmStatic
         @JvmName("-Builder")
@@ -51,7 +83,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
 
         /**
-         * TODO
+         * Syntactic sugar for Kotlin consumers that like lambdas.
          * */
         @JvmStatic
         @JvmName("-Builder")
@@ -64,9 +96,6 @@ public class Base64: EncoderDecoder<Base64.Config> {
         private const val NAME = "Base64"
     }
 
-    /**
-     * TODO
-     * */
     public class Builder {
 
         public constructor(): this(other = null)
@@ -88,41 +117,93 @@ public class Base64: EncoderDecoder<Base64.Config> {
         internal var _padEncoded: Boolean = true
 
         /**
-         * TODO
+         * DEFAULT: `true`
+         *
+         * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
+         * allowed but ignored) during decoding operations. This is non-compliant with
+         * `RFC 4648`.
+         *
+         * If `false`, an [EncodingException] will be thrown.
          * */
         public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
         /**
-         * TODO
+         * DEFAULT: `0` (i.e. disabled)
+         *
+         * If greater than `0`, when [interval] number of encoded characters have been
+         * output, the next encoded character will be preceded with the new line character
+         * `\n`.
+         *
+         * A great value is `64`, and is the default value used for both [Default.config]
+         * and [UrlSafe.config].
+         *
+         * **NOTE:** This setting is ignored if [isLenient] is set to `false`.
+         *
+         * e.g.
+         *
+         *     isLenient(enable = true)
+         *     lineBreak(interval = 0)
+         *     // SGVsbG8gV29ybGQh
+         *
+         *     isLenient(enable = true)
+         *     lineBreak(interval = 10)
+         *     // SGVsbG8gV29ybGQh
+         *     // 9ybGQh
+         *
+         *     isLenient(enable = false)
+         *     lineBreak(interval = 10)
+         *     // SGVsbG8gV29ybGQh
          * */
         public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
         /**
-         * TODO
+         * DEFAULT: `false`
+         *
+         * If `true`, characters from table [UrlSafe.CHARS] will be output during encoding
+         * operations.
+         *
+         * If `false`, characters from table [Default.CHARS] will be output during encoding
+         * operations.
+         *
+         * **NOTE:** This does not affect decoding operations. [Base64] is designed to accept
+         * characters from both tables when decoding.
          * */
         public fun encodeUrlSafe(enable: Boolean): Builder = apply { _encodeToUrlSafe = enable }
 
         /**
-         * TODO
+         * DEFAULT: `true`
+         *
+         * If `true`, encoded output will have the appropriate number of padding character(s)
+         * `=` appended to it.
+         *
+         * If `false`, padding character(s) will be omitted from output. This is non-compliant
+         * with `RFC 4648`.
          * */
         public fun padEncoded(enable: Boolean): Builder = apply { _padEncoded = enable }
 
         /**
-         * TODO
+         * Helper for configuring the builder with settings which are compliant with the
+         * `RFC 4648` specification.
+         *
+         *  - [isLenient] will be set to `false`.
+         *  - [padEncoded] will be set to `true`.
          * */
-        public fun strict(): Builder = apply {
+        public fun strictSpec(): Builder = apply {
             _isLenient = false
             _padEncoded = true
         }
 
         /**
-         * TODO
+         * Commits configured options to [Config], creating the [Base64] instance.
          * */
         public fun build(): Base64 = Config.build(this)
     }
 
     /**
-     * TODO
+     * Holder of a configuration for the [Base64] encoder/decoder instance.
+     *
+     * @see [Builder]
+     * @see [Companion.Builder]
      * */
     public class Config private constructor(
         isLenient: Boolean,
@@ -191,7 +272,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
     }
 
     /**
-     * TODO
+     * A static instance of [EncoderDecoder] configured with a [Base64.Builder.lineBreak]
+     * interval of `64`, and remaining [Base64.Builder] `DEFAULT` values.
      * */
     public object Default: EncoderDecoder<Base64.Config>(config = Base64.Config.DEFAULT) {
 
@@ -212,7 +294,9 @@ public class Base64: EncoderDecoder<Base64.Config> {
     }
 
     /**
-     * TODO
+     * A static instance of [EncoderDecoder] configured with a [Base64.Builder.lineBreak]
+     * interval of `64`, a [Base64.Builder.encodeUrlSafe] set to `true`, and remaining
+     * [Base64.Builder] `DEFAULT` values.
      * */
     public object UrlSafe: EncoderDecoder<Base64.Config>(config = Base64.Config.URL_SAFE) {
 

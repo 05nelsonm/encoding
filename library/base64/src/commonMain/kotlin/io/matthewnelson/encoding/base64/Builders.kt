@@ -54,7 +54,7 @@ public fun Base64(
  * */
 @Deprecated("Use Base64.Builder or Base64.Companion.Builder")
 @JvmOverloads
-public fun Base64(strict: Boolean = false): Base64 = Base64.Builder { if (strict) strict() }
+public fun Base64(strict: Boolean = false): Base64 = Base64.Builder { if (strict) strictSpec() }
 
 /**
  * DEPRECATED
@@ -101,7 +101,7 @@ public class Base64ConfigBuilder {
     public var padEncoded: Boolean = true
 
     /**
-     * Refer to [Base64.Builder.strict] documentation.
+     * Refer to [Base64.Builder.strictSpec] documentation.
      * */
     public fun strict(): Base64ConfigBuilder {
         isLenient = false
