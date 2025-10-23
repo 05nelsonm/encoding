@@ -55,6 +55,7 @@ kmpConfiguration {
                     implementation(project(":library:base16"))
                     implementation(project(":library:base32"))
                     implementation(project(":library:base64"))
+                    implementation(project(":library:utf8"))
                 }
             }
         }

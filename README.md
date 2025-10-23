@@ -23,16 +23,21 @@ Configurable, streamable, efficient and extensible Encoding/Decoding for Kotlin 
 API docs available at [https://encoding.matthewnelson.io][url-docs]
 
 **Base16 (a.k.a. "hex")**
- - [RFC 4648 section 8][url-rfc-s8]
+ - [RFC 4648 section 8][url-rfc4648-s8]
 
 **Base32**
  - [Crockford][url-crockford]
- - Default [RFC 4648 section 6][url-rfc-s6]
- - Hex [RFC 4648 section 7][url-rfc-s7]
+ - Default [RFC 4648 section 6][url-rfc4648-s6]
+ - Hex [RFC 4648 section 7][url-rfc4648-s7]
 
 **Base64**
- - Default [RFC 4648 section 4][url-rfc-s4]
- - UrlSafe [RFC 4648 section 5][url-rfc-s5]
+ - Default [RFC 4648 section 4][url-rfc4648-s4]
+ - UrlSafe [RFC 4648 section 5][url-rfc4648-s5]
+
+<!-- TODO: Uncomment when published && update Get Started
+**UTF-8**
+ - [RFC 3629 section 4][url-rfc3629-s4]
+-->
 
 ### Usage
 
@@ -325,8 +330,9 @@ dependencies {
 [url-kotlin]: https://kotlinlang.org
 [url-latest]: https://github.com/05nelsonm/encoding/releases/latest
 [url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[url-rfc-s4]: https://www.ietf.org/rfc/rfc4648.html#section-4
-[url-rfc-s5]: https://www.ietf.org/rfc/rfc4648.html#section-5
-[url-rfc-s6]: https://www.ietf.org/rfc/rfc4648.html#section-6
-[url-rfc-s7]: https://www.ietf.org/rfc/rfc4648.html#section-7
-[url-rfc-s8]: https://www.ietf.org/rfc/rfc4648.html#section-8
+[url-rfc3629-s4]: https://datatracker.ietf.org/doc/html/rfc3629#page-4
+[url-rfc4648-s4]: https://www.ietf.org/rfc/rfc4648.html#section-4
+[url-rfc4648-s5]: https://www.ietf.org/rfc/rfc4648.html#section-5
+[url-rfc4648-s6]: https://www.ietf.org/rfc/rfc4648.html#section-6
+[url-rfc4648-s7]: https://www.ietf.org/rfc/rfc4648.html#section-7
+[url-rfc4648-s8]: https://www.ietf.org/rfc/rfc4648.html#section-8

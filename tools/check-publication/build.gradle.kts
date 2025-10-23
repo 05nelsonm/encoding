@@ -48,6 +48,7 @@ kmpConfiguration {
                     implementation("$group:base32")
                     implementation("$group:base64")
                     implementation("$group:core")
+//                    implementation("$group:utf8")
                 }
             }
         }

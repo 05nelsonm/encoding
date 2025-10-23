@@ -319,6 +319,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 
         /** @suppress */
         final override fun hashCode(): Int {
+            // TODO: Optimize. This is calling toString EVERY time which is crazy.
             return 17 * 31 + toString().hashCode()
         }
 
