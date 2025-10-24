@@ -17,8 +17,6 @@
 
 package io.matthewnelson.encoding.base32
 
-import io.matthewnelson.encoding.base32.Base32.Crockford.Companion.CHARS_LOWER
-import io.matthewnelson.encoding.base32.Base32.Crockford.Companion.CHARS_UPPER
 import io.matthewnelson.encoding.base32.internal.build
 import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize
 import io.matthewnelson.encoding.base32.internal.encodeOutSize
@@ -188,7 +186,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * interval will not be reset.
              *
              * **NOTE:** This setting is ignored if neither [hyphen] interval nor [check] symbol
-             * were configured.
+             * are configured.
              *
              * e.g. (Behavior when `true`)
              *
@@ -1288,7 +1286,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
         override fun doFinalProtected() {
             // TODO: If _config.checkSymbol is not null, check
-            //  isCheckSymbolSet and fail if it is not.
+            //  isCheckSymbolSet and fail if it is not. (Issue #175)
             buffer.finalize()
             isCheckSymbolSet = false
         }
@@ -1313,7 +1311,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 out.output(byte)
                 outputHyphenOnNext = _config.hyphenInterval > 0 && ++outCount == _config.hyphenInterval
             },
-            table = if (_config.encodeLowercase) CHARS_LOWER else CHARS_UPPER,
+            table = if (_config.encodeLowercase) Crockford.CHARS_LOWER else Crockford.CHARS_UPPER,
             paddingChar = null,
         )
 

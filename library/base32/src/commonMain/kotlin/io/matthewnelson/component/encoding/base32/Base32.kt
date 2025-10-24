@@ -58,9 +58,9 @@ public sealed class Base32 {
     public data class Crockford @JvmOverloads constructor(
         @Deprecated(
             message = "Replaced by EncoderDecoder. Use io.matthewnelson.encoding.base32.Base32.Crockford.Builder to set",
-            level = DeprecationLevel.WARNING
+            level = DeprecationLevel.WARNING,
         )
-        val checkSymbol: Char? = null
+        val checkSymbol: Char? = null,
     ): Base32() {
 
         init {
@@ -82,7 +82,7 @@ public sealed class Base32 {
                 replaceWith = ReplaceWith(
                     expression = "Crockford.CHARS_UPPER",
                     imports = [
-                        "io.matthewnelson.encoding.base32.Base32.Crockford"
+                        "io.matthewnelson.encoding.base32.Base32.Crockford",
                     ],
                 ),
                 level = DeprecationLevel.WARNING,
