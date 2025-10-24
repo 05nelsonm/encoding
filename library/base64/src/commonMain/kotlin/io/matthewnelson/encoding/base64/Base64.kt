@@ -291,7 +291,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
         @get:JvmSynthetic
-        internal val DELEGATE = Base64(config)
+        internal val DELEGATE = Base64(config, unused = null)
         override fun name(): String = DELEGATE.name()
         override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
             return DELEGATE.newDecoderFeedProtected(out)
@@ -314,7 +314,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         public const val CHARS: String = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
         @get:JvmSynthetic
-        internal val DELEGATE = Base64(config)
+        internal val DELEGATE = Base64(config, unused = null)
         override fun name(): String = DELEGATE.name()
         override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
             return DELEGATE.newDecoderFeedProtected(out)
@@ -498,6 +498,12 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
     )
 
-    // TODO: Deprecate & replace (Issue #172)
-    public constructor(config: Config): super(config)
+    @Deprecated(
+        message = "This constructor is scheduled for removal. Use Base64.Builder or Base64.Companion.Builder.",
+        level = DeprecationLevel.WARNING,
+    )
+    public constructor(config: Config): this(config, unused = null)
+
+    @Suppress("UNUSED_PARAMETER")
+    private constructor(config: Config, unused: Any?): super(config)
 }
