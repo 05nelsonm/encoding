@@ -360,6 +360,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): C
 )
 @JvmOverloads
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Default): ByteArray {
+    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Default.Builder {})
 }
 
@@ -375,6 +376,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Def
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
+    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Hex.Builder {})
 }
 
@@ -390,5 +392,6 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Crockford): ByteArray {
+    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }

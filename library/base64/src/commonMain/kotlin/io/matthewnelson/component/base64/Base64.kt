@@ -229,6 +229,7 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): Cha
 )
 @JvmOverloads
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Default): ByteArray {
+    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
@@ -244,6 +245,7 @@ public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Def
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.UrlSafe): ByteArray {
+    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base64.Base64.Builder {
         encodeUrlSafe(true)
         padEncoded(base64.pad)

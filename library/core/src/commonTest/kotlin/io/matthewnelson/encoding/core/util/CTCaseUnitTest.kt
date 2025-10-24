@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION_ERROR")
 class CTCaseUnitTest {
 
     @Test

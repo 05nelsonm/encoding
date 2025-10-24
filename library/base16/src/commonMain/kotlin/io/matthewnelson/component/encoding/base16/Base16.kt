@@ -98,6 +98,6 @@ public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase16ToByteArray(): ByteArray {
-    @Suppress("DEPRECATION")
+    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(Base16.Builder {})
 }

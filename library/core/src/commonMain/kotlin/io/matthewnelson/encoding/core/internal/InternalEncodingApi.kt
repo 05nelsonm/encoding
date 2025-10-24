@@ -18,15 +18,7 @@
 package io.matthewnelson.encoding.core.internal
 
 /**
- * Denotes an api as internal, and subject to change at any time.
- *
- * Any usage of a declaration annotated with [InternalEncodingApi]
- * must be accepted by annotating that usage with the [OptIn]
- * annotation, e.g @OptIn(InternalEncodingApi::class), or by using
- * the following compiler argument:
- *
- *   -Xopt-in=io.matthewnelson.encoding.core.internal.InternalEncodingApi
- *
+ * DEPRECATED
  * @suppress
  * */
 @RequiresOptIn
@@ -45,5 +37,8 @@ package io.matthewnelson.encoding.core.internal
     AnnotationTarget.TYPEALIAS
 )
 @Retention(AnnotationRetention.BINARY)
-@Deprecated(message = "deprecated due to package name incompatibility with JPMS")
+@Deprecated(
+    message = "deprecated due to package name incompatibility with JPMS",
+    level = DeprecationLevel.ERROR,
+)
 public annotation class InternalEncodingApi

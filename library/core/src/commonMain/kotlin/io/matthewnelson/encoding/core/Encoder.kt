@@ -185,16 +185,15 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         }
 
         /**
-         * Encodes a [ByteArray] for the provided [encoder] and
-         * returns the encoded data in the form of a [ByteArray].
-         *
-         * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE].
+         * DEPRECATED
          * @suppress
          * */
         @JvmStatic
         @Throws(EncodingSizeException::class)
-        @Deprecated(message = "Should not utilize. Underlying Char to Byte conversion can produce incorrect results")
+        @Deprecated(
+            message = "Should not utilize. Underlying Char to Byte conversion can produce incorrect results",
+            level = DeprecationLevel.ERROR,
+        )
         public fun ByteArray.encodeToByteArray(encoder: Encoder<*>): ByteArray {
             return encoder.encodeOutSizeOrFail(size) { outSize ->
                 var i = 0

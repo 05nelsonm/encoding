@@ -18,63 +18,23 @@ package io.matthewnelson.encoding.core.util
 import kotlin.jvm.JvmField
 
 /**
- * Utility for converting letters to upper/lower case in a constant-time
- * manner (in terms of work performed).
- *
- * Both [CTCase.uppercase] and [CTCase.lowercase] perform the same number
- * of operations no matter the input (i.e. they do not return early).
- *
- * **NOTE:** Only characters where [Char.isLetter] is true are taken from
- * the provided table.
- *
- * e.g. (NOT constant-time operation)
- *
- *     fun String.containsChar(char: Char): Boolean {
- *         for (c in this) {
- *             if (c == char) return true
- *         }
- *         return false
- *     }
- *
- * e.g. (YES constant-time operation)
- *
- *     fun String.containsChar(char: Char): Boolean {
- *         var result = false
- *         for (c in this) {
- *             result = if (c == char) true else result
- *         }
- *         return result
- *     }
- *
- * @param [table] The decoding table (e.g. `ABCDEFGHIJKLMNOPQRSTUVWXYZ234567`)
- * @throws [IllegalArgumentException] if table contains a letter that has no
- *   corresponding lowercase value.
+ * DEPRECATED
  * @suppress
  * */
-@Deprecated("Implementation is incredibly slow. Diff ASCII values instead.")
+@Deprecated(
+    message = "Implementation is incredibly slow. Diff ASCII values instead.",
+    level = DeprecationLevel.ERROR,
+)
 public class CTCase
 @Throws(IllegalArgumentException::class)
 public constructor(table: CharSequence) {
 
-    /**
-     * Uppercase letters
-     * @suppress
-     * */
     @JvmField
     public val uppers: Set<Char>
 
-    /**
-     * Lowercase letters corresponding to [uppers]
-     * @suppress
-     * */
     @JvmField
     public val lowers: Set<Char>
 
-    /**
-     * If the provided [char] exists within [lowers], its corresponding
-     * uppercase value is returned. If nothing is found, `null` is returned.
-     * @suppress
-     * */
     public fun uppercase(char: Char): Char? {
         val iLower = lowers.iterator()
         val iUpper = uppers.iterator()
@@ -90,11 +50,6 @@ public constructor(table: CharSequence) {
         return result
     }
 
-    /**
-     * If the provided [char] exists within [uppers], its corresponding
-     * lowercase value is returned. If nothing is found, `null` is returned.
-     * @suppress
-     * */
     public fun lowercase(char: Char): Char? {
         val iLower = lowers.iterator()
         val iUpper = uppers.iterator()
