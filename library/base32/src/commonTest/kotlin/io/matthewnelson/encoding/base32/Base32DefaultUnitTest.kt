@@ -30,7 +30,7 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
     private var usePadding = true
 
     private fun base32(): Base32.Default = Base32.Default.Builder {
-        encodeToLowercase(useLowercase)
+        encodeLowercase(useLowercase)
         padEncoded(usePadding)
     }
 

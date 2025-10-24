@@ -38,8 +38,8 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
         }
 
     private fun base32(): Base32.Crockford = Base32.Crockford.Builder {
-        encodeToLowercase(useLowercase)
-        checkSymbol(symbol)
+        encodeLowercase(useLowercase)
+        check(symbol)
     }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
@@ -275,7 +275,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     @Test
     fun givenCheckSymbol_whenNotAValidSymbol_throwsException() {
         assertFailsWith<IllegalArgumentException> {
-            Base32.Crockford.Builder { checkSymbol('0') }
+            Base32.Crockford.Builder { check('0') }
         }
     }
 
@@ -329,7 +329,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
                 raw = data.raw,
                 expected = "${data.expected}$symbol$symbol"
             )
-            val decoded = newData.expected.decodeToByteArrayOrNull(Base32.Crockford.Builder { checkSymbol(symbol)} )
+            val decoded = newData.expected.decodeToByteArrayOrNull(Base32.Crockford.Builder { check(symbol)} )
             assertNull(decoded)
         }
     }
@@ -390,8 +390,8 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
 
         val crockford = Base32.Crockford.Builder {
             hyphen(4)
-            checkSymbol('*')
-            finalizeWhenFlushed(false)
+            check('*')
+            finalizeOnFlush(false)
         }
 
         val decoded = expected.decodeToByteArray(crockford)
@@ -423,8 +423,8 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
 
         val crockford = Base32.Crockford.Builder {
             hyphen(4)
-            checkSymbol('*')
-            finalizeWhenFlushed(true)
+            check('*')
+            finalizeOnFlush(true)
         }
 
         val decoded = expected.split('\n').let { splits ->

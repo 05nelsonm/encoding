@@ -44,9 +44,7 @@ public fun Base32Crockford(
 @Deprecated("Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder")
 public fun Base32Crockford(
     block: Base32CrockfordConfigBuilder.() -> Unit,
-): Base32.Crockford {
-    return Base32Crockford(config = null, block)
-}
+): Base32.Crockford = Base32Crockford(config = null, block)
 
 /**
  * DEPRECATED
@@ -56,7 +54,9 @@ public fun Base32Crockford(
  * */
 @Deprecated("Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder")
 @JvmOverloads
-public fun Base32Crockford(strict: Boolean = false): Base32.Crockford = Base32.Crockford.Builder { if (strict) strict() }
+public fun Base32Crockford(
+    strict: Boolean = false,
+): Base32.Crockford = Base32.Crockford.Builder { if (strict) strictSpec() }
 
 /**
  * DEPRECATED
@@ -79,9 +79,7 @@ public fun Base32Default(
 @Deprecated("Use Base32.Default.Builder or Base32.Default.Companion.Builder")
 public fun Base32Default(
     block: Base32DefaultConfigBuilder.() -> Unit,
-): Base32.Default {
-    return Base32Default(config = null, block)
-}
+): Base32.Default = Base32Default(config = null, block)
 
 /**
  * DEPRECATED
@@ -91,7 +89,9 @@ public fun Base32Default(
  * */
 @Deprecated("Use Base32.Default.Builder or Base32.Default.Companion.Builder")
 @JvmOverloads
-public fun Base32Default(strict: Boolean = false): Base32.Default = Base32.Default.Builder { if (strict) strict() }
+public fun Base32Default(
+    strict: Boolean = false,
+): Base32.Default = Base32.Default.Builder { if (strict) strictSpec() }
 
 /**
  * DEPRECATED
@@ -114,9 +114,7 @@ public fun Base32Hex(
 @Deprecated("Use Base32.Hex.Builder or Base32.Hex.Companion.Builder")
 public fun Base32Hex(
     block: Base32HexConfigBuilder.() -> Unit,
-): Base32.Hex {
-    return Base32Hex(config = null, block)
-}
+): Base32.Hex = Base32Hex(config = null, block)
 
 /**
  * DEPRECATED
@@ -126,7 +124,9 @@ public fun Base32Hex(
  * */
 @JvmOverloads
 @Deprecated("Use Base32.Hex.Builder or Base32.Hex.Companion.Builder")
-public fun Base32Hex(strict: Boolean = false): Base32.Hex = Base32.Hex.Builder { if (strict) strict() }
+public fun Base32Hex(
+    strict: Boolean = false,
+): Base32.Hex = Base32.Hex.Builder { if (strict) strictSpec() }
 
 /**
  * DEPRECATED
@@ -143,10 +143,10 @@ public class Base32CrockfordConfigBuilder {
     public constructor(config: Base32.Crockford.Config?) {
         compat = Base32.Crockford.Builder(other = config)
         isLenient = compat._isLenient
-        encodeToLowercase = compat._encodeToLowercase
+        encodeToLowercase = compat._encodeLowercase
         hyphenInterval = compat._hyphenInterval
         checkSymbol = compat._checkSymbol
-        finalizeWhenFlushed = compat._finalizeWhenFlushed
+        finalizeWhenFlushed = compat._finalizeOnFlush
     }
 
     /**
@@ -156,7 +156,7 @@ public class Base32CrockfordConfigBuilder {
     public var isLenient: Boolean = true
 
     /**
-     * Refer to [Base32.Crockford.Builder.encodeToLowercase] documentation.
+     * Refer to [Base32.Crockford.Builder.encodeLowercase] documentation.
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false
@@ -172,7 +172,7 @@ public class Base32CrockfordConfigBuilder {
         private set
 
     /**
-     * Refer to [Base32.Crockford.Builder.checkSymbol] documentation.
+     * Refer to [Base32.Crockford.Builder.check] documentation.
      *
      * @throws [IllegalArgumentException] If not a valid check symbol.
      * */
@@ -195,13 +195,13 @@ public class Base32CrockfordConfigBuilder {
     }
 
     /**
-     * Refer to [Base32.Crockford.Builder.finalizeWhenFlushed] documentation.
+     * Refer to [Base32.Crockford.Builder.finalizeOnFlush] documentation.
      * */
     @JvmField
     public var finalizeWhenFlushed: Boolean = false
 
     /**
-     * Refer to [Base32.Crockford.Builder.strict] documentation.
+     * Refer to [Base32.Crockford.Builder.strictSpec] documentation.
      * */
     public fun strict(): Base32CrockfordConfigBuilder {
         isLenient = false
@@ -218,10 +218,10 @@ public class Base32CrockfordConfigBuilder {
     @JvmSynthetic
     internal fun buildCompat(): Base32.Crockford = compat
         .isLenient(isLenient)
-        .encodeToLowercase(encodeToLowercase)
+        .encodeLowercase(encodeToLowercase)
         .hyphen(hyphenInterval)
-        .checkSymbol(checkSymbol)
-        .finalizeWhenFlushed(finalizeWhenFlushed)
+        .check(checkSymbol)
+        .finalizeOnFlush(finalizeWhenFlushed)
         .build()
 
     /** @suppress */
@@ -246,7 +246,7 @@ public class Base32DefaultConfigBuilder {
         compat = Base32.Default.Builder(other = config)
         isLenient = compat._isLenient
         lineBreakInterval = compat._lineBreakInterval
-        encodeToLowercase = compat._encodeToLowercase
+        encodeToLowercase = compat._encodeLowercase
         padEncoded = compat._padEncoded
     }
 
@@ -263,7 +263,7 @@ public class Base32DefaultConfigBuilder {
     public var lineBreakInterval: Byte = 0
 
     /**
-     * Refer to [Base32.Default.Builder.encodeToLowercase] documentation.
+     * Refer to [Base32.Default.Builder.encodeLowercase] documentation.
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false
@@ -275,7 +275,7 @@ public class Base32DefaultConfigBuilder {
     public var padEncoded: Boolean = true
 
     /**
-     * Refer to [Base32.Default.Builder.strict] documentation.
+     * Refer to [Base32.Default.Builder.strictSpec] documentation.
      * */
     public fun strict(): Base32DefaultConfigBuilder {
         isLenient = false
@@ -294,7 +294,7 @@ public class Base32DefaultConfigBuilder {
     internal fun buildCompat(): Base32.Default = compat
         .isLenient(isLenient)
         .lineBreak(lineBreakInterval)
-        .encodeToLowercase(encodeToLowercase)
+        .encodeLowercase(encodeToLowercase)
         .padEncoded(padEncoded)
         .build()
 
@@ -320,7 +320,7 @@ public class Base32HexConfigBuilder {
         compat = Base32.Hex.Builder(other = config)
         isLenient = compat._isLenient
         lineBreakInterval = compat._lineBreakInterval
-        encodeToLowercase = compat._encodeToLowercase
+        encodeToLowercase = compat._encodeLowercase
         padEncoded = compat._padEncoded
     }
 
@@ -337,7 +337,7 @@ public class Base32HexConfigBuilder {
     public var lineBreakInterval: Byte = 0
 
     /**
-     * Refer to [Base32.Hex.Builder.encodeToLowercase] documentation.
+     * Refer to [Base32.Hex.Builder.encodeLowercase] documentation.
      * */
     @JvmField
     public var encodeToLowercase: Boolean = false
@@ -349,7 +349,7 @@ public class Base32HexConfigBuilder {
     public var padEncoded: Boolean = true
 
     /**
-     * Refer to [Base32.Hex.Builder.strict] documentation.
+     * Refer to [Base32.Hex.Builder.strictSpec] documentation.
      * */
     public fun strict(): Base32HexConfigBuilder {
         isLenient = false
@@ -368,7 +368,7 @@ public class Base32HexConfigBuilder {
     internal fun buildCompat(): Base32.Hex = compat
         .isLenient(isLenient)
         .lineBreak(lineBreakInterval)
-        .encodeToLowercase(encodeToLowercase)
+        .encodeLowercase(encodeToLowercase)
         .padEncoded(padEncoded)
         .build()
 

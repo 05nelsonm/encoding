@@ -30,7 +30,7 @@ class Base32HexUnitTest: BaseNEncodingTest() {
     private var usePadding = true
 
     private fun base32(): Base32.Hex = Base32.Hex.Builder {
-        encodeToLowercase(useLowercase)
+        encodeLowercase(useLowercase)
         padEncoded(usePadding)
     }
 

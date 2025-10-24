@@ -200,7 +200,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
-    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { checkSymbol(base32.checkSymbol) })
+    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
 @Deprecated(
@@ -246,7 +246,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     level = DeprecationLevel.HIDDEN,
 )
 public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
-    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { checkSymbol(base32.checkSymbol) })
+    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
 @Deprecated(
@@ -295,7 +295,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
-    return encodeToString(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { checkSymbol(base32.checkSymbol) })
+    return encodeToString(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
 @Deprecated(
@@ -344,7 +344,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArr
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): CharArray {
-    return encodeToCharArray(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { checkSymbol(base32.checkSymbol) })
+    return encodeToCharArray(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
 @Deprecated(
@@ -390,5 +390,5 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Crockford): ByteArray {
-    return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { checkSymbol(base32.checkSymbol) })
+    return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }

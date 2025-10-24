@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("FunctionName", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
+@file:Suppress("FunctionName", "LocalVariableName", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.base32
 
@@ -39,17 +39,47 @@ import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
- * TODO
+ * Base32 encoding/decoding
+ *
+ * @see [Crockford]
+ * @see [Default]
+ * @see [Hex]
  * */
 public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<C>(config) {
 
     /**
-     * TODO
+     * Base32 encoding/decoding in accordance with the [Crockford Spec](https://www.crockford.com/base32.html)
+     *
+     * e.g.
+     *
+     *     val crockford = Base32.Crockford.Builder {
+     *         isLenient(enable = true)
+     *         encodeLowercase(enable = false)
+     *         hyphen(interval = 5)
+     *         check(symbol = '~')
+     *     }
+     *
+     *     val text = "Hello World!"
+     *     val bytes = text.encodeToByteArray()
+     *     val encoded = bytes.encodeToString(crockford)
+     *     println(encoded) // 91JPR-V3F41-BPYWK-CCGGG~
+     *
+     *     // Alternatively, use the static implementation containing
+     *     // pre-configured settings, instead of creating your own.
+     *     val decoded = encoded.decodeToByteArray(Base32.Crockford).decodeToString()
+     *     assertEquals(text, decoded)
+     *
+     * @see [Builder]
+     * @see [Companion.Builder]
+     * @see [Encoder.Companion]
+     * @see [Decoder.Companion]
      * */
     public class Crockford: Base32<Crockford.Config> {
 
         /**
-         * TODO
+         * A Builder
+         *
+         * @see [Companion.Builder]
          * */
         public class Builder {
 
@@ -57,44 +87,84 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public constructor(other: Config?) {
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
-                this._encodeToLowercase = other.encodeToLowercase
+                this._encodeLowercase = other.encodeToLowercase
                 this._hyphenInterval = other.hyphenInterval
                 this._checkSymbol = other.checkSymbol
-                this._finalizeWhenFlushed = other.finalizeWhenFlushed
+                this._finalizeOnFlush = other.finalizeWhenFlushed
             }
 
             @JvmSynthetic
             internal var _isLenient: Boolean = true
             @JvmSynthetic
-            internal var _encodeToLowercase: Boolean = false
+            internal var _encodeLowercase: Boolean = false
             @JvmSynthetic
             internal var _hyphenInterval: Byte = 0
             @JvmSynthetic
             internal var _checkSymbol: Char? = null
             @JvmSynthetic
-            internal var _finalizeWhenFlushed: Boolean = false
+            internal var _finalizeOnFlush: Boolean = false
 
             /**
-             * TODO
+             * DEFAULT: `true`
+             *
+             * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
+             * allowed but ignored) during decoding operations. This is non-compliant with
+             * the Crockford spec.
+             *
+             * If `false`, an [EncodingException] will be thrown.
              * */
             public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
             /**
-             * TODO
+             * DEFAULT: `false`
+             *
+             * If `true`, lowercase characters from table [Crockford.CHARS_LOWER] will be output
+             * during encoding operations. This is non-compliant with the Crockford spec.
+             *
+             * If `false`, uppercase characters from table [Crockford.CHARS_UPPER] will be output
+             * during encoding operations.
+             *
+             * **NOTE:** This does not affect decoding operations. [Crockford] is designed to accept
+             * characters from both tables when decoding (as specified in the Crockford spec).
              * */
-            public fun encodeToLowercase(enable: Boolean): Builder = apply { _encodeToLowercase = enable }
+            public fun encodeLowercase(enable: Boolean): Builder = apply { _encodeLowercase = enable }
 
             /**
-             * TODO
+             * DEFAULT: `0` (i.e. disabled)
+             *
+             * If greater than `0`, when [interval] number of encoded characters have been
+             * output, the next encoded character will be preceded with the hyphen character
+             * `-`.
+             *
+             * e.g.
+             *
+             *     hyphen(interval = 0)
+             *     // 91JPRV3F41BPYWKCCGGG
+             *
+             *     hyphen(interval = 5)
+             *     // 91JPR-V3F41-BPYWK-CCGGG
+             *
+             *     hyphen(interval = 4)
+             *     // 91JP-RV3F-41BP-YWKC-CGGG
+             *
+             * @see [finalizeOnFlush]
              * */
             public fun hyphen(interval: Byte): Builder = apply { _hyphenInterval = interval }
 
             /**
-             * TODO
+             * DEFAULT: `null` (i.e. no check symbol)
              *
-             * @throws [IllegalArgumentException]
+             * Specify a check symbol ('*', '~', '$', '=', 'U', 'u') to be appended to encoded
+             * output, and verified when decoding.
+             *
+             * If `null`, no check symbol will be appended to encoded output, and decoding of
+             * any input containing a check symbol will fail due to misconfiguration.
+             *
+             * @see [finalizeOnFlush]
+             *
+             * @throws [IllegalArgumentException] If not `null`, or a valid symbol.
              * */
-            public fun checkSymbol(symbol: Char?): Builder {
+            public fun check(symbol: Char?): Builder {
                 if (symbol == null || symbol.isCheckSymbol()) {
                     _checkSymbol = symbol
                     return this
@@ -107,27 +177,80 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * TODO
+             * DEFAULT: `false`
+             *
+             * If `true`, whenever [Encoder.Feed.flush] is called, in addition to processing
+             * any buffered input, the [check] symbol will be appended and counter for [hyphen]
+             * interval will be reset.
+             *
+             * If `false`, whenever [Encoder.Feed.flush] is called, only processing of buffered
+             * input will occur; no [check] symbol will be appended, and the counter for [hyphen]
+             * interval will not be reset.
+             *
+             * **NOTE:** This setting is ignored if neither [hyphen] interval nor [check] symbol
+             * were configured.
+             *
+             * e.g. (Behavior when `true`)
+             *
+             *     val sb = StringBuilder()
+             *     Base32.Crockford.Builder {
+             *         hyphen(interval = 4)
+             *         check(symbol = '*')
+             *         finalizeOnFlush(enable = true)
+             *     }.newEncoderFeed { encodedChar ->
+             *         sb.append(encodedChar)
+             *     }.use { feed ->
+             *         bytes1.forEach { b -> feed.consume(b) }
+             *         feed.flush()
+             *         bytes2.forEach { b -> feed.consume(b) }
+             *     }
+             *     println(sb.toString())
+             *     // 91JP-RV3F-*41BP-YWKC-CGGG-*
+             *
+             * e.g. (Behavior when `false`)
+             *
+             *     val sb = StringBuilder()
+             *     Base32.Crockford.Builder {
+             *         hyphen(interval = 4)
+             *         check(symbol = '*')
+             *         finalizeOnFlush(enable = false)
+             *     }.newEncoderFeed { encodedChar ->
+             *         sb.append(encodedChar)
+             *     }.use { feed ->
+             *         bytes1.forEach { b -> feed.consume(b) }
+             *         feed.flush()
+             *         bytes2.forEach { b -> feed.consume(b) }
+             *     }
+             *     println(sb.toString())
+             *     // 91JP-RV3F-41BP-YWKC-CGGG-*
              * */
-            public fun finalizeWhenFlushed(enable: Boolean): Builder = apply { _finalizeWhenFlushed = enable }
+            public fun finalizeOnFlush(enable: Boolean): Builder = apply { _finalizeOnFlush = enable }
 
             /**
-             * TODO
+             * Helper for configuring the builder with settings which are compliant with the
+             * Crockford specification.
+             *
+             *  - [isLenient] will be set to `false`.
+             *  - [encodeLowercase] will be set to `false`.
+             *  - [finalizeOnFlush] will be set to `false`.
              * */
-            public fun strict(): Builder = apply {
+            public fun strictSpec(): Builder = apply {
                 _isLenient = false
-                _encodeToLowercase = false
-                _finalizeWhenFlushed = false
+                _encodeLowercase = false
+                _finalizeOnFlush = false
             }
 
             /**
-             * TODO
+             * Commits configured options to [Config], creating the [Crockford] instance.
              * */
             public fun build(): Crockford = Config.build(this)
         }
 
         /**
-         * TODO
+         * Holder of a configuration for the [Crockford] encoded/decoder instance.
+         *
+         * @se [Builder]
+         * @see [Companion.Builder]
          * */
         public class Config private constructor(
             isLenient: Boolean,
@@ -147,45 +270,41 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
-                // TODO: Check for overflow?
                 var outSize = encodedSize
 
                 val actual = input[encodedSize - 1]
 
                 if (checkSymbol != null) {
-                    // Uppercase them so that little 'u' is always
-                    // compared as big 'U'.
+                    // Uppercase them so that little 'u' is always compared as big 'U'.
                     val expectedUpper = checkSymbol.uppercaseChar()
                     val actualUpper = actual.uppercaseChar()
 
                     if (actualUpper != expectedUpper) {
-                        // Must have a matching checkSymbol
-
+                        // Wrong, or no symbol
                         if (actual.isCheckSymbol()) {
                             throw EncodingException(
-                                "Check symbol did not match. Expected[$expectedUpper], Actual[$actual]"
+                                "Check symbol did not match. Expected[$checkSymbol] vs Actual[$actual]"
                             )
                         } else {
                             throw EncodingException(
-                                "Check symbol not found. Expected[$expectedUpper]"
+                                "Check symbol not found. Expected[$checkSymbol]"
                             )
                         }
                     } else {
                         outSize--
                     }
                 } else {
-                    // Mine as well check it here before actually
-                    // decoding because otherwise it will fail on
-                    // the very last byte.
+                    // Mine as well check it here before actually decoding.
                     if (actual.isCheckSymbol()) {
                         throw EncodingException(
                             "Decoder Misconfiguration.\n" +
-                            "Encoded data had Checksymbol[$actual], but the " +
-                            "decoder is configured to reject."
+                            "Encoded data has CheckSymbol[$actual], but the " +
+                            "decoder is configured to reject check symbols."
                         )
                     }
                 }
 
+                // TODO: Check for overflow?
                 return outSize.toLong().decodeOutMaxSize().toInt()
             }
 
@@ -212,6 +331,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     }
                 }
 
+                // TODO: Check for overflow?
                 return outSize
             }
 
@@ -244,7 +364,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         /**
-         * TODO
+         * A static instance of [EncoderDecoder] configured with a [Crockford.Builder.hyphen]
+         * interval of `4`, and remaining [Crockford.Builder] `DEFAULT` values.
          * */
         public companion object: EncoderDecoder<Crockford.Config>(config = Crockford.Config.DEFAULT) {
 
@@ -259,7 +380,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public const val CHARS_LOWER: String = "0123456789abcdefghjkmnpqrstvwxyz"
 
             /**
-             * TODO
+             * Syntactic sugar for Kotlin consumers that like lambdas.
              * */
             @JvmStatic
             @JvmName("-Builder")
@@ -270,7 +391,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * TODO
+             * Syntactic sugar for Kotlin consumers that like lambdas.
              * */
             @JvmStatic
             @JvmName("-Builder")
@@ -308,12 +429,38 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
     }
 
     /**
-     * TODO
+     * Base32 encoding/decoding in accordance with [RFC 4648 section 6](https://www.ietf.org/rfc/rfc4648.html#section-6)
+     *
+     * e.g.
+     *
+     *     val default = Base32.Default.Builder {
+     *         isLenient(enable = true)
+     *         lineBreak(interval = 64)
+     *         encodeLowercase(enable = false)
+     *         padEncoded(enable = true)
+     *     }
+     *
+     *     val text = "Hello World!"
+     *     val bytes = text.encodeToByteArray()
+     *     val encoded = bytes.encodeToString(default)
+     *     println(encoded) // JBSWY3DPEBLW64TMMQQQ====
+     *
+     *     // Alternatively, use the static implementation containing
+     *     // pre-configured settings, instead of creating your own.
+     *     val decoded = encoded.decodeToByteArray(Base32.Default).decodeToString()
+     *     assertEquals(text, decoded)
+     *
+     * @see [Builder]
+     * @see [Companion.Builder]
+     * @see [Encoder.Companion]
+     * @see [Decoder.Companion]
      * */
     public class Default: Base32<Default.Config> {
 
         /**
-         * TODO
+         * A Builder
+         *
+         * @see [Companion.Builder]
          * */
         public class Builder {
 
@@ -322,7 +469,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
                 this._lineBreakInterval = other.lineBreakInterval
-                this._encodeToLowercase = other.encodeToLowercase
+                this._encodeLowercase = other.encodeToLowercase
                 this._padEncoded = other.padEncoded
             }
 
@@ -331,48 +478,101 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @JvmSynthetic
             internal var _lineBreakInterval: Byte = 0
             @JvmSynthetic
-            internal var _encodeToLowercase: Boolean = false
+            internal var _encodeLowercase: Boolean = false
             @JvmSynthetic
             internal var _padEncoded: Boolean = true
 
             /**
-             * TODO
+             * DEFAULT: `true`
+             *
+             * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
+             * allowed but ignored) during decoding operations. This is non-compliant with
+             * `RFC 4648`.
+             *
+             * If `false`, an [EncodingException] will be thrown.
              * */
             public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
             /**
-             * TODO
+             * DEFAULT: `0` (i.e. disabled)
+             *
+             * If greater than `0`, when [interval] number of encoded characters have been
+             * output, the next encoded character will be preceded with the new line character
+             * `\n`. This is non-compliant with `RFC 4648`.
+             *
+             * A great value is `64`, and is what [Default.Companion.config] uses.
+             *
+             * **NOTE:** This setting is ignored if [isLenient] is set to `false`.
+             *
+             * e.g.
+             *
+             *     isLenient(enable = true)
+             *     lineBreak(interval = 0)
+             *     // JBSWY3DPEBLW64TMMQQQ====
+             *
+             *     isLenient(enable = true)
+             *     lineBreak(interval = 16)
+             *     // JBSWY3DPEBLW64TM
+             *     // MQQQ====
+             *
+             *     isLenient(enable = false)
+             *     lineBreak(interval = 16)
+             *     // JBSWY3DPEBLW64TMMQQQ====
              * */
             public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
             /**
-             * TODO
+             * DEFAULT: `false`
+             *
+             * If `true`, lowercase characters from table [Default.CHARS_LOWER] will be output
+             * during encoding operations. This is non-compliant with `RFC 4648`.
+             *
+             * If `false`, uppercase characters from table [Default.CHARS_UPPER] will be output
+             * during encoding operations.
+             *
+             * **NOTE:** This does not affect decoding operations. [Default] is designed to accept
+             * characters from both tables when decoding (as specified in `RFC 4648`).
              * */
-            public fun encodeToLowercase(enable: Boolean): Builder = apply { _encodeToLowercase = enable }
+            public fun encodeLowercase(enable: Boolean): Builder = apply { _encodeLowercase = enable }
 
             /**
-             * TODO
+             * DEFAULT: `true`
+             *
+             * If `true`, encoded output will have the appropriate number of padding character(s)
+             * `=` appended to it.
+             *
+             * If `false`, padding character(s) will be omitted from output. This is non-compliant
+             * with `RFC 4648`.
              * */
             public fun padEncoded(enable: Boolean): Builder = apply { _padEncoded = enable }
 
             /**
-             * TODO
+             * Helper for configuring the builder with settings which are compliant with the
+             * `RFC 4648` specification.
+             *
+             *  - [isLenient] will be set to `false`.
+             *  - [lineBreak] will be set to `0`.
+             *  - [encodeLowercase] will be set to `false`.
+             *  - [padEncoded] will be set to `true`.
              * */
-            public fun strict(): Builder = apply {
+            public fun strictSpec(): Builder = apply {
                 _isLenient = false
                 _lineBreakInterval = 0
-                _encodeToLowercase = false
+                _encodeLowercase = false
                 _padEncoded = true
             }
 
             /**
-             * TODO
+             * Commits configured options to [Config], creating the [Default] instance.
              * */
             public fun build(): Default = Config.build(this)
         }
 
         /**
-         * TODO
+         * Holder of a configuration for the [Default] encoder/decoder instance.
+         *
+         * @see [Builder]
+         * @see [Companion.Builder]
          * */
         public class Config private constructor(
             isLenient: Boolean,
@@ -424,7 +624,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         /**
-         * TODO
+         * A static instance of [EncoderDecoder] configured with a [Default.Builder.lineBreak]
+         * interval of `64`, and remaining [Default.Builder] `DEFAULT` values.
          * */
         public companion object: EncoderDecoder<Default.Config>(config = Default.Config.DEFAULT) {
 
@@ -439,7 +640,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public const val CHARS_LOWER: String = "abcdefghijklmnopqrstuvwxyz234567"
 
             /**
-             * TODO
+             * Syntactic sugar for Kotlin consumers that like lambdas.
              * */
             @JvmStatic
             @JvmName("-Builder")
@@ -450,7 +651,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * TODO
+             * Syntactic sugar for Kotlin consumers that like lambdas.
              * */
             @JvmStatic
             @JvmName("-Builder")
@@ -488,12 +689,38 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
     }
 
     /**
-     * TODO
+     * Base32 encoding/decoding in accordance with [RFC 4648 section 7](https://www.ietf.org/rfc/rfc4648.html#section-7)
+     *
+     * e.g.
+     *
+     *     val hex = Base32.Hex.Builder {
+     *         isLenient(enable = true)
+     *         lineBreak(interval = 64)
+     *         encodeLowercase(enable = false)
+     *         padEncoded(enable = true)
+     *     }
+     *
+     *     val text = "Hello World!"
+     *     val bytes = text.encodeToByteArray()
+     *     val encoded = bytes.encodeToString(hex)
+     *     println(encoded) // 91IMOR3F41BMUSJCCGGG====
+     *
+     *     // Alternatively, use the static implementation containing
+     *     // pre-configured settings, instead of creating your own.
+     *     val decoded = encoded.decodeToByteArray(Base32.Hex).decodeToString()
+     *     assertEquals(text, decoded)
+     *
+     * @see [Builder]
+     * @see [Companion.Builder]
+     * @see [Encoder.Companion]
+     * @see [Decoder.Companion]
      * */
     public class Hex: Base32<Hex.Config> {
 
         /**
-         * TODO
+         * A Builder
+         *
+         * @see [Companion.Builder]
          * */
         public class Builder {
 
@@ -502,7 +729,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
                 this._lineBreakInterval = other.lineBreakInterval
-                this._encodeToLowercase = other.encodeToLowercase
+                this._encodeLowercase = other.encodeToLowercase
                 this._padEncoded = other.padEncoded
             }
 
@@ -511,48 +738,101 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @JvmSynthetic
             internal var _lineBreakInterval: Byte = 0
             @JvmSynthetic
-            internal var _encodeToLowercase: Boolean = false
+            internal var _encodeLowercase: Boolean = false
             @JvmSynthetic
             internal var _padEncoded: Boolean = true
 
             /**
-             * TODO
+             * DEFAULT: `true`
+             *
+             * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
+             * allowed but ignored) during decoding operations. This is non-compliant with
+             * `RFC 4648`.
+             *
+             * If `false`, an [EncodingException] will be thrown.
              * */
             public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
             /**
-             * TODO
+             * DEFAULT: `0` (i.e. disabled)
+             *
+             * If greater than `0`, when [interval] number of encoded characters have been
+             * output, the next encoded character will be preceded with the new line character
+             * `\n`. This is non-compliant with `RFC 4648`.
+             *
+             * A great value is `64`, and is what [Hex.Companion.config] uses.
+             *
+             * **NOTE:** This setting is ignored if [isLenient] is set to `false`.
+             *
+             * e.g.
+             *
+             *     isLenient(enable = true)
+             *     lineBreak(interval = 0)
+             *     // 91IMOR3F41BMUSJCCGGG====
+             *
+             *     isLenient(enable = true)
+             *     lineBreak(interval = 16)
+             *     // 91IMOR3F41BMUSJC
+             *     // CGGG====
+             *
+             *     isLenient(enable = false)
+             *     lineBreak(interval = 16)
+             *     // 91IMOR3F41BMUSJCCGGG====
              * */
             public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
             /**
-             * TODO
+             * DEFAULT: `false`
+             *
+             * If `true`, lowercase characters from table [Hex.CHARS_LOWER] will be output
+             * during encoding operations. This is non-compliant with `RFC 4648`.
+             *
+             * If `false`, uppercase characters from table [Hex.CHARS_UPPER] will be output
+             * during encoding operations.
+             *
+             * **NOTE:** This does not affect decoding operations. [Hex] is designed to accept
+             * characters from both tables when decoding (as specified in `RFC 4648`).
              * */
-            public fun encodeToLowercase(enable: Boolean): Builder = apply { _encodeToLowercase = enable }
+            public fun encodeLowercase(enable: Boolean): Builder = apply { _encodeLowercase = enable }
 
             /**
-             * TODO
+             * DEFAULT: `true`
+             *
+             * If `true`, encoded output will have the appropriate number of padding character(s)
+             * `=` appended to it.
+             *
+             * If `false`, padding character(s) will be omitted from output. This is non-compliant
+             * with `RFC 4648`.
              * */
             public fun padEncoded(enable: Boolean): Builder = apply { _padEncoded = enable }
 
             /**
-             * TODO
+             * Helper for configuring the builder with settings which are compliant with the
+             * `RFC 4648` specification.
+             *
+             *  - [isLenient] will be set to `false`.
+             *  - [lineBreak] will be set to `0`.
+             *  - [encodeLowercase] will be set to `false`.
+             *  - [padEncoded] will be set to `true`.
              * */
-            public fun strict(): Builder = apply {
+            public fun strictSpec(): Builder = apply {
                 _isLenient = false
                 _lineBreakInterval = 0
-                _encodeToLowercase = false
+                _encodeLowercase = false
                 _padEncoded = true
             }
 
             /**
-             * TODO
+             * Commits configured options to [Config], creating the [Hex] instance.
              * */
             public fun build(): Hex = Config.build(this)
         }
 
         /**
-         * TODO
+         * Holder of a configuration for the [Hex] encoder/decoder instance.
+         *
+         * @see [Builder]
+         * @see [Companion.Builder]
          * */
         public class Config private constructor(
             isLenient: Boolean,
@@ -604,7 +884,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         /**
-         * TODO
+         * A static instance of [EncoderDecoder] configured with a [Hex.Builder.lineBreak]
+         * interval of `64`, and remaining [Hex.Builder] `DEFAULT` values.
          * */
         public companion object: EncoderDecoder<Hex.Config>(config = Hex.Config.DEFAULT) {
 
@@ -619,7 +900,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public const val CHARS_LOWER: String = "0123456789abcdefghijklmnopqrstuv"
 
             /**
-             * TODO
+             * Syntactic sugar for Kotlin consumers that like lambdas.
              * */
             @JvmStatic
             @JvmName("-Builder")
@@ -630,7 +911,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * TODO
+             * Syntactic sugar for Kotlin consumers that like lambdas.
              * */
             @JvmStatic
             @JvmName("-Builder")
@@ -984,12 +1265,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             throw EncodingException(
-                "Char[${input}] IS a checkSymbol, but did " +
-                        "not match config's Checksymbol[${_config.checkSymbol}]"
+                "Char[${input}] IS a check symbol, but did not" +
+                " match config's CheckSymbol[${_config.checkSymbol}]"
             )
         }
 
         override fun doFinalProtected() {
+            // TODO: If _config.checkSymbol is not null, check
+            //  isCheckSymbolSet and fail if it is not.
             buffer.finalize()
             isCheckSymbolSet = false
         }
