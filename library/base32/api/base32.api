@@ -70,6 +70,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthe
 	public static final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
 	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
+	public synthetic fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Builder {
@@ -107,6 +108,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewn
 	public static final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Default$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
 	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
+	public synthetic fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Builder {
@@ -140,6 +142,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelso
 	public static final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
 	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
+	public synthetic fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Builder {

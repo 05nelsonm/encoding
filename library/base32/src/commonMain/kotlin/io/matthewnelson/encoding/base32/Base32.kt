@@ -408,7 +408,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             @get:JvmSynthetic
-            internal val DELEGATE = Crockford(config)
+            internal val DELEGATE = Crockford(config, unused = null)
             protected override fun name(): String = DELEGATE.name()
             protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
                 return DELEGATE.newDecoderFeedProtected(out)
@@ -430,8 +430,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return CrockfordEncoder(config, out)
         }
 
-        // TODO: Deprecate & replace (Issue #172)
-        public constructor(config: Crockford.Config): super(config)
+        @Deprecated(
+            message = "This constructor is scheduled for removal. Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder.",
+            level = DeprecationLevel.WARNING,
+        )
+        public constructor(config: Config): this(config, unused = null)
+
+        @Suppress("UNUSED_PARAMETER")
+        private constructor(config: Config, unused: Any?): super(config)
     }
 
     /**
@@ -672,7 +678,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             @get:JvmSynthetic
-            internal val DELEGATE = Default(config)
+            internal val DELEGATE = Default(config, unused = null)
             protected override fun name(): String = DELEGATE.name()
             protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
                 return DELEGATE.newDecoderFeedProtected(out)
@@ -694,8 +700,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return DefaultEncoder(config, out)
         }
 
-        // TODO: Deprecate & replace (Issue #172)
-        public constructor(config: Default.Config): super(config)
+        @Deprecated(
+            message = "This constructor is scheduled for removal. Use Base32.Default.Builder or Base32.Default.Companion.Builder.",
+            level = DeprecationLevel.WARNING,
+        )
+        public constructor(config: Config): this(config, unused = null)
+
+        @Suppress("UNUSED_PARAMETER")
+        private constructor(config: Config, unused: Any?): super(config)
     }
 
     /**
@@ -936,7 +948,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             @get:JvmSynthetic
-            internal val DELEGATE = Hex(config)
+            internal val DELEGATE = Hex(config, unused = null)
             override fun name(): String = DELEGATE.name()
             override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
                 return DELEGATE.newDecoderFeedProtected(out)
@@ -958,8 +970,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return HexEncoder(config, out)
         }
 
-        // TODO: Deprecate & replace (Issue #172)
-        public constructor(config: Hex.Config): super(config)
+        @Deprecated(
+            message = "This constructor is scheduled for removal. Use Base32.Hex.Builder or Base32.Hex.Companion.Builder.",
+            level = DeprecationLevel.WARNING,
+        )
+        public constructor(config: Config): this(config, unused = null)
+
+        @Suppress("UNUSED_PARAMETER")
+        private constructor(config: Config, unused: Any?): super(config)
     }
 
     private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(

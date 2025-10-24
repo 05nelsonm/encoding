@@ -21,7 +21,7 @@ import io.matthewnelson.encoding.base32.Base32
 
 internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean) -> Base32.Crockford.Config).build(
     b: Base32.Crockford.Builder,
-    noinline crockford: (Base32.Crockford.Config) -> Base32.Crockford,
+    noinline crockford: (Base32.Crockford.Config, Any?) -> Base32.Crockford,
 ): Base32.Crockford {
     if (
         b._isLenient == Base32.Crockford.DELEGATE.config.isLenient
@@ -33,12 +33,12 @@ internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean) -> Base32.Crockfor
         return Base32.Crockford.DELEGATE
     }
     val config = this(b._isLenient, b._encodeLowercase, b._hyphenInterval, b._checkSymbol, b._finalizeOnFlush)
-    return crockford(config)
+    return crockford(config, null)
 }
 
 internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Default.Config).build(
     b: Base32.Default.Builder,
-    noinline default: (Base32.Default.Config) -> Base32.Default,
+    noinline default: (Base32.Default.Config, Any?) -> Base32.Default,
 ): Base32.Default {
     if (
         b._isLenient == Base32.Default.DELEGATE.config.isLenient
@@ -49,12 +49,12 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Default.Config)
         return Base32.Default.DELEGATE
     }
     val config = this(b._isLenient, b._lineBreakInterval, b._encodeLowercase, b._padEncoded)
-    return default(config)
+    return default(config, null)
 }
 
 internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Hex.Config).build(
     b: Base32.Hex.Builder,
-    noinline hex: (Base32.Hex.Config) -> Base32.Hex,
+    noinline hex: (Base32.Hex.Config, Any?) -> Base32.Hex,
 ): Base32.Hex {
     if (
         b._isLenient == Base32.Hex.DELEGATE.config.isLenient
@@ -65,5 +65,5 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Hex.Config).bui
         return Base32.Hex.DELEGATE
     }
     val config = this(b._isLenient, b._lineBreakInterval, b._encodeLowercase, b._padEncoded)
-    return hex(config)
+    return hex(config, null)
 }
