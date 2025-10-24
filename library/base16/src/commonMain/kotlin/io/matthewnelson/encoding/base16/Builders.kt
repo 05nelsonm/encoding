@@ -28,7 +28,10 @@ import kotlin.jvm.JvmSynthetic
  * @see [Base16.Builder]
  * @see [Base16.Companion.Builder]
  * */
-@Deprecated("Use Base16.Builder or Base16.Companion.Builder")
+@Deprecated(
+    message = "Use Base16.Builder or Base16.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base16(
     config: Config?,
     block: Base16ConfigBuilder.() -> Unit
@@ -40,7 +43,10 @@ public fun Base16(
  * @see [Base16.Builder]
  * @see [Base16.Companion.Builder]
  * */
-@Deprecated("Use Base16.Builder or Base16.Companion.Builder")
+@Deprecated(
+    message = "Use Base16.Builder or Base16.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base16(
     block: Base16ConfigBuilder.() -> Unit,
 ): Base16 = Base16(config = null, block)
@@ -52,7 +58,10 @@ public fun Base16(
  * @see [Base16.Companion.Builder]
  * */
 @JvmOverloads
-@Deprecated("Use Base16.Builder or Base16.Companion.Builder")
+@Deprecated(
+    message = "Use Base16.Builder or Base16.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base16(
     strict: Boolean = false,
 ): Base16 = Base16.Builder { if (strict) strictSpec() }
@@ -63,7 +72,10 @@ public fun Base16(
  * @see [Base16.Builder]
  * @see [Base16.Companion.Builder]
  * */
-@Deprecated("Use Base16.Builder or Base16.Companion.Builder")
+@Deprecated(
+    message = "Use Base16.Builder or Base16.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public class Base16ConfigBuilder {
 
     private val compat: Base16.Builder
@@ -116,8 +128,14 @@ public class Base16ConfigBuilder {
         .encodeLowercase(encodeToLowercase)
         .build()
 
-    /** @suppress */
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
     @JvmField
-    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    @Deprecated(
+        message = "Implementation is always constant time. Performance impact is negligible.",
+        level = DeprecationLevel.ERROR,
+    )
     public var isConstantTime: Boolean = true
 }
