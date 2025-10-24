@@ -101,8 +101,12 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
         final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base32/Base32.Crockford.Config|null[0]
             final val checkSymbol // io.matthewnelson.encoding.base32/Base32.Crockford.Config.checkSymbol|{}checkSymbol[0]
                 final fun <get-checkSymbol>(): kotlin/Char? // io.matthewnelson.encoding.base32/Base32.Crockford.Config.checkSymbol.<get-checkSymbol>|<get-checkSymbol>(){}[0]
+            final val encodeLowercase // io.matthewnelson.encoding.base32/Base32.Crockford.Config.encodeLowercase|{}encodeLowercase[0]
+                final fun <get-encodeLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Crockford.Config.encodeLowercase.<get-encodeLowercase>|<get-encodeLowercase>(){}[0]
             final val encodeToLowercase // io.matthewnelson.encoding.base32/Base32.Crockford.Config.encodeToLowercase|{}encodeToLowercase[0]
                 final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Crockford.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
+            final val finalizeOnFlush // io.matthewnelson.encoding.base32/Base32.Crockford.Config.finalizeOnFlush|{}finalizeOnFlush[0]
+                final fun <get-finalizeOnFlush>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Crockford.Config.finalizeOnFlush.<get-finalizeOnFlush>|<get-finalizeOnFlush>(){}[0]
             final val finalizeWhenFlushed // io.matthewnelson.encoding.base32/Base32.Crockford.Config.finalizeWhenFlushed|{}finalizeWhenFlushed[0]
                 final fun <get-finalizeWhenFlushed>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Crockford.Config.finalizeWhenFlushed.<get-finalizeWhenFlushed>|<get-finalizeWhenFlushed>(){}[0]
             final val hyphenInterval // io.matthewnelson.encoding.base32/Base32.Crockford.Config.hyphenInterval|{}hyphenInterval[0]
@@ -138,6 +142,8 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
         }
 
         final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base32/Base32.Default.Config|null[0]
+            final val encodeLowercase // io.matthewnelson.encoding.base32/Base32.Default.Config.encodeLowercase|{}encodeLowercase[0]
+                final fun <get-encodeLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Default.Config.encodeLowercase.<get-encodeLowercase>|<get-encodeLowercase>(){}[0]
             final val encodeToLowercase // io.matthewnelson.encoding.base32/Base32.Default.Config.encodeToLowercase|{}encodeToLowercase[0]
                 final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Default.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
             final val isConstantTime // io.matthewnelson.encoding.base32/Base32.Default.Config.isConstantTime|{}isConstantTime[0]
@@ -173,6 +179,8 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
         }
 
         final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base32/Base32.Hex.Config|null[0]
+            final val encodeLowercase // io.matthewnelson.encoding.base32/Base32.Hex.Config.encodeLowercase|{}encodeLowercase[0]
+                final fun <get-encodeLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Hex.Config.encodeLowercase.<get-encodeLowercase>|<get-encodeLowercase>(){}[0]
             final val encodeToLowercase // io.matthewnelson.encoding.base32/Base32.Hex.Config.encodeToLowercase|{}encodeToLowercase[0]
                 final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base32/Base32.Hex.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
             final val isConstantTime // io.matthewnelson.encoding.base32/Base32.Hex.Config.isConstantTime|{}isConstantTime[0]

@@ -28,8 +28,8 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base64.Config).build(
         && b._lineBreakInterval == Base64.Default.DELEGATE.config.lineBreakInterval
         && b._padEncoded == Base64.Default.DELEGATE.config.padEncoded
     ) {
-        return if (b._encodeToUrlSafe) Base64.UrlSafe.DELEGATE else Base64.Default.DELEGATE
+        return if (b._encodeUrlSafe) Base64.UrlSafe.DELEGATE else Base64.Default.DELEGATE
     }
-    val config = this(b._isLenient, b._lineBreakInterval, b._encodeToUrlSafe, b._padEncoded)
+    val config = this(b._isLenient, b._lineBreakInterval, b._encodeUrlSafe, b._padEncoded)
     return base64(config)
 }

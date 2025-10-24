@@ -25,10 +25,10 @@ internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean) -> Base32.Crockfor
 ): Base32.Crockford {
     if (
         b._isLenient == Base32.Crockford.DELEGATE.config.isLenient
-        && b._encodeLowercase == Base32.Crockford.DELEGATE.config.encodeToLowercase
+        && b._encodeLowercase == Base32.Crockford.DELEGATE.config.encodeLowercase
         && b._hyphenInterval == Base32.Crockford.DELEGATE.config.hyphenInterval
         && b._checkSymbol == Base32.Crockford.DELEGATE.config.checkSymbol
-        && b._finalizeOnFlush == Base32.Crockford.DELEGATE.config.finalizeWhenFlushed
+        && b._finalizeOnFlush == Base32.Crockford.DELEGATE.config.finalizeOnFlush
     ) {
         return Base32.Crockford.DELEGATE
     }
@@ -43,7 +43,7 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Default.Config)
     if (
         b._isLenient == Base32.Default.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base32.Default.DELEGATE.config.lineBreakInterval
-        && b._encodeLowercase == Base32.Default.DELEGATE.config.encodeToLowercase
+        && b._encodeLowercase == Base32.Default.DELEGATE.config.encodeLowercase
         && b._padEncoded == Base32.Default.DELEGATE.config.padEncoded
     ) {
         return Base32.Default.DELEGATE
@@ -59,7 +59,7 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Hex.Config).bui
     if (
         b._isLenient == Base32.Hex.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base32.Hex.DELEGATE.config.lineBreakInterval
-        && b._encodeLowercase == Base32.Hex.DELEGATE.config.encodeToLowercase
+        && b._encodeLowercase == Base32.Hex.DELEGATE.config.encodeLowercase
         && b._padEncoded == Base32.Hex.DELEGATE.config.padEncoded
     ) {
         return Base32.Hex.DELEGATE

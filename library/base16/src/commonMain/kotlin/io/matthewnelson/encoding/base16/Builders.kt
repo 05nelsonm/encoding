@@ -43,9 +43,7 @@ public fun Base16(
 @Deprecated("Use Base16.Builder or Base16.Companion.Builder")
 public fun Base16(
     block: Base16ConfigBuilder.() -> Unit,
-): Base16 {
-    return Base16(config = null, block)
-}
+): Base16 = Base16(config = null, block)
 
 /**
  * DEPRECATED
@@ -55,7 +53,9 @@ public fun Base16(
  * */
 @JvmOverloads
 @Deprecated("Use Base16.Builder or Base16.Companion.Builder")
-public fun Base16(strict: Boolean = false): Base16 = Base16.Builder { if (strict) strictSpec() }
+public fun Base16(
+    strict: Boolean = false,
+): Base16 = Base16.Builder { if (strict) strictSpec() }
 
 /**
  * DEPRECATED

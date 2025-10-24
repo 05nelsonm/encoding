@@ -35,9 +35,6 @@ import kotlin.jvm.JvmSynthetic
 /**
  * Base16 (aka "hex") encoding/decoding in accordance with [RFC 4648 section 8](https://www.ietf.org/rfc/rfc4648.html#section-8).
  *
- * **NOTE:** All instances decode both [CHARS_UPPER] and [CHARS_LOWER] interchangeably;
- * no special configuration is needed.
- *
  * e.g.
  *
  *     val base16 = Base16.Builder {
@@ -52,7 +49,7 @@ import kotlin.jvm.JvmSynthetic
  *     println(encoded) // 48656c6c6f20576f726c6421
  *
  *     // Alternatively, use the static implementation containing
- *     // a default configuration, instead of creating your own.
+ *     // pre-configured settings, instead of creating your own.
  *     val decoded = encoded.decodeToByteArray(Base16).decodeToString()
  *     assertEquals(text, decoded)
  *
@@ -63,6 +60,11 @@ import kotlin.jvm.JvmSynthetic
  * */
 public class Base16: EncoderDecoder<Base16.Config> {
 
+    /**
+     * A Builder
+     *
+     * @see [Companion.Builder]
+     * */
     public class Builder {
 
         public constructor(): this(other = null)
@@ -70,7 +72,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             if (other == null) return
             this._isLenient = other.isLenient ?: true
             this._lineBreakInterval = other.lineBreakInterval
-            this._encodeLowercase = other.encodeToLowercase
+            this._encodeLowercase = other.encodeLowercase
         }
 
         @JvmSynthetic
@@ -98,7 +100,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
          * output, the next encoded character will be preceded with the new line character
          * `\n`. This is non-compliant with `RFC 4648`.
          *
-         * A great value is `64`, and is the default value used for [Base16.Companion.config].
+         * A great value is `64`, and is what [Base16.Companion.config] uses.
          *
          * **NOTE:** This setting is ignored if [isLenient] is set to `false`.
          *
@@ -163,7 +165,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         isLenient: Boolean,
         lineBreakInterval: Byte,
         @JvmField
-        public val encodeToLowercase: Boolean,
+        public val encodeLowercase: Boolean,
     ): EncoderDecoder.Config(isLenient, lineBreakInterval, null) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
@@ -182,7 +184,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
 
         protected override fun toStringAddSettings(): Set<Setting> = buildSet {
-            add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+            add(Setting(name = "encodeLowercase", value = encodeLowercase))
             add(Setting(name = "isConstantTime", value = isConstantTime))
         }
 
@@ -197,10 +199,14 @@ public class Base16: EncoderDecoder<Base16.Config> {
             internal val DEFAULT: Config = Config(
                 isLenient = true,
                 lineBreakInterval = 64,
-                encodeToLowercase = false,
+                encodeLowercase = false,
             )
         }
 
+        /** @suppress */
+        @JvmField
+        @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+        public val encodeToLowercase: Boolean = encodeLowercase
         /** @suppress */
         @JvmField
         public val isConstantTime: Boolean = true
@@ -305,7 +311,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
     protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Config>.Feed {
         return object : Encoder<Config>.Feed() {
 
-            private val table = if (config.encodeToLowercase) CHARS_LOWER else CHARS_UPPER
+            private val table = if (config.encodeLowercase) CHARS_LOWER else CHARS_UPPER
 
             override fun consumeProtected(input: Byte) {
                 // A FeedBuffer is not necessary here as every 1

@@ -31,6 +31,7 @@ public final class io/matthewnelson/encoding/base16/Base16$Companion : io/matthe
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public synthetic fun <init> (ZBZLkotlin/jvm/internal/DefaultConstructorMarker;)V

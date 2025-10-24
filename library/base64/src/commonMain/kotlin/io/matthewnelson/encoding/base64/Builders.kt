@@ -42,9 +42,7 @@ public fun Base64(
 @Deprecated("Use Base64.Builder or Base64.Companion.Builder")
 public fun Base64(
     block: Base64ConfigBuilder.() -> Unit,
-): Base64 {
-    return Base64(null, block)
-}
+): Base64 = Base64(null, block)
 
 /**
  * DEPRECATED
@@ -54,7 +52,9 @@ public fun Base64(
  * */
 @Deprecated("Use Base64.Builder or Base64.Companion.Builder")
 @JvmOverloads
-public fun Base64(strict: Boolean = false): Base64 = Base64.Builder { if (strict) strictSpec() }
+public fun Base64(
+    strict: Boolean = false,
+): Base64 = Base64.Builder { if (strict) strictSpec() }
 
 /**
  * DEPRECATED
@@ -72,7 +72,7 @@ public class Base64ConfigBuilder {
         compat = Base64.Builder(other = config)
         isLenient = compat._isLenient
         lineBreakInterval = compat._lineBreakInterval
-        encodeToUrlSafe = compat._encodeToUrlSafe
+        encodeToUrlSafe = compat._encodeUrlSafe
         padEncoded = compat._padEncoded
     }
 

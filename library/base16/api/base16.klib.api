@@ -21,6 +21,8 @@ final class io.matthewnelson.encoding.base16/Base16 : io.matthewnelson.encoding.
     }
 
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base16/Base16.Config|null[0]
+        final val encodeLowercase // io.matthewnelson.encoding.base16/Base16.Config.encodeLowercase|{}encodeLowercase[0]
+            final fun <get-encodeLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16.Config.encodeLowercase.<get-encodeLowercase>|<get-encodeLowercase>(){}[0]
         final val encodeToLowercase // io.matthewnelson.encoding.base16/Base16.Config.encodeToLowercase|{}encodeToLowercase[0]
             final fun <get-encodeToLowercase>(): kotlin/Boolean // io.matthewnelson.encoding.base16/Base16.Config.encodeToLowercase.<get-encodeToLowercase>|<get-encodeToLowercase>(){}[0]
         final val isConstantTime // io.matthewnelson.encoding.base16/Base16.Config.isConstantTime|{}isConstantTime[0]

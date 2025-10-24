@@ -41,7 +41,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     /**
      * TODO
      * */
-    public companion object Default: UTF8(Config.DEFAULT) {
+    public companion object Default: UTF8(config = Config.DEFAULT) {
 
         // TODO: @JvmField public val CT: UTF8 = UTF8(Config.DEFAULT_CT)
 
@@ -73,7 +73,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     /**
      * TODO
      * */
-    public object ThrowOnInvalid: UTF8(Config.THROW) {
+    public object ThrowOnInvalid: UTF8(config = Config.THROW) {
 
         // TODO: @JvmField public val CT: UTF8 = UTF8(Config.THROW_CT)
     }

@@ -26,7 +26,7 @@ internal inline fun ((Boolean, Byte, Boolean) -> Base16.Config).build(
     if (
         b._isLenient == Base16.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base16.DELEGATE.config.lineBreakInterval
-        && b._encodeLowercase == Base16.DELEGATE.config.encodeToLowercase
+        && b._encodeLowercase == Base16.DELEGATE.config.encodeLowercase
     ) {
         return Base16.DELEGATE
     }

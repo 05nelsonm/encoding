@@ -54,7 +54,7 @@ import kotlin.jvm.JvmSynthetic
  *     println(encoded) // SGVsbG8gV29ybGQh
  *
  *     // Alternatively, use the static implementation containing
- *     // a default configuration, instead of creating your own.
+ *     // pre-configured settings, instead of creating your own.
  *     var decoded = encoded.decodeToByteArray(Base64.Default).decodeToString()
  *     assertEquals(text, decoded)
  *     decoded = encoded.decodeToByteArray(Base64.UrlSafe).decodeToString()
@@ -96,6 +96,11 @@ public class Base64: EncoderDecoder<Base64.Config> {
         private const val NAME = "Base64"
     }
 
+    /**
+     * A Builder
+     *
+     * @see [Companion.Builder]
+     * */
     public class Builder {
 
         public constructor(): this(other = null)
@@ -103,7 +108,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             if (other == null) return
             this._isLenient = other.isLenient ?: true
             this._lineBreakInterval = other.lineBreakInterval
-            this._encodeToUrlSafe = other.encodeToUrlSafe
+            this._encodeUrlSafe = other.encodeUrlSafe
             this._padEncoded = other.padEncoded
         }
 
@@ -112,7 +117,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         @JvmSynthetic
         internal var _lineBreakInterval: Byte = 0
         @JvmSynthetic
-        internal var _encodeToUrlSafe: Boolean = false
+        internal var _encodeUrlSafe: Boolean = false
         @JvmSynthetic
         internal var _padEncoded: Boolean = true
 
@@ -134,8 +139,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
          * output, the next encoded character will be preceded with the new line character
          * `\n`.
          *
-         * A great value is `64`, and is the default value used for both [Default.config]
-         * and [UrlSafe.config].
+         * A great value is `64`, and is what both [Default.config] and [UrlSafe.config] use.
          *
          * **NOTE:** This setting is ignored if [isLenient] is set to `false`.
          *
@@ -168,7 +172,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
          * **NOTE:** This does not affect decoding operations. [Base64] is designed to accept
          * characters from both tables when decoding.
          * */
-        public fun encodeUrlSafe(enable: Boolean): Builder = apply { _encodeToUrlSafe = enable }
+        public fun encodeUrlSafe(enable: Boolean): Builder = apply { _encodeUrlSafe = enable }
 
         /**
          * DEFAULT: `true`
@@ -209,7 +213,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         isLenient: Boolean,
         lineBreakInterval: Byte,
         @JvmField
-        public val encodeToUrlSafe: Boolean,
+        public val encodeUrlSafe: Boolean,
         @JvmField
         public val padEncoded: Boolean,
     ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
@@ -239,7 +243,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
 
         protected override fun toStringAddSettings(): Set<Setting> = buildSet {
-            add(Setting(name = "encodeToUrlSafe", value = encodeToUrlSafe))
+            add(Setting(name = "encodeUrlSafe", value = encodeUrlSafe))
             add(Setting(name = "padEncoded", value = padEncoded))
             add(Setting(name = "isConstantTime", value = isConstantTime))
         }
@@ -253,7 +257,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             internal val DEFAULT: Config = Config(
                 isLenient = true,
                 lineBreakInterval = 64,
-                encodeToUrlSafe = false,
+                encodeUrlSafe = false,
                 padEncoded = true
             )
 
@@ -261,11 +265,15 @@ public class Base64: EncoderDecoder<Base64.Config> {
             internal val URL_SAFE: Config = Config(
                 isLenient = DEFAULT.isLenient ?: true,
                 lineBreakInterval = DEFAULT.lineBreakInterval,
-                encodeToUrlSafe = true,
+                encodeUrlSafe = true,
                 padEncoded = DEFAULT.padEncoded,
             )
         }
 
+        /** @suppress */
+        @JvmField
+        @Deprecated("Variable name changed.", ReplaceWith("encodeUrlSafe"))
+        public val encodeToUrlSafe: Boolean = encodeUrlSafe
         /** @suppress */
         @JvmField
         public val isConstantTime: Boolean = true
@@ -375,7 +383,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
 
             private val buffer = EncodingBuffer(
                 out = out,
-                table = if (config.encodeToUrlSafe) UrlSafe.CHARS else Default.CHARS,
+                table = if (config.encodeUrlSafe) UrlSafe.CHARS else Default.CHARS,
                 paddingChar = if (config.padEncoded) config.paddingChar else null,
             )
 

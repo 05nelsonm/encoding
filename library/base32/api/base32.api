@@ -91,7 +91,9 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion :
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field checkSymbol Ljava/lang/Character;
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
+	public final field finalizeOnFlush Z
 	public final field finalizeWhenFlushed Z
 	public final field hyphenInterval B
 	public final field isConstantTime Z
@@ -124,6 +126,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Companion : i
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
@@ -156,6 +159,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion : io/ma
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z

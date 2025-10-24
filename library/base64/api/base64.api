@@ -66,6 +66,7 @@ public final class io/matthewnelson/encoding/base64/Base64$Companion {
 
 public final class io/matthewnelson/encoding/base64/Base64$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field encodeToUrlSafe Z
+	public final field encodeUrlSafe Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
 	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V

@@ -87,10 +87,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public constructor(other: Config?) {
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
-                this._encodeLowercase = other.encodeToLowercase
+                this._encodeLowercase = other.encodeLowercase
                 this._hyphenInterval = other.hyphenInterval
                 this._checkSymbol = other.checkSymbol
-                this._finalizeOnFlush = other.finalizeWhenFlushed
+                this._finalizeOnFlush = other.finalizeOnFlush
             }
 
             @JvmSynthetic
@@ -255,13 +255,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         public class Config private constructor(
             isLenient: Boolean,
             @JvmField
-            public val encodeToLowercase: Boolean,
+            public val encodeLowercase: Boolean,
             @JvmField
             public val hyphenInterval: Byte,
             @JvmField
             public val checkSymbol: Char?,
             @JvmField
-            public val finalizeWhenFlushed: Boolean,
+            public val finalizeOnFlush: Boolean,
         ): EncoderDecoder.Config(isLenient, 0, null) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
@@ -336,10 +336,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             protected override fun toStringAddSettings(): Set<Setting> = buildSet {
-                add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+                add(Setting(name = "encodeLowercase", value = encodeLowercase))
                 add(Setting(name = "hyphenInterval", value = hyphenInterval))
                 add(Setting(name = "checkSymbol", value = checkSymbol))
-                add(Setting(name = "finalizeWhenFlushed", value = finalizeWhenFlushed))
+                add(Setting(name = "finalizeOnFlush", value = finalizeOnFlush))
                 add(Setting(name = "isConstantTime", value = isConstantTime))
             }
 
@@ -351,13 +351,21 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 @get:JvmSynthetic
                 internal val DEFAULT: Config = Config(
                     isLenient = true,
-                    encodeToLowercase = false,
+                    encodeLowercase = false,
                     hyphenInterval = 4,
                     checkSymbol = null,
-                    finalizeWhenFlushed = false,
+                    finalizeOnFlush = false,
                 )
             }
 
+            /** @suppress */
+            @JvmField
+            @Deprecated("Variable name changed.", ReplaceWith("finalizeOnFlush"))
+            public val finalizeWhenFlushed: Boolean = finalizeOnFlush
+            /** @suppress */
+            @JvmField
+            @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+            public val encodeToLowercase: Boolean = encodeLowercase
             /** @suppress */
             @JvmField
             public val isConstantTime: Boolean = true
@@ -469,7 +477,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
                 this._lineBreakInterval = other.lineBreakInterval
-                this._encodeLowercase = other.encodeToLowercase
+                this._encodeLowercase = other.encodeLowercase
                 this._padEncoded = other.padEncoded
             }
 
@@ -578,7 +586,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             isLenient: Boolean,
             lineBreakInterval: Byte,
             @JvmField
-            public val encodeToLowercase: Boolean,
+            public val encodeLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
@@ -599,7 +607,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             protected override fun toStringAddSettings(): Set<Setting> = buildSet {
-                add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+                add(Setting(name = "encodeLowercase", value = encodeLowercase))
                 add(Setting(name = "padEncoded", value = padEncoded))
                 add(Setting(name = "isConstantTime", value = isConstantTime))
             }
@@ -613,11 +621,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 internal val DEFAULT: Config = Config(
                     isLenient = true,
                     lineBreakInterval = 64,
-                    encodeToLowercase = false,
+                    encodeLowercase = false,
                     padEncoded = true,
                 )
             }
 
+            /** @suppress */
+            @JvmField
+            @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+            public val encodeToLowercase: Boolean = encodeLowercase
             /** @suppress */
             @JvmField
             public val isConstantTime: Boolean = true
@@ -729,7 +741,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
                 this._lineBreakInterval = other.lineBreakInterval
-                this._encodeLowercase = other.encodeToLowercase
+                this._encodeLowercase = other.encodeLowercase
                 this._padEncoded = other.padEncoded
             }
 
@@ -838,7 +850,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             isLenient: Boolean,
             lineBreakInterval: Byte,
             @JvmField
-            public val encodeToLowercase: Boolean,
+            public val encodeLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
         ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
@@ -859,7 +871,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             protected override fun toStringAddSettings(): Set<Setting> = buildSet {
-                add(Setting(name = "encodeToLowercase", value = encodeToLowercase))
+                add(Setting(name = "encodeLowercase", value = encodeLowercase))
                 add(Setting(name = "padEncoded", value = padEncoded))
                 add(Setting(name = "isConstantTime", value = isConstantTime))
             }
@@ -873,11 +885,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 internal val DEFAULT: Config = Config(
                     isLenient = true,
                     lineBreakInterval = 64,
-                    encodeToLowercase = false,
+                    encodeLowercase = false,
                     padEncoded = true,
                 )
             }
 
+            /** @suppress */
+            @JvmField
+            @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+            public val encodeToLowercase: Boolean = encodeLowercase
             /** @suppress */
             @JvmField
             public val isConstantTime: Boolean = true
@@ -1297,7 +1313,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 out.output(byte)
                 outputHyphenOnNext = _config.hyphenInterval > 0 && ++outCount == _config.hyphenInterval
             },
-            table = if (_config.encodeToLowercase) CHARS_LOWER else CHARS_UPPER,
+            table = if (_config.encodeLowercase) CHARS_LOWER else CHARS_UPPER,
             paddingChar = null,
         )
 
@@ -1306,14 +1322,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun doFinalProtected() {
             buffer.finalize()
 
-            if (_config.finalizeWhenFlushed || isClosed()) {
+            if (_config.finalizeOnFlush || isClosed()) {
                 _config.checkSymbol?.let { symbol ->
 
                     if (outputHyphenOnNext) {
                         out.output('-')
                     }
 
-                    if (_config.encodeToLowercase) {
+                    if (_config.encodeLowercase) {
                         out.output(symbol.lowercaseChar())
                     } else {
                         out.output(symbol.uppercaseChar())
@@ -1371,7 +1387,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
         private val buffer = EncodingBuffer(
             out = out,
-            table = if (_config.encodeToLowercase) Default.CHARS_LOWER else Default.CHARS_UPPER,
+            table = if (_config.encodeLowercase) Default.CHARS_LOWER else Default.CHARS_UPPER,
             paddingChar = if (_config.padEncoded) _config.paddingChar else null,
         )
 
@@ -1425,7 +1441,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
         private val buffer = EncodingBuffer(
             out = out,
-            table = if (_config.encodeToLowercase) Hex.CHARS_LOWER else Hex.CHARS_UPPER,
+            table = if (_config.encodeLowercase) Hex.CHARS_LOWER else Hex.CHARS_UPPER,
             paddingChar = if (_config.padEncoded) _config.paddingChar else null,
         )
 

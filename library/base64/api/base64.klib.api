@@ -24,6 +24,8 @@ final class io.matthewnelson.encoding.base64/Base64 : io.matthewnelson.encoding.
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base64/Base64.Config|null[0]
         final val encodeToUrlSafe // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe|{}encodeToUrlSafe[0]
             final fun <get-encodeToUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe.<get-encodeToUrlSafe>|<get-encodeToUrlSafe>(){}[0]
+        final val encodeUrlSafe // io.matthewnelson.encoding.base64/Base64.Config.encodeUrlSafe|{}encodeUrlSafe[0]
+            final fun <get-encodeUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.encodeUrlSafe.<get-encodeUrlSafe>|<get-encodeUrlSafe>(){}[0]
         final val isConstantTime // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime|{}isConstantTime[0]
             final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
         final val padEncoded // io.matthewnelson.encoding.base64/Base64.Config.padEncoded|{}padEncoded[0]
