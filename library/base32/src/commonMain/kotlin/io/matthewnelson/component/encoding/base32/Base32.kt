@@ -13,16 +13,7 @@
 *  See the License for the specific language governing permissions and
 *  limitations under the License.
 * */
-@file:Suppress(
-    "KotlinRedundantDiagnosticSuppress",
-    "MemberVisibilityCanBePrivate",
-    "PrivatePropertyName",
-    "RedundantExplicitType",
-    "SpellCheckingInspection",
-    "DEPRECATION",
-    "DeprecatedCallableAddReplaceWith",
-    "UNUSED_PARAMETER",
-)
+@file:Suppress("DEPRECATION_ERROR", "NOTHING_TO_INLINE", "UNUSED_PARAMETER")
 
 package io.matthewnelson.component.encoding.base32
 
@@ -32,7 +23,10 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.jvm.JvmOverloads
 
-/** @suppress */
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -41,27 +35,11 @@ import kotlin.jvm.JvmOverloads
             "io.matthewnelson.encoding.base32.Base32",
         ]
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.ERROR,
 )
 public sealed class Base32 {
 
-    @Deprecated(
-        message = "Replaced by EncoderDecoders. Will be removed in future versions.",
-        replaceWith = ReplaceWith(
-            expression = "Crockford",
-            imports = [
-                "io.matthewnelson.encoding.base32.Base32.Crockford",
-            ]
-        ),
-        level = DeprecationLevel.WARNING,
-    )
-    public data class Crockford @JvmOverloads constructor(
-        @Deprecated(
-            message = "Replaced by EncoderDecoder. Use io.matthewnelson.encoding.base32.Base32.Crockford.Builder to set",
-            level = DeprecationLevel.WARNING,
-        )
-        val checkSymbol: Char? = null,
-    ): Base32() {
+    public data class Crockford @JvmOverloads constructor(val checkSymbol: Char? = null): Base32() {
 
         init {
             when (checkSymbol) {
@@ -76,84 +54,26 @@ public sealed class Base32 {
         }
 
         public companion object {
-
-            @Deprecated(
-                message = "Replaced by EncoderDecoder. Will be removed in future versions.",
-                replaceWith = ReplaceWith(
-                    expression = "Crockford.CHARS_UPPER",
-                    imports = [
-                        "io.matthewnelson.encoding.base32.Base32.Crockford",
-                    ],
-                ),
-                level = DeprecationLevel.WARNING,
-            )
             public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Crockford.CHARS_UPPER
         }
 
-        @Deprecated(
-            message = "Replaced by EncoderDecoder. Use io.matthewnelson.encoding.base32.Base32.Crockford.Builder to set",
-            level = DeprecationLevel.WARNING,
-        )
         inline val hasCheckSymbol: Boolean get() = checkSymbol != null
-
-        @Deprecated(
-            message = "Replaced by EncoderDecoder. Use io.matthewnelson.encoding.base32.Crockford.Builder to set",
-            level = DeprecationLevel.WARNING,
-        )
         inline val checkByte: Byte? get() = checkSymbol?.uppercaseChar()?.code?.toByte()
     }
 
-    @Deprecated(
-        message = "Replaced by EncoderDecoders. Will be removed in future versions.",
-        replaceWith = ReplaceWith(
-            expression = "Default",
-            imports = [
-                "io.matthewnelson.encoding.base32.Base32.Default",
-            ]
-        ),
-        level = DeprecationLevel.WARNING,
-    )
     public object Default: Base32() {
-
-        @Deprecated(
-            message = "Replaced by EncoderDecoder. Will be removed in future versions.",
-            replaceWith = ReplaceWith(
-                expression = "Default.CHARS_UPPER",
-                imports = [
-                    "io.matthewnelson.encoding.base32.Base32.Default",
-                ],
-            ),
-            level = DeprecationLevel.WARNING,
-        )
         public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Default.CHARS_UPPER
     }
 
-    @Deprecated(
-        message = "Replaced by EncoderDecoders. Will be removed in future versions.",
-        replaceWith = ReplaceWith(
-            expression = "Hex",
-            imports = [
-                "io.matthewnelson.encoding.base32.Base32.Hex",
-            ]
-        ),
-        level = DeprecationLevel.WARNING,
-    )
     public object Hex: Base32() {
-
-        @Deprecated(
-            message = "Replaced by EncoderDecoder. Will be removed in future versions.",
-            replaceWith = ReplaceWith(
-                expression = "Hex.CHARS_UPPER",
-                imports = [
-                    "io.matthewnelson.encoding.base32.Base32.Hex",
-                ],
-            ),
-            level = DeprecationLevel.WARNING,
-        )
         public const val CHARS: String = io.matthewnelson.encoding.base32.Base32.Hex.CHARS_UPPER
     }
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -166,11 +86,14 @@ public sealed class Base32 {
     level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
-@Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Default): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Default.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -182,15 +105,18 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Def
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Hex.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32.Crockford.Builder { checkSymbol('value') })",
+        expression = "this.decodeToByteArrayOrNull(Base32.Crockford.Builder { check(base32.checkSymbol) })",
         imports = [
             "io.matthewnelson.encoding.base32.Base32",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -198,11 +124,14 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -219,6 +148,10 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Default.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -234,10 +167,14 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Hex.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base32.Crockford.Builder { checkSymbol('value') })",
+        expression = "this.decodeToByteArrayOrNull(Base32.Crockford.Builder { check(base32.checkSymbol) })",
         imports = [
             "io.matthewnelson.encoding.base32.Base32",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -249,6 +186,10 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -261,11 +202,14 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
     level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Default = Base32.Default): String {
     return encodeToString(io.matthewnelson.encoding.base32.Base32.Default.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -277,15 +221,18 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Default = Base32.Default
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
     return encodeToString(io.matthewnelson.encoding.base32.Base32.Hex.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base32.Crockford.Builder { checkSymbol('value') })",
+        expression = "this.encodeToString(Base32.Crockford.Builder { check(base32.checkSymbol) })",
         imports = [
             "io.matthewnelson.encoding.base32.Base32",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -293,11 +240,14 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
     return encodeToString(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -310,11 +260,14 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
     level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Default = Base32.Default): CharArray {
     return encodeToCharArray(io.matthewnelson.encoding.base32.Base32.Default.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -326,15 +279,18 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Default = Bas
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArray {
     return encodeToCharArray(io.matthewnelson.encoding.base32.Base32.Hex.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToCharArray(Base32.Crockford.Builder { checkSymbol('value') })",
+        expression = "this.encodeToCharArray(Base32.Crockford.Builder { check(base32.checkSymbol) })",
         imports = [
             "io.matthewnelson.encoding.base32.Base32",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
@@ -342,11 +298,14 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArr
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): CharArray {
     return encodeToCharArray(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -360,10 +319,13 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): C
 )
 @JvmOverloads
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Default): ByteArray {
-    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Default.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -376,14 +338,17 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Def
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
-    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Hex.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToByteArray(Base32.Crockford.Builder { checkSymbol('value') })",
+        expression = "this.encodeToByteArray(Base32.Crockford.Builder { check(base32.checkSymbol) })",
         imports = [
             "io.matthewnelson.encoding.base32.Base32",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
@@ -392,6 +357,5 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Crockford): ByteArray {
-    @Suppress("DEPRECATION_ERROR")
     return encodeToByteArray(io.matthewnelson.encoding.base32.Base32.Crockford.Builder { check(base32.checkSymbol) })
 }

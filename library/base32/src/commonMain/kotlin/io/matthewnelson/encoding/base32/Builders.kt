@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("FunctionName", "SpellCheckingInspection", "DEPRECATION")
+@file:Suppress("DEPRECATION", "FunctionName", "SpellCheckingInspection")
 
 package io.matthewnelson.encoding.base32
 
@@ -29,7 +29,10 @@ import kotlin.jvm.JvmSynthetic
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
  * */
-@Deprecated("Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base32Crockford(
     config: Base32.Crockford.Config?,
     block: Base32CrockfordConfigBuilder.() -> Unit,
@@ -41,7 +44,10 @@ public fun Base32Crockford(
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
  * */
-@Deprecated("Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base32Crockford(
     block: Base32CrockfordConfigBuilder.() -> Unit,
 ): Base32.Crockford = Base32Crockford(config = null, block)
@@ -52,7 +58,10 @@ public fun Base32Crockford(
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
  * */
-@Deprecated("Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 @JvmOverloads
 public fun Base32Crockford(
     strict: Boolean = false,
@@ -64,7 +73,10 @@ public fun Base32Crockford(
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
  * */
-@Deprecated("Use Base32.Default.Builder or Base32.Default.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Default.Builder or Base32.Default.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base32Default(
     config: Base32.Default.Config?,
     block: Base32DefaultConfigBuilder.() -> Unit,
@@ -76,7 +88,10 @@ public fun Base32Default(
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
  * */
-@Deprecated("Use Base32.Default.Builder or Base32.Default.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Default.Builder or Base32.Default.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base32Default(
     block: Base32DefaultConfigBuilder.() -> Unit,
 ): Base32.Default = Base32Default(config = null, block)
@@ -87,7 +102,10 @@ public fun Base32Default(
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
  * */
-@Deprecated("Use Base32.Default.Builder or Base32.Default.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Default.Builder or Base32.Default.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 @JvmOverloads
 public fun Base32Default(
     strict: Boolean = false,
@@ -99,7 +117,10 @@ public fun Base32Default(
  * @see [Base32.Hex.Builder]
  * @see [Base32.Hex.Companion.Builder]
  * */
-@Deprecated("Use Base32.Hex.Builder or Base32.Hex.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Hex.Builder or Base32.Hex.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base32Hex(
     config: Base32.Hex.Config?,
     block: Base32HexConfigBuilder.() -> Unit,
@@ -111,7 +132,10 @@ public fun Base32Hex(
  * @see [Base32.Hex.Builder]
  * @see [Base32.Hex.Companion.Builder]
  * */
-@Deprecated("Use Base32.Hex.Builder or Base32.Hex.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Hex.Builder or Base32.Hex.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base32Hex(
     block: Base32HexConfigBuilder.() -> Unit,
 ): Base32.Hex = Base32Hex(config = null, block)
@@ -123,7 +147,10 @@ public fun Base32Hex(
  * @see [Base32.Hex.Companion.Builder]
  * */
 @JvmOverloads
-@Deprecated("Use Base32.Hex.Builder or Base32.Hex.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Hex.Builder or Base32.Hex.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base32Hex(
     strict: Boolean = false,
 ): Base32.Hex = Base32.Hex.Builder { if (strict) strictSpec() }
@@ -134,7 +161,10 @@ public fun Base32Hex(
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
  * */
-@Deprecated("Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public class Base32CrockfordConfigBuilder {
 
     private val compat: Base32.Crockford.Builder
@@ -224,9 +254,15 @@ public class Base32CrockfordConfigBuilder {
         .finalizeOnFlush(finalizeWhenFlushed)
         .build()
 
-    /** @suppress */
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
     @JvmField
-    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    @Deprecated(
+        message = "Implementation is always constant time. Performance impact is negligible.",
+        level = DeprecationLevel.ERROR,
+    )
     public var isConstantTime: Boolean = true
 }
 
@@ -236,7 +272,10 @@ public class Base32CrockfordConfigBuilder {
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
  * */
-@Deprecated("Use Base32.Default.Builder or Base32.Default.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Default.Builder or Base32.Default.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public class Base32DefaultConfigBuilder {
 
     private val compat: Base32.Default.Builder
@@ -298,9 +337,15 @@ public class Base32DefaultConfigBuilder {
         .padEncoded(padEncoded)
         .build()
 
-    /** @suppress */
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
     @JvmField
-    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    @Deprecated(
+        message = "Implementation is always constant time. Performance impact is negligible.",
+        level = DeprecationLevel.ERROR,
+    )
     public var isConstantTime: Boolean = true
 }
 
@@ -310,7 +355,10 @@ public class Base32DefaultConfigBuilder {
  * @see [Base32.Hex.Builder]
  * @see [Base32.Hex.Companion.Builder]
  * */
-@Deprecated("Use Base32.Hex.Builder or Base32.Hex.Companion.Builder")
+@Deprecated(
+    message = "Use Base32.Hex.Builder or Base32.Hex.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public class Base32HexConfigBuilder {
 
     private val compat: Base32.Hex.Builder
@@ -372,8 +420,14 @@ public class Base32HexConfigBuilder {
         .padEncoded(padEncoded)
         .build()
 
-    /** @suppress */
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
     @JvmField
-    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    @Deprecated(
+        message = "Implementation is always constant time. Performance impact is negligible.",
+        level = DeprecationLevel.ERROR,
+    )
     public var isConstantTime: Boolean = true
 }

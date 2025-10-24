@@ -356,13 +356,27 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 )
             }
 
-            /** @suppress */
+            /**
+             * DEPRECATED
+             * @suppress
+             * */
             @JvmField
-            @Deprecated("Variable name changed.", ReplaceWith("finalizeOnFlush"))
+            @Deprecated(
+                message = "Variable name changed.",
+                replaceWith = ReplaceWith("finalizeOnFlush"),
+                level = DeprecationLevel.WARNING,
+            )
             public val finalizeWhenFlushed: Boolean = finalizeOnFlush
-            /** @suppress */
+            /**
+             * DEPRECATED
+             * @suppress
+             * */
             @JvmField
-            @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+            @Deprecated(
+                message = "Variable name changed.",
+                replaceWith = ReplaceWith("encodeLowercase"),
+                level = DeprecationLevel.WARNING,
+            )
             public val encodeToLowercase: Boolean = encodeLowercase
             /** @suppress */
             @JvmField
@@ -430,6 +444,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return CrockfordEncoder(config, out)
         }
 
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
         @Deprecated(
             message = "This constructor is scheduled for removal. Use Base32.Crockford.Builder or Base32.Crockford.Companion.Builder.",
             level = DeprecationLevel.WARNING,
@@ -630,9 +648,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 )
             }
 
-            /** @suppress */
+            /**
+             * DEPRECATED
+             * @suppress
+             * */
             @JvmField
-            @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+            @Deprecated(
+                message = "Variable name changed.",
+                replaceWith = ReplaceWith("encodeLowercase"),
+                level = DeprecationLevel.WARNING,
+            )
             public val encodeToLowercase: Boolean = encodeLowercase
             /** @suppress */
             @JvmField
@@ -700,6 +725,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return DefaultEncoder(config, out)
         }
 
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
         @Deprecated(
             message = "This constructor is scheduled for removal. Use Base32.Default.Builder or Base32.Default.Companion.Builder.",
             level = DeprecationLevel.WARNING,
@@ -900,9 +929,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 )
             }
 
-            /** @suppress */
+            /**
+             * DEPRECATED
+             * @suppress
+             * */
             @JvmField
-            @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+            @Deprecated(
+                message = "Variable name changed.",
+                replaceWith = ReplaceWith("encodeLowercase"),
+                level = DeprecationLevel.WARNING,
+            )
             public val encodeToLowercase: Boolean = encodeLowercase
             /** @suppress */
             @JvmField
@@ -970,6 +1006,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return HexEncoder(config, out)
         }
 
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
         @Deprecated(
             message = "This constructor is scheduled for removal. Use Base32.Hex.Builder or Base32.Hex.Companion.Builder.",
             level = DeprecationLevel.WARNING,
