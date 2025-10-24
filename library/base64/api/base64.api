@@ -46,6 +46,7 @@ public final class io/matthewnelson/encoding/base64/Base64 : io/matthewnelson/en
 	public static final fun -Builder (Lio/matthewnelson/encoding/base64/Base64$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
 	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base64/Base64;
 	public fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;)V
+	public synthetic fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base64/Base64$Builder {

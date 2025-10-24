@@ -21,7 +21,7 @@ import io.matthewnelson.encoding.base64.Base64
 
 internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base64.Config).build(
     b: Base64.Builder,
-    noinline base64: (Base64.Config) -> Base64,
+    noinline base64: (Base64.Config, Any?) -> Base64,
 ): Base64 {
     if (
         b._isLenient == Base64.Default.DELEGATE.config.isLenient
@@ -31,5 +31,5 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base64.Config).build(
         return if (b._encodeUrlSafe) Base64.UrlSafe.DELEGATE else Base64.Default.DELEGATE
     }
     val config = this(b._isLenient, b._lineBreakInterval, b._encodeUrlSafe, b._padEncoded)
-    return base64(config)
+    return base64(config, null)
 }

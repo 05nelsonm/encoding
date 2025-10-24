@@ -251,7 +251,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
 
         @get:JvmSynthetic
-        internal val DELEGATE = Base16(config)
+        internal val DELEGATE = Base16(config, unused = null)
         protected override fun name(): String = DELEGATE.name()
         protected override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base16.Config>.Feed {
             return DELEGATE.newDecoderFeedProtected(out)
@@ -346,6 +346,12 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
     )
 
-    // TODO: Deprecate & replace (Issue #172)
-    public constructor(config: Config): super(config)
+    @Deprecated(
+        message = "This constructor is scheduled for removal. Use Base16.Builder or Base16.Companion.Builder.",
+        level = DeprecationLevel.WARNING,
+    )
+    public constructor(config: Config): this(config, unused = null)
+
+    @Suppress("UNUSED_PARAMETER")
+    private constructor(config: Config, unused: Any?): super(config)
 }
