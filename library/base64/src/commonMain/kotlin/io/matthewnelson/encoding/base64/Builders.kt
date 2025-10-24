@@ -27,7 +27,10 @@ import kotlin.jvm.JvmSynthetic
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
  * */
-@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
+@Deprecated(
+    message = "Use Base64.Builder or Base64.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base64(
     config: Base64.Config?,
     block: Base64ConfigBuilder.() -> Unit,
@@ -39,7 +42,10 @@ public fun Base64(
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
  * */
-@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
+@Deprecated(
+    message = "Use Base64.Builder or Base64.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public fun Base64(
     block: Base64ConfigBuilder.() -> Unit,
 ): Base64 = Base64(null, block)
@@ -50,7 +56,10 @@ public fun Base64(
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
  * */
-@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
+@Deprecated(
+    message = "Use Base64.Builder or Base64.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 @JvmOverloads
 public fun Base64(
     strict: Boolean = false,
@@ -62,7 +71,10 @@ public fun Base64(
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
  * */
-@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
+@Deprecated(
+    message = "Use Base64.Builder or Base64.Companion.Builder",
+    level = DeprecationLevel.WARNING,
+)
 public class Base64ConfigBuilder {
 
     private val compat: Base64.Builder
@@ -122,8 +134,14 @@ public class Base64ConfigBuilder {
         .padEncoded(padEncoded)
         .build()
 
-    /** @suppress */
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
     @JvmField
-    @Deprecated(message = "Implementation is always constant time. Performance impact is negligible.")
+    @Deprecated(
+        message = "Implementation is always constant time. Performance impact is negligible.",
+        level = DeprecationLevel.ERROR,
+    )
     public var isConstantTime: Boolean = true
 }

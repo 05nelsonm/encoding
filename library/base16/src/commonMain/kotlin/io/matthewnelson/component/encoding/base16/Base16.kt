@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("KotlinRedundantDiagnosticSuppress")
+@file:Suppress("DEPRECATION_ERROR", "NOTHING_TO_INLINE")
 
 package io.matthewnelson.component.encoding.base16
 
@@ -23,6 +23,10 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -34,11 +38,14 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase16ToArray(): ByteArray? {
     return decodeToByteArrayOrNull(Base16.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -54,6 +61,10 @@ public fun CharArray.decodeBase16ToArray(): ByteArray? {
     return decodeToByteArrayOrNull(Base16.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -65,11 +76,14 @@ public fun CharArray.decodeBase16ToArray(): ByteArray? {
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16(): String {
     return encodeToString(Base16.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -81,11 +95,14 @@ public inline fun ByteArray.encodeBase16(): String {
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
     return encodeToCharArray(Base16.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     ReplaceWith(
@@ -98,6 +115,5 @@ public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase16ToByteArray(): ByteArray {
-    @Suppress("DEPRECATION")
     return encodeToByteArray(Base16.Builder {})
 }

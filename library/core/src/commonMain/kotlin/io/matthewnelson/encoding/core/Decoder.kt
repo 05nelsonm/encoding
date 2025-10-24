@@ -208,29 +208,34 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         }
 
         /**
-         * Decodes a [ByteArray] for the provided [decoder] and
-         * returns the decoded bytes.
-         *
-         * @see [decodeToByteArrayOrNull]
-         * @throws [EncodingException] if decoding failed.
+         * DEPRECATED
          * @suppress
          * */
         @JvmStatic
         @Throws(EncodingException::class)
-        @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
+        @Deprecated(
+            message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results",
+            level = DeprecationLevel.ERROR,
+        )
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
-            @Suppress("DEPRECATION")
+            @Suppress("DEPRECATION_ERROR")
             return decoder.decode(DecoderInput(this)) { feed ->
                 forEach { b -> feed.consume(b.toInt().toChar()) }
             }
         }
 
-        /** @suppress */
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
         @JvmStatic
-        @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
+        @Deprecated(
+            message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results",
+            level = DeprecationLevel.ERROR,
+        )
         public fun ByteArray.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
             return try {
-                @Suppress("DEPRECATION")
+                @Suppress("DEPRECATION_ERROR")
                 decodeToByteArray(decoder)
             } catch (_: EncodingException) {
                 null

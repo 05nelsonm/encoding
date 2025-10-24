@@ -22,15 +22,7 @@
 *
 *      Alexander Y. Kleymenov
 * */
-@file:Suppress(
-    "KotlinRedundantDiagnosticSuppress",
-    "MemberVisibilityCanBePrivate",
-    "PrivatePropertyName",
-    "RedundantExplicitType",
-    "SpellCheckingInspection",
-    "DEPRECATION",
-    "UNUSED_PARAMETER",
-)
+@file:Suppress("DEPRECATION_ERROR", "NOTHING_TO_INLINE", "UNUSED_PARAMETER")
 
 package io.matthewnelson.component.base64
 
@@ -40,7 +32,10 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.jvm.JvmOverloads
 
-/** @suppress */
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoder. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -49,70 +44,26 @@ import kotlin.jvm.JvmOverloads
             "io.matthewnelson.encoding.base64.Base64",
         ]
     ),
-    level = DeprecationLevel.WARNING,
+    level = DeprecationLevel.ERROR,
 )
 public sealed class Base64 {
 
-    @Deprecated(
-        message = "Replaced by EncoderDecoders. Will be removed in future versions.",
-        replaceWith = ReplaceWith(
-            expression = "Default",
-            imports = [
-                "io.matthewnelson.encoding.base64.Base64.Default",
-            ]
-        ),
-        level = DeprecationLevel.WARNING,
-    )
     public object Default: Base64() {
-        @Deprecated(
-            message = "Replaced by EncoderDecoders. Will be removed in future versions.",
-            replaceWith = ReplaceWith(
-                expression = "Default.CHARS",
-                imports = [
-                    "io.matthewnelson.encoding.base64.Base64.Default",
-                ]
-            ),
-            level = DeprecationLevel.WARNING,
-        )
         public const val CHARS: String = io.matthewnelson.encoding.base64.Base64.Default.CHARS
     }
 
-    @Deprecated(
-        message = "Replaced by EncoderDecoders. Will be removed in future versions.",
-        replaceWith = ReplaceWith(
-            expression = "Base64.UrlSafe",
-            imports = [
-                "io.matthewnelson.encoding.base64.Base64",
-            ]
-        ),
-        level = DeprecationLevel.WARNING,
-    )
-    public data class UrlSafe @JvmOverloads constructor(
-
-        @Deprecated(
-            message = "Replaced by EncoderDecoders. Use io.matthewnelson.builders.Base64 { encodeToUrlSafe = true; padEncoded = true/false } to set",
-            level = DeprecationLevel.WARNING,
-        )
-        val pad: Boolean = true
-    ): Base64() {
+    public data class UrlSafe @JvmOverloads constructor(val pad: Boolean = true): Base64() {
 
         public companion object {
-
-            @Deprecated(
-                message = "Replaced by EncoderDecoders. Will be removed in future versions.",
-                replaceWith = ReplaceWith(
-                    expression = "UrlSafe.CHARS",
-                    imports = [
-                        "io.matthewnelson.encoding.base64.Base64.UrlSafe",
-                    ]
-                ),
-                level = DeprecationLevel.WARNING,
-            )
             public const val CHARS: String = io.matthewnelson.encoding.base64.Base64.UrlSafe.CHARS
         }
     }
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -124,11 +75,14 @@ public sealed class Base64 {
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase64ToArray(): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -144,6 +98,10 @@ public fun CharArray.decodeBase64ToArray(): ByteArray? {
     return decodeToByteArrayOrNull(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -156,15 +114,18 @@ public fun CharArray.decodeBase64ToArray(): ByteArray? {
     level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default): String {
     return encodeToString(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base64.Builder { encodeUrlSafe(true).padEncoded(true/false) })",
+        expression = "this.encodeToString(Base64.Builder { encodeUrlSafe(true).padEncoded(base64.pad) })",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -172,7 +133,6 @@ public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
     return encodeToString(io.matthewnelson.encoding.base64.Base64.Builder {
         encodeUrlSafe(true)
@@ -180,6 +140,10 @@ public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
     })
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -192,15 +156,18 @@ public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
     level = DeprecationLevel.HIDDEN,
 )
 @JvmOverloads
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Base64.Default): CharArray {
     return encodeToCharArray(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToCharArray(Base64 { encodeToUrlSafe = true; padEncoded = true/false })",
+        expression = "this.encodeToCharArray(Base64.Builder { encodeToUrlSafe(true).padEncoded(base64.pad) })",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
@@ -208,7 +175,6 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Bas
     ),
     level = DeprecationLevel.HIDDEN,
 )
-@Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): CharArray {
     return encodeToCharArray(io.matthewnelson.encoding.base64.Base64.Builder {
         encodeUrlSafe(true)
@@ -216,6 +182,10 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): Cha
     })
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
@@ -232,10 +202,14 @@ public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Def
     return encodeToByteArray(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
+/**
+ * DEPRECATED
+ * @suppress
+ * */
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToByteArray(Base64 { encodeToUrlSafe = true; padEncoded = true/false })",
+        expression = "this.encodeToByteArray(Base64.Builder { encodeUrlSafe(true).padEncoded(base64.pad) })",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",

@@ -133,7 +133,7 @@ class DecoderInputUnitTest {
             inputSize// pass
         })
 
-        @Suppress("DEPRECATION")
+        @Suppress("DEPRECATION_ERROR")
         config.decodeOutMaxSizeOrFail(DecoderInput(validInput))
     }
 

@@ -41,10 +41,6 @@ public class DecoderInput {
     public constructor(input: CharSequence): this(input.length, get = input::get)
     public constructor(input: CharArray): this(input.size, get = input::get)
 
-    /** @suppress */
-    @Deprecated(message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results")
-    public constructor(input: ByteArray): this(input.size, get = { i -> input[i].toInt().toChar() })
-
     @Throws(EncodingException::class)
     public operator fun get(index: Int): Char {
         try {
@@ -53,4 +49,14 @@ public class DecoderInput {
             throw EncodingException("Index out of bounds", e)
         }
     }
+
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
+    @Deprecated(
+        message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results",
+        level = DeprecationLevel.ERROR,
+    )
+    public constructor(input: ByteArray): this(input.size, get = { i -> input[i].toInt().toChar() })
 }
