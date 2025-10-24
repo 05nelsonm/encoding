@@ -13,6 +13,7 @@ public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/en
 	public static final fun -Builder (Lio/matthewnelson/encoding/base16/Base16$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
+	public synthetic fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;Ljava/lang/Object;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Builder {

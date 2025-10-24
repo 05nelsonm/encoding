@@ -21,7 +21,7 @@ import io.matthewnelson.encoding.base16.Base16
 
 internal inline fun ((Boolean, Byte, Boolean) -> Base16.Config).build(
     b: Base16.Builder,
-    noinline base16: (Base16.Config) -> Base16,
+    noinline base16: (Base16.Config, Any?) -> Base16,
 ): Base16 {
     if (
         b._isLenient == Base16.DELEGATE.config.isLenient
@@ -31,5 +31,5 @@ internal inline fun ((Boolean, Byte, Boolean) -> Base16.Config).build(
         return Base16.DELEGATE
     }
     val config = this(b._isLenient, b._lineBreakInterval, b._encodeLowercase)
-    return base16(config)
+    return base16(config, null)
 }
