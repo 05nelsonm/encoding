@@ -9,13 +9,32 @@
 final class io.matthewnelson.encoding.base64/Base64 : io.matthewnelson.encoding.core/EncoderDecoder<io.matthewnelson.encoding.base64/Base64.Config> { // io.matthewnelson.encoding.base64/Base64|null[0]
     constructor <init>(io.matthewnelson.encoding.base64/Base64.Config) // io.matthewnelson.encoding.base64/Base64.<init>|<init>(io.matthewnelson.encoding.base64.Base64.Config){}[0]
 
+    final class Builder { // io.matthewnelson.encoding.base64/Base64.Builder|null[0]
+        constructor <init>() // io.matthewnelson.encoding.base64/Base64.Builder.<init>|<init>(){}[0]
+        constructor <init>(io.matthewnelson.encoding.base64/Base64.Config?) // io.matthewnelson.encoding.base64/Base64.Builder.<init>|<init>(io.matthewnelson.encoding.base64.Base64.Config?){}[0]
+
+        final fun build(): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64.Builder.build|build(){}[0]
+        final fun encodeUrlSafe(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.encodeUrlSafe|encodeUrlSafe(kotlin.Boolean){}[0]
+        final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.isLenient|isLenient(kotlin.Boolean){}[0]
+        final fun lineBreak(kotlin/Byte): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.lineBreak|lineBreak(kotlin.Byte){}[0]
+        final fun padEncoded(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.padEncoded|padEncoded(kotlin.Boolean){}[0]
+        final fun strictSpec(): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.strictSpec|strictSpec(){}[0]
+    }
+
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.base64/Base64.Config|null[0]
         final val encodeToUrlSafe // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe|{}encodeToUrlSafe[0]
             final fun <get-encodeToUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.encodeToUrlSafe.<get-encodeToUrlSafe>|<get-encodeToUrlSafe>(){}[0]
+        final val encodeUrlSafe // io.matthewnelson.encoding.base64/Base64.Config.encodeUrlSafe|{}encodeUrlSafe[0]
+            final fun <get-encodeUrlSafe>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.encodeUrlSafe.<get-encodeUrlSafe>|<get-encodeUrlSafe>(){}[0]
         final val isConstantTime // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime|{}isConstantTime[0]
             final fun <get-isConstantTime>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.isConstantTime.<get-isConstantTime>|<get-isConstantTime>(){}[0]
         final val padEncoded // io.matthewnelson.encoding.base64/Base64.Config.padEncoded|{}padEncoded[0]
             final fun <get-padEncoded>(): kotlin/Boolean // io.matthewnelson.encoding.base64/Base64.Config.padEncoded.<get-padEncoded>|<get-padEncoded>(){}[0]
+    }
+
+    final object Companion { // io.matthewnelson.encoding.base64/Base64.Companion|null[0]
+        final inline fun Builder(io.matthewnelson.encoding.base64/Base64.Config?, kotlin/Function1<io.matthewnelson.encoding.base64/Base64.Builder, kotlin/Unit>): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64.Companion.Builder|Builder(io.matthewnelson.encoding.base64.Base64.Config?;kotlin.Function1<io.matthewnelson.encoding.base64.Base64.Builder,kotlin.Unit>){}[0]
+        final inline fun Builder(kotlin/Function1<io.matthewnelson.encoding.base64/Base64.Builder, kotlin/Unit>): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64.Companion.Builder|Builder(kotlin.Function1<io.matthewnelson.encoding.base64.Base64.Builder,kotlin.Unit>){}[0]
     }
 
     final object Default : io.matthewnelson.encoding.core/EncoderDecoder<io.matthewnelson.encoding.base64/Base64.Config> { // io.matthewnelson.encoding.base64/Base64.Default|null[0]

@@ -10,13 +10,28 @@ public final class io/matthewnelson/encoding/base16/Base16 : io/matthewnelson/en
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base16/Base16$Companion;
+	public static final fun -Builder (Lio/matthewnelson/encoding/base16/Base16$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
+	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
 }
 
+public final class io/matthewnelson/encoding/base16/Base16$Builder {
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base16/Base16$Config;)V
+	public final fun build ()Lio/matthewnelson/encoding/base16/Base16;
+	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base16/Base16$Builder;
+	public final fun isLenient (Z)Lio/matthewnelson/encoding/base16/Base16$Builder;
+	public final fun lineBreak (B)Lio/matthewnelson/encoding/base16/Base16$Builder;
+	public final fun strictSpec ()Lio/matthewnelson/encoding/base16/Base16$Builder;
+}
+
 public final class io/matthewnelson/encoding/base16/Base16$Companion : io/matthewnelson/encoding/core/EncoderDecoder {
+	public final fun -Builder (Lio/matthewnelson/encoding/base16/Base16$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
+	public final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base16/Base16;
 }
 
 public final class io/matthewnelson/encoding/base16/Base16$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public synthetic fun <init> (ZBZLkotlin/jvm/internal/DefaultConstructorMarker;)V

@@ -13,137 +13,95 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("DEPRECATION")
+
 package io.matthewnelson.encoding.base64
 
-import io.matthewnelson.encoding.core.EncodingException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmOverloads
+import kotlin.jvm.JvmSynthetic
 
 /**
- * Creates a configured [Base64] encoder/decoder.
- *
- * @param [config] inherit settings from.
- * @see [Base64ConfigBuilder]
+ * DEPRECATED
+ * @suppress
+ * @see [Base64.Builder]
+ * @see [Base64.Companion.Builder]
  * */
+@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
 public fun Base64(
     config: Base64.Config?,
     block: Base64ConfigBuilder.() -> Unit,
-): Base64 {
-    val builder = Base64ConfigBuilder(config)
-    block.invoke(builder)
-    return Base64(builder.build())
-}
+): Base64 = Base64ConfigBuilder(config).apply(block).buildCompat()
 
 /**
- * Creates a configured [Base64] encoder/decoder.
- *
- * @see [Base64ConfigBuilder]
+ * DEPRECATED
+ * @suppress
+ * @see [Base64.Builder]
+ * @see [Base64.Companion.Builder]
  * */
+@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
 public fun Base64(
     block: Base64ConfigBuilder.() -> Unit,
-): Base64 {
-    return Base64(null, block)
-}
+): Base64 = Base64(null, block)
 
 /**
- * Creates a configured [Base64] encoder/decoder
- * using the default settings.
- *
- * @param [strict] If true, configures the encoder/decoder
- *   to be in strict accordance with RFC 4648.
- * @see [Base64ConfigBuilder]
+ * DEPRECATED
+ * @suppress
+ * @see [Base64.Builder]
+ * @see [Base64.Companion.Builder]
  * */
+@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
 @JvmOverloads
-public fun Base64(strict: Boolean = false): Base64 = Base64 { if (strict) strict() }
+public fun Base64(
+    strict: Boolean = false,
+): Base64 = Base64.Builder { if (strict) strictSpec() }
 
 /**
- * Builder for creating a [Base64.Config].
- *
- * @see [strict]
- * @see [io.matthewnelson.encoding.base64.Base64]
+ * DEPRECATED
+ * @suppress
+ * @see [Base64.Builder]
+ * @see [Base64.Companion.Builder]
  * */
+@Deprecated("Use Base64.Builder or Base64.Companion.Builder")
 public class Base64ConfigBuilder {
 
-    public constructor()
-    public constructor(config: Base64.Config?): this() {
-        if (config == null) return
-        isLenient = config.isLenient ?: true
-        lineBreakInterval = config.lineBreakInterval
-        encodeToUrlSafe = config.encodeToUrlSafe
-        padEncoded = config.padEncoded
+    private val compat: Base64.Builder
+
+    public constructor(): this(config = null)
+    public constructor(config: Base64.Config?) {
+        compat = Base64.Builder(other = config)
+        isLenient = compat._isLenient
+        lineBreakInterval = compat._lineBreakInterval
+        encodeToUrlSafe = compat._encodeUrlSafe
+        padEncoded = compat._padEncoded
     }
 
     /**
-     * If true, spaces and new lines ('\n', '\r', ' ', '\t')
-     * will be skipped over when decoding (against RFC 4648).
-     *
-     * If false, an [EncodingException] will be thrown if
-     * those characters are encountered when decoding.
-     *
-     * Default: `true`
+     * Refer to [Base64.Builder.isLenient] documentation.
      * */
     @JvmField
     public var isLenient: Boolean = true
 
     /**
-     * For every [lineBreakInterval] of encoded data, a
-     * line break will be output.
-     *
-     * Will **ONLY** output line breaks if [isLenient] is
-     * set to **true**.
-     *
-     * e.g.
-     *
-     *     isLenient = true
-     *     lineBreakInterval = 0
-     *     // SGVsbG8gV29ybGQh
-     *
-     *     isLenient = true
-     *     lineBreakInterval = 10
-     *     // SGVsbG8gV2
-     *     // 9ybGQh
-     *
-     *     isLenient = false
-     *     lineBreakInterval = 10
-     *     // SGVsbG8gV29ybGQh
-     *
-     * Enable by setting to a value between 1 and 127, and
-     * setting [isLenient] to true.
-     *
-     * A great value is 64
-     *
-     * Default: `0`
+     * Refer to [Base64.Builder.lineBreak] documentation.
      * */
     @JvmField
     public var lineBreakInterval: Byte = 0
 
     /**
-     * If true, will output Base64 UrlSafe characters
-     * when encoding.
-     *
-     * If false, will output Base64 Default characters
-     * when encoding.
-     *
-     * Default: `false`
+     * Refer to [Base64.Builder.encodeUrlSafe] documentation.
      * */
     @JvmField
     public var encodeToUrlSafe: Boolean = false
 
     /**
-     * If true, padding **WILL** be applied to the encoded
-     * output.
-     *
-     * If false, padding **WILL NOT** be applied to the
-     * encoded output (against RFC 4648).
-     *
-     * Default: `true`
+     * Refer to [Base64.Builder.padEncoded] documentation.
      * */
     @JvmField
     public var padEncoded: Boolean = true
 
     /**
-     * A shortcut for configuring things to be in strict
-     * adherence with RFC 4648.
+     * Refer to [Base64.Builder.strictSpec] documentation.
      * */
     public fun strict(): Base64ConfigBuilder {
         isLenient = false
@@ -151,7 +109,18 @@ public class Base64ConfigBuilder {
         return this
     }
 
-    public fun build(): Base64.Config = Base64.Config.from(this)
+    /**
+     * Refer to [Base64.Builder.build] documentation.
+     * */
+    public fun build(): Base64.Config = buildCompat().config
+
+    @JvmSynthetic
+    internal fun buildCompat(): Base64 = compat
+        .isLenient(isLenient)
+        .lineBreak(lineBreakInterval)
+        .encodeUrlSafe(encodeToUrlSafe)
+        .padEncoded(padEncoded)
+        .build()
 
     /** @suppress */
     @JvmField

@@ -116,7 +116,7 @@ public sealed class Base64 {
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base64())",
+        expression = "this.decodeToByteArrayOrNull(Base64.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -126,13 +126,13 @@ public sealed class Base64 {
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun String.decodeBase64ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base64.Base64())
+    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.decodeToByteArrayOrNull(Base64())",
+        expression = "this.decodeToByteArrayOrNull(Base64.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull",
@@ -141,13 +141,13 @@ public inline fun String.decodeBase64ToArray(): ByteArray? {
     level = DeprecationLevel.HIDDEN,
 )
 public fun CharArray.decodeBase64ToArray(): ByteArray? {
-    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base64.Base64())
+    return decodeToByteArrayOrNull(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base64())",
+        expression = "this.encodeToString(Base64.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -158,13 +158,13 @@ public fun CharArray.decodeBase64ToArray(): ByteArray? {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default): String {
-    return encodeToString(io.matthewnelson.encoding.base64.Base64())
+    return encodeToString(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToString(Base64 { encodeToUrlSafe = true; padEncoded = true/false })",
+        expression = "this.encodeToString(Base64.Builder { encodeUrlSafe(true).padEncoded(true/false) })",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToString",
@@ -174,16 +174,16 @@ public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
-    return encodeToString(io.matthewnelson.encoding.base64.Base64 {
-        encodeToUrlSafe = true
-        padEncoded = base64.pad
+    return encodeToString(io.matthewnelson.encoding.base64.Base64.Builder {
+        encodeUrlSafe(true)
+        padEncoded(base64.pad)
     })
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToCharArray(Base64())",
+        expression = "this.encodeToCharArray(Base64.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray",
@@ -194,7 +194,7 @@ public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
 @JvmOverloads
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Base64.Default): CharArray {
-    return encodeToCharArray(io.matthewnelson.encoding.base64.Base64())
+    return encodeToCharArray(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
 @Deprecated(
@@ -210,16 +210,16 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Bas
 )
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): CharArray {
-    return encodeToCharArray(io.matthewnelson.encoding.base64.Base64 {
-        encodeToUrlSafe = true
-        padEncoded = base64.pad
+    return encodeToCharArray(io.matthewnelson.encoding.base64.Base64.Builder {
+        encodeUrlSafe(true)
+        padEncoded(base64.pad)
     })
 }
 
 @Deprecated(
     message = "Replaced by EncoderDecoders. Will be removed in future versions.",
     replaceWith = ReplaceWith(
-        expression = "this.encodeToByteArray(Base64())",
+        expression = "this.encodeToByteArray(Base64.Builder {})",
         imports = [
             "io.matthewnelson.encoding.base64.Base64",
             "io.matthewnelson.encoding.core.Encoder.Companion.encodeToByteArray",
@@ -229,7 +229,7 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): Cha
 )
 @JvmOverloads
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Default): ByteArray {
-    return encodeToByteArray(io.matthewnelson.encoding.base64.Base64())
+    return encodeToByteArray(io.matthewnelson.encoding.base64.Base64.Builder {})
 }
 
 @Deprecated(
@@ -244,8 +244,8 @@ public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Def
     level = DeprecationLevel.HIDDEN,
 )
 public fun ByteArray.encodeBase64ToByteArray(base64: Base64.UrlSafe): ByteArray {
-    return encodeToByteArray(io.matthewnelson.encoding.base64.Base64 {
-        encodeToUrlSafe = true
-        padEncoded = base64.pad
+    return encodeToByteArray(io.matthewnelson.encoding.base64.Base64.Builder {
+        encodeUrlSafe(true)
+        padEncoded(base64.pad)
     })
 }

@@ -19,6 +19,8 @@ plugins {
 }
 
 kmpConfiguration {
+    // TODO:
+    //  - Update root README.md
     configureShared(java9ModuleName = "io.matthewnelson.encoding.base32", publish = true) {
         common {
             sourceSetMain {

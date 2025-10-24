@@ -37,9 +37,9 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
             field = value
         }
 
-    private fun base32(): Base32.Crockford = Base32Crockford {
-        encodeToLowercase = useLowercase
-        checkSymbol(symbol)
+    private fun base32(): Base32.Crockford = Base32.Crockford.Builder {
+        encodeLowercase(useLowercase)
+        check(symbol)
     }
 
     override val decodeFailureDataSet: Set<Data<String, Any?>> = setOf(
@@ -275,7 +275,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     @Test
     fun givenCheckSymbol_whenNotAValidSymbol_throwsException() {
         assertFailsWith<IllegalArgumentException> {
-            Base32Crockford { checkSymbol('0') }
+            Base32.Crockford.Builder { check('0') }
         }
     }
 
@@ -329,7 +329,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
                 raw = data.raw,
                 expected = "${data.expected}$symbol$symbol"
             )
-            val decoded = newData.expected.decodeToByteArrayOrNull(Base32Crockford { checkSymbol(symbol)} )
+            val decoded = newData.expected.decodeToByteArrayOrNull(Base32.Crockford.Builder { check(symbol)} )
             assertNull(decoded)
         }
     }
@@ -388,10 +388,10 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenBase32CrockfordFinalzeWhenFlushedFalse_whenEncoderFeedIsFlushed_thenFinalizationIsNotPerformed() {
         val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
 
-        val crockford = Base32Crockford {
-            hyphenInterval = 4
-            checkSymbol('*')
-            finalizeWhenFlushed = false
+        val crockford = Base32.Crockford.Builder {
+            hyphen(4)
+            check('*')
+            finalizeOnFlush(false)
         }
 
         val decoded = expected.decodeToByteArray(crockford)
@@ -421,10 +421,10 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     fun givenBase32CrockfordFinalzeWhenFlushedTrue_whenEncoderFeedIsFlushed_thenFinalizationIsPerformed() {
         val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-*\n41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
 
-        val crockford = Base32Crockford {
-            hyphenInterval = 4
-            checkSymbol('*')
-            finalizeWhenFlushed = true
+        val crockford = Base32.Crockford.Builder {
+            hyphen(4)
+            check('*')
+            finalizeOnFlush(true)
         }
 
         val decoded = expected.split('\n').let { splits ->

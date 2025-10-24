@@ -67,15 +67,33 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthe
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Crockford$Companion;
+	public static final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
+	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
 }
 
+public final class io/matthewnelson/encoding/base32/Base32$Crockford$Builder {
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
+	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Crockford;
+	public final fun check (Ljava/lang/Character;)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
+	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
+	public final fun finalizeOnFlush (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
+	public final fun hyphen (B)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
+	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
+	public final fun strictSpec ()Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
+}
+
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Companion : io/matthewnelson/encoding/core/EncoderDecoder {
+	public final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
+	public final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Crockford;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field checkSymbol Ljava/lang/Character;
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
+	public final field finalizeOnFlush Z
 	public final field finalizeWhenFlushed Z
 	public final field hyphenInterval B
 	public final field isConstantTime Z
@@ -86,13 +104,29 @@ public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewn
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Default$Companion;
+	public static final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Default$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
+	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
 }
 
+public final class io/matthewnelson/encoding/base32/Base32$Default$Builder {
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
+	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Default;
+	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
+	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
+	public final fun lineBreak (B)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
+	public final fun padEncoded (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
+	public final fun strictSpec ()Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
+}
+
 public final class io/matthewnelson/encoding/base32/Base32$Default$Companion : io/matthewnelson/encoding/core/EncoderDecoder {
+	public final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Default$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
+	public final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Default;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
@@ -103,13 +137,29 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelso
 	public static final field CHARS_LOWER Ljava/lang/String;
 	public static final field CHARS_UPPER Ljava/lang/String;
 	public static final field Companion Lio/matthewnelson/encoding/base32/Base32$Hex$Companion;
+	public static final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
+	public static final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
 }
 
+public final class io/matthewnelson/encoding/base32/Base32$Hex$Builder {
+	public fun <init> ()V
+	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
+	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Hex;
+	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
+	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
+	public final fun lineBreak (B)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
+	public final fun padEncoded (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
+	public final fun strictSpec ()Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
+}
+
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Companion : io/matthewnelson/encoding/core/EncoderDecoder {
+	public final fun -Builder (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
+	public final fun -Builder (Lkotlin/jvm/functions/Function1;)Lio/matthewnelson/encoding/base32/Base32$Hex;
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
+	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
