@@ -177,13 +177,22 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             /**
              * DEFAULT: `false`
              *
-             * If `true`, whenever [Encoder.Feed.flush] is called, in addition to processing
-             * any buffered input, the [check] symbol will be appended and counter for [hyphen]
-             * interval will be reset.
+             * If `true`:
+             *  - Encoding: Whenever [Encoder.Feed.flush] is called, in addition to processing
+             *  any buffered input, the [check] symbol will be appended and counter for [hyphen]
+             *  interval will be reset (if they were configured).
+             *  - Decoding: Whenever [Decoder.Feed.flush] is called, verification that the [check]
+             *  symbol was present for that decoding will be had, prior to processing any buffered
+             *  input. Verification is ignored if no [check] symbol was configured, or there was no
+             *  input.
              *
-             * If `false`, whenever [Encoder.Feed.flush] is called, only processing of buffered
-             * input will occur; no [check] symbol will be appended, and the counter for [hyphen]
-             * interval will not be reset.
+             * If `false`:
+             *  - Encoding: Whenever [Encoder.Feed.flush] is called, only processing of buffered
+             *  input will occur; no [check] symbol will be appended, and the counter for [hyphen]
+             *  interval will not be reset.
+             *  - Decoding: Whenever [Decoder.Feed.flush] is called, Verification of the presence
+             *  of the [check] symbol only occurs on the final decoding. If no [check] symbol was
+             *  configured, or there was no input, then this is ignored.
              *
              * **NOTE:** This setting is ignored if neither [hyphen] interval nor [check] symbol
              * are configured.
@@ -279,15 +288,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
                     if (actualUpper != expectedUpper) {
                         // Wrong, or no symbol
-                        if (actual.isCheckSymbol()) {
-                            throw EncodingException(
-                                "Check symbol did not match. Expected[$checkSymbol] vs Actual[$actual]"
-                            )
+                        val msg = if (actual.isCheckSymbol()) {
+                            "Wrong check symbol. Expected[$checkSymbol] vs Actual[$actual]"
                         } else {
-                            throw EncodingException(
-                                "Check symbol not found. Expected[$checkSymbol]"
-                            )
+                            "Missing check symbol. Expected[$checkSymbol]"
                         }
+                        throw EncodingException(msg)
                     } else {
                         outSize--
                     }
@@ -437,11 +443,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         protected final override fun name(): String = NAME
 
         protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
-            return CrockfordDecoder(config, out)
+            return CrockfordDecoder(out)
         }
 
         protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
-            return CrockfordEncoder(config, out)
+            return CrockfordEncoder(out)
         }
 
         /**
@@ -722,7 +728,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Default.Config>.Feed {
-            return DefaultEncoder(config, out)
+            return DefaultEncoder(out)
         }
 
         /**
@@ -1003,7 +1009,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Hex.Config>.Feed {
-            return HexEncoder(config, out)
+            return HexEncoder(out)
         }
 
         /**
@@ -1205,17 +1211,16 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         },
     )
 
-    private inner class CrockfordDecoder(
-        private val _config: Crockford.Config,
-        out: Decoder.OutFeed,
-    ): Decoder<C>.Feed() {
+    private inner class CrockfordDecoder(out: Decoder.OutFeed): Decoder<C>.Feed() {
 
+        private val _config = config as Crockford.Config
+        private var hadInput = false
         private var isCheckSymbolSet = false
         private val buffer = DecodingBuffer(out)
 
         override fun consumeProtected(input: Char) {
             if (isCheckSymbolSet) {
-                // If the set checkByte was not intended, it's only valid as the
+                // If the set checkSymbol was not intended, it's only valid as the
                 // very last character and the previous update call was invalid.
                 throw EncodingException("CheckSymbol[${_config.checkSymbol}] was set")
             }
@@ -1323,6 +1328,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             diff += if (gev + lez == 2) -91 else 0
 
             if (diff != 0) {
+                hadInput = true
                 buffer.update(code + diff)
                 return
             }
@@ -1343,18 +1349,21 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         override fun doFinalProtected() {
-            // TODO: If _config.checkSymbol is not null, check
-            //  isCheckSymbolSet and fail if it is not. (Issue #175)
+            if (isClosed() || _config.finalizeOnFlush) {
+                if (hadInput && _config.checkSymbol != null && !isCheckSymbolSet) {
+                    throw EncodingException("Missing check symbol. Expected[${_config.checkSymbol}]")
+                }
+                isCheckSymbolSet = false
+                hadInput = false
+            }
+
             buffer.finalize()
-            isCheckSymbolSet = false
         }
     }
 
-    private inner class CrockfordEncoder(
-        private val _config: Crockford.Config,
-        private val out: Encoder.OutFeed,
-    ): Encoder<C>.Feed() {
+    private inner class CrockfordEncoder(private val out: Encoder.OutFeed): Encoder<C>.Feed() {
 
+        private val _config = config as Crockford.Config
         private var outCount: Byte = 0
         private var outputHyphenOnNext = false
 
@@ -1378,7 +1387,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun doFinalProtected() {
             buffer.finalize()
 
-            if (_config.finalizeOnFlush || isClosed()) {
+            if (isClosed() || _config.finalizeOnFlush) {
                 _config.checkSymbol?.let { symbol ->
 
                     if (outputHyphenOnNext) {
@@ -1439,12 +1448,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun doFinalProtected() { buffer.finalize() }
     }
 
-    private inner class DefaultEncoder(_config: Default.Config, out: Encoder.OutFeed): Encoder<C>.Feed() {
+    private inner class DefaultEncoder(out: Encoder.OutFeed): Encoder<C>.Feed() {
 
         private val buffer = EncodingBuffer(
             out = out,
-            table = if (_config.encodeLowercase) Default.CHARS_LOWER else Default.CHARS_UPPER,
-            paddingChar = if (_config.padEncoded) _config.paddingChar else null,
+            table = if ((config as Default.Config).encodeLowercase) Default.CHARS_LOWER else Default.CHARS_UPPER,
+            paddingChar = if ((config as Default.Config).padEncoded) config.paddingChar else null,
         )
 
         override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
@@ -1493,12 +1502,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun doFinalProtected() { buffer.finalize() }
     }
 
-    private inner class HexEncoder(_config: Hex.Config, out: Encoder.OutFeed): Encoder<C>.Feed() {
+    private inner class HexEncoder(out: Encoder.OutFeed): Encoder<C>.Feed() {
 
         private val buffer = EncodingBuffer(
             out = out,
-            table = if (_config.encodeLowercase) Hex.CHARS_LOWER else Hex.CHARS_UPPER,
-            paddingChar = if (_config.padEncoded) _config.paddingChar else null,
+            table = if ((config as Hex.Config).encodeLowercase) Hex.CHARS_LOWER else Hex.CHARS_UPPER,
+            paddingChar = if ((config as Hex.Config).padEncoded) config.paddingChar else null,
         )
 
         override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }

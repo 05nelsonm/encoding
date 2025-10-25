@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.base32
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
+import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.use
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.*
@@ -273,29 +274,27 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenCheckSymbol_whenNotAValidSymbol_throwsException() {
-        assertFailsWith<IllegalArgumentException> {
-            Base32.Crockford.Builder { check('0') }
-        }
+    fun givenBuilder_whenInvalidCheckSymbol_throwsIllegalArgumentException() {
+        assertFailsWith<IllegalArgumentException> { Base32.Crockford.Builder { check(symbol = '0') } }
     }
 
     @Test
-    fun givenString_whenEncoded_MatchesSpec() {
+    fun givenInput_whenEncoded_thenMatchesExpected() {
         checkEncodeSuccessForDataSet(encodeSuccessDataSet)
     }
 
     @Test
-    fun givenBadEncoding_whenDecoded_ReturnsNull() {
+    fun givenBadEncoding_whenDecodedOrNull_thenReturnsNull() {
         checkDecodeFailureForDataSet(decodeFailureDataSet)
     }
 
     @Test
-    fun givenEncodedData_whenDecoded_MatchesSpec() {
+    fun givenEncodedData_whenDecoded_thenMatchesExpected() {
         checkDecodeSuccessForDataSet(decodeSuccessDataSet)
     }
 
     @Test
-    fun givenEncodedDataWithCheckSymbol_whenDecodedWithoutCheckSymbolExpressed_returnsFailure() {
+    fun givenEncodedDataContainingCheckSymbol_whenDecodeOrNullWithoutCheckSymbol_thenReturnsNull() {
         val data = encodeSuccessDataSet.first()
 
         for (symbol in validCheckSymbols) {
@@ -305,7 +304,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenEncodedDataWithCheckSymbol_whenDecodedWithCheckSymbolExpressed_returnsExpected() {
+    fun givenEncodedDataContainingCheckSymbol_whenDecodeOrNullCheckSymbol_thenReturnsExpected() {
         for (symbol in validCheckSymbols) {
             this.symbol = symbol
             checkEncodeSuccessForDataSet(getEncodeSuccessDataSetWithCheckSymbolExpected(symbol))
@@ -313,7 +312,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenString_whenEncodedWithCheckSymbolExpressed_returnsExpected() {
+    fun givenString_whenEncodedWithCheckSymbolExpressed_thenReturnsExpected() {
         for (symbol in validCheckSymbols) {
             this.symbol = symbol
             checkDecodeSuccessForDataSet(getDecodeSuccessDataSetWithCheckSymbolExpected(symbol))
@@ -321,7 +320,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenEncodingWithMultipleCheckSymbols_decodingWithCheckSymbol_returnsNull() {
+    fun givenEncodingWithMultipleCheckSymbols_decodingWithCheckSymbol_thenReturnsNull() {
         val data = encodeSuccessDataSet.first()
 
         for (symbol in validCheckSymbols) {
@@ -335,17 +334,17 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenUniversalDecoderParameters_whenChecked_areSuccessful() {
+    fun givenUniversalDecoderParameters_whenChecked_thenAreSuccessful() {
         checkUniversalDecoderParameters()
     }
 
     @Test
-    fun givenUniversalEncoderParameters_whenChecked_areSuccessful() {
+    fun givenUniversalEncoderParameters_whenChecked_thenAreSuccessful() {
         checkUniversalEncoderParameters()
     }
 
     @Test
-    fun givenBase32Crockford_whenEncodeToLowercase_thenOutputIsLowercase() {
+    fun givenEncodeLowercaseTrue_whenEncodeData_thenOutputIsLowercase() {
         useLowercase = true
 
         val lowercaseData = buildSet {
@@ -374,18 +373,19 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenBase32Crockford_whenEncodeDecodeRandomData_thenBytesMatch() {
+    fun givenEncodeLowercaseFalse_whenEncodeDecodeRandomData_thenBytesMatch() {
+        useLowercase = false
         checkRandomData()
     }
 
     @Test
-    fun givenBase32CrockfordLowercase_whenEncodeDecodeRandomData_thenBytesMatch() {
+    fun givenEncodeLowercaseTrue_whenEncodeDecodeRandomData_thenBytesMatch() {
         useLowercase = true
         checkRandomData()
     }
 
     @Test
-    fun givenBase32CrockfordFinalzeWhenFlushedFalse_whenEncoderFeedIsFlushed_thenFinalizationIsNotPerformed() {
+    fun givenFinalzeOnFlushFalse_whenEncoderFeedFlush_thenFinalizationIsNotPerformed() {
         val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
 
         val crockford = Base32.Crockford.Builder {
@@ -418,7 +418,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenBase32CrockfordFinalzeWhenFlushedTrue_whenEncoderFeedIsFlushed_thenFinalizationIsPerformed() {
+    fun givenFinalzeOnFlushTrue_whenEncoderFeedFlush_thenFinalizationIsPerformed() {
         val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-*\n41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
 
         val crockford = Base32.Crockford.Builder {
@@ -432,9 +432,7 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
         }
 
         val sb = StringBuilder()
-        crockford.newEncoderFeed { encodedChar ->
-            sb.append(encodedChar)
-        }.use { feed ->
+        crockford.newEncoderFeed { encodedChar -> sb.append(encodedChar) }.use { feed ->
             // encode block size is 5, so use a multiple of that
             // so there are no partial blocks which would give
             // a different encoding.
@@ -453,4 +451,51 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
         assertEquals(expected, sb.toString())
     }
 
+    @Test
+    fun givenFinalizeOnFlushTrueAndCheckSymbol_whenDecoderFeedDoFinal_thenFailsWhenNoCheckSymbolWasSeen() {
+        val encoded = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-$"
+        val crockford = Base32.Crockford.Builder {
+            hyphen(4)
+            check('*')
+            finalizeOnFlush(true)
+        }
+
+        // Encoding with expected check symbol OK
+        val expected = (encoded.dropLast(1) + '*').decodeToByteArray(crockford)
+
+        // Wrong check symbol error confirmed b/c Config.decodeOutMaxSizeOrFailProtected is checking it
+        assertFailsWith<EncodingException> { encoded.decodeToByteArray(crockford) }
+
+        val actual = ByteArray(expected.size) { -1 }
+        var i = 0
+        @Suppress("AssignedValueIsNeverRead")
+        val feed = crockford.newDecoderFeed { byte -> actual[i++] = byte }
+
+        // Load everything but the final character (the check symbol)
+        for (j in 0..encoded.length - 2) {
+            feed.consume(encoded[j])
+        }
+
+        try {
+            feed.doFinal()
+            fail("Crockford implementation of Decoder.Feed.doFinal did not validate check symbol presence")
+        } catch (_: EncodingException) {
+            // pass
+        } finally {
+            feed.close()
+        }
+
+        // Even though doFinal failed, decoded data should have been output
+        assertContentEquals(expected, actual)
+    }
+
+    @Test
+    fun givenFinalizeOnFlushFalseAndCheckSymbol_whenDecoderFeedDoFinalNoInput_thenDoesNotThrowMissingCheckSymbolException() {
+        var i = 0
+        Base32.Crockford.Builder {
+            check('$')
+            finalizeOnFlush(enable = false)
+        }.newDecoderFeed { i++ }.doFinal()
+        assertEquals(0, i)
+    }
 }
