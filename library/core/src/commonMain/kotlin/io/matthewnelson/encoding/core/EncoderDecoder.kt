@@ -310,43 +310,50 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             override fun toString(): String = "$name: $value"
         }
 
+        // Cached so is only ever called once and immediately
+        // converted to what is needed for equals/hashCode/toString
+        private val _toStringAddSettings: List<String> by lazy { toStringAddSettings().map { it.toString() } }
+
         /** @suppress */
-        final override fun equals(other: Any?): Boolean {
-            return  other is Config
-                    && other::class == this::class
-                    && other.toString() == toString()
+        public final override fun equals(other: Any?): Boolean {
+            if (other !is Config) return false
+            if (other.isLenient != this.isLenient) return false
+            if (other.paddingChar != this.paddingChar) return false
+            if (other.lineBreakInterval != this.lineBreakInterval) return false
+            if (other::class != this::class) return false
+            return other._toStringAddSettings == this._toStringAddSettings
         }
 
         /** @suppress */
-        final override fun hashCode(): Int {
-            // TODO: Optimize. This is calling toString EVERY time which is crazy.
-            return 17 * 31 + toString().hashCode()
+        public final override fun hashCode(): Int {
+            var result = 17
+            result = result * 31 + isLenient.hashCode()
+            result = result * 31 + paddingChar.hashCode()
+            result = result * 31 + lineBreakInterval.hashCode()
+            result = result * 31 + this::class.hashCode()
+            result = result * 31 + _toStringAddSettings.hashCode()
+            return result
         }
 
         /** @suppress */
-        final override fun toString(): String {
-            return StringBuilder().apply {
-                append("EncoderDecoder.Config [")
-                appendLine()
-                append("    isLenient: ")
-                append(isLenient)
-                appendLine()
-                append("    lineBreakInterval: ")
-                append(lineBreakInterval)
-                appendLine()
-                append("    paddingChar: ")
-                append(paddingChar)
+        public final override fun toString(): String = StringBuilder().apply {
+            appendLine("EncoderDecoder.Config [")
+            append("    isLenient: ")
+            appendLine(isLenient)
+            append("    lineBreakInterval: ")
+            appendLine(lineBreakInterval)
+            append("    paddingChar: ")
+            append(paddingChar)
 
-                for (setting in toStringAddSettings()) {
-                    appendLine()
-                    append("    ")
-                    append(setting)
-                }
-
+            for (setting in _toStringAddSettings) {
                 appendLine()
-                append(']')
-            }.toString()
-        }
+                append("    ")
+                append(setting)
+            }
+
+            appendLine()
+            append(']')
+        }.toString()
 
         public companion object {
 
@@ -485,19 +492,22 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
      *     override fun name() = "Base16"
      *     override fun name() = "Base32.Crockford"
      *     override fun name() = "Base64"
+     *     override fun name() = "UTF-8"
      * */
     protected abstract fun name(): String
 
     /** @suppress */
-    final override fun equals(other: Any?): Boolean {
-        return  other is EncoderDecoder<*>
-                && other::class == this::class
-                && other.name() == name()
-                && other.config.hashCode() == config.hashCode()
+    public final override fun equals(other: Any?): Boolean {
+        if (other !is EncoderDecoder<*>) return false
+        if (other.name() != this.name()) return false
+        // Config equals override checks config ::class equality
+        // so if and only if the other EncoderDecoder has the same
+        // Config class type will the EncoderDecoder equal this one.
+        return other.config == this.config
     }
 
     /** @suppress */
-    final override fun hashCode(): Int {
+    public final override fun hashCode(): Int {
         var result = 17
         result = result * 31 + name().hashCode()
         result = result * 31 + config.hashCode()
@@ -505,7 +515,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     }
 
     /** @suppress */
-    final override fun toString(): String {
+    public final override fun toString(): String {
         return "EncoderDecoder[${name()}]@${hashCode()}"
     }
 }
