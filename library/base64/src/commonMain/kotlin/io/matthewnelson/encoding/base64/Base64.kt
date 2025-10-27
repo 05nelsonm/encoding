@@ -112,13 +112,17 @@ public class Base64: EncoderDecoder<Base64.Config> {
             this._padEncoded = other.padEncoded
         }
 
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _isLenient: Boolean = true
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _lineBreakInterval: Byte = 0
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _encodeUrlSafe: Boolean = false
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _padEncoded: Boolean = true
 
         /**
@@ -270,9 +274,16 @@ public class Base64: EncoderDecoder<Base64.Config> {
             )
         }
 
-        /** @suppress */
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
         @JvmField
-        @Deprecated("Variable name changed.", ReplaceWith("encodeUrlSafe"))
+        @Deprecated(
+            message = "Variable name changed.",
+            replaceWith = ReplaceWith("encodeUrlSafe"),
+            level = DeprecationLevel.WARNING,
+        )
         public val encodeToUrlSafe: Boolean = encodeUrlSafe
         /** @suppress */
         @JvmField

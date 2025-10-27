@@ -75,11 +75,14 @@ public class Base16: EncoderDecoder<Base16.Config> {
             this._encodeLowercase = other.encodeLowercase
         }
 
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _isLenient: Boolean = true
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _lineBreakInterval: Byte = 0
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _encodeLowercase: Boolean = false
 
         /**
@@ -203,9 +206,16 @@ public class Base16: EncoderDecoder<Base16.Config> {
             )
         }
 
-        /** @suppress */
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
         @JvmField
-        @Deprecated("Variable name changed.", ReplaceWith("encodeLowercase"))
+        @Deprecated(
+            message = "Variable name changed.",
+            replaceWith = ReplaceWith("encodeLowercase"),
+            level = DeprecationLevel.WARNING,
+        )
         public val encodeToLowercase: Boolean = encodeLowercase
         /** @suppress */
         @JvmField

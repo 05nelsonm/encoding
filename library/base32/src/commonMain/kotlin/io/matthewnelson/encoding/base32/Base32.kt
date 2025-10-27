@@ -88,19 +88,26 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 this._encodeLowercase = other.encodeLowercase
                 this._hyphenInterval = other.hyphenInterval
                 this._checkSymbol = other.checkSymbol
-                this._finalizeOnFlush = other.finalizeOnFlush
+                this._finalizeWhenFlushed = other.finalizeWhenFlushed
             }
 
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _isLenient: Boolean = true
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _encodeLowercase: Boolean = false
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _hyphenInterval: Byte = 0
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _checkSymbol: Char? = null
-            @JvmSynthetic
-            internal var _finalizeOnFlush: Boolean = false
+
+            // Here for compatibility purposes with Base32CrockfordConfigBuilder
+            @get:JvmSynthetic
+            @set:JvmSynthetic
+            internal var _finalizeWhenFlushed: Boolean = true
 
             /**
              * DEFAULT: `true`
@@ -144,8 +151,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              *
              *     hyphen(interval = 4)
              *     // 91JP-RV3F-41BP-YWKC-CGGG
-             *
-             * @see [finalizeOnFlush]
              * */
             public fun hyphen(interval: Byte): Builder = apply { _hyphenInterval = interval }
 
@@ -157,8 +162,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              *
              * If `null`, no check symbol will be appended to encoded output, and decoding of
              * any input containing a check symbol will fail due to misconfiguration.
-             *
-             * @see [finalizeOnFlush]
              *
              * @throws [IllegalArgumentException] If not `null`, or a valid symbol.
              * */
@@ -175,76 +178,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * DEFAULT: `false`
-             *
-             * If `true`:
-             *  - Encoding: Whenever [Encoder.Feed.flush] is called, in addition to processing
-             *  any buffered input, the [check] symbol will be appended and counter for [hyphen]
-             *  interval will be reset (if they were configured).
-             *  - Decoding: Whenever [Decoder.Feed.flush] is called, verification that the [check]
-             *  symbol was present for that decoding will be had, prior to processing any buffered
-             *  input. Verification is ignored if no [check] symbol was configured, or there was no
-             *  input.
-             *
-             * If `false`:
-             *  - Encoding: Whenever [Encoder.Feed.flush] is called, only processing of buffered
-             *  input will occur; no [check] symbol will be appended, and the counter for [hyphen]
-             *  interval will not be reset.
-             *  - Decoding: Whenever [Decoder.Feed.flush] is called, Verification of the presence
-             *  of the [check] symbol only occurs on the final decoding. If no [check] symbol was
-             *  configured, or there was no input, then this is ignored.
-             *
-             * **NOTE:** This setting is ignored if neither [hyphen] interval nor [check] symbol
-             * are configured.
-             *
-             * e.g. (Behavior when `true`)
-             *
-             *     val sb = StringBuilder()
-             *     Base32.Crockford.Builder {
-             *         hyphen(interval = 4)
-             *         check(symbol = '*')
-             *         finalizeOnFlush(enable = true)
-             *     }.newEncoderFeed { encodedChar ->
-             *         sb.append(encodedChar)
-             *     }.use { feed ->
-             *         bytes1.forEach { b -> feed.consume(b) }
-             *         feed.flush()
-             *         bytes2.forEach { b -> feed.consume(b) }
-             *     }
-             *     println(sb.toString())
-             *     // 91JP-RV3F-*41BP-YWKC-CGGG-*
-             *
-             * e.g. (Behavior when `false`)
-             *
-             *     val sb = StringBuilder()
-             *     Base32.Crockford.Builder {
-             *         hyphen(interval = 4)
-             *         check(symbol = '*')
-             *         finalizeOnFlush(enable = false)
-             *     }.newEncoderFeed { encodedChar ->
-             *         sb.append(encodedChar)
-             *     }.use { feed ->
-             *         bytes1.forEach { b -> feed.consume(b) }
-             *         feed.flush()
-             *         bytes2.forEach { b -> feed.consume(b) }
-             *     }
-             *     println(sb.toString())
-             *     // 91JP-RV3F-41BP-YWKC-CGGG-*
-             * */
-            public fun finalizeOnFlush(enable: Boolean): Builder = apply { _finalizeOnFlush = enable }
-
-            /**
              * Helper for configuring the builder with settings which are compliant with the
              * Crockford specification.
              *
              *  - [isLenient] will be set to `false`.
              *  - [encodeLowercase] will be set to `false`.
-             *  - [finalizeOnFlush] will be set to `false`.
              * */
             public fun strictSpec(): Builder = apply {
                 _isLenient = false
                 _encodeLowercase = false
-                _finalizeOnFlush = false
             }
 
             /**
@@ -267,8 +209,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val hyphenInterval: Byte,
             @JvmField
             public val checkSymbol: Char?,
+
+            // Deprecated option from old Base32CrockfordConfigBuilder
+            // which is no-longer available from Crockford.Builder and
+            // always defaults to true.
             @JvmField
-            public val finalizeOnFlush: Boolean,
+            public val finalizeWhenFlushed: Boolean,
         ): EncoderDecoder.Config(isLenient, 0, null) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
@@ -343,7 +289,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 add(Setting(name = "encodeLowercase", value = encodeLowercase))
                 add(Setting(name = "hyphenInterval", value = hyphenInterval))
                 add(Setting(name = "checkSymbol", value = checkSymbol))
-                add(Setting(name = "finalizeOnFlush", value = finalizeOnFlush))
+                add(Setting(name = "finalizeWhenFlushed", value = finalizeWhenFlushed))
                 add(Setting(name = "isConstantTime", value = isConstantTime))
             }
 
@@ -358,21 +304,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     encodeLowercase = false,
                     hyphenInterval = 4,
                     checkSymbol = null,
-                    finalizeOnFlush = false,
+                    finalizeWhenFlushed = true,
                 )
             }
 
-            /**
-             * DEPRECATED
-             * @suppress
-             * */
-            @JvmField
-            @Deprecated(
-                message = "Variable name changed.",
-                replaceWith = ReplaceWith("finalizeOnFlush"),
-                level = DeprecationLevel.WARNING,
-            )
-            public val finalizeWhenFlushed: Boolean = finalizeOnFlush
             /**
              * DEPRECATED
              * @suppress
@@ -509,13 +444,17 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 this._padEncoded = other.padEncoded
             }
 
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _isLenient: Boolean = true
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _lineBreakInterval: Byte = 0
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _encodeLowercase: Boolean = false
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _padEncoded: Boolean = true
 
             /**
@@ -790,13 +729,17 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 this._padEncoded = other.padEncoded
             }
 
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _isLenient: Boolean = true
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _lineBreakInterval: Byte = 0
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _encodeLowercase: Boolean = false
-            @JvmSynthetic
+            @get:JvmSynthetic
+            @set:JvmSynthetic
             internal var _padEncoded: Boolean = true
 
             /**
@@ -1349,7 +1292,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         override fun doFinalProtected() {
-            if (isClosed() || _config.finalizeOnFlush) {
+            if (isClosed() || _config.finalizeWhenFlushed) {
                 if (hadInput && _config.checkSymbol != null && !isCheckSymbolSet) {
                     throw EncodingException("Missing check symbol. Expected[${_config.checkSymbol}]")
                 }
@@ -1387,7 +1330,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         override fun doFinalProtected() {
             buffer.finalize()
 
-            if (isClosed() || _config.finalizeOnFlush) {
+            if (isClosed() || _config.finalizeWhenFlushed) {
                 _config.checkSymbol?.let { symbol ->
 
                     if (outputHyphenOnNext) {
