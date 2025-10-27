@@ -89,7 +89,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             this._replacementStrategy = other.replacementStrategy
         }
 
-        @JvmSynthetic
+        @get:JvmSynthetic
+        @set:JvmSynthetic
         internal var _replacementStrategy = Config.DEFAULT.replacementStrategy
 
         /**

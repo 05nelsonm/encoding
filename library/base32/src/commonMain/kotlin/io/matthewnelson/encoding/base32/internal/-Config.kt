@@ -28,11 +28,11 @@ internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean) -> Base32.Crockfor
         && b._encodeLowercase == Base32.Crockford.DELEGATE.config.encodeLowercase
         && b._hyphenInterval == Base32.Crockford.DELEGATE.config.hyphenInterval
         && b._checkSymbol == Base32.Crockford.DELEGATE.config.checkSymbol
-        && b._finalizeOnFlush == Base32.Crockford.DELEGATE.config.finalizeOnFlush
+        && b._finalizeWhenFlushed == Base32.Crockford.DELEGATE.config.finalizeWhenFlushed
     ) {
         return Base32.Crockford.DELEGATE
     }
-    val config = this(b._isLenient, b._encodeLowercase, b._hyphenInterval, b._checkSymbol, b._finalizeOnFlush)
+    val config = this(b._isLenient, b._encodeLowercase, b._hyphenInterval, b._checkSymbol, b._finalizeWhenFlushed)
     return crockford(config, null)
 }
 

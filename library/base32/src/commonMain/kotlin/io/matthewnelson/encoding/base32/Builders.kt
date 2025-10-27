@@ -18,6 +18,8 @@
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
+import io.matthewnelson.encoding.core.Decoder
+import io.matthewnelson.encoding.core.Encoder
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmOverloads
@@ -65,7 +67,7 @@ public fun Base32Crockford(
 @JvmOverloads
 public fun Base32Crockford(
     strict: Boolean = false,
-): Base32.Crockford = Base32.Crockford.Builder { if (strict) strictSpec() }
+): Base32.Crockford = Base32Crockford { if (strict) strict() }
 
 /**
  * DEPRECATED
@@ -176,7 +178,7 @@ public class Base32CrockfordConfigBuilder {
         encodeToLowercase = compat._encodeLowercase
         hyphenInterval = compat._hyphenInterval
         checkSymbol = compat._checkSymbol
-        finalizeWhenFlushed = compat._finalizeOnFlush
+        finalizeWhenFlushed = config?.finalizeWhenFlushed ?: false
     }
 
     /**
@@ -225,7 +227,65 @@ public class Base32CrockfordConfigBuilder {
     }
 
     /**
-     * Refer to [Base32.Crockford.Builder.finalizeOnFlush] documentation.
+     * DEFAULT: `false`
+     *
+     * **NOTE:** Configurability of this option has been removed from the new
+     * [Base32.Crockford.Builder] which utilizes a default value of `true`. For compatability
+     * purposes, this builder maintains the default value of `false` and configures the
+     * [Base32.Crockford.Builder] as such (if not modified here) when [build] is called.
+     *
+     * If `true`:
+     *  - Encoding: Whenever [Encoder.Feed.flush] is called, in addition to processing any
+     *  buffered input, the [checkSymbol] will be appended and counter for [hyphenInterval]
+     *  will be reset (if they were configured).
+     *  - Decoding: Whenever [Decoder.Feed.flush] is called, verification that the [checkSymbol]
+     *  was present for that decoding will be had, prior to processing any buffered input.
+     *  Verification is ignored if no [checkSymbol] was configured, or there was no input.
+     *
+     * If `false`:
+     *  - Encoding: Whenever [Encoder.Feed.flush] is called, only processing of buffered
+     *  input will occur; no [checkSymbol] will be appended, and the counter for [hyphenInterval]
+     *  will not be reset.
+     *  - Decoding: Whenever [Decoder.Feed.flush] is called, Verification of the presence
+     *  of the [checkSymbol] only occurs on the final decoding. If no [checkSymbol] was
+     *  configured, or there was no input, then this is ignored.
+     *
+     * **NOTE:** This setting is ignored if neither [hyphenInterval] interval nor [checkSymbol]
+     * are configured.
+     *
+     * e.g. (Behavior when `true`)
+     *
+     *     val sb = StringBuilder()
+     *     Base32Crockford {
+     *         hyphenInterval = 4
+     *         checkSymbol('*')
+     *         finalizeWhenFlushed = true
+     *     }.newEncoderFeed { encodedChar ->
+     *         sb.append(encodedChar)
+     *     }.use { feed ->
+     *         bytes1.forEach { b -> feed.consume(b) }
+     *         feed.flush()
+     *         bytes2.forEach { b -> feed.consume(b) }
+     *     }
+     *     println(sb.toString())
+     *     // 91JP-RV3F-*41BP-YWKC-CGGG-*
+     *
+     * e.g. (Behavior when `false`)
+     *
+     *     val sb = StringBuilder()
+     *     Base32.Crockford.Builder {
+     *         hyphenInterval = 4
+     *         checkSymbol('*')
+     *         finalizeWhenFlushed = false
+     *     }.newEncoderFeed { encodedChar ->
+     *         sb.append(encodedChar)
+     *     }.use { feed ->
+     *         bytes1.forEach { b -> feed.consume(b) }
+     *         feed.flush()
+     *         bytes2.forEach { b -> feed.consume(b) }
+     *     }
+     *     println(sb.toString())
+     *     // 91JP-RV3F-41BP-YWKC-CGGG-*
      * */
     @JvmField
     public var finalizeWhenFlushed: Boolean = false
@@ -251,7 +311,7 @@ public class Base32CrockfordConfigBuilder {
         .encodeLowercase(encodeToLowercase)
         .hyphen(hyphenInterval)
         .check(checkSymbol)
-        .finalizeOnFlush(finalizeWhenFlushed)
+        .apply { _finalizeWhenFlushed = finalizeWhenFlushed }
         .build()
 
     /**

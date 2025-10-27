@@ -385,13 +385,13 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenFinalzeOnFlushFalse_whenEncoderFeedFlush_thenFinalizationIsNotPerformed() {
+    fun givenFinalzeWhenFlushedFalse_whenEncoderFeedFlush_thenFinalizationIsNotPerformed() {
         val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
 
         val crockford = Base32.Crockford.Builder {
             hyphen(4)
             check('*')
-            finalizeOnFlush(false)
+            _finalizeWhenFlushed = false
         }
 
         val decoded = expected.decodeToByteArray(crockford)
@@ -418,13 +418,13 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenFinalzeOnFlushTrue_whenEncoderFeedFlush_thenFinalizationIsPerformed() {
+    fun givenFinalzeWhenFlushedTrue_whenEncoderFeedFlush_thenFinalizationIsPerformed() {
         val expected = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-*\n41K6-YY10-D9TP-TW3K-41QQ-CSBJ-41T6-GS90-DHGQ-MY90-CHQP-EBG*"
 
         val crockford = Base32.Crockford.Builder {
             hyphen(4)
             check('*')
-            finalizeOnFlush(true)
+            _finalizeWhenFlushed = true
         }
 
         val decoded = expected.split('\n').let { splits ->
@@ -452,12 +452,12 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenFinalizeOnFlushTrueAndCheckSymbol_whenDecoderFeedDoFinal_thenFailsWhenNoCheckSymbolWasSeen() {
+    fun givenFinalizeWhenFlushedTrueAndCheckSymbol_whenDecoderFeedDoFinal_thenFailsWhenNoCheckSymbolWasSeen() {
         val encoded = "AHM6-A83H-ENMP-6TS0-C9S6-YXVE-$"
         val crockford = Base32.Crockford.Builder {
             hyphen(4)
             check('*')
-            finalizeOnFlush(true)
+            _finalizeWhenFlushed = true
         }
 
         // Encoding with expected check symbol OK
@@ -490,11 +490,11 @@ class Base32CrockfordUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenFinalizeOnFlushFalseAndCheckSymbol_whenDecoderFeedDoFinalNoInput_thenDoesNotThrowMissingCheckSymbolException() {
+    fun givenFinalizeWhenFlushedFalseAndCheckSymbol_whenDecoderFeedDoFinalNoInput_thenDoesNotThrowMissingCheckSymbolException() {
         var i = 0
         Base32.Crockford.Builder {
             check('$')
-            finalizeOnFlush(enable = false)
+            _finalizeWhenFlushed = false
         }.newDecoderFeed { i++ }.doFinal()
         assertEquals(0, i)
     }

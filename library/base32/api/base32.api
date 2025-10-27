@@ -79,7 +79,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Builder {
 	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Crockford;
 	public final fun check (Ljava/lang/Character;)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
 	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
-	public final fun finalizeOnFlush (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
 	public final fun hyphen (B)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
 	public final fun strictSpec ()Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
@@ -94,7 +93,6 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io
 	public final field checkSymbol Ljava/lang/Character;
 	public final field encodeLowercase Z
 	public final field encodeToLowercase Z
-	public final field finalizeOnFlush Z
 	public final field finalizeWhenFlushed Z
 	public final field hyphenInterval B
 	public final field isConstantTime Z
