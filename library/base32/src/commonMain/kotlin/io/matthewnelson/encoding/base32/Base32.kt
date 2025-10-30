@@ -18,8 +18,9 @@
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.base32.internal.build
-import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize
-import io.matthewnelson.encoding.base32.internal.encodeOutSize
+import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize32
+import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize64
+import io.matthewnelson.encoding.base32.internal.encodeOutSize64
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
 import io.matthewnelson.encoding.base32.internal.toBits
 import io.matthewnelson.encoding.core.Decoder
@@ -218,24 +219,24 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(isLenient, 0, null) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
-                // TODO: Check for overflow?
-                return encodedSize.decodeOutMaxSize()
+                return decodeOutMaxSize64(encodedSize)
             }
 
             protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
                 var outSize = encodedSize
 
-                val actual = input[encodedSize - 1]
+                // encodeSize will always be greater than 0
+                val cLast = input[encodedSize - 1]
 
                 if (checkSymbol != null) {
                     // Uppercase them so that little 'u' is always compared as big 'U'.
-                    val expectedUpper = checkSymbol.uppercaseChar()
-                    val actualUpper = actual.uppercaseChar()
+                    val upperExpected = checkSymbol.uppercaseChar()
+                    val upperCLast = cLast.uppercaseChar()
 
-                    if (actualUpper != expectedUpper) {
-                        // Wrong, or no symbol
-                        val msg = if (actual.isCheckSymbol()) {
-                            "Wrong check symbol. Expected[$checkSymbol] vs Actual[$actual]"
+                    if (upperCLast != upperExpected) {
+                        // Wrong or no symbol
+                        val msg = if (cLast.isCheckSymbol()) {
+                            "Wrong check symbol. Expected[$checkSymbol] vs Actual[$cLast]"
                         } else {
                             "Missing check symbol. Expected[$checkSymbol]"
                         }
@@ -245,43 +246,42 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     }
                 } else {
                     // Mine as well check it here before actually decoding.
-                    if (actual.isCheckSymbol()) {
+                    if (cLast.isCheckSymbol()) {
                         throw EncodingException(
                             "Decoder Misconfiguration.\n" +
-                            "Encoded data has CheckSymbol[$actual], but the " +
+                            "Encoded data has CheckSymbol[$cLast], but the " +
                             "decoder is configured to reject check symbols."
                         )
                     }
                 }
 
-                // TODO: Check for overflow?
-                return outSize.toLong().decodeOutMaxSize().toInt()
+                return decodeOutMaxSize32(outSize)
             }
 
             protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-                // TODO: Check for overflow?
-                var outSize = unEncodedSize.encodeOutSize(willBePadded = false)
+                var outSize = encodeOutSize64(unEncodedSize, willBePadded = false)
 
                 // checkByte will be appended if present
-                if (checkSymbol != null) {
-                    outSize++
+                if (checkSymbol != null && ++outSize < 0L) {
+                    throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
                 }
 
                 if (hyphenInterval > 0) {
-                    val hyphenCount: Float = (outSize.toFloat() / hyphenInterval) - 1F
+                    var hyphenCount: Double = (outSize.toDouble() / hyphenInterval) - 1.0
 
-                    if (hyphenCount > 0F) {
-                        // Count rounded down
-                        outSize += hyphenCount.toLong()
-
-                        // If there was a remainder, manually add it
-                        if (hyphenCount.rem(1) > 0F) {
-                            outSize++
+                    if (hyphenCount > 0.0) {
+                        if (hyphenCount.rem(1.0) > 0.0) {
+                            hyphenCount++
                         }
+
+                        if (outSize > (Long.MAX_VALUE - hyphenCount)) {
+                            throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
+                        }
+
+                        outSize += hyphenCount.toLong()
                     }
                 }
 
-                // TODO: Check for overflow?
                 return outSize
             }
 
@@ -559,18 +559,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
-                // TODO: Check for overflow?
-                return encodedSize.decodeOutMaxSize()
+                return decodeOutMaxSize64(encodedSize)
             }
 
             protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
-                // TODO: Check for overflow?
-                return encodedSize.toLong().decodeOutMaxSize().toInt()
+                return decodeOutMaxSize32(encodedSize)
             }
 
             protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-                // TODO: Check for overflow?
-                return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
+                return encodeOutSize64(unEncodedSize, willBePadded = padEncoded)
             }
 
             protected override fun toStringAddSettings(): Set<Setting> = buildSet {
@@ -844,18 +841,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
-                // TODO: Check for overflow?
-                return encodedSize.decodeOutMaxSize()
+                return decodeOutMaxSize64(encodedSize)
             }
 
             protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
-                // TODO: Check for overflow?
-                return encodedSize.toLong().decodeOutMaxSize().toInt()
+                return decodeOutMaxSize32(encodedSize)
             }
 
             protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-                // TODO: Check for overflow?
-                return unEncodedSize.encodeOutSize(willBePadded = padEncoded)
+                return encodeOutSize64(unEncodedSize, willBePadded = padEncoded)
             }
 
             protected override fun toStringAddSettings(): Set<Setting> = buildSet {
