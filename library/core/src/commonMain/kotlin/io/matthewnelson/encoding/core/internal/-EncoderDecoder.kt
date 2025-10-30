@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("KotlinRedundantDiagnosticSuppress")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package io.matthewnelson.encoding.core.internal
 
@@ -27,7 +27,6 @@ import kotlin.math.min
 
 private const val MAX_ENCODE_OUT_SIZE: Long = Int.MAX_VALUE.toLong()
 
-@Suppress("NOTHING_TO_INLINE")
 @Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
 internal inline fun <C: Config> Decoder<C>.decode(
@@ -82,7 +81,6 @@ internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
     return block.invoke(outSize.toInt())
 }
 
-@Suppress("NOTHING_TO_INLINE")
 internal inline fun <C: Config> Encoder<C>.encode(
     data: ByteArray,
     out: Encoder.OutFeed,
@@ -91,12 +89,11 @@ internal inline fun <C: Config> Encoder<C>.encode(
     newEncoderFeed(out).use { feed -> data.forEach { b -> feed.consume(b) } }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
     return EncodingException("$this is closed")
 }
 
-@Suppress("NOTHING_TO_INLINE", "UnusedReceiverParameter")
+@Suppress("UnusedReceiverParameter")
 internal inline fun Config.calculatedOutputNegativeEncodingSizeException(outSize: Number): EncodingSizeException {
     return EncodingSizeException("Calculated output of Size[$outSize] was negative")
 }

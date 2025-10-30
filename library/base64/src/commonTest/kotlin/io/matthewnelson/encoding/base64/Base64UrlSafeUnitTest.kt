@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.base64
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -142,7 +143,8 @@ class Base64UrlSafeUnitTest: BaseNEncodingTest() {
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(base64())
+        // Use ToCharArray to ensure exact size calculations are correct
+        return data.encodeToCharArray(base64()).joinToString("")
     }
 
     @Test
@@ -186,7 +188,14 @@ class Base64UrlSafeUnitTest: BaseNEncodingTest() {
     }
 
     @Test
-    fun givenBase64UrlSafe_whenEncodeDecodeRandomData_thenBytesMatch() {
+    fun givenEncodeDecodeRandomData_whenPadEncodedTrue_thenBytesMatch() {
+        usePadding = true
+        checkRandomData()
+    }
+
+    @Test
+    fun givenEncodeDecodeRandomData_whenPadEncodedFalse_thenBytesMatch() {
+        usePadding = false
         checkRandomData()
     }
 }
