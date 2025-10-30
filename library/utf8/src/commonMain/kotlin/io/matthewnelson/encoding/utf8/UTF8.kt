@@ -161,15 +161,23 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         public val replacementStrategy: ReplacementStrategy,
     ): EncoderDecoder.Config(null, -1, null) {
 
+        // Chars -> Bytes
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
-            return if (encodedSize > MAX_ENCODED_SIZE) Long.MIN_VALUE else encodedSize * 3
+            if (encodedSize > MAX_ENCODED_SIZE_64) {
+                throw outSizeExceedsMaxEncodingSizeException(encodedSize, Long.MAX_VALUE)
+            }
+            return encodedSize * 3L
         }
 
+        // Chars -> Bytes
         protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
-            val s = decodeOutMaxSizeProtected(encodedSize.toLong())
-            return if (s in 0L..Int.MAX_VALUE.toLong()) s.toInt() else Int.MIN_VALUE
+            if (encodedSize > MAX_ENCODED_SIZE_32) {
+                throw outSizeExceedsMaxEncodingSizeException(encodedSize, Int.MAX_VALUE)
+            }
+            return encodedSize * 3
         }
 
+        // Bytes -> Chars
         protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
             TODO("Not yet implemented")
         }
@@ -180,7 +188,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
         internal companion object {
 
-            private const val MAX_ENCODED_SIZE: Long = Long.MAX_VALUE / 3
+            private const val MAX_ENCODED_SIZE_64: Long = Long.MAX_VALUE / 3
+            private const val MAX_ENCODED_SIZE_32: Int = Int.MAX_VALUE / 3
 
             @JvmSynthetic
             internal fun build(b: Builder): UTF8 = ::Config.build(b, ::UTF8)
