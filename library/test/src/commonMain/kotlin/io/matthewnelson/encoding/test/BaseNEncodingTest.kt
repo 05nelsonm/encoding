@@ -18,6 +18,7 @@ package io.matthewnelson.encoding.test
 import kotlin.jvm.JvmStatic
 import kotlin.random.Random
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -164,13 +165,16 @@ abstract class BaseNEncodingTest {
     }
 
     protected fun checkRandomData() {
-        val bytes = Random.nextBytes(250_000)
-        val encoded = encode(bytes)
-        val decoded = decode(encoded)!!
-
-        assertEquals(bytes.size, decoded.size)
-        bytes.forEachIndexed { index, byte ->
-            assertEquals(byte, decoded[index])
+        for (s in 50_000..50_009) {
+            val bytes = Random.nextBytes(s)
+            val encoded = encode(bytes)
+            val decoded = decode(encoded)
+            assertNotNull(decoded)
+            assertEquals(bytes.size, decoded.size)
+            bytes.forEachIndexed { i, e ->
+                val a = decoded[i]
+                assertEquals(e, a, "Expected[$e] != Actual[$a] >> Index[$i]")
+            }
         }
     }
 }

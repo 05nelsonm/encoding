@@ -223,26 +223,30 @@ public class Base64: EncoderDecoder<Base64.Config> {
     ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
-            // TODO: Check for overflow?
-            return (encodedSize * 6L / 8L)
+            // Divide first instead of multiplying which ensures the Long
+            // doesn't overflow. To do it this way, also need to calculate
+            // the remainder separately then add it back in.
+            val div = encodedSize / 4L
+            val rem = encodedSize.rem(4L).toFloat() // 0.0 - 3.0
+            return (div * 3L) + (rem * 3.0F / 4.0F).toLong()
         }
 
         protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
-            // TODO: Check for overflow?
-            return decodeOutMaxSizeProtected(encodedSize.toLong()).toInt()
+            return (encodedSize.toLong() * 3L / 4L).toInt()
         }
 
         protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-            // TODO: Check for overflow?
-            var outSize: Long = (unEncodedSize + 2L) / 3L * 4L
-            if (padEncoded) return outSize
-
-            when (unEncodedSize - (unEncodedSize - unEncodedSize % 3)) {
-                0L -> { /* no-op */ }
-                1L -> outSize -= 2L
-                2L -> outSize -= 1L
+            if (unEncodedSize > MAX_UNENCODED_SIZE) {
+                throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
             }
-
+            var outSize: Long = (unEncodedSize + 2L) / 3L * 4L
+            if (!padEncoded) {
+                when (unEncodedSize.rem(3L)) {
+                    0L -> { /* no-op */ }
+                    1L -> outSize -= 2L
+                    2L -> outSize -= 1L
+                }
+            }
             return outSize
         }
 
@@ -253,6 +257,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
 
         internal companion object {
+
+            private const val MAX_UNENCODED_SIZE: Long = (Long.MAX_VALUE / 4L) * 3L
 
             @JvmSynthetic
             internal fun build(b: Builder): Base64 = ::Config.build(b, ::Base64)
@@ -474,7 +480,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         },
         finalize = { modulus, buffer ->
             val padCount: Int = when (modulus) {
-                0 -> { 0 }
+                0 -> 0
                 1 -> {
                     val b0 = buffer[0]
 

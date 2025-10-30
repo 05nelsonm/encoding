@@ -19,6 +19,7 @@ package io.matthewnelson.encoding.base64
 
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.Test
@@ -122,7 +123,8 @@ class Base64DefaultUnitTest: BaseNEncodingTest() {
     }
 
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(base64())
+        // Use ToCharArray to ensure exact size calculations are correct
+        return data.encodeToCharArray(base64()).joinToString("")
     }
 
     @Test
@@ -164,4 +166,14 @@ class Base64DefaultUnitTest: BaseNEncodingTest() {
         checkRandomData()
     }
 
+    @Test
+    fun givenBase64_whenDecodeOutMaxSize_thenReturnsExpected() {
+        for (s in (Int.MAX_VALUE - 100)..Int.MAX_VALUE) {
+            val expected = (s.toLong() * 3L / 4L).toInt()
+            val maxLong = Base64.Default.config.decodeOutMaxSize(s.toLong())
+            assertEquals(expected.toLong(), maxLong)
+        }
+
+        assertEquals(6917529027641081855L, Base64.Default.config.decodeOutMaxSize(Long.MAX_VALUE))
+    }
 }

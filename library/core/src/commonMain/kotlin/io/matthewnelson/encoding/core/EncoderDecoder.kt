@@ -365,12 +365,10 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             @JvmStatic
             public fun outSizeExceedsMaxEncodingSizeException(
                 inputSize: Number,
-                maxSize: Number
-            ): EncodingSizeException {
-                return EncodingSizeException(
-                    "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
-                )
-            }
+                maxSize: Number,
+            ): EncodingSizeException = EncodingSizeException(
+                "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
+            )
         }
     }
 

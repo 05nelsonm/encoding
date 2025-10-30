@@ -19,6 +19,7 @@ package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArrayOrNull
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.test.BaseNEncodingTest
 import kotlin.test.Test
@@ -132,7 +133,8 @@ class Base32HexUnitTest: BaseNEncodingTest() {
         return data.decodeToByteArrayOrNull(base32())
     }
     override fun encode(data: ByteArray): String {
-        return data.encodeToString(base32())
+        // Use ToCharArray to ensure exact size calculations are correct
+        return data.encodeToCharArray(base32()).joinToString("")
     }
 
     @Test
