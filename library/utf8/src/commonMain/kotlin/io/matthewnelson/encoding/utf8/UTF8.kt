@@ -20,11 +20,10 @@ package io.matthewnelson.encoding.utf8
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.utf8.internal.build
-import io.matthewnelson.encoding.utf8.internal.doOutput
 import io.matthewnelson.encoding.utf8.internal.initializeKotlin
-import io.matthewnelson.encoding.utf8.internal.sizeOrThrow
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -91,7 +90,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
         @get:JvmSynthetic
         @set:JvmSynthetic
-        internal var _replacementStrategy = Config.DEFAULT.replacementStrategy
+        internal var _replacementStrategy = ReplacementStrategy.KOTLIN
 
         /**
          * TODO
@@ -179,16 +178,16 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
         // Bytes -> Chars
         protected override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-            TODO("Not yet implemented")
+            return unEncodedSize
         }
 
-        protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+        protected override fun toStringAddSettings(): Set<Setting> = buildSet(capacity = 1) {
             add(Setting("replacementStrategy", replacementStrategy))
         }
 
         internal companion object {
 
-            private const val MAX_ENCODED_SIZE_64: Long = Long.MAX_VALUE / 3
+            private const val MAX_ENCODED_SIZE_64: Long = Long.MAX_VALUE / 3L
             private const val MAX_ENCODED_SIZE_32: Int = Int.MAX_VALUE / 3
 
             @JvmSynthetic
@@ -209,13 +208,14 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     /**
      * TODO
      * */
-    public class CharPreProcessor {
+    public abstract class CharPreProcessor private constructor(
 
-        private val strategy: ReplacementStrategy
-
-        public constructor(utf8: UTF8): this(utf8.config.replacementStrategy)
-        public constructor(config: Config): this(config.replacementStrategy)
-        public constructor(strategy: ReplacementStrategy) { this.strategy = strategy }
+        /**
+         * TODO
+         * */
+        @JvmField
+        public val strategy: ReplacementStrategy,
+    ) {
 
         public companion object {
 
@@ -223,7 +223,34 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * TODO
              * */
             @JvmStatic
-            public inline fun CharArray.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config)
+            public inline fun of(utf8: UTF8): CharPreProcessor = of(utf8.config.replacementStrategy)
+
+            /**
+             * TODO
+             * */
+            @JvmStatic
+            public inline fun of(config: Config): CharPreProcessor = of(config.replacementStrategy)
+
+            /**
+             * TODO
+             * */
+            @JvmStatic
+            public fun of(strategy: ReplacementStrategy): CharPreProcessor = when (strategy.size) {
+                ReplacementStrategy.THROW.size -> object : CharPreProcessor(strategy) {
+                    override fun sizeOrThrow(): Int {
+                        throw EncodingException("Malformed UTF-8 character sequence")
+                    }
+                }
+                else -> object : CharPreProcessor(strategy) {
+                    override fun sizeOrThrow(): Int = strategy.size
+                }
+            }
+
+            /**
+             * TODO
+             * */
+            @JvmStatic
+            public inline fun CharArray.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
              * TODO
@@ -241,7 +268,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * TODO
              * */
             @JvmStatic
-            public inline fun CharSequence.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config)
+            public inline fun CharSequence.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
              * TODO
@@ -259,7 +286,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * TODO
              * */
             @JvmStatic
-            public inline fun Iterator<Char>.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config)
+            public inline fun Iterator<Char>.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
              * TODO
@@ -272,7 +299,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * */
             @JvmStatic
             public fun Iterator<Char>.sizeUTF8(strategy: ReplacementStrategy): Long {
-                val pp = CharPreProcessor(strategy)
+                val pp = CharPreProcessor.of(strategy)
                 while (hasNext()) { pp + next() }
                 return pp.doFinal()
             }
@@ -317,12 +344,12 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
             if (c > 0xdbff) {
                 buf = cNext
-                currentSize += strategy.sizeOrThrow()
+                currentSize += sizeOrThrow()
                 return
             }
             if (cNext < 0xdc00 || cNext > 0xdfff) {
                 buf = cNext
-                currentSize += strategy.sizeOrThrow()
+                currentSize += sizeOrThrow()
                 return
             }
 
@@ -343,27 +370,63 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             if (c < 0x0080) return s + 1
             if (c < 0x0800) return s + 2
             if (c < 0xd800 || c > 0xdfff) return s + 3
-            return s + strategy.sizeOrThrow()
+            return s + sizeOrThrow()
         }
+
+        @Throws(EncodingException::class)
+        protected abstract fun sizeOrThrow(): Int
     }
 
     protected final override fun name(): String = NAME
 
+    // Chars -> Bytes
     protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
         // TODO: Constant Time
-        return DecoderFeed(out)
+        return when (config.replacementStrategy.size) {
+            ReplacementStrategy.U_0034.size -> object : DecoderFeed(out) {
+                override fun Decoder.OutFeed.outputReplacementSequence() {
+                    output('?'.code.toByte())
+                }
+            }
+            ReplacementStrategy.U_FFFD.size -> object : DecoderFeed(out) {
+                override fun Decoder.OutFeed.outputReplacementSequence() {
+                    output(0xef.toByte())
+                    output(0xbf.toByte())
+                    output(0xbd.toByte())
+                }
+            }
+            ReplacementStrategy.THROW.size -> object : DecoderFeed(out) {
+                override fun Decoder.OutFeed.outputReplacementSequence() {
+                    throw EncodingException("Malformed UTF-8 character sequence")
+                }
+            }
+            // "Should" never make it here...
+            else -> error("Unknown ${config.replacementStrategy}.size[${config.replacementStrategy.size}]")
+        }
     }
 
+    // Bytes -> Chars
     protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Config>.Feed {
-        TODO("Not yet implemented")
+        return when (config.replacementStrategy.size) {
+            ReplacementStrategy.THROW.size  -> object : EncoderFeed(out) {
+                override fun Encoder.OutFeed.outputReplacementChar() {
+                    throw EncodingException("Malformed UTF-8 character sequence")
+                }
+            }
+            else -> EncoderFeed(out)
+        }
     }
 
-    private inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
+    // Chars -> Bytes
+    private abstract inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
+
+        @Throws(EncodingException::class)
+        protected abstract fun Decoder.OutFeed.outputReplacementSequence()
 
         private var buf = 0
         private var hasBuffered = false
 
-        override fun consumeProtected(input: Char) {
+        final override fun consumeProtected(input: Char) {
             if (!hasBuffered) {
                 buf = input.code
                 hasBuffered = true
@@ -372,69 +435,541 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             val c = buf
             val cNext = input.code
 
-            if (c < 0x0080) {
+            if (c.process1()) {
                 buf = cNext
-                out.output(c.toByte())
                 return
             }
-            if (c < 0x0800) {
+            if (c.process2()) {
                 buf = cNext
-                out.output((c  shr  6          or 0xc0).toByte())
-                out.output((c         and 0x3f or 0x80).toByte())
                 return
             }
-            if (c < 0xd800 || c > 0xdfff) {
+            if (c.process3()) {
                 buf = cNext
-                out.output((c  shr 12          or 0xe0).toByte())
-                out.output((c  shr  6 and 0x3f or 0x80).toByte())
-                out.output((c         and 0x3f or 0x80).toByte())
                 return
             }
             if (c > 0xdbff) {
                 buf = cNext
-                config.replacementStrategy.doOutput(out)
+                out.outputReplacementSequence()
                 return
             }
             if (cNext < 0xdc00 || cNext > 0xdfff) {
                 buf = cNext
-                config.replacementStrategy.doOutput(out)
+                out.outputReplacementSequence()
                 return
             }
 
             hasBuffered = false
-            val cp = ((c shl 10) + cNext) + (0x010000 - (0xd800 shl 10) - 0xdc00)
-            out.output((cp shr 18          or 0xf0).toByte())
-            out.output((cp shr 12 and 0x3f or 0x80).toByte())
-            out.output((cp shr  6 and 0x3f or 0x80).toByte())
-            out.output((cp        and 0x3f or 0x80).toByte())
+            val codePoint = ((c shl 10) + cNext) + (0x010000 - (0xd800 shl 10) - 0xdc00)
+            out.output((codePoint shr 18          or 0xf0).toByte())
+            out.output((codePoint shr 12 and 0x3f or 0x80).toByte())
+            out.output((codePoint shr  6 and 0x3f or 0x80).toByte())
+            out.output((codePoint        and 0x3f or 0x80).toByte())
         }
 
-        override fun doFinalProtected() {
+        final override fun doFinalProtected() {
             val c = buf
             buf = 0
             if (!hasBuffered) return
             hasBuffered = false
-            if (c < 0x0080) {
-                out.output(c.toByte())
-                return
-            }
-            if (c < 0x0800) {
-                out.output((c  shr  6          or 0xc0).toByte())
-                out.output((c         and 0x3f or 0x80).toByte())
-                return
-            }
-            if (c < 0xd800 || c > 0xdfff) {
-                out.output((c  shr 12          or 0xe0).toByte())
-                out.output((c  shr  6 and 0x3f or 0x80).toByte())
-                out.output((c         and 0x3f or 0x80).toByte())
-                return
-            }
-//            if (c > 0xdbff) {
-//                config.invalidSequenceStrategy.doOutput(out)
-//                return
-//            }
+            if (c.process1()) return
+            if (c.process2()) return
+            if (c.process3()) return
+            out.outputReplacementSequence()
+        }
 
-            config.replacementStrategy.doOutput(out)
+        private inline fun Int.process1(): Boolean = if (this < 0x0080) {
+            out.output((this                        ).toByte())
+            true
+        } else {
+            false
+        }
+
+        private inline fun Int.process2(): Boolean = if (this < 0x0800) {
+            out.output((this shr  6          or 0xc0).toByte())
+            out.output((this        and 0x3f or 0x80).toByte())
+            true
+        } else {
+            false
+        }
+
+        private inline fun Int.process3(): Boolean = if (this < 0xd800 || this > 0xdfff) {
+            out.output((this shr 12          or 0xe0).toByte())
+            out.output((this shr  6 and 0x3f or 0x80).toByte())
+            out.output((this        and 0x3f or 0x80).toByte())
+            true
+        } else {
+            false
+        }
+    }
+
+    // Bytes -> Chars
+    private open inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed() {
+
+        @Throws(EncodingException::class)
+        protected open fun Encoder.OutFeed.outputReplacementChar() {
+            output('\ufffd')
+        }
+
+        private val buf = IntArray(3)
+        private var iBuf = 0
+        private var needed = 0
+
+        final override fun consumeProtected(input: Byte) {
+            debug { "INPUT: needed[$needed] - iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}]" }
+            // bN, as in the final byte for whatever may be needed when processing input
+            // e.g.
+            //   needed = 2 >> buf[0] is b0, bN is b1
+            //   needed = 3 >> buf[0] is b0, buf[1] is b1, bN is b2
+            //   needed = 4 >> buf[0] is b0, buf[1] is b1, buf[2] is b2, bN is b3
+            val bN = input.toInt()
+
+            if (needed == 0) {
+                needed = bN.process1()
+                if (needed > 0) buf[iBuf++] = bN
+                return
+            }
+
+            // Final input for needed is never buffered, just go straight
+            // into processing everything using input as the final byte.
+            if (needed - 1 > iBuf) {
+                buf[iBuf++] = bN
+                return // Await more input
+            }
+
+            val b0 = buf[0]
+            if (needed == 2) when (bN.process2(b0 = b0).debug { "2[$it]" }) {
+                // Drop b0
+                0 -> return bN.processN()
+                // Success
+                2 -> return reset()
+            }
+
+            val b1 = buf[1]
+            if (needed == 3) when (bN.process3(b0 = b0, b1 = b1).debug { "3[$it]" }) {
+                // Drop b0
+                0 -> when (val n = b1.process1().debug { "3 - 0[$it]" }) {
+                    // Success/Replaced
+                    0 -> return bN.processN()
+                    // Need 2
+                    2 -> when (bN.process2(b0 = b1).debug { "3 - 0 - 2[$it]" }) {
+                        // Drop b0
+                        0 -> return bN.processN()
+                        // Success
+                        2 -> return reset()
+                    }
+                    // Need 3 or 4
+                    3, 4 -> {
+                        buf[0] = b1
+                        buf[1] = bN
+                        return reset(iBuf = 2, needed = n)
+                    }
+                }
+                // Drop b0, b1
+                1 -> return bN.processN()
+                // Success
+                3 -> return reset()
+            }
+
+            val b2 = buf[2]
+            if (needed == 4) when (bN.process4(b0 = b0, b1 = b1, b2 = b2).debug { "4[$it]" }) {
+                // Drop b0
+                0 -> when (b1.process1().debug { "4 - 0[$it]" }) {
+                    // Success/Replaced
+                    0 -> when (val n = b2.process1().debug { "4 - 0 - 0[$it]" }) {
+                        // Success/Replaced
+                        0 -> return bN.processN()
+                        // Need 2
+                        2 -> when (bN.process2(b0 = b2).debug { "4 - 0 - 0 - 2[$it]" }) {
+                            // Drop b0
+                            0 -> return bN.processN()
+                            // Success
+                            2 -> return reset()
+                        }
+                        // Need 3 or 4
+                        3, 4 -> {
+                            buf[0] = b2
+                            buf[1] = bN
+                            return reset(iBuf = 2, needed = n)
+                        }
+                    }
+                    // Need 2
+                    2 -> when (b2.process2(b0 = b1).debug { "4 - 0 - 2[$it]" }) {
+                        // Drop b0
+                        0 -> when (val n = b2.process1().debug { "4 - 0 - 2 - 0[$it]" }) {
+                            // Success/replaced
+                            0 -> return bN.processN()
+                            // Need 2
+                            2 -> when (bN.process2(b0 = b2).debug { "4 - 0 - 2 - 0 - 2[$it]" }) {
+                                // Drop b0
+                                0 -> return bN.processN()
+                                // Success
+                                2 -> return reset()
+                            }
+                            // Need 3 or 4
+                            3, 4 -> {
+                                buf[0] = b2
+                                buf[1] = bN
+                                return reset(iBuf = 2, needed = n)
+                            }
+                        }
+                        // Success
+                        2 -> return bN.processN()
+                    }
+                    // Need 3
+                    3 -> when (bN.process3(b0 = b1, b1 = b2).debug { "4 - 0 - 3[$it]" }) {
+                        // Drop b0
+                        0 -> when (val n = b2.process1().debug { "4 - 0 - 3 - 0[$it]" }) {
+                            // Success/Replaced
+                            0 -> return bN.processN()
+                            // Need 2
+                            2 -> when (bN.process2(b0 = b2).debug { "4 - 0 - 3 - 2[$it]" }) {
+                                // Drop b0
+                                0 -> return bN.processN()
+                                // Success
+                                2 -> return reset()
+                            }
+                            // Need 3 or 4
+                            3, 4 -> {
+                                buf[0] = b2
+                                buf[1] = bN
+                                return reset(iBuf = 2, needed = n)
+                            }
+                        }
+                        // Drop b0, b1
+                        1 -> return bN.processN()
+                        // Success
+                        3 -> return reset()
+                    }
+                    // Need 4
+                    4 -> {
+                        buf[0] = b1
+                        buf[1] = b2
+                        buf[2] = bN
+                        return reset(iBuf = 3, needed = 4)
+                    }
+                }
+                // Drop b0, b1
+                1 -> when (val n = b2.process1().debug { "4 - 1[$it]" }) {
+                    // Success/Replaced
+                    0 -> return bN.processN()
+                    // Need 2
+                    2 -> when (bN.process2(b0 = b2).debug { "4 - 1 - 2[$it]" }) {
+                        // Drop b0
+                        0 -> return bN.processN()
+                        // Success
+                        2 -> return reset()
+                    }
+                    // Need 3 or 4
+                    3, 4 -> {
+                        buf[0] = b2
+                        buf[1] = bN
+                        return reset(iBuf = 2, needed = n)
+                    }
+                }
+                // Drop b0, b1, b2
+                2 -> return bN.processN()
+                // Success
+                4 -> return reset()
+            }
+
+            // "Should" never make it here
+            error("Illegal configuration >> needed[$needed] - iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}] - input[$bN]")
+        }
+
+        final override fun doFinalProtected() {
+            debug { "FINAL: needed[$needed] - iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}]" }
+            if (needed == 0) {
+                debug { "--- FINAL ---" }
+                return buf.fill(0)
+            }
+            if (iBuf == 1) {
+                out.outputReplacementChar()
+                reset()
+                debug { "--- FINAL ---" }
+                return buf.fill(0)
+            }
+
+            // Only need to worry about 2 or more buffered bytes at
+            // this point, so that leaves us with a needed value of
+            // 3 or 4 left to handle.
+            val b0 = buf[0]
+            val b1 = buf[1]
+
+            // The !isContinuation() value is used as a filler byte to
+            // simulate index exhaustion for process3/process4 in order to
+            // kick it back to the previous processN step. This is so that
+            // buffered input is checked and any necessary replacement
+            // characters still get output, but process3/process4 will always
+            // return early as if the next byte in the array (if one had all
+            // the input and were looping over it) was not available.
+            val cN = 0x80 or 0xc0
+
+            if (needed == 3) {
+                // 2 buffered bytes awaiting 3rd
+                when (cN.process3(b0 = b0, b1 = b1).debug { "F3[$it]" }) {
+                    // Drop b0
+                    0 -> if (b1.process1() != 0) out.outputReplacementChar()
+                    // Drop b0, b1
+                    1 -> {} // Simulated index exhaustion hit. No more input to process.
+                    // Success/other
+                    else -> error("process3 unhandled return value")
+                }
+                reset()
+                debug { "--- FINAL ---" }
+                return buf.fill(0)
+            }
+
+            if (needed == 4 && iBuf > 2) {
+                // 3 buffered bytes awaiting 4th
+                val b2 = buf[2]
+                when (cN.process4(b0 = b0, b1 = b1, b2 = b2).debug { "F4{3}[$it]" }) {
+                    // Drop b0
+                    0 -> when (b1.process1().debug { "F4{3} - 0[$it]" }) {
+                        // Success/Replaced
+                        0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                        // Need 2
+                        2 -> when (b2.process2(b0 = b1).debug { "F4{3} - 0 - 2[$it]" }) {
+                            // Drop b0
+                            0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                            // Success
+                            2 -> {}
+                            else -> error("process2 unhandled return value")
+                        }
+                        // Need 3
+                        3 -> when (cN.process3(b0 = b1, b1 = b2).debug { "F4{3} - 0 - 3[$it]" }) {
+                            // Drop b0
+                            0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                            // Drop b0, b1
+                            1 -> {} // Simulated index exhaustion hit. No more input to process.
+                            // Success/other
+                            else -> error("process3 unhandled return value")
+                        }
+                        // Need 4
+                        4 -> when (cN.process4(b0 = b1, b1 = b2, b2 = cN).debug { "F4{3} - 0 - 4[$it]" }) {
+                            // Drop b0
+                            0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                            // Drop b0, b1
+                            1 -> {} // Simulated index exhaustion hit. No more input to process.
+                            // Drop b0, b1, b2
+                            2 -> error("process4 returned 2???") // Should never happen >> [b2 == cN]
+                            // Success/other
+                            else -> error("process4 unhandled return value")
+                        }
+                        // What?
+                        else -> error("process1 unhandled return value")
+                    }
+                    // Drop b0, b1
+                    1 -> if (b2.process1() != 0) out.outputReplacementChar()
+                    // Drop b0, b1, b2
+                    2 ->  {} // Simulated index exhaustion hit. No more input to process.
+                    // Success/other
+                    else -> error("process4 unhandled return value")
+                }
+                reset()
+                debug { "--- FINAL ---" }
+                return buf.fill(0)
+            }
+
+            if (needed == 4) {
+                // 2 buffered bytes awaiting 3rd and 4th
+                when (cN.process4(b0 = b0, b1 = b1, b2 = cN).debug { "F4{2}[$it]" }) {
+                    // Drop b0
+                    0 -> if (b1.process1() != 0) out.outputReplacementChar()
+                    // Drop b0, b1
+                    1 -> {} // Simulated index exhaustion hit. No more input to process.
+                    // Drop b0, b1, b2
+                    2 -> error("process4 returned 2???") // Should never happen >> [b2 == cN]
+                    // Success/other
+                    else -> error("process4 unhandled return value")
+                }
+                reset()
+                debug { "--- FINAL ---" }
+                return buf.fill(0)
+            }
+
+            // "Should" never make it here
+            error("Illegal configuration >> needed[$needed] - iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}]")
+        }
+
+        private inline fun reset(iBuf: Int = 0, needed: Int = 0) {
+            this.iBuf = iBuf
+            this.needed = needed
+        }
+
+        /**
+         * Process `bN` from a `needed` when statement within [consumeProtected]
+         * */
+        private inline fun Int.processN() {
+            iBuf = 0
+            needed = process1()
+            if (needed > 0) buf[iBuf++] = this
+            return
+        }
+
+        /**
+         * Returns:
+         *  - `0`: Success or Replaced
+         *      - Do nothing, or process next (if available)
+         *  - `2`: Need `2`
+         *      - Buffer, or process 2 (if available)
+         *  - `3`: Need `3`
+         *      - Buffer, or process 3 (if available)
+         *  - `4`: Need `4`
+         *      - Buffer
+         * */
+        private fun Int.process1(): Int {
+            if (this >= 0) {
+                debug { "P1 - 1" }
+                out.output(this.toChar())
+                return 0
+            }
+            if (this shr 5 == -2) {
+                debug { "P1 - 2" }
+                return 2
+            }
+            if (this shr 4 == -2) {
+                debug { "P1 - 3" }
+                return 3
+            }
+            if (this shr 3 == -2) {
+                debug { "P1 - 4" }
+                return 4
+            }
+            debug { "P1 - 5" }
+            out.outputReplacementChar()
+            return 0
+        }
+
+        /**
+         * Returns:
+         *  - `0`: Drop b0
+         *  - `2`: Success
+         * */
+        private fun Int.process2(b0: Int): Int {
+            val b1 = this
+            if (b0 and 0x1e == 0x00) {
+                debug { "P2 - 1" }
+                out.outputReplacementChar()
+                return 0
+            }
+            if (!b1.isContinuation()) {
+                debug { "P2 - 2" }
+                out.outputReplacementChar()
+                return 0
+            }
+            debug { "P2 - F" }
+            val codePoint = 0x0f80 xor b1 xor (b0 shl 6)
+            out.output(codePoint.toChar())
+            return 2
+        }
+
+        /**
+         * Returns:
+         *  - `0`: Drop b0
+         *  - `1`: Drop b0, b1
+         *  - `3`: Success
+         * */
+        private fun Int.process3(b0: Int, b1: Int): Int {
+            val b2 = this
+            when {
+                b0 and 0x0f == 0x00 -> if (b1 and 0xe0 != 0xa0) {
+                    debug { "P3 - 1" }
+                    // Non-shortest form
+                    out.outputReplacementChar()
+                    return 0
+                }
+                b0 and 0x0f == 0x0d -> if (b1 and 0xe0 != 0x80) {
+                    debug { "P3 - 2" }
+                    // Partial surrogate code point
+                    out.outputReplacementChar()
+                    if (config.replacementStrategy.size == ReplacementStrategy.U_0034.size) {
+                        // Must check b2 to see if it needs to be run through process1()
+                        if (!b2.isContinuation()) {
+                            debug { "P3 - 2 ------ HIT[b2]" }
+                            return 1
+                        }
+                        // Replace all 3 bytes with single replacement character.
+                        return 3
+                    }
+                    return 0
+                }
+                !b1.isContinuation() -> {
+                    debug { "P3 - 3" }
+                    out.outputReplacementChar()
+                    return 0
+                }
+            }
+            if (!b2.isContinuation()) {
+                debug { "P3 - 4" }
+                out.outputReplacementChar()
+                return 1
+            }
+            debug { "P3 - F" }
+            val codePoint = -0x01e080 xor b2 xor (b1 shl 6) xor (b0 shl 12)
+            out.output(codePoint.toChar())
+            return 3
+        }
+
+        /**
+         * Returns:
+         *  - `0`: Drop b0
+         *  - `1`: Drop b0, b1
+         *  - `2`: Drop b0, b1, b2
+         *  - `4`: Success
+         * */
+        private fun Int.process4(b0: Int, b1: Int, b2: Int): Int {
+            val b3 = this
+            when {
+                b0 and 0x0f == 0x00 -> if (b1 and 0xf0 <= 0x80) {
+                    debug { "P4 - 1" }
+                    // Non-shortest form
+                    out.outputReplacementChar()
+                    return 0
+                }
+                b0 and 0x0f == 0x04 -> if (b1 and 0xf0 != 0x80) {
+                    debug { "P4 - 2" }
+                    // Exceeds Unicode code point maximum
+                    out.outputReplacementChar()
+                    return 0
+                }
+                b0 and 0x0f > 0x04 -> {
+                    debug { "P4 - 3" }
+                    out.outputReplacementChar()
+                    return 0
+                }
+            }
+            if (!b1.isContinuation()) {
+                debug { "P4 - 4" }
+                out.outputReplacementChar()
+                return 0
+            }
+            if (!b2.isContinuation()) {
+                debug { "P4 - 5" }
+                out.outputReplacementChar()
+                return 1
+            }
+            if (!b3.isContinuation()) {
+                debug { "P4 - 6" }
+                out.outputReplacementChar()
+                return 2
+            }
+            debug { "P4 - F" }
+            val codePoint = 0x381f80 xor b3 xor (b2 shl 6) xor (b1 shl 12) xor (b0 shl 18)
+            val hi = (codePoint  -  0x010000) shr 10 or 0xd800
+            val lo = (codePoint and 0x0003ff)        or 0xdc00
+            out.output(hi.toChar())
+            out.output(lo.toChar())
+            return 4
+        }
+
+        private inline fun Int.isContinuation(): Boolean = this and 0xc0 == 0x80
+
+        // TODO: REMOVE
+        @OptIn(ExperimentalContracts::class)
+        private inline fun <T: Any> T.debug(block: (it: T) -> String): T {
+            contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
+//            println(block(this))
+            return this
         }
     }
 

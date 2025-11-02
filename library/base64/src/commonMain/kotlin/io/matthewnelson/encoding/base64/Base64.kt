@@ -250,7 +250,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             return outSize
         }
 
-        protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+        protected override fun toStringAddSettings(): Set<Setting> = buildSet(capacity = 3) {
             add(Setting(name = "encodeUrlSafe", value = encodeUrlSafe))
             add(Setting(name = "padEncoded", value = padEncoded))
             add(Setting(name = "isConstantTime", value = isConstantTime))

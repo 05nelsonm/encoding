@@ -19,7 +19,7 @@ package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
-import io.matthewnelson.encoding.core.internal.encodeOutSizeOrFail
+import io.matthewnelson.encoding.core.internal.encodeOutMaxSizeOrFail
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import kotlin.jvm.JvmStatic
 
@@ -155,14 +155,16 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         @JvmStatic
         @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToString(encoder: Encoder<*>): String {
-            return encoder.encodeOutSizeOrFail(size) { outSize ->
-                val sb = StringBuilder(outSize)
-                encoder.encode(this) { c -> sb.append(c) }
-                val count = sb.count()
-                val out = sb.toString()
-                sb.clear()
-                repeat(count) { sb.append(' ') }
-                out
+            return encoder.encodeOutMaxSizeOrFail(size) { maxSize ->
+                val sb = StringBuilder(maxSize)
+                encoder.encode(this, sb::append)
+                val length = sb.length
+                val result = sb.toString()
+                // Some implementations of StringBuilder do not overwrite buffered
+                // data when clear() is used. Must set to 0 length and do manually.
+                sb.setLength(0)
+                repeat(length) { sb.append(' ') }
+                result
             }
         }
 
@@ -176,11 +178,14 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         @JvmStatic
         @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToCharArray(encoder: Encoder<*>): CharArray {
-            return encoder.encodeOutSizeOrFail(size) { outSize ->
+            return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
                 var i = 0
-                val a = CharArray(outSize)
+                val a = CharArray(maxSize)
                 encoder.encode(this) { c -> a[i++] = c }
-                a
+                if (i == maxSize) return@block a
+                val copy = a.copyOf(i)
+                a.fill(' ', 0, i)
+                copy
             }
         }
 
@@ -195,11 +200,14 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             level = DeprecationLevel.ERROR,
         )
         public fun ByteArray.encodeToByteArray(encoder: Encoder<*>): ByteArray {
-            return encoder.encodeOutSizeOrFail(size) { outSize ->
+            return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
                 var i = 0
-                val a = ByteArray(outSize)
+                val a = ByteArray(maxSize)
                 encoder.encode(this) { char -> a[i++] = char.code.toByte() }
-                a
+                if (i == maxSize) return@block a
+                val copy = a.copyOf(i)
+                copy.fill(0, 0, i)
+                copy
             }
         }
     }

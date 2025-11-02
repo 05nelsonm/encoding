@@ -17,34 +17,9 @@
 
 package io.matthewnelson.encoding.utf8.internal
 
-import io.matthewnelson.encoding.core.Decoder
-import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.utf8.UTF8
 
 internal expect inline fun UTF8.ReplacementStrategy.Companion.initializeKotlin(
     U_0034: UTF8.ReplacementStrategy,
     U_FFFD: UTF8.ReplacementStrategy,
 ): UTF8.ReplacementStrategy
-
-@Throws(EncodingException::class)
-internal inline fun UTF8.ReplacementStrategy.doOutput(out: Decoder.OutFeed) {
-    when (size) {
-        UTF8.ReplacementStrategy.U_0034.size -> {
-            out.output('?'.code.toByte())
-        }
-        UTF8.ReplacementStrategy.U_FFFD.size -> {
-            out.output(0xef.toByte())
-            out.output(0xbf.toByte())
-            out.output(0xbd.toByte())
-        }
-        else -> throw EncodingException("Malformed UTF-8 character sequence")
-    }
-}
-
-@Throws(EncodingException::class)
-internal inline fun UTF8.ReplacementStrategy.sizeOrThrow(): Int {
-    if (size == UTF8.ReplacementStrategy.THROW.size) {
-        throw EncodingException("Malformed UTF-8 character sequence")
-    }
-    return size
-}

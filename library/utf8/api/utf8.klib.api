@@ -11,27 +11,20 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
     final fun newDecoderFeedProtected(io.matthewnelson.encoding.core/Decoder.OutFeed): io.matthewnelson.encoding.core/Decoder.Feed<io.matthewnelson.encoding.utf8/UTF8.Config> // io.matthewnelson.encoding.utf8/UTF8.newDecoderFeedProtected|newDecoderFeedProtected(io.matthewnelson.encoding.core.Decoder.OutFeed){}[0]
     final fun newEncoderFeedProtected(io.matthewnelson.encoding.core/Encoder.OutFeed): io.matthewnelson.encoding.core/Encoder.Feed<io.matthewnelson.encoding.utf8/UTF8.Config> // io.matthewnelson.encoding.utf8/UTF8.newEncoderFeedProtected|newEncoderFeedProtected(io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
 
-    final class Builder { // io.matthewnelson.encoding.utf8/UTF8.Builder|null[0]
-        constructor <init>() // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(){}[0]
-        constructor <init>(io.matthewnelson.encoding.utf8/UTF8.Config?) // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8.Config?){}[0]
-
-        final fun build(): io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Builder.build|build(){}[0]
-        final fun replacement(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): io.matthewnelson.encoding.utf8/UTF8.Builder // io.matthewnelson.encoding.utf8/UTF8.Builder.replacement|replacement(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
-    }
-
-    final class CharPreProcessor { // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor|null[0]
-        constructor <init>(io.matthewnelson.encoding.utf8/UTF8) // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8){}[0]
-        constructor <init>(io.matthewnelson.encoding.utf8/UTF8.Config) // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8.Config){}[0]
-        constructor <init>(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy) // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
+    abstract class CharPreProcessor { // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor|null[0]
+        final val strategy // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.strategy|{}strategy[0]
+            final fun <get-strategy>(): io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.strategy.<get-strategy>|<get-strategy>(){}[0]
 
         final var currentSize // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.currentSize|{}currentSize[0]
             final fun <get-currentSize>(): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.currentSize.<get-currentSize>|<get-currentSize>(){}[0]
 
+        abstract fun sizeOrThrow(): kotlin/Int // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.sizeOrThrow|sizeOrThrow(){}[0]
         final fun doFinal(): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.doFinal|doFinal(){}[0]
         final fun plus(kotlin/Char) // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.plus|plus(kotlin.Char){}[0]
 
         final object Companion { // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion|null[0]
             final fun (kotlin.collections/Iterator<kotlin/Char>).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.collections.Iterator<kotlin.Char>(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
+            final fun of(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.of|of(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
             final inline fun (kotlin.collections/Iterator<kotlin/Char>).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.collections.Iterator<kotlin.Char>(io.matthewnelson.encoding.utf8.UTF8){}[0]
             final inline fun (kotlin.collections/Iterator<kotlin/Char>).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8.Config): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.collections.Iterator<kotlin.Char>(io.matthewnelson.encoding.utf8.UTF8.Config){}[0]
             final inline fun (kotlin/CharArray).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.CharArray(io.matthewnelson.encoding.utf8.UTF8){}[0]
@@ -40,7 +33,17 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
             final inline fun (kotlin/CharSequence).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.CharSequence(io.matthewnelson.encoding.utf8.UTF8){}[0]
             final inline fun (kotlin/CharSequence).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8.Config): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.CharSequence(io.matthewnelson.encoding.utf8.UTF8.Config){}[0]
             final inline fun (kotlin/CharSequence).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.CharSequence(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
+            final inline fun of(io.matthewnelson.encoding.utf8/UTF8): io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.of|of(io.matthewnelson.encoding.utf8.UTF8){}[0]
+            final inline fun of(io.matthewnelson.encoding.utf8/UTF8.Config): io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.of|of(io.matthewnelson.encoding.utf8.UTF8.Config){}[0]
         }
+    }
+
+    final class Builder { // io.matthewnelson.encoding.utf8/UTF8.Builder|null[0]
+        constructor <init>() // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(){}[0]
+        constructor <init>(io.matthewnelson.encoding.utf8/UTF8.Config?) // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8.Config?){}[0]
+
+        final fun build(): io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Builder.build|build(){}[0]
+        final fun replacement(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): io.matthewnelson.encoding.utf8/UTF8.Builder // io.matthewnelson.encoding.utf8/UTF8.Builder.replacement|replacement(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
     }
 
     final class Config : io.matthewnelson.encoding.core/EncoderDecoder.Config { // io.matthewnelson.encoding.utf8/UTF8.Config|null[0]

@@ -33,9 +33,7 @@ internal inline fun <C: Config> Decoder<C>.decode(
     input: DecoderInput,
     action: (feed: Decoder<*>.Feed) -> Unit
 ): ByteArray {
-    contract {
-        callsInPlace(action, InvocationKind.UNKNOWN)
-    }
+    contract { callsInPlace(action, InvocationKind.UNKNOWN) }
 
     val size = config.decodeOutMaxSizeOrFail(input)
     val a = ByteArray(size)
@@ -55,30 +53,27 @@ internal inline fun <C: Config> Decoder<C>.decode(
     if (i == size) return a
 
     val copy = a.copyOf(i)
-    a.fill(0, i)
+    a.fill(0, 0, i)
     return copy
 }
 
 /**
- * Fails if the returned [Long] for [Config.encodeOutSize]
- * exceeds [Int.MAX_VALUE]
+ * Fails if the returned [Long] for [Config.encodeOutSize] exceeds [Int.MAX_VALUE].
  * */
 @OptIn(ExperimentalContracts::class)
 @Throws(EncodingSizeException::class)
-internal inline fun <T: Any> Encoder<*>.encodeOutSizeOrFail(
+internal inline fun <T: Any> Encoder<*>.encodeOutMaxSizeOrFail(
     size: Int,
-    block: (outSize: Int) -> T
+    block: (maxSize: Int) -> T
 ): T {
-    contract {
-        callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+    contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
+
+    val maxSize = config.encodeOutSize(size.toLong())
+    if (maxSize > MAX_ENCODE_OUT_SIZE) {
+        throw Config.outSizeExceedsMaxEncodingSizeException(maxSize, MAX_ENCODE_OUT_SIZE)
     }
 
-    val outSize = config.encodeOutSize(size.toLong())
-    if (outSize > MAX_ENCODE_OUT_SIZE) {
-        throw Config.outSizeExceedsMaxEncodingSizeException(outSize, MAX_ENCODE_OUT_SIZE)
-    }
-
-    return block.invoke(outSize.toInt())
+    return block.invoke(maxSize.toInt())
 }
 
 internal inline fun <C: Config> Encoder<C>.encode(

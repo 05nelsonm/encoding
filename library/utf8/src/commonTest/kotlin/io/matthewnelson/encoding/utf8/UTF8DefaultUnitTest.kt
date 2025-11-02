@@ -16,6 +16,7 @@
 package io.matthewnelson.encoding.utf8
 
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.utf8.UTF8.CharPreProcessor.Companion.sizeUTF8
 import kotlin.random.Random
 import kotlin.test.Test
@@ -25,17 +26,17 @@ class UTF8DefaultUnitTest: UTF8BaseUnitTest(UTF8.Default) {
 
     @Test
     fun givenRandomSequences_whenEncoded_thenMatchesKotlinEncodeToByteArray() {
-        val times = when {
+        val (times, maxSize) = when {
             // Js/WasmJs
-            IS_JS -> 250
+            IS_JS -> 250 to 42
             // Jvm
-            utf8.config.replacementStrategy == UTF8.ReplacementStrategy.U_0034 -> 5_000
+            utf8.config.replacementStrategy == UTF8.ReplacementStrategy.U_0034 -> 5_000 to 106
             // WasmWasi/Native
-            else -> 2_500
+            else -> 2_500 to 88
         }
 
         repeat(times) { i ->
-            val size = Random.nextInt(5, 42)
+            val size = Random.nextInt(5, maxSize)
             val text = buildString(size) {
                 repeat(size) {
                     val c = Random.nextInt().toChar()
@@ -44,7 +45,7 @@ class UTF8DefaultUnitTest: UTF8BaseUnitTest(UTF8.Default) {
             }
 
             val expected = text.encodeToByteArray()
-            assertEquals(expected.size, text.sizeUTF8(utf8).toInt(), "sizes >> run[$i]")
+            assertEquals(expected.size.toLong(), text.sizeUTF8(utf8), "sizes >> run[$i]")
 
             val actual = text.decodeToByteArray(utf8)
             assertEquals(
@@ -55,7 +56,7 @@ class UTF8DefaultUnitTest: UTF8BaseUnitTest(UTF8.Default) {
                     Sizes do not match for run[$i]
                     Expected${expected.toList()}
                       Actual${actual.toList()}
-                    TEXT[$text]
+                        TEXT[$text]
 
                 """.trimIndent()
             )
@@ -68,11 +69,25 @@ class UTF8DefaultUnitTest: UTF8BaseUnitTest(UTF8.Default) {
                         Content mismatched at index[$j] for run[$i]
                         Expected${expected.toList()}
                           Actual${actual.toList()}
-                        TEXT[$text]
+                            TEXT[$text]
 
                     """.trimIndent()
                 )
             }
+
+            val utf8Kotlin = expected.decodeToString()
+            val utf8Encoding = expected.encodeToString(utf8)
+            assertEquals(
+                utf8Kotlin,
+                utf8Encoding,
+                """
+
+                    Content mismatched for run[$i]
+                    Expected[$utf8Kotlin]
+                      Actual[$utf8Encoding]
+                        TEXT[$text]
+                """.trimIndent()
+            )
         }
     }
 }
