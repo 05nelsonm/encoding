@@ -276,85 +276,92 @@ public class Base16: EncoderDecoder<Base16.Config> {
     protected final override fun name(): String = NAME
 
     protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
-        return object : Decoder<Config>.Feed() {
-
-            private val buffer = DecodingBuffer(out)
-
-            override fun consumeProtected(input: Char) {
-                val code = input.code
-
-                val ge0: Byte = if (code >= '0'.code) 1 else 0
-                val le9: Byte = if (code <= '9'.code) 1 else 0
-                val geA: Byte = if (code >= 'A'.code) 1 else 0
-                val leF: Byte = if (code <= 'F'.code) 1 else 0
-                val gea: Byte = if (code >= 'a'.code) 1 else 0
-                val lef: Byte = if (code <= 'f'.code) 1 else 0
-
-                var diff = 0
-
-                // char ASCII value
-                //  0     48    0
-                //  9     57    9 (ASCII - 48)
-                diff += if (ge0 + le9 == 2) -48 else 0
-
-                // char ASCII value
-                //  A     65   10
-                //  F     70   15 (ASCII - 55)
-                diff += if (geA + leF == 2) -55 else 0
-
-                // char ASCII value
-                //  a     97   10
-                //  f    102   15 (ASCII - 87)
-                diff += if (gea + lef == 2) -87 else 0
-
-                if (diff == 0) {
-                    throw EncodingException("Char[${input}] is not a valid Base16 character")
-                }
-
-                buffer.update(code + diff)
-            }
-
-            override fun doFinalProtected() { buffer.finalize() }
-        }
+        return DecoderFeed(out)
     }
 
     protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Config>.Feed {
-        return object : Encoder<Config>.Feed() {
-
-            private val table = if (config.encodeLowercase) CHARS_LOWER else CHARS_UPPER
-
-            override fun consumeProtected(input: Byte) {
-                // A FeedBuffer is not necessary here as every 1
-                // byte of input, 2 characters are output.
-                val bits = input.toInt() and 0xff
-
-                val i1 = bits shr 4
-                val i2 = bits and 0x0f
-
-                out.output(table[i1])
-                out.output(table[i2])
+        return if (config.encodeLowercase) {
+            object : EncoderFeed(out) {
+                override fun Encoder.OutFeed.output2(i1: Int, i2: Int) {
+                    output(CHARS_LOWER[i1])
+                    output(CHARS_LOWER[i2])
+                }
             }
-
-            override fun doFinalProtected() { /* no-op */ }
+        } else {
+            object : EncoderFeed(out) {
+                override fun Encoder.OutFeed.output2(i1: Int, i2: Int) {
+                    output(CHARS_UPPER[i1])
+                    output(CHARS_UPPER[i2])
+                }
+            }
         }
     }
 
-    private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
-        blockSize = 2,
-        flush = { buffer ->
-            var bitBuffer = 0
-            for (bits in buffer) {
-                bitBuffer = (bitBuffer shl 4) or bits
+    private inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
+
+        private var buf = 0
+        private var hasBuffered = false
+
+        override fun consumeProtected(input: Char) {
+            val code = input.code
+
+            val ge0: Byte = if (code >= '0'.code) 1 else 0
+            val le9: Byte = if (code <= '9'.code) 1 else 0
+            val geA: Byte = if (code >= 'A'.code) 1 else 0
+            val leF: Byte = if (code <= 'F'.code) 1 else 0
+            val gea: Byte = if (code >= 'a'.code) 1 else 0
+            val lef: Byte = if (code <= 'f'.code) 1 else 0
+
+            var diff = 0
+
+            // char ASCII value
+            //  0     48    0
+            //  9     57    9 (ASCII - 48)
+            diff += if (ge0 + le9 == 2) -48 else 0
+
+            // char ASCII value
+            //  A     65   10
+            //  F     70   15 (ASCII - 55)
+            diff += if (geA + leF == 2) -55 else 0
+
+            // char ASCII value
+            //  a     97   10
+            //  f    102   15 (ASCII - 87)
+            diff += if (gea + lef == 2) -87 else 0
+
+            if (diff == 0) {
+                throw EncodingException("Char[${input}] is not a valid Base16 character")
             }
-            out.output(bitBuffer.toByte())
-        },
-        finalize = { modulus, _->
-            if (modulus != 0) {
-                // 4*1 = 4 bits. Truncated, fail.
-                throw truncatedInputEncodingException(modulus)
+
+            if (!hasBuffered) {
+                buf = code + diff
+                hasBuffered = true
+                return
             }
+
+            hasBuffered = false
+            out.output(((buf shl 4) + code + diff).toByte())
         }
-    )
+
+        override fun doFinalProtected() {
+            buf = 0
+            if (!hasBuffered) return
+            hasBuffered = false
+            // 4*1 = 4 bits. Truncated, fail.
+            throw FeedBuffer.truncatedInputEncodingException(1)
+        }
+    }
+
+    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed() {
+
+        protected abstract fun Encoder.OutFeed.output2(i1: Int, i2: Int)
+
+        final override fun consumeProtected(input: Byte) {
+            val bits = input.toInt() and 0xff
+            out.output2(i1 = bits shr 0x04, i2 = bits and 0x0f)
+        }
+        final override fun doFinalProtected() { /* no-op */ }
+    }
 
     @Deprecated(
         message = "This constructor is scheduled for removal. Use Base16.Builder or Base16.Companion.Builder.",
