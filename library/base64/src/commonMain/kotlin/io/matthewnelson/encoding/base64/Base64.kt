@@ -482,17 +482,17 @@ public class Base64: EncoderDecoder<Base64.Config> {
         protected abstract fun Encoder.OutFeed.output1(i: Int)
         protected abstract fun Encoder.OutFeed.output4(i1: Int, i2: Int, i3: Int, i4: Int)
 
-        private val buf = IntArray(2)
+        private val buf = ByteArray(2)
         private var iBuf = 0
 
         final override fun consumeProtected(input: Byte) {
             if (iBuf < 2) {
-                buf[iBuf++] = input.toInt()
+                buf[iBuf++] = input
                 return // Await more input
             }
 
-            val b0 = buf[0]
-            val b1 = buf[1]
+            val b0 = buf[0].toInt()
+            val b1 = buf[1].toInt()
             val b2 = input.toInt()
             iBuf = 0
 
@@ -508,7 +508,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         final override fun doFinalProtected() {
             if (iBuf == 0) return buf.fill(0)
 
-            val b0 = buf[0]
+            val b0 = buf[0].toInt()
             if (iBuf == 1) {
                 iBuf = 0
                 buf.fill(0)
@@ -517,7 +517,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
                 return 2.outputPadding()
             }
 
-            val b1 = buf[1]
+            val b1 = buf[1].toInt()
             if (iBuf == 2) {
                 iBuf = 0
                 buf.fill(0)
