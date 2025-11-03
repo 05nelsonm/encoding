@@ -214,4 +214,5 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
     }
 }
 
+final fun (io.matthewnelson.encoding.core/EncoderDecoder.Feed<*>?).io.matthewnelson.encoding.core/useFinally(kotlin/Throwable?) // io.matthewnelson.encoding.core/useFinally|useFinally@io.matthewnelson.encoding.core.EncoderDecoder.Feed<*>?(kotlin.Throwable?){}[0]
 final inline fun <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config, #B: io.matthewnelson.encoding.core/EncoderDecoder.Feed<#A>?, #C: kotlin/Any?> (#B).io.matthewnelson.encoding.core/use(kotlin/Function1<#B, #C>): #C // io.matthewnelson.encoding.core/use|use@0:1(kotlin.Function1<0:1,0:2>){0§<io.matthewnelson.encoding.core.EncoderDecoder.Config>;1§<io.matthewnelson.encoding.core.EncoderDecoder.Feed<0:0>?>;2§<kotlin.Any?>}[0]
