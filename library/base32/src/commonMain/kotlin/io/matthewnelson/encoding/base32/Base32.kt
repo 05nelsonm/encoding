@@ -378,11 +378,41 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         protected final override fun name(): String = NAME
 
         protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Crockford.Config>.Feed {
-            return CrockfordDecoder(out)
+            return CrockfordDecoderFeed(out)
         }
 
         protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
-            return CrockfordEncoder(out)
+            val outFeed = if (config.hyphenInterval <= 0) out else HyphenOutFeed(config.hyphenInterval, out)
+
+            return if (config.encodeLowercase) {
+                object : EncoderFeed(outFeed) {
+                    override fun Encoder.OutFeed.output1(i: Int) {
+                        output(CHARS_LOWER[i])
+                    }
+                    override fun Encoder.OutFeed.outputPadding(n: Int) {
+                        if (isClosed() || config.finalizeWhenFlushed) {
+                            config.checkSymbol?.let { symbol ->
+                                output(symbol.lowercaseChar())
+                            }
+                            (this as? HyphenOutFeed)?.reset()
+                        }
+                    }
+                }
+            } else {
+                object : EncoderFeed(outFeed) {
+                    override fun Encoder.OutFeed.output1(i: Int) {
+                        output(CHARS_UPPER[i])
+                    }
+                    override fun Encoder.OutFeed.outputPadding(n: Int) {
+                        if (isClosed() || config.finalizeWhenFlushed) {
+                            config.checkSymbol?.let { symbol ->
+                                output(symbol.uppercaseChar())
+                            }
+                            (this as? HyphenOutFeed)?.reset()
+                        }
+                    }
+                }
+            }
         }
 
         /**
@@ -660,11 +690,33 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         protected final override fun name(): String = NAME
 
         protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Default.Config>.Feed {
-            return DefaultDecoder(out)
+            return DefaultDecoderFeed(out)
         }
 
         protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Default.Config>.Feed {
-            return DefaultEncoder(out)
+            return if (config.encodeLowercase) {
+                object : EncoderFeed(out) {
+                    override fun Encoder.OutFeed.output1(i: Int) {
+                        output(CHARS_LOWER[i])
+                    }
+                    override fun Encoder.OutFeed.outputPadding(n: Int) {
+                        if (!config.padEncoded) return
+                        val c = config.paddingChar ?: return
+                        repeat(n) { output(c) }
+                    }
+                }
+            } else {
+                object : EncoderFeed(out) {
+                    override fun Encoder.OutFeed.output1(i: Int) {
+                        output(CHARS_UPPER[i])
+                    }
+                    override fun Encoder.OutFeed.outputPadding(n: Int) {
+                        if (!config.padEncoded) return
+                        val c = config.paddingChar ?: return
+                        repeat(n) { output(c) }
+                    }
+                }
+            }
         }
 
         /**
@@ -942,11 +994,33 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         protected final override fun name(): String = NAME
 
         protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Hex.Config>.Feed {
-            return HexDecoder(out)
+            return HexDecoderFeed(out)
         }
 
         protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Hex.Config>.Feed {
-            return HexEncoder(out)
+            return if (config.encodeLowercase) {
+                object : EncoderFeed(out) {
+                    override fun Encoder.OutFeed.output1(i: Int) {
+                        output(CHARS_LOWER[i])
+                    }
+                    override fun Encoder.OutFeed.outputPadding(n: Int) {
+                        if (!config.padEncoded) return
+                        val c = config.paddingChar ?: return
+                        repeat(n) { output(c) }
+                    }
+                }
+            } else {
+                object : EncoderFeed(out) {
+                    override fun Encoder.OutFeed.output1(i: Int) {
+                        output(CHARS_UPPER[i])
+                    }
+                    override fun Encoder.OutFeed.outputPadding(n: Int) {
+                        if (!config.padEncoded) return
+                        val c = config.paddingChar ?: return
+                        repeat(n) { output(c) }
+                    }
+                }
+            }
         }
 
         /**
@@ -963,241 +1037,262 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         private constructor(config: Config, unused: Any?): super(config)
     }
 
-    private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
-        blockSize = 8,
-        flush = { buffer ->
-            // Append each char's 5 bits to the buffer
-            var bitBuffer = 0L
-            for (bits in buffer) {
-                bitBuffer = (bitBuffer shl 5) or bits.toLong()
+    private abstract inner class AbstractDecoderFeed(private val out: Decoder.OutFeed): Decoder<C>.Feed() {
+
+        protected abstract fun Int.decodeDiff(): Int
+
+        private val buf = IntArray(7)
+        private var iBuf = 0
+
+        override fun consumeProtected(input: Char) {
+            val code = input.code
+            val diff = code.decodeDiff()
+            if (diff == 0) {
+                throw Diff0EncodingException("Char[$input] is not a valid Base32 character")
             }
 
-            // For every 8 chars of input, we accumulate
-            // 40 bits of output data. Emit 5 bytes.
-            out.output((bitBuffer shr 32).toByte())
-            out.output((bitBuffer shr 24).toByte())
-            out.output((bitBuffer shr 16).toByte())
-            out.output((bitBuffer shr  8).toByte())
-            out.output((bitBuffer       ).toByte())
-        },
-        finalize = { modulus, buffer ->
-            when (modulus) {
-                1, 3, 6 -> {
-                    // 5*1 =  5 bits. Truncated, fail.
-                    // 5*3 = 15 bits. Truncated, fail.
-                    // 5*6 = 30 bits. Truncated, fail.
-                    throw truncatedInputEncodingException(modulus)
-                }
+            if (iBuf < 7) {
+                buf[iBuf++] = code + diff
+                return // Await more input
             }
 
-            var bitBuffer = 0L
-            for (i in 0 until modulus) {
-                bitBuffer = (bitBuffer shl 5) or buffer[i].toLong()
-            }
+            // Append each character's 5 bits to the word
+            var word: Long = buf[0].toLong()
+            word = word shl 5 or buf[1].toLong()
+            word = word shl 5 or buf[2].toLong()
+            word = word shl 5 or buf[3].toLong()
+            word = word shl 5 or buf[4].toLong()
+            word = word shl 5 or buf[5].toLong()
+            word = word shl 5 or buf[6].toLong()
+            word = word shl 5 or (code + diff).toLong()
+            iBuf = 0
 
-            when (modulus) {
-                0 -> { /* no-op */ }
-                2 -> {
-                    // 5*2 = 10 bits. Drop 2
-                    bitBuffer = bitBuffer shr  2
-
-                    // 8/8 = 1 byte
-                    out.output((bitBuffer       ).toByte())
-                }
-                4 -> {
-                    // 5*4 = 20 bits. Drop 4
-                    bitBuffer = bitBuffer shr  4
-
-                    // 16/8 = 2 bytes
-                    out.output((bitBuffer shr  8).toByte())
-                    out.output((bitBuffer       ).toByte())
-                }
-                5 -> {
-                    // 5*5 = 25 bits. Drop 1
-                    bitBuffer = bitBuffer shr  1
-
-                    // 24/8 = 3 bytes
-                    out.output((bitBuffer shr 16).toByte())
-                    out.output((bitBuffer shr  8).toByte())
-                    out.output((bitBuffer       ).toByte())
-                }
-                7 -> {
-                    // 5*7 = 35 bits. Drop 3
-                    bitBuffer = bitBuffer shr  3
-
-                    // 32/8 = 4 bytes
-                    out.output((bitBuffer shr 24).toByte())
-                    out.output((bitBuffer shr 16).toByte())
-                    out.output((bitBuffer shr  8).toByte())
-                    out.output((bitBuffer       ).toByte())
-                }
-            }
+            // For every 8 characters of input, 40 bits of output are accumulated. Emit 5 bytes.
+            out.output((word shr 32).toByte())
+            out.output((word shr 24).toByte())
+            out.output((word shr 16).toByte())
+            out.output((word shr  8).toByte())
+            out.output((word       ).toByte())
         }
-    )
 
-    private inner class EncodingBuffer(
-        out: Encoder.OutFeed,
-        table: CharSequence,
-        paddingChar: Char?,
-    ): FeedBuffer(
-        blockSize = 5,
-        flush = { buffer ->
-            var bitBuffer = 0L
+        override fun doFinalProtected() {
+            if (iBuf == 0) return buf.fill(0)
 
-            // Append each char's 8 bits to the bitBuffer
-            for (bits in buffer) {
-                bitBuffer =  (bitBuffer shl  8) + bits.toByte().toBits()
+            if (iBuf == 1) {
+                // 5*1 =  5 bits. Truncated, fail.
+                iBuf = 0
+                buf.fill(0)
+                throw FeedBuffer.truncatedInputEncodingException(1)
+            }
+            if (iBuf == 3) {
+                // 5*3 = 15 bits. Truncated, fail.
+                iBuf = 0
+                buf.fill(0)
+                throw FeedBuffer.truncatedInputEncodingException(3)
+            }
+            if (iBuf == 6) {
+                // 5*6 = 30 bits. Truncated, fail.
+                iBuf = 0
+                buf.fill(0)
+                throw FeedBuffer.truncatedInputEncodingException(6)
             }
 
-            // For every 5 bytes of input, we accumulate
-            // 40 bits of output. Emit 8 characters.
-            val i1 = (bitBuffer shr 35 and 0x1fL).toInt() // 40-1*5 = 35
-            val i2 = (bitBuffer shr 30 and 0x1fL).toInt() // 40-2*5 = 30
-            val i3 = (bitBuffer shr 25 and 0x1fL).toInt() // 40-3*5 = 25
-            val i4 = (bitBuffer shr 20 and 0x1fL).toInt() // 40-4*5 = 20
-            val i5 = (bitBuffer shr 15 and 0x1fL).toInt() // 40-5*5 = 15
-            val i6 = (bitBuffer shr 10 and 0x1fL).toInt() // 40-6*5 = 10
-            val i7 = (bitBuffer shr  5 and 0x1fL).toInt() // 40-7*5 =  5
-            val i8 = (bitBuffer        and 0x1fL).toInt() // 40-8*5 =  0
+            // iBuf == 2, 4, 5 or 7
+            // Append each character's 5 bits to the word
+            var word: Long = buf[0].toLong()
+            word = word shl 5 or buf[1].toLong()
+            if (iBuf == 2) {
+                iBuf = 0
+                buf.fill(0)
+                // 5*2 = 10 bits. Drop 2
+                word = word shr 2
 
-            out.output(table[i1])
-            out.output(table[i2])
-            out.output(table[i3])
-            out.output(table[i4])
-            out.output(table[i5])
-            out.output(table[i6])
-            out.output(table[i7])
-            out.output(table[i8])
-        },
-        finalize = { modulus, buffer ->
-            var bitBuffer = 0L
-
-            // Append each char remaining in the buffer to the bitBuffer
-            for (i in 0 until modulus) {
-                bitBuffer =  (bitBuffer shl  8) + buffer[i].toByte().toBits()
+                // 8/8 = 1 byte
+                out.output((word       ).toByte())
+                return
             }
 
-            val padCount: Int = when (modulus) {
-                0 -> { 0 }
-                1 -> {
-                    // 8*1 = 8 bits
-                    val i1 = (bitBuffer shr  3 and 0x1fL).toInt() // 8-1*5 = 3
-                    val i2 = (bitBuffer shl  2 and 0x1fL).toInt() // 5-3 = 2
+            word = word shl 5 or buf[2].toLong()
+            word = word shl 5 or buf[3].toLong()
+            if (iBuf == 4) {
+                iBuf = 0
+                buf.fill(0)
+                // 5*4 = 20 bits. Drop 4
+                word = word shr 4
 
-                    out.output(table[i1])
-                    out.output(table[i2])
-
-                    6
-                }
-                2 -> {
-                    // 8*2 = 16 bits
-                    val i1 = (bitBuffer shr 11 and 0x1fL).toInt() // 16-1*5 = 11
-                    val i2 = (bitBuffer shr  6 and 0x1fL).toInt() // 16-2*5 = 6
-                    val i3 = (bitBuffer shr  1 and 0x1fL).toInt() // 16-3*5 = 1
-                    val i4 = (bitBuffer shl  4 and 0x1fL).toInt() // 5-1 = 4
-
-                    out.output(table[i1])
-                    out.output(table[i2])
-                    out.output(table[i3])
-                    out.output(table[i4])
-
-                    4
-                }
-                3 -> {
-                    // 8*3 = 24 bits
-                    val i1 = (bitBuffer shr 19 and 0x1fL).toInt() // 24-1*5 = 19
-                    val i2 = (bitBuffer shr 14 and 0x1fL).toInt() // 24-2*5 = 14
-                    val i3 = (bitBuffer shr  9 and 0x1fL).toInt() // 24-3*5 = 9
-                    val i4 = (bitBuffer shr  4 and 0x1fL).toInt() // 24-4*5 = 4
-                    val i5 = (bitBuffer shl  1 and 0x1fL).toInt() // 5-4 = 1
-
-                    out.output(table[i1])
-                    out.output(table[i2])
-                    out.output(table[i3])
-                    out.output(table[i4])
-                    out.output(table[i5])
-
-                    3
-                }
-                // 4
-                else -> {
-                    // 8*4 = 32 bits
-                    val i1 = (bitBuffer shr 27 and 0x1fL).toInt() // 32-1*5 = 27
-                    val i2 = (bitBuffer shr 22 and 0x1fL).toInt() // 32-2*5 = 22
-                    val i3 = (bitBuffer shr 17 and 0x1fL).toInt() // 32-3*5 = 17
-                    val i4 = (bitBuffer shr 12 and 0x1fL).toInt() // 32-4*5 = 12
-                    val i5 = (bitBuffer shr  7 and 0x1fL).toInt() // 32-5*5 = 7
-                    val i6 = (bitBuffer shr  2 and 0x1fL).toInt() // 32-6*5 = 2
-                    val i7 = (bitBuffer shl  3 and 0x1fL).toInt() // 5-2 = 3
-
-                    out.output(table[i1])
-                    out.output(table[i2])
-                    out.output(table[i3])
-                    out.output(table[i4])
-                    out.output(table[i5])
-                    out.output(table[i6])
-                    out.output(table[i7])
-
-                    1
-                }
+                // 16/8 = 2 bytes
+                out.output((word shr  8).toByte())
+                out.output((word       ).toByte())
+                return
             }
 
-            if (paddingChar != null) {
-                repeat(padCount) { out.output(paddingChar) }
-            }
-        },
-    )
+            word = word shl 5 or buf[4].toLong()
+            if (iBuf == 5) {
+                iBuf = 0
+                buf.fill(0)
+                // 5*5 = 25 bits. Drop 1
+                word = word shr 1
 
-    private inner class CrockfordDecoder(out: Decoder.OutFeed): Decoder<C>.Feed() {
+                // 24/8 = 3 bytes
+                out.output((word shr 16).toByte())
+                out.output((word shr  8).toByte())
+                out.output((word       ).toByte())
+                return
+            }
+
+            word = word shl 5 or buf[5].toLong()
+            word = word shl 5 or buf[6].toLong()
+            if (iBuf == 7) {
+                iBuf = 0
+                buf.fill(0)
+                // 5*7 = 35 bits. Drop 3
+                word = word shr 3
+
+                // 32/8 = 4 bytes
+                out.output((word shr 24).toByte())
+                out.output((word shr 16).toByte())
+                out.output((word shr  8).toByte())
+                out.output((word       ).toByte())
+                return
+            }
+
+            // "Should" never make it here
+            error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}, ${buf[4]}, ${buf[5]}, ${buf[6]}]")
+        }
+    }
+
+    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<C>.Feed() {
+
+        protected abstract fun Encoder.OutFeed.output1(i: Int)
+        protected abstract fun Encoder.OutFeed.outputPadding(n: Int)
+
+        private val buf = ByteArray(4)
+        private var iBuf = 0
+
+        final override fun consumeProtected(input: Byte) {
+            if (iBuf < 4) {
+                buf[iBuf++] = input
+                return // Await more input
+            }
+
+            // Append each character's 8 bits to the word
+            var word: Long = buf[0].toBits()
+            word = (word shl 8) + buf[1].toBits()
+            word = (word shl 8) + buf[2].toBits()
+            word = (word shl 8) + buf[3].toBits()
+            word = (word shl 8) + input.toBits()
+            iBuf = 0
+
+            // For every 5 bytes of input, 40 bits of output are accumulated. Emit 8 characters.
+            out.output1(i = (word shr 35 and 0x1fL).toInt()) // 40-1*5 = 35
+            out.output1(i = (word shr 30 and 0x1fL).toInt()) // 40-2*5 = 30
+            out.output1(i = (word shr 25 and 0x1fL).toInt()) // 40-3*5 = 25
+            out.output1(i = (word shr 20 and 0x1fL).toInt()) // 40-4*5 = 20
+            out.output1(i = (word shr 15 and 0x1fL).toInt()) // 40-5*5 = 15
+            out.output1(i = (word shr 10 and 0x1fL).toInt()) // 40-6*5 = 10
+            out.output1(i = (word shr  5 and 0x1fL).toInt()) // 40-7*5 =  5
+            out.output1(i = (word        and 0x1fL).toInt()) // 40-8*5 =  0
+        }
+
+        final override fun doFinalProtected() {
+            if (iBuf == 0) {
+                buf.fill(0)
+                // Still call with 0 b/c Crockford uses to append its check symbol
+                return out.outputPadding(n = 0)
+            }
+
+            var word: Long = buf[0].toBits()
+            if (iBuf == 1) {
+                iBuf = 0
+                buf.fill(0)
+                // 8*1 = 8 bits
+                out.output1(i = (word shr  3 and 0x1fL).toInt()) //  8-1*5 =  3
+                out.output1(i = (word shl  2 and 0x1fL).toInt()) //  5-3   =  2
+                return out.outputPadding(n = 6)
+            }
+
+            word = (word shl 8) + buf[1].toBits()
+            if (iBuf == 2) {
+                iBuf = 0
+                buf.fill(0)
+                // 8*2 = 16 bits
+                out.output1(i = (word shr 11 and 0x1fL).toInt()) // 16-1*5 = 11
+                out.output1(i = (word shr  6 and 0x1fL).toInt()) // 16-2*5 =  6
+                out.output1(i = (word shr  1 and 0x1fL).toInt()) // 16-3*5 =  1
+                out.output1(i = (word shl  4 and 0x1fL).toInt()) //  5-1   =  4
+                return out.outputPadding(n = 4)
+            }
+
+            word = (word shl 8) + buf[2].toBits()
+            if (iBuf == 3) {
+                iBuf = 0
+                buf.fill(0)
+                // 8*3 = 24 bits
+                out.output1(i = (word shr 19 and 0x1fL).toInt()) // 24-1*5 = 19
+                out.output1(i = (word shr 14 and 0x1fL).toInt()) // 24-2*5 = 14
+                out.output1(i = (word shr  9 and 0x1fL).toInt()) // 24-3*5 =  9
+                out.output1(i = (word shr  4 and 0x1fL).toInt()) // 24-4*5 =  4
+                out.output1(i = (word shl  1 and 0x1fL).toInt()) //  5-4   =  1
+                return out.outputPadding(n = 3)
+            }
+
+            word = (word shl 8) + buf[3].toBits()
+            if (iBuf == 4) {
+                iBuf = 0
+                buf.fill(0)
+                // 8*4 = 32 bits
+                out.output1(i = (word shr 27 and 0x1fL).toInt()) // 32-1*5 = 27
+                out.output1(i = (word shr 22 and 0x1fL).toInt()) // 32-2*5 = 22
+                out.output1(i = (word shr 17 and 0x1fL).toInt()) // 32-3*5 = 17
+                out.output1(i = (word shr 12 and 0x1fL).toInt()) // 32-4*5 = 12
+                out.output1(i = (word shr  7 and 0x1fL).toInt()) // 32-5*5 =  7
+                out.output1(i = (word shr  2 and 0x1fL).toInt()) // 32-6*5 =  2
+                out.output1(i = (word shl  3 and 0x1fL).toInt()) //  5-2   =  3
+                return out.outputPadding(n = 1)
+            }
+
+            // "Should" never make it here
+            error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}]")
+        }
+    }
+
+    private inner class CrockfordDecoderFeed(out: Decoder.OutFeed): AbstractDecoderFeed(out) {
 
         private val _config = config as Crockford.Config
         private var hadInput = false
         private var isCheckSymbolSet = false
-        private val buffer = DecodingBuffer(out)
 
-        override fun consumeProtected(input: Char) {
-            if (isCheckSymbolSet) {
-                // If the set checkSymbol was not intended, it's only valid as the
-                // very last character and the previous update call was invalid.
-                throw EncodingException("CheckSymbol[${_config.checkSymbol}] was set")
-            }
+        override fun Int.decodeDiff(): Int {
+            val ge0: Byte = if (this >= '0'.code) 1 else 0
+            val le9: Byte = if (this <= '9'.code) 1 else 0
 
-            // Crockford allows for insertion of hyphens,
-            // which are to be ignored when decoding.
-            if (input == '-') return
+            val geA: Byte = if (this >= 'A'.code) 1 else 0
+            val leH: Byte = if (this <= 'H'.code) 1 else 0
+            val eqI: Byte = if (this == 'I'.code) 1 else 0
+            val eqL: Byte = if (this == 'L'.code) 1 else 0
+            val eqJ: Byte = if (this == 'J'.code) 1 else 0
+            val eqK: Byte = if (this == 'K'.code) 1 else 0
+            val eqM: Byte = if (this == 'M'.code) 1 else 0
+            val eqN: Byte = if (this == 'N'.code) 1 else 0
+            val eqO: Byte = if (this == 'O'.code) 1 else 0
+            val geP: Byte = if (this >= 'P'.code) 1 else 0
+            val leT: Byte = if (this <= 'T'.code) 1 else 0
+            val geV: Byte = if (this >= 'V'.code) 1 else 0
+            val leZ: Byte = if (this <= 'Z'.code) 1 else 0
 
-            val code = input.code
-
-            val ge0: Byte = if (code >= '0'.code) 1 else 0
-            val le9: Byte = if (code <= '9'.code) 1 else 0
-
-            val geA: Byte = if (code >= 'A'.code) 1 else 0
-            val leH: Byte = if (code <= 'H'.code) 1 else 0
-            val eqI: Byte = if (code == 'I'.code) 1 else 0
-            val eqL: Byte = if (code == 'L'.code) 1 else 0
-            val eqJ: Byte = if (code == 'J'.code) 1 else 0
-            val eqK: Byte = if (code == 'K'.code) 1 else 0
-            val eqM: Byte = if (code == 'M'.code) 1 else 0
-            val eqN: Byte = if (code == 'N'.code) 1 else 0
-            val eqO: Byte = if (code == 'O'.code) 1 else 0
-            val geP: Byte = if (code >= 'P'.code) 1 else 0
-            val leT: Byte = if (code <= 'T'.code) 1 else 0
-            val geV: Byte = if (code >= 'V'.code) 1 else 0
-            val leZ: Byte = if (code <= 'Z'.code) 1 else 0
-
-            val gea: Byte = if (code >= 'a'.code) 1 else 0
-            val leh: Byte = if (code <= 'h'.code) 1 else 0
-            val eqi: Byte = if (code == 'i'.code) 1 else 0
-            val eql: Byte = if (code == 'l'.code) 1 else 0
-            val eqj: Byte = if (code == 'j'.code) 1 else 0
-            val eqk: Byte = if (code == 'k'.code) 1 else 0
-            val eqm: Byte = if (code == 'm'.code) 1 else 0
-            val eqn: Byte = if (code == 'n'.code) 1 else 0
-            val eqo: Byte = if (code == 'o'.code) 1 else 0
-            val gep: Byte = if (code >= 'p'.code) 1 else 0
-            val let: Byte = if (code <= 't'.code) 1 else 0
-            val gev: Byte = if (code >= 'v'.code) 1 else 0
-            val lez: Byte = if (code <= 'z'.code) 1 else 0
+            val gea: Byte = if (this >= 'a'.code) 1 else 0
+            val leh: Byte = if (this <= 'h'.code) 1 else 0
+            val eqi: Byte = if (this == 'i'.code) 1 else 0
+            val eql: Byte = if (this == 'l'.code) 1 else 0
+            val eqj: Byte = if (this == 'j'.code) 1 else 0
+            val eqk: Byte = if (this == 'k'.code) 1 else 0
+            val eqm: Byte = if (this == 'm'.code) 1 else 0
+            val eqn: Byte = if (this == 'n'.code) 1 else 0
+            val eqo: Byte = if (this == 'o'.code) 1 else 0
+            val gep: Byte = if (this >= 'p'.code) 1 else 0
+            val let: Byte = if (this <= 't'.code) 1 else 0
+            val gev: Byte = if (this >= 'v'.code) 1 else 0
+            val lez: Byte = if (this <= 'z'.code) 1 else 0
 
             var diff = 0
 
@@ -1212,7 +1307,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             diff += if (geA + leH == 2) -55 else 0
 
             // Crockford treats characters 'I', 'i', 'L' and 'l' as 1
-            val h = 1 - code
+            val h = 1 - this
             diff += if (eqI + eqi + eqL + eql == 1) h else 0
 
             // char ASCII value
@@ -1226,7 +1321,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             diff += if (eqM + eqN == 1) -57 else 0
 
             // Crockford treats characters 'O' and 'o' as 0
-            val k = 0 - code
+            val k = 0 - this
             diff += if (eqO + eqo == 1) k else 0
 
             // char ASCII value
@@ -1264,25 +1359,35 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             //  z    122   31 (ASCII - 91)
             diff += if (gev + lez == 2) -91 else 0
 
-            if (diff != 0) {
+            return diff
+        }
+
+        override fun consumeProtected(input: Char) {
+            if (isCheckSymbolSet) {
+                // If the set checkSymbol was not intended, it's only valid as the
+                // very last character and the previous update call was invalid.
+                throw EncodingException("CheckSymbol[${_config.checkSymbol}] was set")
+            }
+
+            // Crockford allows for insertion of hyphens, which are to be ignored.
+            if (input == '-') return
+
+            try {
+                super.consumeProtected(input)
                 hadInput = true
-                buffer.update(code + diff)
-                return
-            }
+            } catch (e: Diff0EncodingException) {
+                // decodeDiff returned 0. See if it's a check symbol.
+                if (!input.isCheckSymbol()) throw e
 
-            if (!input.isCheckSymbol()) {
-                throw EncodingException("Char[${input}] is not a valid Base32 Crockford character")
-            }
+                // Have a check symbol
+                if (_config.checkSymbol?.uppercaseChar() == input.uppercaseChar()) {
+                    isCheckSymbolSet = true
+                    return
+                }
 
-            if (_config.checkSymbol?.uppercaseChar() == input.uppercaseChar()) {
-                isCheckSymbolSet = true
-                return
+                // Have the wrong check symbol
+                throw EncodingException("Char[$input] IS a check symbol, but did not match config's CheckSymbol[${_config.checkSymbol}]", e)
             }
-
-            throw EncodingException(
-                "Char[${input}] IS a check symbol, but did not" +
-                " match config's CheckSymbol[${_config.checkSymbol}]"
-            )
         }
 
         override fun doFinalProtected() {
@@ -1293,70 +1398,18 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 isCheckSymbolSet = false
                 hadInput = false
             }
-
-            buffer.finalize()
+            super.doFinalProtected()
         }
     }
 
-    private inner class CrockfordEncoder(private val out: Encoder.OutFeed): Encoder<C>.Feed() {
-
-        private val _config = config as Crockford.Config
-        private var outCount: Byte = 0
-        private var outputHyphenOnNext = false
-
-        private val buffer = EncodingBuffer(
-            out = { byte ->
-                if (outputHyphenOnNext) {
-                    out.output('-')
-                    outCount = 0
-                    outputHyphenOnNext = false
-                }
-
-                out.output(byte)
-                outputHyphenOnNext = _config.hyphenInterval > 0 && ++outCount == _config.hyphenInterval
-            },
-            table = if (_config.encodeLowercase) Crockford.CHARS_LOWER else Crockford.CHARS_UPPER,
-            paddingChar = null,
-        )
-
-        override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
-
-        override fun doFinalProtected() {
-            buffer.finalize()
-
-            if (isClosed() || _config.finalizeWhenFlushed) {
-                _config.checkSymbol?.let { symbol ->
-
-                    if (outputHyphenOnNext) {
-                        out.output('-')
-                    }
-
-                    if (_config.encodeLowercase) {
-                        out.output(symbol.lowercaseChar())
-                    } else {
-                        out.output(symbol.uppercaseChar())
-                    }
-                }
-
-                outCount = 0
-                outputHyphenOnNext = false
-            }
-        }
-    }
-
-    private inner class DefaultDecoder(out: Decoder.OutFeed): Decoder<C>.Feed() {
-
-        private val buffer = DecodingBuffer(out)
-
-        override fun consumeProtected(input: Char) {
-            val code = input.code
-
-            val ge2: Byte = if (code >= '2'.code) 1 else 0
-            val le7: Byte = if (code <= '7'.code) 1 else 0
-            val geA: Byte = if (code >= 'A'.code) 1 else 0
-            val leZ: Byte = if (code <= 'Z'.code) 1 else 0
-            val gea: Byte = if (code >= 'a'.code) 1 else 0
-            val lez: Byte = if (code <= 'z'.code) 1 else 0
+    private inner class DefaultDecoderFeed(out: Decoder.OutFeed): AbstractDecoderFeed(out) {
+        override fun Int.decodeDiff(): Int {
+            val ge2: Byte = if (this >= '2'.code) 1 else 0
+            val le7: Byte = if (this <= '7'.code) 1 else 0
+            val geA: Byte = if (this >= 'A'.code) 1 else 0
+            val leZ: Byte = if (this <= 'Z'.code) 1 else 0
+            val gea: Byte = if (this >= 'a'.code) 1 else 0
+            val lez: Byte = if (this <= 'z'.code) 1 else 0
 
             var diff = 0
 
@@ -1375,42 +1428,18 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             //  z    122   25 (ASCII - 97)
             diff += if (gea + lez == 2) -97 else 0
 
-            if (diff == 0) {
-                throw EncodingException("Char[${input}] is not a valid Base32 Default character")
-            }
-
-            buffer.update(code + diff)
+            return diff
         }
-
-        override fun doFinalProtected() { buffer.finalize() }
     }
 
-    private inner class DefaultEncoder(out: Encoder.OutFeed): Encoder<C>.Feed() {
-
-        private val buffer = EncodingBuffer(
-            out = out,
-            table = if ((config as Default.Config).encodeLowercase) Default.CHARS_LOWER else Default.CHARS_UPPER,
-            paddingChar = if ((config as Default.Config).padEncoded) config.paddingChar else null,
-        )
-
-        override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
-
-        override fun doFinalProtected() { buffer.finalize() }
-    }
-
-    private inner class HexDecoder(out: Decoder.OutFeed): Decoder<C>.Feed() {
-
-        private val buffer = DecodingBuffer(out)
-
-        override fun consumeProtected(input: Char) {
-            val code = input.code
-
-            val ge0: Byte = if (code >= '0'.code) 1 else 0
-            val le9: Byte = if (code <= '9'.code) 1 else 0
-            val geA: Byte = if (code >= 'A'.code) 1 else 0
-            val leV: Byte = if (code <= 'V'.code) 1 else 0
-            val gea: Byte = if (code >= 'a'.code) 1 else 0
-            val lev: Byte = if (code <= 'v'.code) 1 else 0
+    private inner class HexDecoderFeed(out: Decoder.OutFeed): AbstractDecoderFeed(out) {
+        override fun Int.decodeDiff(): Int {
+            val ge0: Byte = if (this >= '0'.code) 1 else 0
+            val le9: Byte = if (this <= '9'.code) 1 else 0
+            val geA: Byte = if (this >= 'A'.code) 1 else 0
+            val leV: Byte = if (this <= 'V'.code) 1 else 0
+            val gea: Byte = if (this >= 'a'.code) 1 else 0
+            val lev: Byte = if (this <= 'v'.code) 1 else 0
 
             var diff = 0
 
@@ -1429,26 +1458,35 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             //  v    118   31 (ASCII - 87)
             diff += if (gea + lev == 2) -87 else 0
 
-            if (diff == 0) {
-                throw EncodingException("Char[${input}] is not a valid Base32 Hex character")
-            }
-
-            buffer.update(code + diff)
+            return diff
         }
-
-        override fun doFinalProtected() { buffer.finalize() }
     }
 
-    private inner class HexEncoder(out: Encoder.OutFeed): Encoder<C>.Feed() {
+    // Thrown by AbstractDecoderFeed when decodeDiff returns 0.
+    // Is for Crockford in order to check input for a check symbol.
+    private class Diff0EncodingException(message: String): EncodingException(message)
 
-        private val buffer = EncodingBuffer(
-            out = out,
-            table = if ((config as Hex.Config).encodeLowercase) Hex.CHARS_LOWER else Hex.CHARS_UPPER,
-            paddingChar = if ((config as Hex.Config).padEncoded) config.paddingChar else null,
-        )
+    private class HyphenOutFeed(
+        private val interval: Byte,
+        private val out: Encoder.OutFeed,
+    ): Encoder.OutFeed {
 
-        override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
+        init {
+            require(interval > 0) { "interval must be greater than 0" }
+            require(out !is HyphenOutFeed) { "out cannot be an instance of HyphenOutFeed" }
+        }
 
-        override fun doFinalProtected() { buffer.finalize() }
+        private var count: Byte = 0
+
+        fun reset() { count = 0 }
+
+        override fun output(encoded: Char) {
+            if (count == interval) {
+                out.output('-')
+                count = 0
+            }
+            out.output(encoded)
+            count++
+        }
     }
 }
