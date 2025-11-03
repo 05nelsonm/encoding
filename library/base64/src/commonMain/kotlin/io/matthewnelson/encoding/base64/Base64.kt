@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("FunctionName", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
+@file:Suppress("FunctionName", "NOTHING_TO_INLINE", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.base64
 
@@ -344,176 +344,199 @@ public class Base64: EncoderDecoder<Base64.Config> {
     protected final override fun name(): String = NAME
 
     protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Base64.Config>.Feed {
-        return object : Decoder<Base64.Config>.Feed() {
-
-            private val buffer = DecodingBuffer(out)
-
-            override fun consumeProtected(input: Char) {
-                val code = input.code
-
-                val ge0:   Byte = if (code >= '0'.code) 1 else 0
-                val le9:   Byte = if (code <= '9'.code) 1 else 0
-                val geA:   Byte = if (code >= 'A'.code) 1 else 0
-                val leZ:   Byte = if (code <= 'Z'.code) 1 else 0
-                val gea:   Byte = if (code >= 'a'.code) 1 else 0
-                val lez:   Byte = if (code <= 'z'.code) 1 else 0
-                val eqPlu: Byte = if (code == '+'.code) 1 else 0
-                val eqMin: Byte = if (code == '-'.code) 1 else 0
-                val eqSla: Byte = if (code == '/'.code) 1 else 0
-                val eqUSc: Byte = if (code == '_'.code) 1 else 0
-
-                var diff = 0
-
-                // char ASCII value
-                //  0     48   52
-                //  9     57   61 (ASCII + 4)
-                diff += if (ge0 + le9 == 2) 4 else 0
-
-                // char ASCII value
-                //  A     65    0
-                //  Z     90   25 (ASCII - 65)
-                diff += if (geA + leZ == 2) -65 else 0
-
-                // char ASCII value
-                //  a     97   26
-                //  z    122   51 (ASCII - 71)
-                diff += if (gea + lez == 2) -71 else 0
-
-                val h = 62 - code
-                val k = 63 - code
-                diff += if (eqPlu + eqMin == 1) h else 0
-                diff += if (eqSla + eqUSc == 1) k else 0
-
-                if (diff == 0) {
-                    throw EncodingException("Char[$input] is not a valid Base64 character")
-                }
-
-                buffer.update(code + diff)
-            }
-
-            override fun doFinalProtected() { buffer.finalize() }
-        }
+        return DecoderFeed(out)
     }
 
     protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Base64.Config>.Feed {
-        return object : Encoder<Base64.Config>.Feed() {
-
-            private val buffer = EncodingBuffer(
-                out = out,
-                table = if (config.encodeUrlSafe) UrlSafe.CHARS else Default.CHARS,
-                paddingChar = if (config.padEncoded) config.paddingChar else null,
-            )
-
-            override fun consumeProtected(input: Byte) { buffer.update(input.toInt()) }
-
-            override fun doFinalProtected() { buffer.finalize() }
+        return if (config.encodeUrlSafe) {
+            object : EncoderFeed(out) {
+                override fun Encoder.OutFeed.output1(i: Int) {
+                    output(UrlSafe.CHARS[i])
+                }
+                override fun Encoder.OutFeed.output4(i1: Int, i2: Int, i3: Int, i4: Int) {
+                    output(UrlSafe.CHARS[i1])
+                    output(UrlSafe.CHARS[i2])
+                    output(UrlSafe.CHARS[i3])
+                    output(UrlSafe.CHARS[i4])
+                }
+            }
+        } else {
+            object : EncoderFeed(out) {
+                override fun Encoder.OutFeed.output1(i: Int) {
+                    output(Default.CHARS[i])
+                }
+                override fun Encoder.OutFeed.output4(i1: Int, i2: Int, i3: Int, i4: Int) {
+                    output(Default.CHARS[i1])
+                    output(Default.CHARS[i2])
+                    output(Default.CHARS[i3])
+                    output(Default.CHARS[i4])
+                }
+            }
         }
     }
 
-    private inner class DecodingBuffer(out: Decoder.OutFeed): FeedBuffer(
-        blockSize = 4,
-        flush = { buffer ->
-            var bitBuffer = 0
+    private inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
 
-            // Append each char's 6 bits to the bitBuffer.
-            for (bits in buffer) {
-                bitBuffer = bitBuffer shl 6 or bits
+        private val buf = IntArray(3)
+        private var iBuf = 0
+
+        override fun consumeProtected(input: Char) {
+            val code = input.code
+
+            val ge0:   Byte = if (code >= '0'.code) 1 else 0
+            val le9:   Byte = if (code <= '9'.code) 1 else 0
+            val geA:   Byte = if (code >= 'A'.code) 1 else 0
+            val leZ:   Byte = if (code <= 'Z'.code) 1 else 0
+            val gea:   Byte = if (code >= 'a'.code) 1 else 0
+            val lez:   Byte = if (code <= 'z'.code) 1 else 0
+            val eqPlu: Byte = if (code == '+'.code) 1 else 0
+            val eqMin: Byte = if (code == '-'.code) 1 else 0
+            val eqSla: Byte = if (code == '/'.code) 1 else 0
+            val eqUSc: Byte = if (code == '_'.code) 1 else 0
+
+            var diff = 0
+
+            // char ASCII value
+            //  0     48   52
+            //  9     57   61 (ASCII + 4)
+            diff += if (ge0 + le9 == 2) 4 else 0
+
+            // char ASCII value
+            //  A     65    0
+            //  Z     90   25 (ASCII - 65)
+            diff += if (geA + leZ == 2) -65 else 0
+
+            // char ASCII value
+            //  a     97   26
+            //  z    122   51 (ASCII - 71)
+            diff += if (gea + lez == 2) -71 else 0
+
+            val h = 62 - code
+            val k = 63 - code
+            diff += if (eqPlu + eqMin == 1) h else 0
+            diff += if (eqSla + eqUSc == 1) k else 0
+
+            if (diff == 0) {
+                throw EncodingException("Char[$input] is not a valid Base64 character")
             }
 
-            // For every 4 chars of input, we accumulate 24 bits of output. Emit 3 bytes.
-            out.output((bitBuffer shr 16).toByte())
-            out.output((bitBuffer shr  8).toByte())
-            out.output((bitBuffer       ).toByte())
-        },
-        finalize = { modulus, buffer ->
-            if (modulus == 1) {
-                // We read 1 char followed by "===". But 6 bits is a truncated byte! Fail.
-                throw truncatedInputEncodingException(modulus)
+            if (iBuf < 3) {
+                buf[iBuf++] = code + diff
+                return // Await more input
             }
 
-            var bitBuffer = 0
+            // Append each character's 6 bits to the word
+            var word = buf[0]
+            word = word shl 6 or buf[1]
+            word = word shl 6 or buf[2]
+            word = word shl 6 or (code + diff)
+            iBuf = 0
 
-            // Append each char remaining in the buffer to the bitBuffer.
-            for (i in 0 until modulus) {
-                bitBuffer = bitBuffer shl 6 or buffer[i]
-            }
-
-            when (modulus) {
-                0 -> { /* no-op */ }
-                2 -> {
-                    // We read 2 chars followed by "==". Emit 1 byte with 8 of those 12 bits.
-                    bitBuffer = bitBuffer shl 12
-                    out.output((bitBuffer shr 16).toByte())
-                }
-                3 -> {
-                    // We read 3 chars, followed by "=". Emit 2 bytes for 16 of those 18 bits.
-                    bitBuffer = bitBuffer shl  6
-                    out.output((bitBuffer shr 16).toByte())
-                    out.output((bitBuffer shr  8).toByte())
-                }
-            }
-        },
-    )
-
-    private inner class EncodingBuffer(
-        out: Encoder.OutFeed,
-        table: CharSequence,
-        paddingChar: Char?,
-    ): FeedBuffer(
-        blockSize = 3,
-        flush = { buffer ->
-            // For every 3 bytes of input, we accumulate
-            // 24 bits of output. Emit 4 characters.
-            val b0 = buffer[0]
-            val b1 = buffer[1]
-            val b2 = buffer[2]
-
-            val i1 = (b0 and 0xff shr 2)
-            val i2 = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4)
-            val i3 = (b1 and 0x0f shl 2) or (b2 and 0xff shr 6)
-            val i4 = (b2 and 0x3f)
-
-            out.output(table[i1])
-            out.output(table[i2])
-            out.output(table[i3])
-            out.output(table[i4])
-        },
-        finalize = { modulus, buffer ->
-            val padCount: Int = when (modulus) {
-                0 -> 0
-                1 -> {
-                    val b0 = buffer[0]
-
-                    val i1 = b0 and 0xff shr 2
-                    val i2 = b0 and 0x03 shl 4
-
-                    out.output(table[i1])
-                    out.output(table[i2])
-
-                    2
-                }
-                // 2
-                else -> {
-                    val b0 = buffer[0]
-                    val b1 = buffer[1]
-
-                    val i1 = (b0 and 0xff shr 2)
-                    val i2 = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4)
-                    val i3 = (b1 and 0x0f shl 2)
-
-                    out.output(table[i1])
-                    out.output(table[i2])
-                    out.output(table[i3])
-
-                    1
-                }
-            }
-
-            if (paddingChar != null) {
-                repeat(padCount) { out.output(paddingChar) }
-            }
+            // For every 4 characters of input, 24 bits of output are accumulated. Emit 3 bytes.
+            out.output((word shr 16).toByte())
+            out.output((word shr  8).toByte())
+            out.output((word       ).toByte())
         }
-    )
+
+        override fun doFinalProtected() {
+            if (iBuf == 0) return buf.fill(0)
+
+            if (iBuf == 1) {
+                iBuf = 0
+                buf.fill(0)
+                // 1 character followed by "===". But 6 bits is a truncated byte, fail.
+                throw FeedBuffer.truncatedInputEncodingException(1)
+            }
+
+            // Append each character's 6 bits to the word
+            var word = buf[0]
+            word = word shl 6 or buf[1]
+
+            if (iBuf == 2) {
+                iBuf = 0
+                buf.fill(0)
+                // 2 characters followed by "==". Emit 1 byte for 8 of those 12 bits.
+                word = word shl 12
+                out.output((word shr 16).toByte())
+                return
+            }
+
+            word = word shl 6 or buf[2]
+            if (iBuf == 3) {
+                iBuf = 0
+                buf.fill(0)
+                // 3 characters followed by "=". Emit 2 byte for 16 of those 18 bits.
+                word = word shl 6
+                out.output((word shr 16).toByte())
+                out.output((word shr  8).toByte())
+                return
+            }
+
+            // "Should" never make it here
+            error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}]")
+        }
+    }
+
+    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed() {
+
+        protected abstract fun Encoder.OutFeed.output1(i: Int)
+        protected abstract fun Encoder.OutFeed.output4(i1: Int, i2: Int, i3: Int, i4: Int)
+
+        private val buf = IntArray(2)
+        private var iBuf = 0
+
+        final override fun consumeProtected(input: Byte) {
+            if (iBuf < 2) {
+                buf[iBuf++] = input.toInt()
+                return // Await more input
+            }
+
+            val b0 = buf[0]
+            val b1 = buf[1]
+            val b2 = input.toInt()
+            iBuf = 0
+
+            // For every 3 bytes of input, 24 bits of output are accumulated. Emit 4 characters.
+            out.output4(
+                i1 = (b0 and 0xff shr 2),
+                i2 = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4),
+                i3 = (b1 and 0x0f shl 2) or (b2 and 0xff shr 6),
+                i4 = (b2 and 0x3f      ),
+            )
+        }
+
+        final override fun doFinalProtected() {
+            if (iBuf == 0) return buf.fill(0)
+
+            val b0 = buf[0]
+            if (iBuf == 1) {
+                iBuf = 0
+                buf.fill(0)
+                out.output1(i = (b0 and 0xff shr 2))
+                out.output1(i = (b0 and 0x03 shl 4))
+                return 2.outputPadding()
+            }
+
+            val b1 = buf[1]
+            if (iBuf == 2) {
+                iBuf = 0
+                buf.fill(0)
+                out.output1(i = (b0 and 0xff shr 2))
+                out.output1(i = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4))
+                out.output1(i = (b1 and 0x0f shl 2))
+                return 1.outputPadding()
+            }
+
+            // "Should" never make it here
+            error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}]")
+        }
+
+        private inline fun Int.outputPadding() {
+            if (!config.padEncoded) return
+            val c = config.paddingChar ?: return
+            repeat(this) { out.output(c) }
+        }
+    }
 
     @Deprecated(
         message = "This constructor is scheduled for removal. Use Base64.Builder or Base64.Companion.Builder.",
