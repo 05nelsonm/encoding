@@ -186,7 +186,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             return unEncodedSize * 2L
         }
 
-        protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+        protected override fun toStringAddSettings(): Set<Setting> = buildSet(capacity = 2) {
             add(Setting(name = "encodeLowercase", value = encodeLowercase))
             add(Setting(name = "isConstantTime", value = isConstantTime))
         }

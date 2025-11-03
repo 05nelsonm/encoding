@@ -285,7 +285,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return outSize
             }
 
-            protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+            protected override fun toStringAddSettings(): Set<Setting> = buildSet(capacity = 5) {
                 add(Setting(name = "encodeLowercase", value = encodeLowercase))
                 add(Setting(name = "hyphenInterval", value = hyphenInterval))
                 add(Setting(name = "checkSymbol", value = checkSymbol))
@@ -570,7 +570,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return encodeOutSize64(unEncodedSize, willBePadded = padEncoded)
             }
 
-            protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+            protected override fun toStringAddSettings(): Set<Setting> = buildSet(capacity = 3) {
                 add(Setting(name = "encodeLowercase", value = encodeLowercase))
                 add(Setting(name = "padEncoded", value = padEncoded))
                 add(Setting(name = "isConstantTime", value = isConstantTime))
@@ -852,7 +852,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 return encodeOutSize64(unEncodedSize, willBePadded = padEncoded)
             }
 
-            protected override fun toStringAddSettings(): Set<Setting> = buildSet {
+            protected override fun toStringAddSettings(): Set<Setting> = buildSet(capacity = 3) {
                 add(Setting(name = "encodeLowercase", value = encodeLowercase))
                 add(Setting(name = "padEncoded", value = padEncoded))
                 add(Setting(name = "isConstantTime", value = isConstantTime))

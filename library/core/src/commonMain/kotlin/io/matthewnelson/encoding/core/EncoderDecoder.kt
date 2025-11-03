@@ -67,6 +67,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             0
         }
 
+        // TODO: Deprecate and replace with encodeOutMaxSize(unEncodedSize: Long): Long
         /**
          * Pre-calculates and returns the size of the output, after encoding
          * would occur, based off of the [Config] options set.
@@ -80,6 +81,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         @Throws(EncodingSizeException::class)
         public fun encodeOutSize(unEncodedSize: Long): Long = encodeOutSize(unEncodedSize, lineBreakInterval)
 
+        // TODO: Deprecate and replace with encodeOutMaxSize(unEncodedSize: Long): Long
         /**
          * Pre-calculates and returns the size of the output, after encoding
          * would occur, based off of the [Config] options set and expressed
