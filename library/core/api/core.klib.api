@@ -37,7 +37,10 @@ abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.mat
 
     abstract class Config { // io.matthewnelson.encoding.core/EncoderDecoder.Config|null[0]
         constructor <init>(kotlin/Boolean?, kotlin/Byte, kotlin/Char?) // io.matthewnelson.encoding.core/EncoderDecoder.Config.<init>|<init>(kotlin.Boolean?;kotlin.Byte;kotlin.Char?){}[0]
+        constructor <init>(kotlin/Boolean?, kotlin/Byte, kotlin/Char?, kotlin/Boolean) // io.matthewnelson.encoding.core/EncoderDecoder.Config.<init>|<init>(kotlin.Boolean?;kotlin.Byte;kotlin.Char?;kotlin.Boolean){}[0]
 
+        final val backFillBuffers // io.matthewnelson.encoding.core/EncoderDecoder.Config.backFillBuffers|{}backFillBuffers[0]
+            final fun <get-backFillBuffers>(): kotlin/Boolean // io.matthewnelson.encoding.core/EncoderDecoder.Config.backFillBuffers.<get-backFillBuffers>|<get-backFillBuffers>(){}[0]
         final val isLenient // io.matthewnelson.encoding.core/EncoderDecoder.Config.isLenient|{}isLenient[0]
             final fun <get-isLenient>(): kotlin/Boolean? // io.matthewnelson.encoding.core/EncoderDecoder.Config.isLenient.<get-isLenient>|<get-isLenient>(){}[0]
         final val lineBreakInterval // io.matthewnelson.encoding.core/EncoderDecoder.Config.lineBreakInterval|{}lineBreakInterval[0]

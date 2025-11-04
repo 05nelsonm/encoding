@@ -160,10 +160,12 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 encoder.encode(this, sb::append)
                 val length = sb.length
                 val result = sb.toString()
-                // Some implementations of StringBuilder do not overwrite buffered
-                // data when clear() is used. Must set to 0 length and do manually.
-                sb.setLength(0)
-                repeat(length) { sb.append(' ') }
+                if (encoder.config.backFillBuffers) {
+                    // Some implementations of StringBuilder do not overwrite buffered
+                    // data when clear() is used. Must set to 0 length and do manually.
+                    sb.setLength(0)
+                    repeat(length) { sb.append(' ') }
+                }
                 result
             }
         }
@@ -184,7 +186,9 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 encoder.encode(this) { c -> a[i++] = c }
                 if (i == maxSize) return@block a
                 val copy = a.copyOf(i)
-                a.fill(' ', 0, i)
+                if (encoder.config.backFillBuffers) {
+                    a.fill(' ', 0, i)
+                }
                 copy
             }
         }
@@ -206,7 +210,9 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 encoder.encode(this) { char -> a[i++] = char.code.toByte() }
                 if (i == maxSize) return@block a
                 val copy = a.copyOf(i)
-                copy.fill(0, 0, i)
+                if (encoder.config.backFillBuffers) {
+                    copy.fill(0, 0, i)
+                }
                 copy
             }
         }

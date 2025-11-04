@@ -13,6 +13,7 @@ final class io.matthewnelson.encoding.base64/Base64 : io.matthewnelson.encoding.
         constructor <init>() // io.matthewnelson.encoding.base64/Base64.Builder.<init>|<init>(){}[0]
         constructor <init>(io.matthewnelson.encoding.base64/Base64.Config?) // io.matthewnelson.encoding.base64/Base64.Builder.<init>|<init>(io.matthewnelson.encoding.base64.Base64.Config?){}[0]
 
+        final fun backFillBuffers(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.backFillBuffers|backFillBuffers(kotlin.Boolean){}[0]
         final fun build(): io.matthewnelson.encoding.base64/Base64 // io.matthewnelson.encoding.base64/Base64.Builder.build|build(){}[0]
         final fun encodeUrlSafe(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.encodeUrlSafe|encodeUrlSafe(kotlin.Boolean){}[0]
         final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.isLenient|isLenient(kotlin.Boolean){}[0]

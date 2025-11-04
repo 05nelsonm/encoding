@@ -11,6 +11,7 @@ public class io/matthewnelson/encoding/utf8/UTF8 : io/matthewnelson/encoding/cor
 public final class io/matthewnelson/encoding/utf8/UTF8$Builder {
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$Config;)V
+	public final fun backFillBuffers (Z)Lio/matthewnelson/encoding/utf8/UTF8$Builder;
 	public final fun build ()Lio/matthewnelson/encoding/utf8/UTF8;
 	public final fun replacement (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)Lio/matthewnelson/encoding/utf8/UTF8$Builder;
 }
@@ -54,7 +55,7 @@ public final class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor$Companio
 
 public final class io/matthewnelson/encoding/utf8/UTF8$Config : io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field replacementStrategy Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
-	public synthetic fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/utf8/UTF8$Default : io/matthewnelson/encoding/utf8/UTF8 {

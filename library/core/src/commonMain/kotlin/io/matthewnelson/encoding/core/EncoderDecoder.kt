@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection", "RemoveRedundantQualifierName")
+@file:Suppress("RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
@@ -25,8 +25,8 @@ import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
 /**
- * Base abstraction which expose [Encoder] and [Decoder] (sealed
- * classes) such that inheriting classes must implement both.
+ * Base abstraction which exposes [Encoder] and [Decoder] (sealed classes) such that inheriting
+ * classes must implement both.
  *
  * @see [Config]
  * @see [Feed]
@@ -36,30 +36,56 @@ import kotlin.jvm.JvmStatic
 public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encoder<C>(config) {
 
     /**
-     * Base configuration for an [EncoderDecoder]. More options
-     * may be specified by the implementing class.
-     *
-     * @param [isLenient] If true, decoding will skip over spaces
-     *   and new lines ('\n', '\r', ' ', '\t'). If false, an
-     *   [EncodingException] will be thrown when encountering those
-     *   characters. If null, those characters are passed along to
-     *   [Decoder.Feed.consumeProtected].
-     * @param [lineBreakInterval] If greater than 0 and [isLenient]
-     *   is not **false** (i.e. is null or true), new lines will be
-     *   output at the expressed [lineBreakInterval] when encoding.
-     * @param [paddingChar] The character that would be used when
-     *   padding the encoded output; **NOT** "if padding should be
-     *   used". If the encoding specification does not use padding,
-     *   pass `null`.
+     * Base configuration for an [EncoderDecoder]. More options may be specified by the implementation.
      * */
     public abstract class Config(
+
+        /**
+         * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
+         * allowed but ignored) during decoding operations. If `false`, an [EncodingException]
+         * will be thrown when those characters are encountered. If `null`, those characters
+         * are passed along to the [Decoder.Feed] implementation as input.
+         * */
         @JvmField
         public val isLenient: Boolean?,
+
         lineBreakInterval: Byte,
+
+        /**
+         * The character that is used when padding encoded output. This is used by [Decoder.Feed]
+         * to mark input as "completing" such that further non-padding input can be exceptionally
+         * rejected. If the encoding specification does not use padding, `null` may be specified.
+         *
+         * **NOTE:** [Decoder.Feed] will not pass along padding characters to the [Decoder.Feed]
+         * implementation; they will be automatically dropped. If this is undesirable, consider
+         * specifying `null` and managing it in the implementation.
+         * */
         @JvmField
         public val paddingChar: Char?,
+
+        /**
+         * When the [Encoder.encodeToString], [Encoder.encodeToCharArray], and [Decoder.decodeToByteArray]
+         * functions are utilized, an initial buffer is allocated based on the pre-calculated return values
+         * of [encodeOutSize] or [decodeOutMaxSize] (respectively). After encoding/decoding operations have
+         * completed, the initial buffer may be trimmed down to size in the event of an over-allocation. If
+         * that happens, the initial buffer is then dropped and the correct sized copy is returned. Prior
+         * versions always back-filled the initial buffer when this occurred, but that can be expensive for
+         * large data sets and potentially unnecessary if data is known to not be sensitive in nature.
+         *
+         * If `true`, the initial buffer (if it was trimmed to size) is back-filled. If `false`, back-filling
+         * is skipped.
+         * */
+        @JvmField
+        public val backFillBuffers: Boolean,
     ) {
 
+        /**
+         * If greater than `0`, when [lineBreakInterval] number of encoded characters have been output,
+         * the next encoded character will be preceded with the new line character `\n` when utilizing
+         * the [Encoder.encodeToString] and [Encoder.encodeToCharArray] functions.
+         *
+         * **NOTE:** This setting will always be `0` if [isLenient] is `false`.
+         * */
         @JvmField
         public val lineBreakInterval: Byte = if (isLenient != false && lineBreakInterval > 0) {
             lineBreakInterval
@@ -322,6 +348,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             if (other.isLenient != this.isLenient) return false
             if (other.paddingChar != this.paddingChar) return false
             if (other.lineBreakInterval != this.lineBreakInterval) return false
+            if (other.backFillBuffers != this.backFillBuffers) return false
             if (other::class != this::class) return false
             return other._toStringAddSettings == this._toStringAddSettings
         }
@@ -332,6 +359,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             result = result * 31 + isLenient.hashCode()
             result = result * 31 + paddingChar.hashCode()
             result = result * 31 + lineBreakInterval.hashCode()
+            result = result * 31 + backFillBuffers.hashCode()
             result = result * 31 + this::class.hashCode()
             result = result * 31 + _toStringAddSettings.hashCode()
             return result
@@ -346,6 +374,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             appendLine(lineBreakInterval)
             append("    paddingChar: ")
             append(paddingChar)
+            append("    backFillBuffers: ")
+            append(backFillBuffers)
 
             for (setting in _toStringAddSettings) {
                 appendLine()
@@ -372,6 +402,27 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
                 "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
             )
         }
+
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
+        @Deprecated(
+            message = "Parameter backFillBuffers was added. Use new constructor.",
+            replaceWith = ReplaceWith(
+                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, backFillBuffers = true)"),
+            level = DeprecationLevel.WARNING,
+        )
+        public constructor(
+            isLenient: Boolean?,
+            lineBreakInterval: Byte,
+            paddingChar: Char?,
+        ): this(
+            isLenient = isLenient,
+            lineBreakInterval = lineBreakInterval,
+            paddingChar = paddingChar,
+            backFillBuffers = true,
+        )
     }
 
     /**

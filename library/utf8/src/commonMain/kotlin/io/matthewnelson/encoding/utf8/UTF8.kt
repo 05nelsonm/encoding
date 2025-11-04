@@ -86,16 +86,27 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         public constructor(other: Config?) {
             if (other == null) return
             this._replacementStrategy = other.replacementStrategy
+            this._backFillBuffers = other.backFillBuffers
         }
 
         @get:JvmSynthetic
         @set:JvmSynthetic
         internal var _replacementStrategy = ReplacementStrategy.KOTLIN
+        @get:JvmSynthetic
+        @set:JvmSynthetic
+        internal var _backFillBuffers = true
 
         /**
          * TODO
          * */
         public fun replacement(strategy: ReplacementStrategy): Builder = apply { _replacementStrategy = strategy }
+
+        /**
+         * DEFAULT: `true`
+         *
+         * @see [EncoderDecoder.Config.backFillBuffers]
+         * */
+        public fun backFillBuffers(enable: Boolean): Builder = apply { _backFillBuffers = enable }
 
         // TODO: constantTime
 
@@ -158,7 +169,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     public class Config private constructor(
         @JvmField
         public val replacementStrategy: ReplacementStrategy,
-    ): EncoderDecoder.Config(null, -1, null) {
+        backFillBuffers: Boolean,
+    ): EncoderDecoder.Config(null, -1, null, backFillBuffers) {
 
         // Chars -> Bytes
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
@@ -196,11 +208,13 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             @get:JvmSynthetic
             internal val DEFAULT: Config = Config(
                 replacementStrategy = ReplacementStrategy.KOTLIN,
+                backFillBuffers = true,
             )
 
             @get:JvmSynthetic
             internal val THROW: Config = Config(
                 replacementStrategy = ReplacementStrategy.THROW,
+                backFillBuffers = DEFAULT.backFillBuffers,
             )
         }
     }

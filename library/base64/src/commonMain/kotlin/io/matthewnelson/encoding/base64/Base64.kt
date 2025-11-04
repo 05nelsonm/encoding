@@ -110,6 +110,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             this._lineBreakInterval = other.lineBreakInterval
             this._encodeUrlSafe = other.encodeUrlSafe
             this._padEncoded = other.padEncoded
+            this._backFillBuffers = other.backFillBuffers
         }
 
         @get:JvmSynthetic
@@ -124,6 +125,9 @@ public class Base64: EncoderDecoder<Base64.Config> {
         @get:JvmSynthetic
         @set:JvmSynthetic
         internal var _padEncoded: Boolean = true
+        @get:JvmSynthetic
+        @set:JvmSynthetic
+        internal var _backFillBuffers: Boolean = true
 
         /**
          * DEFAULT: `true`
@@ -190,6 +194,13 @@ public class Base64: EncoderDecoder<Base64.Config> {
         public fun padEncoded(enable: Boolean): Builder = apply { _padEncoded = enable }
 
         /**
+         * DEFAULT: `true`
+         *
+         * @see [EncoderDecoder.Config.backFillBuffers]
+         * */
+        public fun backFillBuffers(enable: Boolean): Builder = apply { _backFillBuffers = enable }
+
+        /**
          * Helper for configuring the builder with settings which are compliant with the
          * `RFC 4648` specification.
          *
@@ -220,7 +231,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
         public val encodeUrlSafe: Boolean,
         @JvmField
         public val padEncoded: Boolean,
-    ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
+        backFillBuffers: Boolean,
+    ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', backFillBuffers) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             // Divide first instead of multiplying which ensures the Long
@@ -268,7 +280,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
                 isLenient = true,
                 lineBreakInterval = 64,
                 encodeUrlSafe = false,
-                padEncoded = true
+                padEncoded = true,
+                backFillBuffers = true,
             )
 
             @get:JvmSynthetic
@@ -277,6 +290,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
                 lineBreakInterval = DEFAULT.lineBreakInterval,
                 encodeUrlSafe = true,
                 padEncoded = DEFAULT.padEncoded,
+                backFillBuffers = DEFAULT.backFillBuffers
             )
         }
 

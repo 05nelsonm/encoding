@@ -19,13 +19,19 @@ package io.matthewnelson.encoding.utf8.internal
 
 import io.matthewnelson.encoding.utf8.UTF8
 
-internal inline fun ((UTF8.ReplacementStrategy) -> UTF8.Config).build(
+internal inline fun ((UTF8.ReplacementStrategy, Boolean) -> UTF8.Config).build(
     b: UTF8.Builder,
     noinline utf8: (UTF8.Config) -> UTF8,
 ): UTF8 {
-    if (b._replacementStrategy == UTF8.Default.config.replacementStrategy) return UTF8.Default
-    if (b._replacementStrategy == UTF8.ThrowOnInvalid.config.replacementStrategy) return UTF8.ThrowOnInvalid
-
-    val config = this(b._replacementStrategy)
+    if (
+        b._backFillBuffers == UTF8.Default.config.backFillBuffers
+    ) {
+        if (b._replacementStrategy == UTF8.Default.config.replacementStrategy) return UTF8.Default
+        if (b._replacementStrategy == UTF8.ThrowOnInvalid.config.replacementStrategy) return UTF8.ThrowOnInvalid
+    }
+    val config = this(
+        b._replacementStrategy,
+        b._backFillBuffers,
+    )
     return utf8(config)
 }
