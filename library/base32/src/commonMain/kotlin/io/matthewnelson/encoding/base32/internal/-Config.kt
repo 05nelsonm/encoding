@@ -19,7 +19,7 @@ package io.matthewnelson.encoding.base32.internal
 
 import io.matthewnelson.encoding.base32.Base32
 
-internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean) -> Base32.Crockford.Config).build(
+internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean, Boolean) -> Base32.Crockford.Config).build(
     b: Base32.Crockford.Builder,
     noinline crockford: (Base32.Crockford.Config, Any?) -> Base32.Crockford,
 ): Base32.Crockford {
@@ -29,14 +29,22 @@ internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean) -> Base32.Crockfor
         && b._hyphenInterval == Base32.Crockford.DELEGATE.config.hyphenInterval
         && b._checkSymbol == Base32.Crockford.DELEGATE.config.checkSymbol
         && b._finalizeWhenFlushed == Base32.Crockford.DELEGATE.config.finalizeWhenFlushed
+        && b._backFillBuffers == Base32.Crockford.DELEGATE.config.backFillBuffers
     ) {
         return Base32.Crockford.DELEGATE
     }
-    val config = this(b._isLenient, b._encodeLowercase, b._hyphenInterval, b._checkSymbol, b._finalizeWhenFlushed)
+    val config = this(
+        b._isLenient,
+        b._encodeLowercase,
+        b._hyphenInterval,
+        b._checkSymbol,
+        b._finalizeWhenFlushed,
+        b._backFillBuffers,
+    )
     return crockford(config, null)
 }
 
-internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Default.Config).build(
+internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Default.Config).build(
     b: Base32.Default.Builder,
     noinline default: (Base32.Default.Config, Any?) -> Base32.Default,
 ): Base32.Default {
@@ -45,14 +53,21 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Default.Config)
         && b._lineBreakInterval == Base32.Default.DELEGATE.config.lineBreakInterval
         && b._encodeLowercase == Base32.Default.DELEGATE.config.encodeLowercase
         && b._padEncoded == Base32.Default.DELEGATE.config.padEncoded
+        && b._backFillBuffers == Base32.Default.DELEGATE.config.backFillBuffers
     ) {
         return Base32.Default.DELEGATE
     }
-    val config = this(b._isLenient, b._lineBreakInterval, b._encodeLowercase, b._padEncoded)
+    val config = this(
+        b._isLenient,
+        b._lineBreakInterval,
+        b._encodeLowercase,
+        b._padEncoded,
+        b._backFillBuffers,
+    )
     return default(config, null)
 }
 
-internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Hex.Config).build(
+internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Hex.Config).build(
     b: Base32.Hex.Builder,
     noinline hex: (Base32.Hex.Config, Any?) -> Base32.Hex,
 ): Base32.Hex {
@@ -61,9 +76,16 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base32.Hex.Config).bui
         && b._lineBreakInterval == Base32.Hex.DELEGATE.config.lineBreakInterval
         && b._encodeLowercase == Base32.Hex.DELEGATE.config.encodeLowercase
         && b._padEncoded == Base32.Hex.DELEGATE.config.padEncoded
+        && b._backFillBuffers == Base32.Hex.DELEGATE.config.backFillBuffers
     ) {
         return Base32.Hex.DELEGATE
     }
-    val config = this(b._isLenient, b._lineBreakInterval, b._encodeLowercase, b._padEncoded)
+    val config = this(
+        b._isLenient,
+        b._lineBreakInterval,
+        b._encodeLowercase,
+        b._padEncoded,
+        b._backFillBuffers,
+    )
     return hex(config, null)
 }

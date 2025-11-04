@@ -73,6 +73,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             this._isLenient = other.isLenient ?: true
             this._lineBreakInterval = other.lineBreakInterval
             this._encodeLowercase = other.encodeLowercase
+            this._backFillBuffers = other.backFillBuffers
         }
 
         @get:JvmSynthetic
@@ -84,6 +85,9 @@ public class Base16: EncoderDecoder<Base16.Config> {
         @get:JvmSynthetic
         @set:JvmSynthetic
         internal var _encodeLowercase: Boolean = false
+        @get:JvmSynthetic
+        @set:JvmSynthetic
+        internal var _backFillBuffers: Boolean = true
 
         /**
          * DEFAULT: `true`
@@ -139,6 +143,13 @@ public class Base16: EncoderDecoder<Base16.Config> {
         public fun encodeLowercase(enable: Boolean): Builder = apply { _encodeLowercase = enable }
 
         /**
+         * DEFAULT: `true`
+         *
+         * @see [EncoderDecoder.Config.backFillBuffers]
+         * */
+        public fun backFillBuffers(enable: Boolean): Builder = apply { _backFillBuffers = enable }
+
+        /**
          * Helper for configuring the builder with settings which are compliant with the
          * `RFC 4648` specification.
          *
@@ -169,7 +180,8 @@ public class Base16: EncoderDecoder<Base16.Config> {
         lineBreakInterval: Byte,
         @JvmField
         public val encodeLowercase: Boolean,
-    ): EncoderDecoder.Config(isLenient, lineBreakInterval, null, true /* TODO */) {
+        backFillBuffers: Boolean,
+    ): EncoderDecoder.Config(isLenient, lineBreakInterval, null, backFillBuffers) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L
@@ -203,6 +215,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
                 isLenient = true,
                 lineBreakInterval = 64,
                 encodeLowercase = false,
+                backFillBuffers = true,
             )
         }
 

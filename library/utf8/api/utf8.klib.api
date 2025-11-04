@@ -42,6 +42,7 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
         constructor <init>() // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(){}[0]
         constructor <init>(io.matthewnelson.encoding.utf8/UTF8.Config?) // io.matthewnelson.encoding.utf8/UTF8.Builder.<init>|<init>(io.matthewnelson.encoding.utf8.UTF8.Config?){}[0]
 
+        final fun backFillBuffers(kotlin/Boolean): io.matthewnelson.encoding.utf8/UTF8.Builder // io.matthewnelson.encoding.utf8/UTF8.Builder.backFillBuffers|backFillBuffers(kotlin.Boolean){}[0]
         final fun build(): io.matthewnelson.encoding.utf8/UTF8 // io.matthewnelson.encoding.utf8/UTF8.Builder.build|build(){}[0]
         final fun replacement(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): io.matthewnelson.encoding.utf8/UTF8.Builder // io.matthewnelson.encoding.utf8/UTF8.Builder.replacement|replacement(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
     }

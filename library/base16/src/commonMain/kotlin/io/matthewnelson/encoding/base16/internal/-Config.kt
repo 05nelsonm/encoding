@@ -19,7 +19,7 @@ package io.matthewnelson.encoding.base16.internal
 
 import io.matthewnelson.encoding.base16.Base16
 
-internal inline fun ((Boolean, Byte, Boolean) -> Base16.Config).build(
+internal inline fun ((Boolean, Byte, Boolean, Boolean) -> Base16.Config).build(
     b: Base16.Builder,
     noinline base16: (Base16.Config, Any?) -> Base16,
 ): Base16 {
@@ -27,9 +27,15 @@ internal inline fun ((Boolean, Byte, Boolean) -> Base16.Config).build(
         b._isLenient == Base16.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base16.DELEGATE.config.lineBreakInterval
         && b._encodeLowercase == Base16.DELEGATE.config.encodeLowercase
+        && b._backFillBuffers == Base16.DELEGATE.config.backFillBuffers
     ) {
         return Base16.DELEGATE
     }
-    val config = this(b._isLenient, b._lineBreakInterval, b._encodeLowercase)
+    val config = this(
+        b._isLenient,
+        b._lineBreakInterval,
+        b._encodeLowercase,
+        b._backFillBuffers,
+    )
     return base16(config, null)
 }

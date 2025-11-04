@@ -89,6 +89,7 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
             constructor <init>() // io.matthewnelson.encoding.base32/Base32.Crockford.Builder.<init>|<init>(){}[0]
             constructor <init>(io.matthewnelson.encoding.base32/Base32.Crockford.Config?) // io.matthewnelson.encoding.base32/Base32.Crockford.Builder.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Crockford.Config?){}[0]
 
+            final fun backFillBuffers(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Crockford.Builder // io.matthewnelson.encoding.base32/Base32.Crockford.Builder.backFillBuffers|backFillBuffers(kotlin.Boolean){}[0]
             final fun build(): io.matthewnelson.encoding.base32/Base32.Crockford // io.matthewnelson.encoding.base32/Base32.Crockford.Builder.build|build(){}[0]
             final fun check(kotlin/Char?): io.matthewnelson.encoding.base32/Base32.Crockford.Builder // io.matthewnelson.encoding.base32/Base32.Crockford.Builder.check|check(kotlin.Char?){}[0]
             final fun encodeLowercase(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Crockford.Builder // io.matthewnelson.encoding.base32/Base32.Crockford.Builder.encodeLowercase|encodeLowercase(kotlin.Boolean){}[0]
@@ -130,6 +131,7 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
             constructor <init>() // io.matthewnelson.encoding.base32/Base32.Default.Builder.<init>|<init>(){}[0]
             constructor <init>(io.matthewnelson.encoding.base32/Base32.Default.Config?) // io.matthewnelson.encoding.base32/Base32.Default.Builder.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Default.Config?){}[0]
 
+            final fun backFillBuffers(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.backFillBuffers|backFillBuffers(kotlin.Boolean){}[0]
             final fun build(): io.matthewnelson.encoding.base32/Base32.Default // io.matthewnelson.encoding.base32/Base32.Default.Builder.build|build(){}[0]
             final fun encodeLowercase(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.encodeLowercase|encodeLowercase(kotlin.Boolean){}[0]
             final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.isLenient|isLenient(kotlin.Boolean){}[0]
@@ -167,6 +169,7 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
             constructor <init>() // io.matthewnelson.encoding.base32/Base32.Hex.Builder.<init>|<init>(){}[0]
             constructor <init>(io.matthewnelson.encoding.base32/Base32.Hex.Config?) // io.matthewnelson.encoding.base32/Base32.Hex.Builder.<init>|<init>(io.matthewnelson.encoding.base32.Base32.Hex.Config?){}[0]
 
+            final fun backFillBuffers(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.backFillBuffers|backFillBuffers(kotlin.Boolean){}[0]
             final fun build(): io.matthewnelson.encoding.base32/Base32.Hex // io.matthewnelson.encoding.base32/Base32.Hex.Builder.build|build(){}[0]
             final fun encodeLowercase(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.encodeLowercase|encodeLowercase(kotlin.Boolean){}[0]
             final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.isLenient|isLenient(kotlin.Boolean){}[0]

@@ -52,6 +52,7 @@ public final class io/matthewnelson/encoding/base64/Base64 : io/matthewnelson/en
 public final class io/matthewnelson/encoding/base64/Base64$Builder {
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base64/Base64$Config;)V
+	public final fun backFillBuffers (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
 	public final fun build ()Lio/matthewnelson/encoding/base64/Base64;
 	public final fun encodeUrlSafe (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base64/Base64$Builder;
@@ -70,7 +71,7 @@ public final class io/matthewnelson/encoding/base64/Base64$Config : io/matthewne
 	public final field encodeUrlSafe Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base64/Base64$Default : io/matthewnelson/encoding/core/EncoderDecoder {

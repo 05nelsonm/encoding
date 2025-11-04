@@ -76,6 +76,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford : io/matthe
 public final class io/matthewnelson/encoding/base32/Base32$Crockford$Builder {
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Crockford$Config;)V
+	public final fun backFillBuffers (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
 	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Crockford;
 	public final fun check (Ljava/lang/Character;)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
 	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Crockford$Builder;
@@ -96,7 +97,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Crockford$Config : io
 	public final field finalizeWhenFlushed Z
 	public final field hyphenInterval B
 	public final field isConstantTime Z
-	public synthetic fun <init> (ZZBLjava/lang/Character;ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZZBLjava/lang/Character;ZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewnelson/encoding/base32/Base32 {
@@ -112,6 +113,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default : io/matthewn
 public final class io/matthewnelson/encoding/base32/Base32$Default$Builder {
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Default$Config;)V
+	public final fun backFillBuffers (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
 	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Default;
 	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
@@ -130,7 +132,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/m
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
@@ -146,6 +148,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelso
 public final class io/matthewnelson/encoding/base32/Base32$Hex$Builder {
 	public fun <init> ()V
 	public fun <init> (Lio/matthewnelson/encoding/base32/Base32$Hex$Config;)V
+	public final fun backFillBuffers (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
 	public final fun build ()Lio/matthewnelson/encoding/base32/Base32$Hex;
 	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
@@ -164,7 +167,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matth
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZBZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32CrockfordConfigBuilder {

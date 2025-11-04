@@ -90,6 +90,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 this._hyphenInterval = other.hyphenInterval
                 this._checkSymbol = other.checkSymbol
                 this._finalizeWhenFlushed = other.finalizeWhenFlushed
+                this._backFillBuffers = other.backFillBuffers
             }
 
             @get:JvmSynthetic
@@ -104,6 +105,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @get:JvmSynthetic
             @set:JvmSynthetic
             internal var _checkSymbol: Char? = null
+            @get:JvmSynthetic
+            @set:JvmSynthetic
+            internal var _backFillBuffers: Boolean = true
 
             // Here for compatibility purposes with Base32CrockfordConfigBuilder
             @get:JvmSynthetic
@@ -179,6 +183,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
+             * DEFAULT: `true`
+             *
+             * @see [EncoderDecoder.Config.backFillBuffers]
+             * */
+            public fun backFillBuffers(enable: Boolean): Builder = apply { _backFillBuffers = enable }
+
+            /**
              * Helper for configuring the builder with settings which are compliant with the
              * Crockford specification.
              *
@@ -216,7 +227,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             // always defaults to true.
             @JvmField
             public val finalizeWhenFlushed: Boolean,
-        ): EncoderDecoder.Config(isLenient, 0, null, true /* TODO */) {
+            backFillBuffers: Boolean,
+        ): EncoderDecoder.Config(isLenient, 0, null, backFillBuffers) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)
@@ -305,6 +317,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     hyphenInterval = 4,
                     checkSymbol = null,
                     finalizeWhenFlushed = true,
+                    backFillBuffers = true,
                 )
             }
 
@@ -472,6 +485,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 this._lineBreakInterval = other.lineBreakInterval
                 this._encodeLowercase = other.encodeLowercase
                 this._padEncoded = other.padEncoded
+                this._backFillBuffers = other.backFillBuffers
             }
 
             @get:JvmSynthetic
@@ -486,6 +500,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @get:JvmSynthetic
             @set:JvmSynthetic
             internal var _padEncoded: Boolean = true
+            @get:JvmSynthetic
+            @set:JvmSynthetic
+            internal var _backFillBuffers: Boolean = true
 
             /**
              * DEFAULT: `true`
@@ -552,6 +569,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public fun padEncoded(enable: Boolean): Builder = apply { _padEncoded = enable }
 
             /**
+             * DEFAULT: `true`
+             *
+             * @see [EncoderDecoder.Config.backFillBuffers]
+             * */
+            public fun backFillBuffers(enable: Boolean): Builder = apply { _backFillBuffers = enable }
+
+            /**
              * Helper for configuring the builder with settings which are compliant with the
              * `RFC 4648` specification.
              *
@@ -586,7 +610,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', true /* TODO */) {
+            backFillBuffers: Boolean,
+        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', backFillBuffers) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)
@@ -617,6 +642,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     lineBreakInterval = 64,
                     encodeLowercase = false,
                     padEncoded = true,
+                    backFillBuffers = true,
                 )
             }
 
@@ -776,6 +802,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 this._lineBreakInterval = other.lineBreakInterval
                 this._encodeLowercase = other.encodeLowercase
                 this._padEncoded = other.padEncoded
+                this._backFillBuffers = other.backFillBuffers
             }
 
             @get:JvmSynthetic
@@ -790,6 +817,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @get:JvmSynthetic
             @set:JvmSynthetic
             internal var _padEncoded: Boolean = true
+            @get:JvmSynthetic
+            @set:JvmSynthetic
+            internal var _backFillBuffers: Boolean = true
 
             /**
              * DEFAULT: `true`
@@ -856,6 +886,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public fun padEncoded(enable: Boolean): Builder = apply { _padEncoded = enable }
 
             /**
+             * DEFAULT: `true`
+             *
+             * @see [EncoderDecoder.Config.backFillBuffers]
+             * */
+            public fun backFillBuffers(enable: Boolean): Builder = apply { _backFillBuffers = enable }
+
+            /**
              * Helper for configuring the builder with settings which are compliant with the
              * `RFC 4648` specification.
              *
@@ -890,7 +927,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', true /* TODO */) {
+            backFillBuffers: Boolean,
+        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', backFillBuffers) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)
@@ -921,6 +959,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     lineBreakInterval = 64,
                     encodeLowercase = false,
                     padEncoded = true,
+                    backFillBuffers = true,
                 )
             }
 
