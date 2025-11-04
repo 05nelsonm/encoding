@@ -125,6 +125,8 @@ public class Base16: EncoderDecoder<Base16.Config> {
          *     isLenient(enable = false)
          *     lineBreak(interval = 16)
          *     // 48656C6C6F20576F726C6421
+         *
+         * @see [EncoderDecoder.Config.lineBreakInterval]
          * */
         public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
@@ -365,7 +367,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
     }
 
-    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed() {
+    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed(out) {
 
         protected abstract fun Encoder.OutFeed.output2(i1: Int, i2: Int)
 

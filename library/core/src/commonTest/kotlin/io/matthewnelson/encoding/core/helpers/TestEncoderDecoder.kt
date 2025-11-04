@@ -25,7 +25,7 @@ class TestEncoderDecoder(
     override fun name(): String = "Test"
 
     override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<TestConfig>.Feed {
-        return object : Encoder<TestConfig>.Feed() {
+        return object : Encoder<TestConfig>.Feed(out) {
             override fun consumeProtected(input: Byte) { out.output(Char.MAX_VALUE) }
             override fun doFinalProtected() {
                 encoderDoFinal?.invoke(this) ?: out.output(Char.MIN_VALUE)

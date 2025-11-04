@@ -540,6 +540,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              *     isLenient(enable = false)
              *     lineBreak(interval = 16)
              *     // JBSWY3DPEBLW64TMMQQQ====
+             *
+             * @see [EncoderDecoder.Config.lineBreakInterval]
              * */
             public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
@@ -857,6 +859,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              *     isLenient(enable = false)
              *     lineBreak(interval = 16)
              *     // 91IMOR3F41BMUSJCCGGG====
+             *
+             * @see [EncoderDecoder.Config.lineBreakInterval]
              * */
             public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
@@ -1200,7 +1204,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
     }
 
-    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<C>.Feed() {
+    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<C>.Feed(out) {
 
         protected abstract fun Encoder.OutFeed.output1(i: Int)
         protected abstract fun Encoder.OutFeed.outputPadding(n: Int)

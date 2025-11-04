@@ -17,14 +17,15 @@ package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.Encoder
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 
 /**
- * A Wrapper around another [Encoder.OutFeed] to hijack
- * the output and insert new line characters at every
- * expressed [interval].
+ * A Wrapper around another [Encoder.OutFeed] to hijack the output and insert
+ * new line characters at every expressed [interval].
  *
  * @param [interval] The interval at which new lines are inserted
  * @param [out] The other [Encoder.OutFeed]
+ *
  * @throws [IllegalArgumentException] if [interval] is less than 0
  * */
 public class LineBreakOutFeed
@@ -39,7 +40,9 @@ public constructor(
         require(interval > 0) { "interval must be greater than 0" }
     }
 
-    private var count: Byte = 0
+    @get:JvmName("count")
+    public var count: Byte = 0
+        private set
 
     /**
      * Resets the [count] to 0

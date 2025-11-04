@@ -21,6 +21,7 @@ import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutMaxSizeOrFail
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
+import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
 /**
@@ -35,8 +36,10 @@ import kotlin.jvm.JvmStatic
 public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(config) {
 
     /**
-     * Creates a new [Encoder.Feed], outputting encoded data to
-     * the supplied [Encoder.OutFeed].
+     * Creates a new [Encoder.Feed], outputting encoded data to the supplied [Encoder.OutFeed].
+     *
+     * **NOTE:** The supplied [Encoder.OutFeed] will be wrapped in [LineBreakOutFeed] (if not
+     * already one) when [EncoderDecoder.Config.lineBreakInterval] is greater than `0`.
      *
      * e.g.
      *
@@ -51,13 +54,15 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      *     println(sb.toString())
      *
      * @see [Encoder.Feed]
+     * @see [LineBreakOutFeed]
      * */
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
-        return if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
-            newEncoderFeedProtected(LineBreakOutFeed(config.lineBreakInterval, out))
+        val outFeed = if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
+            LineBreakOutFeed(config.lineBreakInterval, out)
         } else {
-            newEncoderFeedProtected(out)
+            out
         }
+        return newEncoderFeedProtected(outFeed)
     }
 
     protected abstract fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<C>.Feed
@@ -79,7 +84,13 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
      * */
-    public abstract inner class Feed: EncoderDecoder.Feed<C>(config) {
+    public abstract inner class Feed: EncoderDecoder.Feed<C> {
+
+        private val out: Encoder.OutFeed
+
+        // TODO: Deprecate?
+        public constructor(): this(out = Encoder.OutFeed.NoOp)
+        public constructor(out: Encoder.OutFeed): super(this@Encoder.config) { this.out = out }
 
         private var isClosed = false
 
@@ -117,6 +128,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 // should not throw exception, but just
                 // in case, we close the Feed.
                 doFinalProtected()
+                if (out is LineBreakOutFeed) out.reset()
             } catch (t: Throwable) {
                 close()
                 throw t
@@ -140,7 +152,17 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [newEncoderFeed]
      * */
     public fun interface OutFeed {
+
         public fun output(encoded: Char)
+
+        public companion object {
+
+            /**
+             * A static, non-operational instance of [OutFeed].
+             * */
+            @JvmField
+            public val NoOp: OutFeed = OutFeed {}
+        }
     }
 
     public companion object {

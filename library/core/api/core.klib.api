@@ -141,6 +141,9 @@ final class io.matthewnelson.encoding.core.util/LineBreakOutFeed : io.matthewnel
     final val interval // io.matthewnelson.encoding.core.util/LineBreakOutFeed.interval|{}interval[0]
         final fun <get-interval>(): kotlin/Byte // io.matthewnelson.encoding.core.util/LineBreakOutFeed.interval.<get-interval>|<get-interval>(){}[0]
 
+    final var count // io.matthewnelson.encoding.core.util/LineBreakOutFeed.count|{}count[0]
+        final fun <get-count>(): kotlin/Byte // io.matthewnelson.encoding.core.util/LineBreakOutFeed.count.<get-count>|<get-count>(){}[0]
+
     final fun output(kotlin/Char) // io.matthewnelson.encoding.core.util/LineBreakOutFeed.output|output(kotlin.Char){}[0]
     final fun reset() // io.matthewnelson.encoding.core.util/LineBreakOutFeed.reset|reset(){}[0]
 }
@@ -196,10 +199,16 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
 
     abstract fun interface OutFeed { // io.matthewnelson.encoding.core/Encoder.OutFeed|null[0]
         abstract fun output(kotlin/Char) // io.matthewnelson.encoding.core/Encoder.OutFeed.output|output(kotlin.Char){}[0]
+
+        final object Companion { // io.matthewnelson.encoding.core/Encoder.OutFeed.Companion|null[0]
+            final val NoOp // io.matthewnelson.encoding.core/Encoder.OutFeed.Companion.NoOp|{}NoOp[0]
+                final fun <get-NoOp>(): io.matthewnelson.encoding.core/Encoder.OutFeed // io.matthewnelson.encoding.core/Encoder.OutFeed.Companion.NoOp.<get-NoOp>|<get-NoOp>(){}[0]
+        }
     }
 
     abstract inner class Feed : io.matthewnelson.encoding.core/EncoderDecoder.Feed<#A> { // io.matthewnelson.encoding.core/Encoder.Feed|null[0]
         constructor <init>() // io.matthewnelson.encoding.core/Encoder.Feed.<init>|<init>(){}[0]
+        constructor <init>(io.matthewnelson.encoding.core/Encoder.OutFeed) // io.matthewnelson.encoding.core/Encoder.Feed.<init>|<init>(io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
 
         abstract fun consumeProtected(kotlin/Byte) // io.matthewnelson.encoding.core/Encoder.Feed.consumeProtected|consumeProtected(kotlin.Byte){}[0]
         abstract fun doFinalProtected() // io.matthewnelson.encoding.core/Encoder.Feed.doFinalProtected|doFinalProtected(){}[0]

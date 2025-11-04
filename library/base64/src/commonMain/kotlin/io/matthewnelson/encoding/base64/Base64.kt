@@ -165,6 +165,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
          *     isLenient(enable = false)
          *     lineBreak(interval = 10)
          *     // SGVsbG8gV29ybGQh
+         *
+         * @see [EncoderDecoder.Config.lineBreakInterval]
          * */
         public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
 
@@ -491,7 +493,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
     }
 
-    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed() {
+    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed(out) {
 
         protected abstract fun Encoder.OutFeed.output1(i: Int)
         protected abstract fun Encoder.OutFeed.output4(i1: Int, i2: Int, i3: Int, i4: Int)
