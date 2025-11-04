@@ -317,6 +317,28 @@ class EncoderDecoderFeedUnitTest {
     }
 
     @Test
+    fun givenEncoderFeed_whenClosed_thenOutFeedReferenceIsSetToNoOp() {
+        val out = Encoder.OutFeed {}
+        val feed = TestEncoderDecoder(TestConfig()).newEncoderFeed(out) as TestEncoderDecoder.EncoderFeed
+        assertEquals(out, feed.getOut())
+        feed.flush()
+        assertEquals(out, feed.getOut())
+        feed.close()
+        assertEquals(Encoder.OutFeed.NoOp, feed.getOut())
+    }
+
+    @Test
+    fun givenDecoderFeed_whenClosed_thenOutFeedReferenceIsSetToNoOp() {
+        val out = Decoder.OutFeed {}
+        val feed = TestEncoderDecoder(TestConfig()).newDecoderFeed(out) as TestEncoderDecoder.DecoderFeed
+        assertEquals(out, feed.getOut())
+        feed.flush()
+        assertEquals(out, feed.getOut())
+        feed.close()
+        assertEquals(Decoder.OutFeed.NoOp, feed.getOut())
+    }
+
+    @Test
     fun givenFeed_whenDoFinal_thenIsClosedTrue() {
         var eCount = 0
         var dCount = 0

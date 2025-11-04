@@ -312,7 +312,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
     }
 
-    private inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
+    private inner class DecoderFeed(out: Decoder.OutFeed): Decoder<Config>.Feed(_out = out) {
 
         private var buf = 0
         private var hasBuffered = false
@@ -355,7 +355,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             }
 
             hasBuffered = false
-            out.output(((buf shl 4) + code + diff).toByte())
+            _out.output(((buf shl 4) + code + diff).toByte())
         }
 
         override fun doFinalProtected() {
@@ -367,13 +367,13 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
     }
 
-    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed(out) {
+    private abstract inner class EncoderFeed(out: Encoder.OutFeed): Encoder<Config>.Feed(_out = out) {
 
         protected abstract fun Encoder.OutFeed.output2(i1: Int, i2: Int)
 
         final override fun consumeProtected(input: Byte) {
             val bits = input.toInt() and 0xff
-            out.output2(i1 = bits shr 0x04, i2 = bits and 0x0f)
+            _out.output2(i1 = bits shr 0x04, i2 = bits and 0x0f)
         }
         final override fun doFinalProtected() { /* no-op */ }
     }

@@ -170,10 +170,19 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
 
     abstract fun interface OutFeed { // io.matthewnelson.encoding.core/Decoder.OutFeed|null[0]
         abstract fun output(kotlin/Byte) // io.matthewnelson.encoding.core/Decoder.OutFeed.output|output(kotlin.Byte){}[0]
+
+        final object Companion { // io.matthewnelson.encoding.core/Decoder.OutFeed.Companion|null[0]
+            final val NoOp // io.matthewnelson.encoding.core/Decoder.OutFeed.Companion.NoOp|{}NoOp[0]
+                final fun <get-NoOp>(): io.matthewnelson.encoding.core/Decoder.OutFeed // io.matthewnelson.encoding.core/Decoder.OutFeed.Companion.NoOp.<get-NoOp>|<get-NoOp>(){}[0]
+        }
     }
 
     abstract inner class Feed : io.matthewnelson.encoding.core/EncoderDecoder.Feed<#A> { // io.matthewnelson.encoding.core/Decoder.Feed|null[0]
         constructor <init>() // io.matthewnelson.encoding.core/Decoder.Feed.<init>|<init>(){}[0]
+        constructor <init>(io.matthewnelson.encoding.core/Decoder.OutFeed) // io.matthewnelson.encoding.core/Decoder.Feed.<init>|<init>(io.matthewnelson.encoding.core.Decoder.OutFeed){}[0]
+
+        final var _out // io.matthewnelson.encoding.core/Decoder.Feed._out|{}_out[0]
+            final fun <get-_out>(): io.matthewnelson.encoding.core/Decoder.OutFeed // io.matthewnelson.encoding.core/Decoder.Feed._out.<get-_out>|<get-_out>(){}[0]
 
         abstract fun consumeProtected(kotlin/Char) // io.matthewnelson.encoding.core/Decoder.Feed.consumeProtected|consumeProtected(kotlin.Char){}[0]
         final fun close() // io.matthewnelson.encoding.core/Decoder.Feed.close|close(){}[0]
@@ -209,6 +218,9 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
     abstract inner class Feed : io.matthewnelson.encoding.core/EncoderDecoder.Feed<#A> { // io.matthewnelson.encoding.core/Encoder.Feed|null[0]
         constructor <init>() // io.matthewnelson.encoding.core/Encoder.Feed.<init>|<init>(){}[0]
         constructor <init>(io.matthewnelson.encoding.core/Encoder.OutFeed) // io.matthewnelson.encoding.core/Encoder.Feed.<init>|<init>(io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
+
+        final var _out // io.matthewnelson.encoding.core/Encoder.Feed._out|{}_out[0]
+            final fun <get-_out>(): io.matthewnelson.encoding.core/Encoder.OutFeed // io.matthewnelson.encoding.core/Encoder.Feed._out.<get-_out>|<get-_out>(){}[0]
 
         abstract fun consumeProtected(kotlin/Byte) // io.matthewnelson.encoding.core/Encoder.Feed.consumeProtected|consumeProtected(kotlin.Byte){}[0]
         abstract fun doFinalProtected() // io.matthewnelson.encoding.core/Encoder.Feed.doFinalProtected|doFinalProtected(){}[0]

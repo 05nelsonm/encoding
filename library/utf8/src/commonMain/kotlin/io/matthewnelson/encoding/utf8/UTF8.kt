@@ -432,7 +432,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     }
 
     // Chars -> Bytes
-    private abstract inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
+    private abstract inner class DecoderFeed(out: Decoder.OutFeed): Decoder<Config>.Feed(_out = out) {
 
         @Throws(EncodingException::class)
         protected abstract fun Decoder.OutFeed.outputReplacementSequence()
@@ -463,21 +463,21 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
             if (c > 0xdbff) {
                 buf = cNext
-                out.outputReplacementSequence()
+                _out.outputReplacementSequence()
                 return
             }
             if (cNext < 0xdc00 || cNext > 0xdfff) {
                 buf = cNext
-                out.outputReplacementSequence()
+                _out.outputReplacementSequence()
                 return
             }
 
             hasBuffered = false
             val codePoint = ((c shl 10) + cNext) + (0x010000 - (0xd800 shl 10) - 0xdc00)
-            out.output((codePoint shr 18          or 0xf0).toByte())
-            out.output((codePoint shr 12 and 0x3f or 0x80).toByte())
-            out.output((codePoint shr  6 and 0x3f or 0x80).toByte())
-            out.output((codePoint        and 0x3f or 0x80).toByte())
+            _out.output((codePoint shr 18          or 0xf0).toByte())
+            _out.output((codePoint shr 12 and 0x3f or 0x80).toByte())
+            _out.output((codePoint shr  6 and 0x3f or 0x80).toByte())
+            _out.output((codePoint        and 0x3f or 0x80).toByte())
         }
 
         final override fun doFinalProtected() {
@@ -488,28 +488,28 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             if (c.process1()) return
             if (c.process2()) return
             if (c.process3()) return
-            out.outputReplacementSequence()
+            _out.outputReplacementSequence()
         }
 
         private inline fun Int.process1(): Boolean = if (this < 0x0080) {
-            out.output((this                        ).toByte())
+            _out.output((this                        ).toByte())
             true
         } else {
             false
         }
 
         private inline fun Int.process2(): Boolean = if (this < 0x0800) {
-            out.output((this shr  6          or 0xc0).toByte())
-            out.output((this        and 0x3f or 0x80).toByte())
+            _out.output((this shr  6          or 0xc0).toByte())
+            _out.output((this        and 0x3f or 0x80).toByte())
             true
         } else {
             false
         }
 
         private inline fun Int.process3(): Boolean = if (this < 0xd800 || this > 0xdfff) {
-            out.output((this shr 12          or 0xe0).toByte())
-            out.output((this shr  6 and 0x3f or 0x80).toByte())
-            out.output((this        and 0x3f or 0x80).toByte())
+            _out.output((this shr 12          or 0xe0).toByte())
+            _out.output((this shr  6 and 0x3f or 0x80).toByte())
+            _out.output((this        and 0x3f or 0x80).toByte())
             true
         } else {
             false
@@ -517,7 +517,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     }
 
     // Bytes -> Chars
-    private open inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed(out) {
+    private open inner class EncoderFeed(out: Encoder.OutFeed): Encoder<Config>.Feed(_out = out) {
 
         @Throws(EncodingException::class)
         protected open fun Encoder.OutFeed.outputReplacementChar() {
@@ -697,7 +697,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 return buf.fill(0)
             }
             if (iBuf == 1) {
-                out.outputReplacementChar()
+                _out.outputReplacementChar()
                 reset()
                 debug { "--- FINAL ---" }
                 return buf.fill(0)
@@ -722,7 +722,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 // 2 buffered bytes awaiting 3rd
                 when (cN.process3(b0 = b0, b1 = b1).debug { "F3[$it]" }) {
                     // Drop b0
-                    0 -> if (b1.process1() != 0) out.outputReplacementChar()
+                    0 -> if (b1.process1() != 0) _out.outputReplacementChar()
                     // Drop b0, b1
                     1 -> {} // Simulated index exhaustion hit. No more input to process.
                     // Success/other
@@ -740,11 +740,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                     // Drop b0
                     0 -> when (b1.process1().debug { "F4{3} - 0[$it]" }) {
                         // Success/Replaced
-                        0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                        0 -> if (b2.process1() != 0) _out.outputReplacementChar()
                         // Need 2
                         2 -> when (b2.process2(b0 = b1).debug { "F4{3} - 0 - 2[$it]" }) {
                             // Drop b0
-                            0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                            0 -> if (b2.process1() != 0) _out.outputReplacementChar()
                             // Success
                             2 -> {}
                             else -> error("process2 unhandled return value")
@@ -752,7 +752,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                         // Need 3
                         3 -> when (cN.process3(b0 = b1, b1 = b2).debug { "F4{3} - 0 - 3[$it]" }) {
                             // Drop b0
-                            0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                            0 -> if (b2.process1() != 0) _out.outputReplacementChar()
                             // Drop b0, b1
                             1 -> {} // Simulated index exhaustion hit. No more input to process.
                             // Success/other
@@ -761,7 +761,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                         // Need 4
                         4 -> when (cN.process4(b0 = b1, b1 = b2, b2 = cN).debug { "F4{3} - 0 - 4[$it]" }) {
                             // Drop b0
-                            0 -> if (b2.process1() != 0) out.outputReplacementChar()
+                            0 -> if (b2.process1() != 0) _out.outputReplacementChar()
                             // Drop b0, b1
                             1 -> {} // Simulated index exhaustion hit. No more input to process.
                             // Drop b0, b1, b2
@@ -773,7 +773,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                         else -> error("process1 unhandled return value")
                     }
                     // Drop b0, b1
-                    1 -> if (b2.process1() != 0) out.outputReplacementChar()
+                    1 -> if (b2.process1() != 0) _out.outputReplacementChar()
                     // Drop b0, b1, b2
                     2 ->  {} // Simulated index exhaustion hit. No more input to process.
                     // Success/other
@@ -788,7 +788,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 // 2 buffered bytes awaiting 3rd and 4th
                 when (cN.process4(b0 = b0, b1 = b1, b2 = cN).debug { "F4{2}[$it]" }) {
                     // Drop b0
-                    0 -> if (b1.process1() != 0) out.outputReplacementChar()
+                    0 -> if (b1.process1() != 0) _out.outputReplacementChar()
                     // Drop b0, b1
                     1 -> {} // Simulated index exhaustion hit. No more input to process.
                     // Drop b0, b1, b2
@@ -834,7 +834,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         private fun Int.process1(): Int {
             if (this >= 0) {
                 debug { "P1 - 1" }
-                out.output(this.toChar())
+                _out.output(this.toChar())
                 return 0
             }
             if (this shr 5 == -2) {
@@ -850,7 +850,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 return 4
             }
             debug { "P1 - 5" }
-            out.outputReplacementChar()
+            _out.outputReplacementChar()
             return 0
         }
 
@@ -863,17 +863,17 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             val b1 = this
             if (b0 and 0x1e == 0x00) {
                 debug { "P2 - 1" }
-                out.outputReplacementChar()
+                _out.outputReplacementChar()
                 return 0
             }
             if (!b1.isContinuation()) {
                 debug { "P2 - 2" }
-                out.outputReplacementChar()
+                _out.outputReplacementChar()
                 return 0
             }
             debug { "P2 - F" }
             val codePoint = 0x0f80 xor b1 xor (b0 shl 6)
-            out.output(codePoint.toChar())
+            _out.output(codePoint.toChar())
             return 2
         }
 
@@ -889,13 +889,13 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 b0 and 0x0f == 0x00 -> if (b1 and 0xe0 != 0xa0) {
                     debug { "P3 - 1" }
                     // Non-shortest form
-                    out.outputReplacementChar()
+                    _out.outputReplacementChar()
                     return 0
                 }
                 b0 and 0x0f == 0x0d -> if (b1 and 0xe0 != 0x80) {
                     debug { "P3 - 2" }
                     // Partial surrogate code point
-                    out.outputReplacementChar()
+                    _out.outputReplacementChar()
                     if (config.replacementStrategy.size == ReplacementStrategy.U_0034.size) {
                         // Must check b2 to see if it needs to be run through process1()
                         if (!b2.isContinuation()) {
@@ -909,18 +909,18 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 }
                 !b1.isContinuation() -> {
                     debug { "P3 - 3" }
-                    out.outputReplacementChar()
+                    _out.outputReplacementChar()
                     return 0
                 }
             }
             if (!b2.isContinuation()) {
                 debug { "P3 - 4" }
-                out.outputReplacementChar()
+                _out.outputReplacementChar()
                 return 1
             }
             debug { "P3 - F" }
             val codePoint = -0x01e080 xor b2 xor (b1 shl 6) xor (b0 shl 12)
-            out.output(codePoint.toChar())
+            _out.output(codePoint.toChar())
             return 3
         }
 
@@ -937,42 +937,42 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 b0 and 0x0f == 0x00 -> if (b1 and 0xf0 <= 0x80) {
                     debug { "P4 - 1" }
                     // Non-shortest form
-                    out.outputReplacementChar()
+                    _out.outputReplacementChar()
                     return 0
                 }
                 b0 and 0x0f == 0x04 -> if (b1 and 0xf0 != 0x80) {
                     debug { "P4 - 2" }
                     // Exceeds Unicode code point maximum
-                    out.outputReplacementChar()
+                    _out.outputReplacementChar()
                     return 0
                 }
                 b0 and 0x0f > 0x04 -> {
                     debug { "P4 - 3" }
-                    out.outputReplacementChar()
+                    _out.outputReplacementChar()
                     return 0
                 }
             }
             if (!b1.isContinuation()) {
                 debug { "P4 - 4" }
-                out.outputReplacementChar()
+                _out.outputReplacementChar()
                 return 0
             }
             if (!b2.isContinuation()) {
                 debug { "P4 - 5" }
-                out.outputReplacementChar()
+                _out.outputReplacementChar()
                 return 1
             }
             if (!b3.isContinuation()) {
                 debug { "P4 - 6" }
-                out.outputReplacementChar()
+                _out.outputReplacementChar()
                 return 2
             }
             debug { "P4 - F" }
             val codePoint = 0x381f80 xor b3 xor (b2 shl 6) xor (b1 shl 12) xor (b0 shl 18)
             val hi = (codePoint  -  0x010000) shr 10 or 0xd800
             val lo = (codePoint and 0x0003ff)        or 0xdc00
-            out.output(hi.toChar())
-            out.output(lo.toChar())
+            _out.output(hi.toChar())
+            _out.output(lo.toChar())
             return 4
         }
 

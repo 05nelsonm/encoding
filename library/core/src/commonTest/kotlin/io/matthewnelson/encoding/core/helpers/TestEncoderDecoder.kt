@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("RemoveRedundantQualifierName")
+
 package io.matthewnelson.encoding.core.helpers
 
 import io.matthewnelson.encoding.core.*
+import io.matthewnelson.encoding.core.Decoder
 
 class TestEncoderDecoder(
     config: TestConfig,
@@ -24,21 +27,23 @@ class TestEncoderDecoder(
 ): EncoderDecoder<TestConfig>(config) {
     override fun name(): String = "Test"
 
-    override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<TestConfig>.Feed {
-        return object : Encoder<TestConfig>.Feed(out) {
-            override fun consumeProtected(input: Byte) { out.output(Char.MAX_VALUE) }
-            override fun doFinalProtected() {
-                encoderDoFinal?.invoke(this) ?: out.output(Char.MIN_VALUE)
-            }
+    override fun newEncoderFeedProtected(out: Encoder.OutFeed): EncoderFeed = EncoderFeed(out)
+
+    override fun newDecoderFeedProtected(out: Decoder.OutFeed): DecoderFeed = DecoderFeed(out)
+
+    inner class DecoderFeed(out: Decoder.OutFeed): Decoder<TestConfig>.Feed(_out = out) {
+        fun getOut(): Decoder.OutFeed = _out
+        override fun consumeProtected(input: Char) { _out.output(Byte.MAX_VALUE) }
+        override fun doFinalProtected() {
+            decoderDoFinal?.invoke(this) ?: _out.output(Byte.MIN_VALUE)
         }
     }
 
-    override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<TestConfig>.Feed {
-        return object : Decoder<TestConfig>.Feed() {
-            override fun consumeProtected(input: Char) { out.output(Byte.MAX_VALUE) }
-            override fun doFinalProtected() {
-                decoderDoFinal?.invoke(this) ?: out.output(Byte.MIN_VALUE)
-            }
+    inner class EncoderFeed(out: Encoder.OutFeed): Encoder<TestConfig>.Feed(_out = out) {
+        fun getOut(): Encoder.OutFeed = _out
+        override fun consumeProtected(input: Byte) { _out.output(Char.MAX_VALUE) }
+        override fun doFinalProtected() {
+            encoderDoFinal?.invoke(this) ?: _out.output(Char.MIN_VALUE)
         }
     }
 }

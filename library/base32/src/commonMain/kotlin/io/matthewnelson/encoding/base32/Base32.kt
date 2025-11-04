@@ -395,10 +395,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         protected final override fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<Crockford.Config>.Feed {
-            val outFeed = if (config.hyphenInterval <= 0) out else HyphenOutFeed(config.hyphenInterval, out)
+            val _out = if (config.hyphenInterval <= 0) out else HyphenOutFeed(config.hyphenInterval, out)
 
             return if (config.encodeLowercase) {
-                object : EncoderFeed(outFeed) {
+                object : EncoderFeed(_out) {
                     override fun Encoder.OutFeed.output1(i: Int) {
                         output(CHARS_LOWER[i])
                     }
@@ -412,7 +412,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                     }
                 }
             } else {
-                object : EncoderFeed(outFeed) {
+                object : EncoderFeed(_out) {
                     override fun Encoder.OutFeed.output1(i: Int) {
                         output(CHARS_UPPER[i])
                     }
@@ -1080,7 +1080,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         private constructor(config: Config, unused: Any?): super(config)
     }
 
-    private abstract inner class AbstractDecoderFeed(private val out: Decoder.OutFeed): Decoder<C>.Feed() {
+    private abstract inner class AbstractDecoderFeed(out: Decoder.OutFeed): Decoder<C>.Feed(_out = out) {
 
         protected abstract fun Int.decodeDiff(): Int
 
@@ -1111,11 +1111,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             iBuf = 0
 
             // For every 8 characters of input, 40 bits of output are accumulated. Emit 5 bytes.
-            out.output((word shr 32).toByte())
-            out.output((word shr 24).toByte())
-            out.output((word shr 16).toByte())
-            out.output((word shr  8).toByte())
-            out.output((word       ).toByte())
+            _out.output((word shr 32).toByte())
+            _out.output((word shr 24).toByte())
+            _out.output((word shr 16).toByte())
+            _out.output((word shr  8).toByte())
+            _out.output((word       ).toByte())
         }
 
         override fun doFinalProtected() {
@@ -1151,7 +1151,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 word = word shr 2
 
                 // 8/8 = 1 byte
-                out.output((word       ).toByte())
+                _out.output((word       ).toByte())
                 return
             }
 
@@ -1164,8 +1164,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 word = word shr 4
 
                 // 16/8 = 2 bytes
-                out.output((word shr  8).toByte())
-                out.output((word       ).toByte())
+                _out.output((word shr  8).toByte())
+                _out.output((word       ).toByte())
                 return
             }
 
@@ -1177,9 +1177,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 word = word shr 1
 
                 // 24/8 = 3 bytes
-                out.output((word shr 16).toByte())
-                out.output((word shr  8).toByte())
-                out.output((word       ).toByte())
+                _out.output((word shr 16).toByte())
+                _out.output((word shr  8).toByte())
+                _out.output((word       ).toByte())
                 return
             }
 
@@ -1192,10 +1192,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 word = word shr 3
 
                 // 32/8 = 4 bytes
-                out.output((word shr 24).toByte())
-                out.output((word shr 16).toByte())
-                out.output((word shr  8).toByte())
-                out.output((word       ).toByte())
+                _out.output((word shr 24).toByte())
+                _out.output((word shr 16).toByte())
+                _out.output((word shr  8).toByte())
+                _out.output((word       ).toByte())
                 return
             }
 
@@ -1204,7 +1204,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
     }
 
-    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<C>.Feed(out) {
+    private abstract inner class EncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed(_out = out) {
 
         protected abstract fun Encoder.OutFeed.output1(i: Int)
         protected abstract fun Encoder.OutFeed.outputPadding(n: Int)
@@ -1227,21 +1227,21 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             iBuf = 0
 
             // For every 5 bytes of input, 40 bits of output are accumulated. Emit 8 characters.
-            out.output1(i = (word shr 35 and 0x1fL).toInt()) // 40-1*5 = 35
-            out.output1(i = (word shr 30 and 0x1fL).toInt()) // 40-2*5 = 30
-            out.output1(i = (word shr 25 and 0x1fL).toInt()) // 40-3*5 = 25
-            out.output1(i = (word shr 20 and 0x1fL).toInt()) // 40-4*5 = 20
-            out.output1(i = (word shr 15 and 0x1fL).toInt()) // 40-5*5 = 15
-            out.output1(i = (word shr 10 and 0x1fL).toInt()) // 40-6*5 = 10
-            out.output1(i = (word shr  5 and 0x1fL).toInt()) // 40-7*5 =  5
-            out.output1(i = (word        and 0x1fL).toInt()) // 40-8*5 =  0
+            _out.output1(i = (word shr 35 and 0x1fL).toInt()) // 40-1*5 = 35
+            _out.output1(i = (word shr 30 and 0x1fL).toInt()) // 40-2*5 = 30
+            _out.output1(i = (word shr 25 and 0x1fL).toInt()) // 40-3*5 = 25
+            _out.output1(i = (word shr 20 and 0x1fL).toInt()) // 40-4*5 = 20
+            _out.output1(i = (word shr 15 and 0x1fL).toInt()) // 40-5*5 = 15
+            _out.output1(i = (word shr 10 and 0x1fL).toInt()) // 40-6*5 = 10
+            _out.output1(i = (word shr  5 and 0x1fL).toInt()) // 40-7*5 =  5
+            _out.output1(i = (word        and 0x1fL).toInt()) // 40-8*5 =  0
         }
 
         final override fun doFinalProtected() {
             if (iBuf == 0) {
                 buf.fill(0)
                 // Still call with 0 b/c Crockford uses to append its check symbol
-                return out.outputPadding(n = 0)
+                return _out.outputPadding(n = 0)
             }
 
             var word: Long = buf[0].toBits()
@@ -1249,9 +1249,9 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 iBuf = 0
                 buf.fill(0)
                 // 8*1 = 8 bits
-                out.output1(i = (word shr  3 and 0x1fL).toInt()) //  8-1*5 =  3
-                out.output1(i = (word shl  2 and 0x1fL).toInt()) //  5-3   =  2
-                return out.outputPadding(n = 6)
+                _out.output1(i = (word shr  3 and 0x1fL).toInt()) //  8-1*5 =  3
+                _out.output1(i = (word shl  2 and 0x1fL).toInt()) //  5-3   =  2
+                return _out.outputPadding(n = 6)
             }
 
             word = (word shl 8) + buf[1].toBits()
@@ -1259,11 +1259,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 iBuf = 0
                 buf.fill(0)
                 // 8*2 = 16 bits
-                out.output1(i = (word shr 11 and 0x1fL).toInt()) // 16-1*5 = 11
-                out.output1(i = (word shr  6 and 0x1fL).toInt()) // 16-2*5 =  6
-                out.output1(i = (word shr  1 and 0x1fL).toInt()) // 16-3*5 =  1
-                out.output1(i = (word shl  4 and 0x1fL).toInt()) //  5-1   =  4
-                return out.outputPadding(n = 4)
+                _out.output1(i = (word shr 11 and 0x1fL).toInt()) // 16-1*5 = 11
+                _out.output1(i = (word shr  6 and 0x1fL).toInt()) // 16-2*5 =  6
+                _out.output1(i = (word shr  1 and 0x1fL).toInt()) // 16-3*5 =  1
+                _out.output1(i = (word shl  4 and 0x1fL).toInt()) //  5-1   =  4
+                return _out.outputPadding(n = 4)
             }
 
             word = (word shl 8) + buf[2].toBits()
@@ -1271,12 +1271,12 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 iBuf = 0
                 buf.fill(0)
                 // 8*3 = 24 bits
-                out.output1(i = (word shr 19 and 0x1fL).toInt()) // 24-1*5 = 19
-                out.output1(i = (word shr 14 and 0x1fL).toInt()) // 24-2*5 = 14
-                out.output1(i = (word shr  9 and 0x1fL).toInt()) // 24-3*5 =  9
-                out.output1(i = (word shr  4 and 0x1fL).toInt()) // 24-4*5 =  4
-                out.output1(i = (word shl  1 and 0x1fL).toInt()) //  5-4   =  1
-                return out.outputPadding(n = 3)
+                _out.output1(i = (word shr 19 and 0x1fL).toInt()) // 24-1*5 = 19
+                _out.output1(i = (word shr 14 and 0x1fL).toInt()) // 24-2*5 = 14
+                _out.output1(i = (word shr  9 and 0x1fL).toInt()) // 24-3*5 =  9
+                _out.output1(i = (word shr  4 and 0x1fL).toInt()) // 24-4*5 =  4
+                _out.output1(i = (word shl  1 and 0x1fL).toInt()) //  5-4   =  1
+                return _out.outputPadding(n = 3)
             }
 
             word = (word shl 8) + buf[3].toBits()
@@ -1284,14 +1284,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 iBuf = 0
                 buf.fill(0)
                 // 8*4 = 32 bits
-                out.output1(i = (word shr 27 and 0x1fL).toInt()) // 32-1*5 = 27
-                out.output1(i = (word shr 22 and 0x1fL).toInt()) // 32-2*5 = 22
-                out.output1(i = (word shr 17 and 0x1fL).toInt()) // 32-3*5 = 17
-                out.output1(i = (word shr 12 and 0x1fL).toInt()) // 32-4*5 = 12
-                out.output1(i = (word shr  7 and 0x1fL).toInt()) // 32-5*5 =  7
-                out.output1(i = (word shr  2 and 0x1fL).toInt()) // 32-6*5 =  2
-                out.output1(i = (word shl  3 and 0x1fL).toInt()) //  5-2   =  3
-                return out.outputPadding(n = 1)
+                _out.output1(i = (word shr 27 and 0x1fL).toInt()) // 32-1*5 = 27
+                _out.output1(i = (word shr 22 and 0x1fL).toInt()) // 32-2*5 = 22
+                _out.output1(i = (word shr 17 and 0x1fL).toInt()) // 32-3*5 = 17
+                _out.output1(i = (word shr 12 and 0x1fL).toInt()) // 32-4*5 = 12
+                _out.output1(i = (word shr  7 and 0x1fL).toInt()) // 32-5*5 =  7
+                _out.output1(i = (word shr  2 and 0x1fL).toInt()) // 32-6*5 =  2
+                _out.output1(i = (word shl  3 and 0x1fL).toInt()) //  5-2   =  3
+                return _out.outputPadding(n = 1)
             }
 
             // "Should" never make it here
