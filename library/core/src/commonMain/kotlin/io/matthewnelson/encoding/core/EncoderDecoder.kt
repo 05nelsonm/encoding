@@ -461,6 +461,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
      * */
     public sealed class Feed<C: EncoderDecoder.Config>(public val config: C) {
 
+        public abstract fun isClosed(): Boolean
+
         /**
          * Flushes any buffered input of the [Feed] without
          * closing it, performing final encoding/decoding
@@ -496,12 +498,21 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public fun doFinal() {
             if (isClosed()) throw closedException()
 
-            // Close the feed before calling doFinalProtected
-            // so feed implementations can check if flush or doFinal
-            // was called (if necessary).
-            close()
+            // Implementations may do special things in their doFinallyProtected
+            // implementation if they are only being flushed. This provides a way
+            // for them to differentiate between what is, and is not a flush (by
+            // checking isClosed).
+            when (this) {
+                is Decoder.Feed -> markAsClosed()
+                is Encoder.Feed -> markAsClosed()
+            }
 
-            doFinalProtected()
+            try {
+                doFinalProtected()
+            } finally {
+                // Will de-reference {Encoder/Decoder}.OutFeed
+                close()
+            }
         }
 
         /**
@@ -518,8 +529,6 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @see [use]
          * */
         public abstract fun close()
-
-        public abstract fun isClosed(): Boolean
 
         /**
          * Implementations should perform final operations on

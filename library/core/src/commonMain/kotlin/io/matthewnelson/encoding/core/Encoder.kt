@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("RemoveRedundantQualifierName", "SpellCheckingInspection")
+@file:Suppress("LocalVariableName", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
 
 package io.matthewnelson.encoding.core
 
@@ -22,7 +22,9 @@ import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutMaxSizeOrFail
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import kotlin.jvm.JvmField
+import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
+import kotlin.jvm.JvmSynthetic
 
 /**
  * Encode things.
@@ -57,12 +59,12 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [LineBreakOutFeed]
      * */
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
-        val outFeed = if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
+        val _out = if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
             LineBreakOutFeed(config.lineBreakInterval, out)
         } else {
             out
         }
-        return newEncoderFeedProtected(outFeed)
+        return newEncoderFeedProtected(_out)
     }
 
     protected abstract fun newEncoderFeedProtected(out: Encoder.OutFeed): Encoder<C>.Feed
@@ -86,13 +88,23 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * */
     public abstract inner class Feed: EncoderDecoder.Feed<C> {
 
-        private val out: Encoder.OutFeed
+        private var _isClosed = false
 
-        // TODO: Deprecate?
-        public constructor(): this(out = Encoder.OutFeed.NoOp)
-        public constructor(out: Encoder.OutFeed): super(this@Encoder.config) { this.out = out }
+        /**
+         * For implementations to pass in as a constructor argument and reference
+         * while performing encoding operations. Upon [close] being called, this
+         * is set to the [Encoder.OutFeed.NoOp] instance which ensures any local
+         * object references that the initial [OutFeed] has are not leaked and can
+         * be promptly GCd.
+         * */
+        @get:JvmName("_out")
+        protected var _out: Encoder.OutFeed
+            private set
 
-        private var isClosed = false
+        // pass Encoder.OutFeed.NoOp if not wanting to utilize _out at all.
+        public constructor(_out: Encoder.OutFeed): super(this@Encoder.config) { this._out = _out }
+
+        public final override fun isClosed(): Boolean = _isClosed
 
         /**
          * Updates the [Encoder.Feed] with a new byte to encode.
@@ -101,7 +113,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * */
         @Throws(EncodingException::class)
         public fun consume(input: Byte) {
-            if (isClosed) throw closedException()
+            if (_isClosed) throw closedException()
 
             try {
                 // should not throw exception, but just
@@ -122,27 +134,43 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * */
         @Throws(EncodingException::class)
         public final override fun flush() {
-            if (isClosed) throw closedException()
+            if (_isClosed) throw closedException()
 
             try {
                 // should not throw exception, but just
                 // in case, we close the Feed.
                 doFinalProtected()
-                if (out is LineBreakOutFeed) out.reset()
+                (_out as? LineBreakOutFeed)?.reset()
             } catch (t: Throwable) {
                 close()
                 throw t
             }
         }
 
-        public final override fun close() { isClosed = true }
-        public final override fun isClosed(): Boolean = isClosed
+        public final override fun close() {
+            _isClosed = true
+            (_out as? LineBreakOutFeed)?.reset()
+            _out = OutFeed.NoOp
+        }
 
         protected abstract fun consumeProtected(input: Byte)
         protected abstract override fun doFinalProtected()
 
+        @JvmSynthetic
+        internal fun markAsClosed() { _isClosed = true }
+
         /** @suppress */
         public final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
+
+        /**
+         * DEPRECATED
+         * @suppress
+         * */
+        @Deprecated(
+            message = "Parameter _out: Encoder.OutFeed was added. Use the new constructor.",
+            level = DeprecationLevel.WARNING,
+        )
+        public constructor(): this(_out = Encoder.OutFeed.NoOp)
     }
 
     /**
@@ -152,7 +180,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * @see [newEncoderFeed]
      * */
     public fun interface OutFeed {
-
         public fun output(encoded: Char)
 
         public companion object {

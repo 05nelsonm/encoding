@@ -23,6 +23,8 @@ public final class io/matthewnelson/encoding/core/Decoder$Companion {
 
 public abstract class io/matthewnelson/encoding/core/Decoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public fun <init> (Lio/matthewnelson/encoding/core/Decoder;)V
+	public fun <init> (Lio/matthewnelson/encoding/core/Decoder;Lio/matthewnelson/encoding/core/Decoder$OutFeed;)V
+	protected final fun _out ()Lio/matthewnelson/encoding/core/Decoder$OutFeed;
 	public final fun close ()V
 	public final fun consume (C)V
 	protected abstract fun consumeProtected (C)V
@@ -32,7 +34,12 @@ public abstract class io/matthewnelson/encoding/core/Decoder$Feed : io/matthewne
 }
 
 public abstract interface class io/matthewnelson/encoding/core/Decoder$OutFeed {
+	public static final field Companion Lio/matthewnelson/encoding/core/Decoder$OutFeed$Companion;
+	public static final field NoOp Lio/matthewnelson/encoding/core/Decoder$OutFeed;
 	public abstract fun output (B)V
+}
+
+public final class io/matthewnelson/encoding/core/Decoder$OutFeed$Companion {
 }
 
 public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/encoding/core/Decoder {
@@ -54,6 +61,7 @@ public final class io/matthewnelson/encoding/core/Encoder$Companion {
 public abstract class io/matthewnelson/encoding/core/Encoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public fun <init> (Lio/matthewnelson/encoding/core/Encoder;)V
 	public fun <init> (Lio/matthewnelson/encoding/core/Encoder;Lio/matthewnelson/encoding/core/Encoder$OutFeed;)V
+	protected final fun _out ()Lio/matthewnelson/encoding/core/Encoder$OutFeed;
 	public final fun close ()V
 	public final fun consume (B)V
 	protected abstract fun consumeProtected (B)V

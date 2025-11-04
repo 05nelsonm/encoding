@@ -391,7 +391,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
     }
 
-    private inner class DecoderFeed(private val out: Decoder.OutFeed): Decoder<Config>.Feed() {
+    private inner class DecoderFeed(out: Decoder.OutFeed): Decoder<Config>.Feed(_out = out) {
 
         private val buf = IntArray(3)
         private var iBuf = 0
@@ -449,9 +449,9 @@ public class Base64: EncoderDecoder<Base64.Config> {
             iBuf = 0
 
             // For every 4 characters of input, 24 bits of output are accumulated. Emit 3 bytes.
-            out.output((word shr 16).toByte())
-            out.output((word shr  8).toByte())
-            out.output((word       ).toByte())
+            _out.output((word shr 16).toByte())
+            _out.output((word shr  8).toByte())
+            _out.output((word       ).toByte())
         }
 
         override fun doFinalProtected() {
@@ -473,7 +473,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
                 buf.fill(0)
                 // 2 characters followed by "==". Emit 1 byte for 8 of those 12 bits.
                 word = word shl 12
-                out.output((word shr 16).toByte())
+                _out.output((word shr 16).toByte())
                 return
             }
 
@@ -483,8 +483,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
                 buf.fill(0)
                 // 3 characters followed by "=". Emit 2 byte for 16 of those 18 bits.
                 word = word shl 6
-                out.output((word shr 16).toByte())
-                out.output((word shr  8).toByte())
+                _out.output((word shr 16).toByte())
+                _out.output((word shr  8).toByte())
                 return
             }
 
@@ -493,7 +493,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
     }
 
-    private abstract inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed(out) {
+    private abstract inner class EncoderFeed(out: Encoder.OutFeed): Encoder<Config>.Feed(_out = out) {
 
         protected abstract fun Encoder.OutFeed.output1(i: Int)
         protected abstract fun Encoder.OutFeed.output4(i1: Int, i2: Int, i3: Int, i4: Int)
@@ -513,7 +513,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             iBuf = 0
 
             // For every 3 bytes of input, 24 bits of output are accumulated. Emit 4 characters.
-            out.output4(
+            _out.output4(
                 i1 = (b0 and 0xff shr 2),
                 i2 = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4),
                 i3 = (b1 and 0x0f shl 2) or (b2 and 0xff shr 6),
@@ -528,8 +528,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
             if (iBuf == 1) {
                 iBuf = 0
                 buf.fill(0)
-                out.output1(i = (b0 and 0xff shr 2))
-                out.output1(i = (b0 and 0x03 shl 4))
+                _out.output1(i = (b0 and 0xff shr 2))
+                _out.output1(i = (b0 and 0x03 shl 4))
                 return 2.outputPadding()
             }
 
@@ -537,9 +537,9 @@ public class Base64: EncoderDecoder<Base64.Config> {
             if (iBuf == 2) {
                 iBuf = 0
                 buf.fill(0)
-                out.output1(i = (b0 and 0xff shr 2))
-                out.output1(i = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4))
-                out.output1(i = (b1 and 0x0f shl 2))
+                _out.output1(i = (b0 and 0xff shr 2))
+                _out.output1(i = (b0 and 0x03 shl 4) or (b1 and 0xff shr 4))
+                _out.output1(i = (b1 and 0x0f shl 2))
                 return 1.outputPadding()
             }
 
@@ -550,7 +550,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         private inline fun Int.outputPadding() {
             if (!config.padEncoded) return
             val c = config.paddingChar ?: return
-            repeat(this) { out.output(c) }
+            repeat(this) { _out.output(c) }
         }
     }
 
