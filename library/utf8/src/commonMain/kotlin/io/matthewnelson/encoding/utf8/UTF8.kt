@@ -158,7 +158,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     public class Config private constructor(
         @JvmField
         public val replacementStrategy: ReplacementStrategy,
-    ): EncoderDecoder.Config(null, -1, null) {
+    ): EncoderDecoder.Config(null, -1, null, true /* TODO */) {
 
         // Chars -> Bytes
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {

@@ -220,7 +220,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         public val encodeUrlSafe: Boolean,
         @JvmField
         public val padEncoded: Boolean,
-    ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
+    ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', true /* TODO */) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             // Divide first instead of multiplying which ensures the Long

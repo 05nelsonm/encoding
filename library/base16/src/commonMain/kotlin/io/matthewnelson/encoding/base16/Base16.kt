@@ -169,7 +169,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         lineBreakInterval: Byte,
         @JvmField
         public val encodeLowercase: Boolean,
-    ): EncoderDecoder.Config(isLenient, lineBreakInterval, null) {
+    ): EncoderDecoder.Config(isLenient, lineBreakInterval, null, true /* TODO */) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L

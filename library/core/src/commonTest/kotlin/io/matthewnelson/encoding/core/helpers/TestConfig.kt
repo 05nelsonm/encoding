@@ -25,7 +25,7 @@ class TestConfig(
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
     private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
-): EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar) {
+): EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, true) {
     override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
         return decodeReturn.invoke(encodedSize)
     }

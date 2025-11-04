@@ -216,7 +216,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             // always defaults to true.
             @JvmField
             public val finalizeWhenFlushed: Boolean,
-        ): EncoderDecoder.Config(isLenient, 0, null) {
+        ): EncoderDecoder.Config(isLenient, 0, null, true /* TODO */) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)
@@ -586,7 +586,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
+        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', true /* TODO */) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)
@@ -890,7 +890,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             public val encodeLowercase: Boolean,
             @JvmField
             public val padEncoded: Boolean,
-        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=') {
+        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', true /* TODO */) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)

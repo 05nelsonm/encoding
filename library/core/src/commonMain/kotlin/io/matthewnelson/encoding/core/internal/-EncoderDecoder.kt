@@ -42,7 +42,9 @@ internal inline fun <C: Config> Decoder<C>.decode(
     try {
         newDecoderFeed(out = { b -> a[i++] = b }).use { feed -> action.invoke(feed) }
     } catch (t: Throwable) {
-        a.fill(0, toIndex = min(a.size, i))
+        if (config.backFillBuffers) {
+            a.fill(0, toIndex = min(a.size, i))
+        }
         if (t is IndexOutOfBoundsException && i >= size) {
             // Something is wrong with the encoder's pre-calculation
             throw EncodingSizeException("Encoder's pre-calculation of Size[$size] was incorrect", t)
@@ -53,7 +55,9 @@ internal inline fun <C: Config> Decoder<C>.decode(
     if (i == size) return a
 
     val copy = a.copyOf(i)
-    a.fill(0, 0, i)
+    if (config.backFillBuffers) {
+        a.fill(0, 0, i)
+    }
     return copy
 }
 
