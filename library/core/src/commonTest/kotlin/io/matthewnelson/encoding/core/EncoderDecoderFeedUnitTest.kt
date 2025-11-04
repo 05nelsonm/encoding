@@ -277,7 +277,7 @@ class EncoderDecoderFeedUnitTest {
 
             feed.consume(5)
             assertEquals(12, sb.length)
-            assertTrue(sb.toString().lines().size == 2)
+            assertEquals(2, sb.toString().lines().size)
         }
     }
 
@@ -302,6 +302,18 @@ class EncoderDecoderFeedUnitTest {
         feed.consume(5)
         assertEquals(3, invocations)
         assertEquals(Char.MAX_VALUE, output)
+    }
+
+    @Test
+    fun givenEncoderFeed_whenFlushed_thenLineBreakOutFeedIsReset() {
+        val lbf = LineBreakOutFeed(Byte.MAX_VALUE) {}
+        val feed = TestEncoderDecoder(TestConfig()).newEncoderFeed(lbf)
+        assertEquals(0, lbf.count)
+        feed.consume(2)
+        feed.consume(2)
+        assertEquals(2, lbf.count)
+        feed.flush()
+        assertEquals(0, lbf.count)
     }
 
     @Test

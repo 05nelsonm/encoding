@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("SpellCheckingInspection")
-
 package io.matthewnelson.encoding.base32
 
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
@@ -214,5 +212,4 @@ class Base32DefaultUnitTest: BaseNEncodingTest() {
         useLowercase = true
         checkRandomData()
     }
-
 }

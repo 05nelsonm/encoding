@@ -53,6 +53,7 @@ public final class io/matthewnelson/encoding/core/Encoder$Companion {
 
 public abstract class io/matthewnelson/encoding/core/Encoder$Feed : io/matthewnelson/encoding/core/EncoderDecoder$Feed {
 	public fun <init> (Lio/matthewnelson/encoding/core/Encoder;)V
+	public fun <init> (Lio/matthewnelson/encoding/core/Encoder;Lio/matthewnelson/encoding/core/Encoder$OutFeed;)V
 	public final fun close ()V
 	public final fun consume (B)V
 	protected abstract fun consumeProtected (B)V
@@ -63,7 +64,12 @@ public abstract class io/matthewnelson/encoding/core/Encoder$Feed : io/matthewne
 }
 
 public abstract interface class io/matthewnelson/encoding/core/Encoder$OutFeed {
+	public static final field Companion Lio/matthewnelson/encoding/core/Encoder$OutFeed$Companion;
+	public static final field NoOp Lio/matthewnelson/encoding/core/Encoder$OutFeed;
 	public abstract fun output (C)V
+}
+
+public final class io/matthewnelson/encoding/core/Encoder$OutFeed$Companion {
 }
 
 public abstract class io/matthewnelson/encoding/core/EncoderDecoder : io/matthewnelson/encoding/core/Encoder {
@@ -191,6 +197,7 @@ public abstract interface class io/matthewnelson/encoding/core/util/FeedBuffer$F
 public final class io/matthewnelson/encoding/core/util/LineBreakOutFeed : io/matthewnelson/encoding/core/Encoder$OutFeed {
 	public final field interval B
 	public fun <init> (BLio/matthewnelson/encoding/core/Encoder$OutFeed;)V
+	public final fun count ()B
 	public fun output (C)V
 	public final fun reset ()V
 }

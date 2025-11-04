@@ -517,7 +517,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     }
 
     // Bytes -> Chars
-    private open inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed() {
+    private open inner class EncoderFeed(private val out: Encoder.OutFeed): Encoder<Config>.Feed(out) {
 
         @Throws(EncodingException::class)
         protected open fun Encoder.OutFeed.outputReplacementChar() {

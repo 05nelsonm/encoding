@@ -21,6 +21,7 @@ import io.matthewnelson.encoding.core.internal.calculatedOutputNegativeEncodingS
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
+import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
@@ -64,25 +65,26 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public val paddingChar: Char?,
 
         /**
-         * When the [Encoder.encodeToString], [Encoder.encodeToCharArray], and [Decoder.decodeToByteArray]
-         * functions are utilized, an initial buffer is allocated based on the pre-calculated return values
-         * of [encodeOutSize] or [decodeOutMaxSize] (respectively). After encoding/decoding operations have
-         * completed, the initial buffer may be trimmed down to size in the event of an over-allocation. If
-         * that happens, the initial buffer is then dropped and the correct sized copy is returned. Prior
-         * versions always back-filled the initial buffer when this occurred, but that can be expensive for
-         * large data sets and potentially unnecessary if data is known to not be sensitive in nature.
+         * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray], and
+         * [Decoder.decodeToByteArray] are utilized, an initial buffer is allocated based on the
+         * pre-calculated return values of [encodeOutSize] or [decodeOutMaxSize] (respectively).
+         * After encoding/decoding operations have completed, the initial buffer may be trimmed
+         * to size in the event of an over-allocation. If that happens, the initial buffer is
+         * then dropped and the correct sized copy is returned. Prior versions always back-filled
+         * the initial buffer when this occurred, but that can be expensive for large data sets
+         * and potentially unnecessary if data is known to not be sensitive in nature.
          *
-         * If `true`, the initial buffer (if it was trimmed to size) is back-filled. If `false`, back-filling
-         * is skipped.
+         * If `true`, the initial buffer (if it was trimmed to size) is back-filled. If `false`,
+         * back-filling is skipped.
          * */
         @JvmField
         public val backFillBuffers: Boolean,
     ) {
 
         /**
-         * If greater than `0`, when [lineBreakInterval] number of encoded characters have been output,
-         * the next encoded character will be preceded with the new line character `\n` when utilizing
-         * the [Encoder.encodeToString] and [Encoder.encodeToCharArray] functions.
+         * If greater than `0`, [Encoder.newEncoderFeed] will use the [LineBreakOutFeed] such that
+         * for every [lineBreakInterval] number of encoded characters output, the next encoded
+         * character will be preceded with the new line character `\n`.
          *
          * **NOTE:** This setting will always be `0` if [isLenient] is `false`.
          * */
