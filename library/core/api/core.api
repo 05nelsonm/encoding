@@ -133,6 +133,7 @@ public abstract interface annotation class io/matthewnelson/encoding/core/Experi
 
 public final class io/matthewnelson/encoding/core/_FeedKt {
 	public static final fun use (Lio/matthewnelson/encoding/core/EncoderDecoder$Feed;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun useFinally (Lio/matthewnelson/encoding/core/EncoderDecoder$Feed;Ljava/lang/Throwable;)V
 }
 
 public abstract interface annotation class io/matthewnelson/encoding/core/internal/InternalEncodingApi : java/lang/annotation/Annotation {
