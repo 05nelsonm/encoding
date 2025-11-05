@@ -18,11 +18,15 @@ package io.matthewnelson.encoding.utf8
 import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
+import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.utf8.UTF8.CharPreProcessor.Companion.sizeUTF8
+import io.matthewnelson.encoding.utf8.internal.decodeOutMaxSize32
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.fail
 
 abstract class UTF8BaseUnitTest(protected val utf8: UTF8) {
 
@@ -191,6 +195,36 @@ abstract class UTF8BaseUnitTest(protected val utf8: UTF8) {
         assertUtf8(hex = "f0f080")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 4 >> Non-shortest form)
         assertUtf8(hex = "f0f4f5")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 4 >> Exceeds Unicode max)
         assertUtf8(hex = "f0f0f0")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 4 >> Non-continuation)
+    }
+
+    @Test
+    fun givenDecodeOutSize_whenExceedsFastPathCalculation_thenUsesCharPreProcessorToCalculateExactSize() {
+        val size = (Int.MAX_VALUE / 3) + 1
+        var char = 'A'
+
+        // Test size does in fact exceed the "fast path" calculation (size * 3)
+        assertFailsWith<EncodingSizeException> {
+            utf8.config.decodeOutMaxSize32(size, useCharPreProcessorIfNeeded = false) { char }
+        }
+
+        val actual = utf8.config.decodeOutMaxSize32(size, useCharPreProcessorIfNeeded = true) { char }
+
+        // ASCII should be 1 byte per character, and thus encodable.
+        assertEquals(size, actual)
+
+        // Ensure that the function stops early when CharPreProcessor.currentSize exceeds Int.MAX_VALUE
+        var index = 0
+        // 2 bytes per character
+        char = (Byte.MAX_VALUE.toInt() + 500).toChar()
+        try {
+            utf8.config.decodeOutMaxSize32(Int.MAX_VALUE, useCharPreProcessorIfNeeded = true) { i ->
+                index = i
+                char
+            }
+            fail("CharPreProcessor did not stop when currentSize exceeded Int.MAX_VALUE")
+        } catch (_: EncodingSizeException) {
+            assertEquals((Int.MAX_VALUE / 2) + 1, index)
+        }
     }
 
     @Test

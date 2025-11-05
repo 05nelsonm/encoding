@@ -23,6 +23,7 @@ import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.utf8.internal.build
+import io.matthewnelson.encoding.utf8.internal.decodeOutMaxSize32
 import io.matthewnelson.encoding.utf8.internal.initializeKotlin
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -185,10 +186,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
         // Chars -> Bytes
         protected override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
-            if (encodedSize > MAX_ENCODED_SIZE_32) {
-                throw outSizeExceedsMaxEncodingSizeException(encodedSize, Int.MAX_VALUE)
-            }
-            return encodedSize * 3
+            return decodeOutMaxSize32(encodedSize, useCharPreProcessorIfNeeded = true, _get = input::get)
         }
 
         // Bytes -> Chars
@@ -203,7 +201,6 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         internal companion object {
 
             private const val MAX_ENCODED_SIZE_64: Long = Long.MAX_VALUE / 3L
-            private const val MAX_ENCODED_SIZE_32: Int = Int.MAX_VALUE / 3
 
             @JvmSynthetic
             internal fun build(b: Builder): UTF8 = ::Config.build(b, ::UTF8)
@@ -316,9 +313,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * */
             @JvmStatic
             public fun Iterator<Char>.sizeUTF8(strategy: ReplacementStrategy): Long {
-                val pp = CharPreProcessor.of(strategy)
-                while (hasNext()) { pp + next() }
-                return pp.doFinal()
+                val cpp = CharPreProcessor.of(strategy)
+                while (hasNext()) { cpp + next() }
+                return cpp.doFinal()
             }
         }
 
