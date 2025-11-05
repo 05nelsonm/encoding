@@ -25,7 +25,7 @@ public abstract class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor {
 	public static final fun of (Lio/matthewnelson/encoding/utf8/UTF8$Config;)Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor;
 	public static final fun of (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor;
 	public static final fun of (Lio/matthewnelson/encoding/utf8/UTF8;)Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor;
-	public final fun plus (C)V
+	public final fun plus (C)Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor;
 	protected abstract fun sizeOrThrow ()I
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J

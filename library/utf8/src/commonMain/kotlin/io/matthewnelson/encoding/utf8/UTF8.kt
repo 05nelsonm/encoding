@@ -332,11 +332,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         /**
          * TODO
          * */
-        public operator fun plus(input: Char) {
+        public operator fun plus(input: Char): CharPreProcessor {
             if (!hasBuffered) {
                 buf = input.code
                 hasBuffered = true
-                return // Await more input
+                return this // Await more input
             }
             val c = buf
             val cNext = input.code
@@ -344,31 +344,32 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             if (c < 0x0080) {
                 buf = cNext
                 currentSize += 1
-                return
+                return this
             }
             if (c < 0x0800) {
                 buf = cNext
                 currentSize += 2
-                return
+                return this
             }
             if (c < 0xd800 || c > 0xdfff) {
                 buf = cNext
                 currentSize += 3
-                return
+                return this
             }
             if (c > 0xdbff) {
                 buf = cNext
                 currentSize += sizeOrThrow()
-                return
+                return this
             }
             if (cNext < 0xdc00 || cNext > 0xdfff) {
                 buf = cNext
                 currentSize += sizeOrThrow()
-                return
+                return this
             }
 
             hasBuffered = false
             currentSize += 4
+            return this
         }
 
         /**

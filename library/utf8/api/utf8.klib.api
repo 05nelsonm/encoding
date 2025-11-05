@@ -20,7 +20,7 @@ open class io.matthewnelson.encoding.utf8/UTF8 : io.matthewnelson.encoding.core/
 
         abstract fun sizeOrThrow(): kotlin/Int // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.sizeOrThrow|sizeOrThrow(){}[0]
         final fun doFinal(): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.doFinal|doFinal(){}[0]
-        final fun plus(kotlin/Char) // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.plus|plus(kotlin.Char){}[0]
+        final fun plus(kotlin/Char): io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.plus|plus(kotlin.Char){}[0]
 
         final object Companion { // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion|null[0]
             final fun (kotlin.collections/Iterator<kotlin/Char>).sizeUTF8(io.matthewnelson.encoding.utf8/UTF8.ReplacementStrategy): kotlin/Long // io.matthewnelson.encoding.utf8/UTF8.CharPreProcessor.Companion.sizeUTF8|sizeUTF8@kotlin.collections.Iterator<kotlin.Char>(io.matthewnelson.encoding.utf8.UTF8.ReplacementStrategy){}[0]
