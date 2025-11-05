@@ -62,7 +62,7 @@ internal inline fun <C: Config> Decoder<C>.decode(
 }
 
 /**
- * Fails if the returned [Long] for [Config.encodeOutSize] exceeds [Int.MAX_VALUE].
+ * Fails if the returned [Long] for [Config.encodeOutMaxSize] exceeds [Int.MAX_VALUE].
  * */
 @OptIn(ExperimentalContracts::class)
 @Throws(EncodingSizeException::class)
@@ -72,7 +72,7 @@ internal inline fun <T: Any> Encoder<*>.encodeOutMaxSizeOrFail(
 ): T {
     contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
 
-    val maxSize = config.encodeOutSize(size.toLong())
+    val maxSize = config.encodeOutMaxSize(size.toLong())
     if (maxSize > MAX_ENCODE_OUT_SIZE) {
         throw Config.outSizeExceedsMaxEncodingSizeException(maxSize, MAX_ENCODE_OUT_SIZE)
     }

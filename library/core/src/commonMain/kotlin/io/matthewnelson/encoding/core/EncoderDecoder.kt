@@ -67,7 +67,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         /**
          * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray], and
          * [Decoder.decodeToByteArray] are utilized, an initial buffer is allocated based on the
-         * pre-calculated return values of [encodeOutSize] or [decodeOutMaxSize] (respectively).
+         * pre-calculated return values of [encodeOutMaxSize] or [decodeOutMaxSize] (respectively).
          * After encoding/decoding operations have completed, the initial buffer may be trimmed
          * to size in the event of an over-allocation. If that happens, the initial buffer is
          * then dropped and the correct sized copy is returned. Prior versions always back-filled
@@ -95,41 +95,44 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             0
         }
 
-        // TODO: Deprecate and replace with encodeOutMaxSize(unEncodedSize: Long): Long
         /**
-         * Pre-calculates and returns the size of the output, after encoding
-         * would occur, based off of the [Config] options set.
+         * Pre-calculates and returns the maximum size of the output, after encoding would occur,
+         * based off the [Config] options set for the implementation. Most implementations (such
+         * as `Base16`, `Base32`, and `Base64`) are able to return an exact size whereby no
+         * post-encoding resize is necessary, while others (such as `UTF-8`) return a maximum
+         * and may require a post-encoding resize.
          *
-         * Will always return a value greater than or equal to 0.
+         * Will always return a value greater than or equal to `0`.
          *
          * @param [unEncodedSize] The size of the data which is to be encoded.
-         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or
-         *   the calculated size exceeded [Long.MAX_VALUE].
+         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or the calculated
+         *   size exceeds [Long.MAX_VALUE].
          * */
         @Throws(EncodingSizeException::class)
-        public fun encodeOutSize(unEncodedSize: Long): Long = encodeOutSize(unEncodedSize, lineBreakInterval)
+        public fun encodeOutMaxSize(unEncodedSize: Long): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
 
-        // TODO: Deprecate and replace with encodeOutMaxSize(unEncodedSize: Long): Long
         /**
-         * Pre-calculates and returns the size of the output, after encoding
-         * would occur, based off of the [Config] options set and expressed
-         * [lineBreakInterval].
+         * Pre-calculates and returns the maximum size of the output, after encoding would occur,
+         * based off the [Config] options set for the implementation and expressed [lineBreakInterval].
+         * Most implementations (such as `Base16`, `Base32`, and `Base64`) are able to return an
+         * exact size whereby no post-encoding resize is necessary, while others (such as `UTF-8`)
+         * return a maximum and may require a post-encoding resize.
          *
-         * Will always return a value greater than or equal to 0.
+         * Will always return a value greater than or equal to `0`.
          *
          * @param [unEncodedSize] The size of the data which is to be encoded.
-         * @param [lineBreakInterval] The interval at which linebreaks are to
-         *   be inserted.
-         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or
-         *   the calculated size exceeded [Long.MAX_VALUE].
+         * @param [lineBreakInterval] The interval at which new line characters are to be inserted.
+         *
+         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or the calculated
+         *   size exceeds [Long.MAX_VALUE].
          * */
         @Throws(EncodingSizeException::class)
-        public fun encodeOutSize(unEncodedSize: Long, lineBreakInterval: Byte): Long {
+        public fun encodeOutMaxSize(unEncodedSize: Long, lineBreakInterval: Byte): Long {
             if (unEncodedSize < 0L) {
                 throw EncodingSizeException("unEncodedSize cannot be negative")
             }
 
-            // return early
+            // Return early
             if (unEncodedSize == 0L) return 0L
 
             var outSize = encodeOutSizeProtected(unEncodedSize)
@@ -270,23 +273,28 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         }
 
         /**
-         * Will only receive values greater than 0.
+         * Calculate and return an exact (preferably), or maximum, size that an encoding would be
+         * for the [unEncodedSize] data.
          *
-         * Implementations of this function **should not** take [lineBreakInterval]
-         * into consideration when pre-calculating the output size; that is already
-         * handled by [encodeOutSize] based off of the return value for this function.
+         * Implementations of this function **must not** take [lineBreakInterval] into consideration
+         * when pre-calculating the output size; that is already handled by [encodeOutMaxSize] based
+         * off of the return value for this function.
          *
-         * @see [encodeOutSize]
+         * Will only receive values greater than `0`.
+         *
+         * @see [encodeOutMaxSize]
          * */
         @Throws(EncodingSizeException::class)
         protected abstract fun encodeOutSizeProtected(unEncodedSize: Long): Long
 
         /**
-         * Will only receive values greater than 0.
+         * Calculate and return a maximum size that a decoding would be for the [encodedSize] data.
          *
-         * Implementations of this function **should not** take [lineBreakInterval]
-         * into consideration when pre-calculating the output size. Data being
-         * decoded may not have been encoded using this [EncoderDecoder].
+         * Implementations of this function **must not** take [lineBreakInterval] into consideration
+         * when pre-calculating the output size, as data being decoded may not have been encoded using
+         * this [Config].
+         *
+         * Will only receive values greater than `0`.
          *
          * @see [decodeOutMaxSize]
          * */
@@ -294,11 +302,14 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         protected abstract fun decodeOutMaxSizeProtected(encodedSize: Long): Long
 
         /**
-         * Will only receive values greater than 0.
+         * Calculate and return a maximum size that a decoding would be for the [encodedSize] data.
          *
-         * Implementations of this function **should not** take [lineBreakInterval]
-         * into consideration when pre-calculating the output size. Data being
-         * decoded may not have been encoded using this [EncoderDecoder].
+         * Implementations of this function **must not** take [lineBreakInterval] into consideration
+         * when pre-calculating the output size, as data being decoded may not have been encoded using
+         * this [Config]. Additionally, [input] should only be parsed when absolutely necessary, such
+         * as validation of a checksum.
+         *
+         * Will only receive values greater than `0`.
          *
          * @see [decodeOutMaxSizeOrFail]
          * */
@@ -404,6 +415,30 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
                 "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
             )
         }
+
+        /**
+         * DEPRECATED
+         * @suppress
+         * @see [encodeOutMaxSize]
+         * */
+        @Deprecated(
+            message = "Function name changed.",
+            replaceWith = ReplaceWith("encodeOutMaxSize(unEncodedSize)"),
+            level = DeprecationLevel.WARNING,
+        )
+        public fun encodeOutSize(unEncodedSize: Long): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
+
+        /**
+         * DEPRECATED
+         * @suppress
+         * @see [encodeOutMaxSize]
+         * */
+        @Deprecated(
+            message = "Function name changed.",
+            replaceWith = ReplaceWith("encodeOutMaxSize(unEncodedSize, lineBreakInterval)"),
+            level = DeprecationLevel.WARNING,
+        )
+        public fun encodeOutSize(unEncodedSize: Long, lineBreakInterval: Byte): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
 
         /**
          * DEPRECATED

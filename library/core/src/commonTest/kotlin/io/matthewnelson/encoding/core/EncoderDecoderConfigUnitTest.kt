@@ -45,7 +45,7 @@ class EncoderDecoderConfigUnitTest {
         }
 
         try {
-            config.encodeOutSize(-1L)
+            config.encodeOutMaxSize(-1L)
             fail()
         } catch (_: EncodingSizeException) {
             // pass
@@ -75,7 +75,7 @@ class EncoderDecoderConfigUnitTest {
         }
 
         try {
-            config.encodeOutSize(5)
+            config.encodeOutMaxSize(5)
             fail()
         } catch (_: EncodingSizeException) {
             // pass
@@ -92,7 +92,7 @@ class EncoderDecoderConfigUnitTest {
 
         config.decodeOutMaxSizeOrFail(DecoderInput("a"))
         config.decodeOutMaxSize(1L)
-        config.encodeOutSize(1L)
+        config.encodeOutMaxSize(1L)
     }
 
     @Test
@@ -105,7 +105,7 @@ class EncoderDecoderConfigUnitTest {
 
         config.decodeOutMaxSizeOrFail(DecoderInput(""))
         config.decodeOutMaxSize(0L)
-        config.encodeOutSize(0L)
+        config.encodeOutMaxSize(0L)
     }
 
     @Test
@@ -118,7 +118,7 @@ class EncoderDecoderConfigUnitTest {
 
         config.decodeOutMaxSizeOrFail(DecoderInput("a"))
         config.decodeOutMaxSize(1L)
-        config.encodeOutSize(1L)
+        config.encodeOutMaxSize(1L)
     }
 
     @Test
@@ -161,7 +161,7 @@ class EncoderDecoderConfigUnitTest {
             Pair(32L, 30L),
             Pair(43L, 40L),
         ).forEach { (expected, actual) ->
-            assertEquals(expected, config.encodeOutSize(actual))
+            assertEquals(expected, config.encodeOutMaxSize(actual))
         }
     }
 
@@ -170,7 +170,7 @@ class EncoderDecoderConfigUnitTest {
         val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeReturn = { it })
 
         try {
-            config.encodeOutSize(Long.MAX_VALUE - 10L)
+            config.encodeOutMaxSize(Long.MAX_VALUE - 10L)
             fail()
         } catch (_: EncodingSizeException) {
             // pass
@@ -189,7 +189,7 @@ class EncoderDecoderConfigUnitTest {
             30L,
             40L,
         ).forEach { size ->
-            assertEquals(size, config.encodeOutSize(size))
+            assertEquals(size, config.encodeOutMaxSize(size))
         }
     }
 
