@@ -225,6 +225,10 @@ abstract class UTF8BaseUnitTest(protected val utf8: UTF8) {
         } catch (_: EncodingSizeException) {
             assertEquals((Int.MAX_VALUE / 2) + 1, index)
         }
+
+        // Check that the maximum possible (given our 2 byte test char) succeeds
+        val max = utf8.config.decodeOutMaxSize32(Int.MAX_VALUE / 2, useCharPreProcessorIfNeeded = true) { char }
+        assertEquals(Int.MAX_VALUE - 1, max)
     }
 
     @Test
