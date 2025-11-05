@@ -19,11 +19,10 @@ package io.matthewnelson.encoding.base32.internal
 
 private const val CHECK_SYMBOLS = "*~$=Uu"
 
-internal inline fun Char.isCheckSymbol(isConstantTime: Boolean = false): Boolean {
+internal inline fun Char.isCheckSymbol(): Boolean {
     var isSymbol = false
     for (c in CHECK_SYMBOLS) {
         if (this != c) continue
-        if (!isConstantTime) return true
         isSymbol = true
     }
     return isSymbol

@@ -29,6 +29,7 @@ import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
+import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -1521,7 +1522,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
         private var count: Byte = 0
 
-        fun reset() { count = 0 }
+        fun reset() {
+            count = 0
+            if (out is LineBreakOutFeed) out.reset()
+        }
 
         override fun output(encoded: Char) {
             if (count == interval) {
