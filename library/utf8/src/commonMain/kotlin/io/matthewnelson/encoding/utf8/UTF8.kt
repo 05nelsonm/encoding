@@ -977,15 +977,15 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         }
 
         private inline fun Int.isContinuation(): Boolean = this and 0xc0 == 0x80
-
-        // TODO: REMOVE
-        @OptIn(ExperimentalContracts::class)
-        private inline fun <T: Any> T.debug(block: (it: T) -> String): T {
-            contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
-//            println(block(this))
-            return this
-        }
     }
 
     private constructor(config: Config): super(config)
+}
+
+// For branch debugging. Adds 0 overhead in prod b/c inline. Uncomment println to enable.
+@OptIn(ExperimentalContracts::class)
+private inline fun <T: Any> T.debug(block: (it: T) -> String): T {
+    contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
+//    println(block(this))
+    return this
 }
