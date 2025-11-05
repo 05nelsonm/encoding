@@ -21,8 +21,11 @@ import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.base32.Base32
 import io.matthewnelson.encoding.base64.Base64
 import io.matthewnelson.encoding.core.Decoder
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Encoder
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.utf8.UTF8
 import kotlinx.benchmark.*
 
 abstract class EncoderDecoderBenchmarkBase {
@@ -111,4 +114,31 @@ open class Base64Benchmark: EncoderDecoderBenchmarkBase() {
     @Param("2:84", "w:22")
     override var params: String = "<Char>:<Byte>"
     override val encoder: EncoderDecoder<*> = Base64.Builder {}
+}
+
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(BenchmarkTimeUnit.NANOSECONDS)
+@Warmup(iterations = ITERATIONS_WARMUP, time = TIME_WARMUP)
+@Measurement(iterations = ITERATIONS_MEASURE, time = TIME_MEASURE)
+open class UTF8Benchmark: EncoderDecoderBenchmarkBase() {
+    @Param("¿:-84")
+    override var params: String = "<Char>:<Byte>"
+    override val encoder: EncoderDecoder<*> = UTF8
+
+    private val bytes = "7f e0a080 e09fafeda080edbfbfedaf41 e0a080 efbfbf efaf7a f0808080 c480"
+        .decodeToByteArray(Base16)
+    private val string = bytes.encodeToString(encoder)
+
+    @Benchmark
+    fun toBytesEncoding() { string.decodeToByteArray(encoder) }
+
+    @Benchmark
+    fun toStringEncoding() { bytes.encodeToString(encoder) }
+
+    @Benchmark
+    fun toBytesKotlin() { string.encodeToByteArray() }
+
+    @Benchmark
+    fun toStringKotlin() { bytes.decodeToString() }
 }

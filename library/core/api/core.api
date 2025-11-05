@@ -100,6 +100,8 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final fun decodeOutMaxSizeOrFail (Lio/matthewnelson/encoding/core/util/DecoderInput;)I
 	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
 	protected abstract fun decodeOutMaxSizeProtected (J)J
+	public final fun encodeOutMaxSize (J)J
+	public final fun encodeOutMaxSize (JB)J
 	public final fun encodeOutSize (J)J
 	public final fun encodeOutSize (JB)J
 	protected abstract fun encodeOutSizeProtected (J)J
