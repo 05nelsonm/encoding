@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("FunctionName", "LocalVariableName", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
+@file:Suppress("FunctionName", "LocalVariableName", "NOTHING_TO_INLINE", "PropertyName", "RedundantModalityModifier", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.base32
 
@@ -22,7 +22,6 @@ import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize32
 import io.matthewnelson.encoding.base32.internal.decodeOutMaxSize64
 import io.matthewnelson.encoding.base32.internal.encodeOutSize64
 import io.matthewnelson.encoding.base32.internal.isCheckSymbol
-import io.matthewnelson.encoding.base32.internal.toBits
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder
@@ -1298,6 +1297,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             // "Should" never make it here
             error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}]")
         }
+
+        private inline fun Byte.toBits(): Long = if (this < 0) this + 256L else toLong()
     }
 
     private inner class CrockfordDecoderFeed(out: Decoder.OutFeed): AbstractDecoderFeed(out) {

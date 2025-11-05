@@ -18,6 +18,7 @@
 package io.matthewnelson.encoding.base32.internal
 
 import io.matthewnelson.encoding.base32.Base32
+import io.matthewnelson.encoding.core.EncoderDecoder
 
 internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean, Boolean) -> Base32.Crockford.Config).build(
     b: Base32.Crockford.Builder,
@@ -88,4 +89,36 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Hex.Co
         b._backFillBuffers,
     )
     return hex(config, null)
+}
+
+private const val MAX_UNENCODED_SIZE: Long = (Long.MAX_VALUE / 8L) * 5L
+
+internal inline fun EncoderDecoder.Config.Companion.decodeOutMaxSize64(encodedSize: Long): Long {
+    // Divide first instead of multiplying which ensures the Long
+    // doesn't overflow. To do it this way, also need to calculate
+    // the remainder separately then add it back in.
+    val div = encodedSize / 8L
+    val rem = encodedSize.rem(8L).toFloat() // 0.0 - 7.0
+    return (div * 5L) + (rem * 5.0F / 8.0F).toLong()
+}
+
+internal inline fun EncoderDecoder.Config.Companion.decodeOutMaxSize32(encodedSize: Int): Int {
+    return (encodedSize.toLong() * 5L / 8L).toInt()
+}
+
+internal inline fun EncoderDecoder.Config.Companion.encodeOutSize64(unEncodedSize: Long, willBePadded: Boolean): Long {
+    if (unEncodedSize > MAX_UNENCODED_SIZE) {
+        throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)
+    }
+    var outSize = (unEncodedSize + 4L) / 5L * 8L
+    if (!willBePadded) {
+        when (unEncodedSize.rem(5L)) {
+            0L -> { /* no-op */ }
+            1L -> outSize -= 6L
+            2L -> outSize -= 4L
+            3L -> outSize -= 3L
+            4L -> outSize -= 1L
+        }
+    }
+    return outSize
 }
