@@ -22,9 +22,9 @@ import kotlin.test.Test
 
 class UTF8_U0034UnitTest: UTF8BaseUnitTest(utf8 = INSTANCE) {
     private companion object {
-        private val INSTANCE = UTF8.Builder()
-            .replacement(UTF8.ReplacementStrategy.U_0034)
-            .build()
+        private val INSTANCE = UTF8.Builder {
+            replacement(strategy = UTF8.ReplacementStrategy.U_0034)
+        }
     }
 
     @Test

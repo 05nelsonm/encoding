@@ -43,6 +43,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     public companion object Default: UTF8(config = Config.DEFAULT) {
 
         // TODO: @JvmField public val CT: UTF8 = UTF8(Config.DEFAULT_CT)
+        //  Need to think about this, because Default uses ReplacementStrategy.KOTLIN
+        //  whereby if CT (Constant Time) is used for encoding passwords, that UTF-8
+        //  encoded password may be different on Java than on Native/Js.
 
         /**
          * TODO
@@ -336,7 +339,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             if (!hasBuffered) {
                 buf = input.code
                 hasBuffered = true
-                return
+                return // Await more input
             }
             val c = buf
             val cNext = input.code
@@ -444,7 +447,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             if (!hasBuffered) {
                 buf = input.code
                 hasBuffered = true
-                return
+                return // Await more input
             }
             val c = buf
             val cNext = input.code
@@ -543,8 +546,6 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 return
             }
 
-            // Final input for needed is never buffered, just go straight
-            // into processing everything using input as the final byte.
             if (needed - 1 > iBuf) {
                 buf[iBuf++] = bN
                 return // Await more input

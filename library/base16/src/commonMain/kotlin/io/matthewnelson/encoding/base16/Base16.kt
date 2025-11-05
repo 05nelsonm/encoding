@@ -351,7 +351,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             if (!hasBuffered) {
                 buf = code + diff
                 hasBuffered = true
-                return
+                return // Await more input
             }
 
             hasBuffered = false

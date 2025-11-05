@@ -19,11 +19,29 @@ import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.utf8.UTF8.CharPreProcessor.Companion.sizeUTF8
+import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 abstract class UTF8BaseUnitTest(protected val utf8: UTF8) {
+
+    private fun assertUtf8(hex: String) {
+        val bytes = hex.decodeToByteArray(Base16)
+        val utf8Kotlin = bytes.decodeToString()
+
+        val expected = utf8Kotlin.encodeToByteArray()
+        assertEquals(expected.size.toLong(), utf8Kotlin.sizeUTF8(utf8), "size")
+
+        val actual = utf8Kotlin.decodeToByteArray(utf8)
+
+        assertContentEquals(expected, actual, "bytes - HEX[$hex]")
+
+        if (utf8.config.replacementStrategy == UTF8.ReplacementStrategy.KOTLIN) {
+            val utf8Encoding = bytes.encodeToString(utf8)
+            assertEquals(utf8Kotlin, utf8Encoding, "utf8 - HEX[$hex]")
+        }
+    }
 
     @Test
     fun givenZeroBytes_whenEncodedDecoded_thenIsAsExpected() {
@@ -175,21 +193,75 @@ abstract class UTF8BaseUnitTest(protected val utf8: UTF8) {
         assertUtf8(hex = "f0f0f0")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 4 >> Non-continuation)
     }
 
-    private fun assertUtf8(hex: String) {
-        val bytes = hex.decodeToByteArray(Base16)
-        val utf8Kotlin = bytes.decodeToString()
-        println("HEX[$hex] - EXPECTED[$utf8Kotlin]")
+    @Test
+    fun givenRandomSequences_whenEncoded_thenMatchesKotlinEncodeToByteArray() {
+        if (utf8.config.replacementStrategy != UTF8.ReplacementStrategy.KOTLIN) {
+            println("Skipping...")
+            return
+        }
 
-        val expected = utf8Kotlin.encodeToByteArray()
-        assertEquals(expected.size.toLong(), utf8Kotlin.sizeUTF8(utf8), "size")
+        val (times, maxSize) = when {
+            // Js/WasmJs
+            IS_JS -> 250 to 42
+            // Jvm
+            utf8.config.replacementStrategy == UTF8.ReplacementStrategy.U_0034 -> 5_000 to 106
+            // WasmWasi/Native
+            else -> 2_500 to 88
+        }
 
-        val actual = utf8Kotlin.decodeToByteArray(utf8)
+        repeat(times) { i ->
+            val size = Random.nextInt(5, maxSize)
+            val text = buildString(size) {
+                repeat(size) {
+                    val c = Random.nextInt().toChar()
+                    append(c)
+                }
+            }
 
-        assertContentEquals(expected, actual, "bytes - HEX[$hex]")
+            val expected = text.encodeToByteArray()
+            assertEquals(expected.size.toLong(), text.sizeUTF8(utf8), "sizes >> run[$i]")
 
-        if (utf8.config.replacementStrategy == UTF8.ReplacementStrategy.KOTLIN) {
-            val utf8Encoding = bytes.encodeToString(utf8)
-            assertEquals(utf8Kotlin, utf8Encoding, "utf8 - HEX[$hex]")
+            val actual = text.decodeToByteArray(utf8)
+            assertEquals(
+                expected.size,
+                actual.size,
+                """
+
+                    Sizes do not match for run[$i]
+                    Expected${expected.toList()}
+                      Actual${actual.toList()}
+                        TEXT[$text]
+
+                """.trimIndent()
+            )
+            for (j in expected.indices) {
+                assertEquals(
+                    expected[j],
+                    actual[j],
+                    """
+
+                        Content mismatched at index[$j] for run[$i]
+                        Expected${expected.toList()}
+                          Actual${actual.toList()}
+                            TEXT[$text]
+
+                    """.trimIndent()
+                )
+            }
+
+            val utf8Kotlin = expected.decodeToString()
+            val utf8Encoding = expected.encodeToString(utf8)
+            assertEquals(
+                utf8Kotlin,
+                utf8Encoding,
+                """
+
+                    Content mismatched for run[$i]
+                    Expected[$utf8Kotlin]
+                      Actual[$utf8Encoding]
+                        TEXT[$text]
+                """.trimIndent()
+            )
         }
     }
 }

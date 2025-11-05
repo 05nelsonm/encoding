@@ -22,9 +22,9 @@ import kotlin.test.Test
 
 class UTF8_UFFFDUnitTest: UTF8BaseUnitTest(utf8 = INSTANCE) {
     private companion object {
-        private val INSTANCE = UTF8.Builder()
-            .replacement(UTF8.ReplacementStrategy.U_FFFD)
-            .build()
+        private val INSTANCE = UTF8.Builder {
+            replacement(strategy = UTF8.ReplacementStrategy.U_FFFD)
+        }
     }
 
     @Test
