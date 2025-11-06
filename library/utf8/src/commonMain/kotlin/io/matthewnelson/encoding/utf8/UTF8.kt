@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("ConvertTwoComparisonsToRangeCheck", "FunctionName", "NOTHING_TO_INLINE", "PropertyName", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
+@file:Suppress("ConvertTwoComparisonsToRangeCheck", "FunctionName", "LocalVariableName", "NOTHING_TO_INLINE", "PropertyName", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.utf8
 
@@ -316,9 +316,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * */
             @JvmStatic
             public fun Iterator<Char>.sizeUTF8(strategy: ReplacementStrategy): Long {
-                val pp = CharPreProcessor.of(strategy)
-                while (hasNext()) { pp + next() }
-                return pp.doFinal()
+                val cpp = CharPreProcessor.of(strategy)
+                while (hasNext()) { cpp + next() }
+                return cpp.doFinal()
             }
         }
 
@@ -329,64 +329,75 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         public var currentSize: Long = 0L
             private set
 
-        private var buf = 0
-        private var hasBuffered = false
+        private var checkNext = false
 
         /**
          * TODO
          * */
         public operator fun plus(input: Char) {
-            if (!hasBuffered) {
-                buf = input.code
-                hasBuffered = true
-                return // Await more input
+            if (!checkNext) {
+                val c = input.code
+                if (c < 0x0080) {
+                    currentSize += 1
+                    return
+                }
+                if (c < 0x0800) {
+                    currentSize += 2
+                    return
+                }
+                if (c < 0xd800 || c > 0xdfff) {
+                    currentSize += 3
+                    return
+                }
+                if (c > 0xdbff) {
+                    currentSize += sizeOrThrow()
+                    return
+                }
+                checkNext = true
+                return
             }
-            val c = buf
+
             val cNext = input.code
-
-            if (c < 0x0080) {
-                buf = cNext
-                currentSize += 1
-                return
-            }
-            if (c < 0x0800) {
-                buf = cNext
-                currentSize += 2
-                return
-            }
-            if (c < 0xd800 || c > 0xdfff) {
-                buf = cNext
-                currentSize += 3
-                return
-            }
-            if (c > 0xdbff) {
-                buf = cNext
-                currentSize += sizeOrThrow()
-                return
-            }
             if (cNext < 0xdc00 || cNext > 0xdfff) {
-                buf = cNext
                 currentSize += sizeOrThrow()
+
+                if (cNext < 0x0080) {
+                    currentSize += 1
+                    checkNext = false
+                    return
+                }
+                if (cNext < 0x0800) {
+                    currentSize += 2
+                    checkNext = false
+                    return
+                }
+                if (cNext < 0xd800 || cNext > 0xdfff) {
+                    currentSize += 3
+                    checkNext = false
+                    return
+                }
+                if (cNext > 0xdbff) {
+                    currentSize += sizeOrThrow()
+                    checkNext = false
+                    return
+                }
+                // checkNext = true
                 return
             }
 
-            hasBuffered = false
+            checkNext = false
             currentSize += 4
+            return
         }
 
         /**
          * TODO
          * */
         public fun doFinal(): Long {
-            val c = buf
             val s = currentSize
-            buf = 0
-            currentSize = 0
-            if (!hasBuffered) return s
-            hasBuffered = false
-            if (c < 0x0080) return s + 1
-            if (c < 0x0800) return s + 2
-            if (c < 0xd800 || c > 0xdfff) return s + 3
+            currentSize = 0L
+            if (!checkNext) return s
+            checkNext = false
             return s + sizeOrThrow()
         }
 
@@ -445,38 +456,47 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
         final override fun consumeProtected(input: Char) {
             if (!hasBuffered) {
-                buf = input.code
+                val c = input.code
+                if (c.process1()) return
+                if (c.process2()) return
+                if (c.process3()) return
+                if (c > 0xdbff) {
+                    _out.outputReplacementSequence()
+                    return
+                }
+                buf = c
                 hasBuffered = true
-                return // Await more input
+                return
             }
-            val c = buf
-            val cNext = input.code
 
-            if (c.process1()) {
-                buf = cNext
-                return
-            }
-            if (c.process2()) {
-                buf = cNext
-                return
-            }
-            if (c.process3()) {
-                buf = cNext
-                return
-            }
-            if (c > 0xdbff) {
-                buf = cNext
-                _out.outputReplacementSequence()
-                return
-            }
+            val cNext = input.code
             if (cNext < 0xdc00 || cNext > 0xdfff) {
-                buf = cNext
                 _out.outputReplacementSequence()
+
+                if (cNext.process1()) {
+                    hasBuffered = false
+                    return
+                }
+                if (cNext.process2()) {
+                    hasBuffered = false
+                    return
+                }
+                if (cNext.process3()) {
+                    hasBuffered = false
+                    return
+                }
+                if (cNext > 0xdbff) {
+                    _out.outputReplacementSequence()
+                    hasBuffered = false
+                    return
+                }
+                buf = cNext
+                // hasBuffered = true
                 return
             }
 
             hasBuffered = false
-            val codePoint = ((c shl 10) + cNext) + (0x010000 - (0xd800 shl 10) - 0xdc00)
+            val codePoint = ((buf shl 10) + cNext) + (0x010000 - (0xd800 shl 10) - 0xdc00)
             _out.output((codePoint shr 18          or 0xf0).toByte())
             _out.output((codePoint shr 12 and 0x3f or 0x80).toByte())
             _out.output((codePoint shr  6 and 0x3f or 0x80).toByte())
@@ -484,13 +504,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         }
 
         final override fun doFinalProtected() {
-            val c = buf
             buf = 0
             if (!hasBuffered) return
             hasBuffered = false
-            if (c.process1()) return
-            if (c.process2()) return
-            if (c.process3()) return
             _out.outputReplacementSequence()
         }
 
