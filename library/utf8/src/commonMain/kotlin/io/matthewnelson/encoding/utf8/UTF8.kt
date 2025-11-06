@@ -279,7 +279,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * TODO
              * */
             @JvmStatic
-            public inline fun CharArray.sizeUTF8(strategy: ReplacementStrategy): Long = iterator().sizeUTF8(strategy)
+            public fun CharArray.sizeUTF8(strategy: ReplacementStrategy): Long {
+                val cpp = of(strategy)
+                for (i in indices) { cpp + this[i] }
+                return cpp.doFinal()
+            }
 
             /**
              * TODO
@@ -297,7 +301,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * TODO
              * */
             @JvmStatic
-            public inline fun CharSequence.sizeUTF8(strategy: ReplacementStrategy): Long = iterator().sizeUTF8(strategy)
+            public fun CharSequence.sizeUTF8(strategy: ReplacementStrategy): Long {
+                val cpp = of(strategy)
+                for (i in indices) { cpp + this[i] }
+                return cpp.doFinal()
+            }
 
             /**
              * TODO
