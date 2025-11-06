@@ -16,8 +16,9 @@ public final class io/matthewnelson/encoding/utf8/UTF8$Builder {
 	public final fun replacement (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)Lio/matthewnelson/encoding/utf8/UTF8$Builder;
 }
 
-public abstract class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor {
+public class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor {
 	public static final field Companion Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor$Companion;
+	protected field checkNext Z
 	public final field strategy Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public synthetic fun <init> (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun currentSize ()J
@@ -26,7 +27,8 @@ public abstract class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor {
 	public static final fun of (Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor;
 	public static final fun of (Lio/matthewnelson/encoding/utf8/UTF8;)Lio/matthewnelson/encoding/utf8/UTF8$CharPreProcessor;
 	public final fun plus (C)V
-	protected abstract fun sizeOrThrow ()I
+	protected fun replacementSize ()I
+	protected final fun setCurrentSize (J)V
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8;)J

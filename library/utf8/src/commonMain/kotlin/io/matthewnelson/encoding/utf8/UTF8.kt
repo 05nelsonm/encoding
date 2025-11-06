@@ -225,7 +225,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     /**
      * TODO
      * */
-    public abstract class CharPreProcessor private constructor(
+    public open class CharPreProcessor private constructor(
 
         /**
          * TODO
@@ -254,13 +254,13 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             @JvmStatic
             public fun of(strategy: ReplacementStrategy): CharPreProcessor = when (strategy.size) {
                 ReplacementStrategy.THROW.size -> object : CharPreProcessor(strategy) {
-                    override fun sizeOrThrow(): Int {
+                    override fun replacementSize(): Int {
+                        currentSize = 0L
+                        checkNext = false
                         throw EncodingException("Malformed UTF-8 character sequence")
                     }
                 }
-                else -> object : CharPreProcessor(strategy) {
-                    override fun sizeOrThrow(): Int = strategy.size
-                }
+                else -> CharPreProcessor(strategy)
             }
 
             /**
@@ -327,9 +327,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
          * */
         @get:JvmName("currentSize")
         public var currentSize: Long = 0L
-            private set
+            protected set
 
-        private var checkNext = false
+        @JvmField
+        protected var checkNext: Boolean = false
 
         /**
          * TODO
@@ -338,19 +339,19 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             if (!checkNext) {
                 val c = input.code
                 if (c < 0x0080) {
-                    currentSize += 1
+                    currentSize += 1L
                     return
                 }
                 if (c < 0x0800) {
-                    currentSize += 2
+                    currentSize += 2L
                     return
                 }
                 if (c < 0xd800 || c > 0xdfff) {
-                    currentSize += 3
+                    currentSize += 3L
                     return
                 }
                 if (c > 0xdbff) {
-                    currentSize += sizeOrThrow()
+                    currentSize += replacementSize()
                     return
                 }
                 checkNext = true
@@ -359,25 +360,25 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
             val cNext = input.code
             if (cNext < 0xdc00 || cNext > 0xdfff) {
-                currentSize += sizeOrThrow()
+                currentSize += replacementSize()
 
                 if (cNext < 0x0080) {
-                    currentSize += 1
+                    currentSize += 1L
                     checkNext = false
                     return
                 }
                 if (cNext < 0x0800) {
-                    currentSize += 2
+                    currentSize += 2L
                     checkNext = false
                     return
                 }
                 if (cNext < 0xd800 || cNext > 0xdfff) {
-                    currentSize += 3
+                    currentSize += 3L
                     checkNext = false
                     return
                 }
                 if (cNext > 0xdbff) {
-                    currentSize += sizeOrThrow()
+                    currentSize += replacementSize()
                     checkNext = false
                     return
                 }
@@ -386,7 +387,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
 
             checkNext = false
-            currentSize += 4
+            currentSize += 4L
             return
         }
 
@@ -398,11 +399,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             currentSize = 0L
             if (!checkNext) return s
             checkNext = false
-            return s + sizeOrThrow()
+            return s + replacementSize()
         }
 
         @Throws(EncodingException::class)
-        protected abstract fun sizeOrThrow(): Int
+        protected open fun replacementSize(): Int = strategy.size
     }
 
     protected final override fun name(): String = NAME
