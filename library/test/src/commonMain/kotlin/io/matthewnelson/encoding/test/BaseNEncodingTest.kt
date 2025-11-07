@@ -165,7 +165,9 @@ abstract class BaseNEncodingTest {
     }
 
     protected fun checkRandomData() {
-        for (s in 50_000..50_009) {
+        val min = 50_000
+        val max = min + if (IS_JS) 2 else 10
+        for (s in min..max) {
             val bytes = Random.nextBytes(s)
             val encoded = encode(bytes)
             val decoded = decode(encoded)

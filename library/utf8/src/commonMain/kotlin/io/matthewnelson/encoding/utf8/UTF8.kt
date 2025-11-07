@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("ConvertTwoComparisonsToRangeCheck", "FunctionName", "LocalVariableName", "NOTHING_TO_INLINE", "PropertyName", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
+@file:Suppress("ConvertTwoComparisonsToRangeCheck", "FunctionName", "NOTHING_TO_INLINE", "PropertyName", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.utf8
 
@@ -279,7 +279,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * TODO
              * */
             @JvmStatic
-            public inline fun CharArray.sizeUTF8(strategy: ReplacementStrategy): Long = iterator().sizeUTF8(strategy)
+            public fun CharArray.sizeUTF8(strategy: ReplacementStrategy): Long {
+                val cpp = of(strategy)
+                for (i in indices) { cpp + this[i] }
+                return cpp.doFinal()
+            }
 
             /**
              * TODO
@@ -297,7 +301,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * TODO
              * */
             @JvmStatic
-            public inline fun CharSequence.sizeUTF8(strategy: ReplacementStrategy): Long = iterator().sizeUTF8(strategy)
+            public fun CharSequence.sizeUTF8(strategy: ReplacementStrategy): Long {
+                val cpp = of(strategy)
+                for (i in indices) { cpp + this[i] }
+                return cpp.doFinal()
+            }
 
             /**
              * TODO
@@ -338,22 +346,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         public operator fun plus(input: Char) {
             if (!checkNext) {
                 val c = input.code
-                if (c < 0x0080) {
-                    currentSize += 1L
-                    return
-                }
-                if (c < 0x0800) {
-                    currentSize += 2L
-                    return
-                }
-                if (c < 0xd800 || c > 0xdfff) {
-                    currentSize += 3L
-                    return
-                }
-                if (c > 0xdbff) {
-                    currentSize += replacementSize()
-                    return
-                }
+                if (c.process()) return
                 checkNext = true
                 return
             }
@@ -361,24 +354,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             val cNext = input.code
             if (cNext < 0xdc00 || cNext > 0xdfff) {
                 currentSize += replacementSize()
-
-                if (cNext < 0x0080) {
-                    currentSize += 1L
-                    checkNext = false
-                    return
-                }
-                if (cNext < 0x0800) {
-                    currentSize += 2L
-                    checkNext = false
-                    return
-                }
-                if (cNext < 0xd800 || cNext > 0xdfff) {
-                    currentSize += 3L
-                    checkNext = false
-                    return
-                }
-                if (cNext > 0xdbff) {
-                    currentSize += replacementSize()
+                if (cNext.process()) {
                     checkNext = false
                     return
                 }
@@ -404,6 +380,26 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
         @Throws(EncodingException::class)
         protected open fun replacementSize(): Int = strategy.size
+
+        private inline fun Int.process(): Boolean {
+            if (this < 0x0080) {
+                currentSize += 1L
+                return true
+            }
+            if (this < 0x0800) {
+                currentSize += 2L
+                return true
+            }
+            if (this < 0xd800 || this > 0xdfff) {
+                currentSize += 3L
+                return true
+            }
+            if (this > 0xdbff) {
+                currentSize += replacementSize()
+                return true
+            }
+            return false
+        }
     }
 
     protected final override fun name(): String = NAME
@@ -458,13 +454,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         final override fun consumeProtected(input: Char) {
             if (!hasBuffered) {
                 val c = input.code
-                if (c.process1()) return
-                if (c.process2()) return
-                if (c.process3()) return
-                if (c > 0xdbff) {
-                    _out.outputReplacementSequence()
-                    return
-                }
+                if (c.process()) return
                 buf = c
                 hasBuffered = true
                 return
@@ -473,21 +463,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             val cNext = input.code
             if (cNext < 0xdc00 || cNext > 0xdfff) {
                 _out.outputReplacementSequence()
-
-                if (cNext.process1()) {
-                    hasBuffered = false
-                    return
-                }
-                if (cNext.process2()) {
-                    hasBuffered = false
-                    return
-                }
-                if (cNext.process3()) {
-                    hasBuffered = false
-                    return
-                }
-                if (cNext > 0xdbff) {
-                    _out.outputReplacementSequence()
+                if (cNext.process()) {
                     hasBuffered = false
                     return
                 }
@@ -511,28 +487,27 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             _out.outputReplacementSequence()
         }
 
-        private inline fun Int.process1(): Boolean = if (this < 0x0080) {
-            _out.output((this                        ).toByte())
-            true
-        } else {
-            false
-        }
-
-        private inline fun Int.process2(): Boolean = if (this < 0x0800) {
-            _out.output((this shr  6          or 0xc0).toByte())
-            _out.output((this        and 0x3f or 0x80).toByte())
-            true
-        } else {
-            false
-        }
-
-        private inline fun Int.process3(): Boolean = if (this < 0xd800 || this > 0xdfff) {
-            _out.output((this shr 12          or 0xe0).toByte())
-            _out.output((this shr  6 and 0x3f or 0x80).toByte())
-            _out.output((this        and 0x3f or 0x80).toByte())
-            true
-        } else {
-            false
+        private inline fun Int.process(): Boolean {
+            if (this < 0x0080) {
+                _out.output((this                        ).toByte())
+                return true
+            }
+            if (this < 0x0800) {
+                _out.output((this shr  6          or 0xc0).toByte())
+                _out.output((this        and 0x3f or 0x80).toByte())
+                return true
+            }
+            if (this < 0xd800 || this > 0xdfff) {
+                _out.output((this shr 12          or 0xe0).toByte())
+                _out.output((this shr  6 and 0x3f or 0x80).toByte())
+                _out.output((this        and 0x3f or 0x80).toByte())
+                return true
+            }
+            if (this > 0xdbff) {
+                _out.outputReplacementSequence()
+                return true
+            }
+            return false
         }
     }
 
