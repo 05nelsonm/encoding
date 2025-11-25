@@ -50,6 +50,7 @@ import kotlin.jvm.JvmSynthetic
  *     val text = "Hello World!"
  *     val utf8Bytes = text.decodeToByteArray(utf8)
  *     println(utf8Bytes.toList()) // [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33]
+ *
  *     val text2 = utf8Bytes.encodeToString(utf8)
  *     assertEquals(text, text2)
  *
