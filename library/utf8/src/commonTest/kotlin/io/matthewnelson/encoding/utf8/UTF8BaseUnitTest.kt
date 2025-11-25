@@ -51,147 +51,125 @@ abstract class UTF8BaseUnitTest(protected val utf8: UTF8) {
 
     @Test
     fun givenOneByte_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "00")
-        assertUtf8(hex = "20")
-        assertUtf8(hex = "7e")
-        assertUtf8(hex = "7f")
+        assertUtf8(hex = "00")       // Success
+        assertUtf8(hex = "20")       // Success
+        assertUtf8(hex = "7e")       // Success
+        assertUtf8(hex = "7f")       // Success
+        assertUtf8(hex = "ff")       // Replace
     }
 
     @Test
     fun givenTwoBytes_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "c280") // needed = 2 (Success)
-        assertUtf8(hex = "c180") // needed = 2 (Null >> needed = 0 >> Success)
-        assertUtf8(hex = "c2e2") // needed = 2 (Non-continuation >> needed = 3 >> Truncated input)
-        assertUtf8(hex = "c21e") // needed = 2 (Non-continuation >> needed = 0 >> Success)
-        assertUtf8(hex = "c480") // needed = 2 (Success)
-        assertUtf8(hex = "dfbf") // needed = 2 (Success)
-        assertUtf8(hex = "85af") // needed = 0 (Replace, Replace)
-        assertUtf8(hex = "7a43") // needed = 0 (Success, Success)
-        assertUtf8(hex = "c2bf") // needed = 2 (Success)
-        assertUtf8(hex = "cf7a") // needed = 2 (Non-continuation >> needed = 0 >> Success)
-        assertUtf8(hex = "c1aa") // needed = 2 (Null >> needed = 0 >> Replace)
+        assertUtf8(hex = "c280")     // Success
+        assertUtf8(hex = "c480")     // Success
+        assertUtf8(hex = "dfbf")     // Success
+        assertUtf8(hex = "c2bf")     // Success
+
+        assertUtf8(hex = "85af")     // Replace >> needed = 0 >> Replace
+        assertUtf8(hex = "7a43")     // Success >> needed = 0 >> Success
+
+        assertUtf8(hex = "c180")     // Null >> needed = 0 >> Success
+        assertUtf8(hex = "c1aa")     // Null >> needed = 0 >> Replace
+
+        assertUtf8(hex = "c2e2")     // Non-continuation >> needed = 3 >> Truncated
+        assertUtf8(hex = "c2f2")     // Non-continuation >> needed = 3 >> Truncated
+
+        assertUtf8(hex = "c21e")     // Non-continuation >> needed = 0 >> Success
+        assertUtf8(hex = "cf7a")     // Non-continuation >> needed = 0 >> Success
     }
 
     @Test
     fun givenThreeBytes_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "e0a080") // needed = 3 (Success)
-        assertUtf8(hex = "e0bfbf") // needed = 3 (Success)
-        assertUtf8(hex = "e18080") // needed = 3 (Success)
-        assertUtf8(hex = "e1bfbf") // needed = 3 (Success)
-        assertUtf8(hex = "ed8080") // needed = 3 (Success)
-        assertUtf8(hex = "ed9fbf") // needed = 3 (Success)
-        assertUtf8(hex = "ee8080") // needed = 3 (Success)
-        assertUtf8(hex = "eebfbf") // needed = 3 (Success)
-        assertUtf8(hex = "ef8080") // needed = 3 (Success)
-        assertUtf8(hex = "efbfbf") // needed = 3 (Success)
-        assertUtf8(hex = "e09faf") // needed = 3 (Non-shortest form >> needed = 0 >> Replace >> needed = 0 >> Replace)
-        assertUtf8(hex = "e0c2c2") // needed = 3 (Non-shortest form >> needed = 2 >> Replace >> needed = 2 >> Truncated)
-        assertUtf8(hex = "e0e0c2") // needed = 3 (Non-shortest form >> needed = 3 >> Replace >> needed = 3 >> Truncated)
-        assertUtf8(hex = "e0f0c2") // needed = 3 (Non-shortest form >> needed = 4 >> Replace >> needed = 2 >> Truncated)
-        assertUtf8(hex = "e0c2af") // needed = 3 (Non-shortest form >> needed = 2 >> Success)
-        assertUtf8(hex = "efaf7a") // needed = 3 (Non-continuation >> needed = 0 >> Success)
+        assertUtf8(hex = "e0a080")   // Success
+        assertUtf8(hex = "e0bfbf")   // Success
+        assertUtf8(hex = "e18080")   // Success
+        assertUtf8(hex = "e1bfbf")   // Success
+        assertUtf8(hex = "ed8080")   // Success
+        assertUtf8(hex = "ed9fbf")   // Success
+        assertUtf8(hex = "ee8080")   // Success
+        assertUtf8(hex = "eebfbf")   // Success
+        assertUtf8(hex = "ef8080")   // Success
+        assertUtf8(hex = "efbfbf")   // Success
+
+        assertUtf8(hex = "e09faf")   // Non-shortest form >> needed = 0 >> Replace >> needed = 0 >> Replace
+        assertUtf8(hex = "e0c2af")   // Non-shortest form >> needed = 2 >> Success
+        assertUtf8(hex = "e0c2c2")   // Non-shortest form >> needed = 2 >> Replace >> needed = 2 >> Truncated
+        assertUtf8(hex = "e0e0c2")   // Non-shortest form >> needed = 3 >> Replace >> needed = 3 >> Truncated
+        assertUtf8(hex = "e0f0c2")   // Non-shortest form >> needed = 4 >> Replace >> needed = 2 >> Truncated
+
+        assertUtf8(hex = "efaf7a")   // Non-continuation >> needed = 0 >> Success
+
+        assertUtf8(hex = "edaf41")   // Partial surrogate >> needed = 0 >> Success
+        assertUtf8(hex = "edafaf")   // Partial surrogate >> needed = 0 >> Replace
+        assertUtf8(hex = "eded1e")   // Partial surrogate >> needed = 0 >> Replace
     }
 
     @Test
     fun givenFourBytes_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "f0908080") // needed = 4 (Success)
-        assertUtf8(hex = "f48fbfbf") // needed = 4 (Success)
-        // TODO: Test more consumeProtected needed = 4 logical branches
-    }
+        assertUtf8(hex = "f0908080") // Success
+        assertUtf8(hex = "f48fbfbf") // Success
 
-    @Test
-    fun givenUnknownBytes_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "f8")
-        assertUtf8(hex = "f0f8")
-        assertUtf8(hex = "ff")
-        assertUtf8(hex = "f0ff")
-        assertUtf8(hex = "80")
-        assertUtf8(hex = "bf")
-    }
+        assertUtf8(hex = "f00fbfbf") // Non-shortest form >> needed = 0 >> Success >> needed = 0 >> Replace
+        assertUtf8(hex = "f00fc2bf") // Non-shortest form >> needed = 0 >> Success >> needed = 2 >> Success
+        assertUtf8(hex = "f00fc21e") // Non-shortest form >> needed = 0 >> Success >> needed = 2 >> Non-continuation >> needed = 0 >> Replace
+        assertUtf8(hex = "f50fed1e") // Exceeds Unicode max >> needed = 0 >> Success >> needed = 3 >> Truncated
+        assertUtf8(hex = "f5c2bf00") // Exceeds Unicode max >> needed = 2 >> Success >> needed = 0 >> Success
+        assertUtf8(hex = "f5c21e00") // Exceeds Unicode max >> needed = 2 >> Non-continuation >> needed = 0 >> Success >> needed = 0 >> Success
+        assertUtf8(hex = "f5efbfbf") // Exceeds Unicode max >> needed = 3 >> Success
+        assertUtf8(hex = "f5e09faf") // Exceeds Unicode max >> needed = 3 >> Non-shortest form >> needed = 0 >> Replace >> needed = 0 >> Replace
+        assertUtf8(hex = "f5e0c2af") // Exceeds Unicode max >> needed = 3 >> Non-shortest form >> needed = 2 >> Success
+        assertUtf8(hex = "f5e0c2c2") // Exceeds Unicode max >> needed = 3 >> Non-shortest form >> needed = 2 >> Replace >> needed = 2 >> Truncated
+        assertUtf8(hex = "f5e0e0c2") // Exceeds Unicode max >> needed = 3 >> Non-shortest form >> needed = 3 >> Replace >> needed = 3 >> Truncated
+        assertUtf8(hex = "f5e0f0c2") // Exceeds Unicode max >> needed = 3 >> Non-shortest form >> needed = 4 >> Replace >> needed = 2 >> Truncated
+        assertUtf8(hex = "f5e0f5ed") // Exceeds Unicode max >> needed = 3 >> Non-shortest form >> needed = 4 >> Replace >> needed = 4 >> Truncated
+        assertUtf8(hex = "f5efaf7a") // Exceeds Unicode max >> needed = 3 >> Non-continuation >> needed = 0 >> Success
+        assertUtf8(hex = "f5edaf41") // Exceeds Unicode max >> needed = 3 >> Partial surrogate >> needed = 0 >> Success
+        assertUtf8(hex = "f5edafaf") // Exceeds Unicode max >> needed = 3 >> Partial surrogate >> needed = 0 >> Replace
+        assertUtf8(hex = "f5eded1e") // Exceeds Unicode max >> needed = 3 >> Partial surrogate >> needed = 0 >> Replace
+        assertUtf8(hex = "f5f48fbf") // Exceeds Unicode max >> needed = 4 >> Truncated
 
-    @Test
-    fun givenLongSequence_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "c080")
-        assertUtf8(hex = "e08080")
-        assertUtf8(hex = "f0808080")
-        assertUtf8(hex = "c1bf")
-        assertUtf8(hex = "e09fbf")
-        assertUtf8(hex = "f08fbfbf")
-    }
-
-    @Test
-    fun givenDanglingHighSurrogate_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "3f")
-        assertUtf8(hex = "eda080")
-    }
-
-    @Test
-    fun givenLowSurrogateWithoutHighSurrogate_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "edb080")
-    }
-
-    @Test
-    fun givenHighSurrogateFollowedByNonSurrogate_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "3fee8080")
-        assertUtf8(hex = "f090ee8080")
-        assertUtf8(hex = "3f61")
-        assertUtf8(hex = "f09061")
-        assertUtf8(hex = "eda18cedbeb4")
-    }
-
-    @Test
-    fun givenHighSurrogate_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "edafbf")
-        assertUtf8(hex = "edb39a")
-        assertUtf8(hex = "e696a4ed9f7a")
-    }
-
-    @Test
-    fun givenDoubleLowSurrogate_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "3f3f")
-        assertUtf8(hex = "edb080edb080")
-    }
-
-    @Test
-    fun givenDoubleHighSurrogate_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "3f3f")
-        assertUtf8(hex = "eda080eda080")
-        assertUtf8(hex = "edafbfedb39a")
-    }
-
-    @Test
-    fun givenPartialSurrogateFollowedByNonSurrogate_whenEncodedDecoded_thenIsAsExpected() {
-        assertUtf8(hex = "eda080edbfbfedaf41")
-        assertUtf8(hex = "e180e2f09192f1bf41")
-        assertUtf8(hex = "c0afe080bff0818241")
-        assertUtf8(hex = "f4919293ff4180bf42")
+        assertUtf8(hex = "f0c28080") // Non-continuation(b1) >> needed = 2 >> Success >> needed = 0 >> Success
+        assertUtf8(hex = "f0c2c280") // Non-continuation(b1) >> needed = 2 >> Non-continuation >> needed = 2 >> Success
+        assertUtf8(hex = "f0911e80") // Non-continuation(b2) >> needed = 0 >> Replace >> needed = 0 >> Replace
+        assertUtf8(hex = "f090c280") // Non-continuation(b2) >> needed = 2 >> Success
+        assertUtf8(hex = "f090c2c2") // Non-continuation(b2) >> needed = 2 >> Non-continuation >> Truncated
+        assertUtf8(hex = "f090edc2") // Non-continuation(b2) >> needed = 3 >> Truncated
+        assertUtf8(hex = "f090f5c2") // Non-continuation(b2) >> needed = 4 >> Truncated
+        assertUtf8(hex = "f0908000") // Non-continuation(b3) >> needed = 0 >> Success
     }
 
     @Test
     fun givenTruncatedInputSequences_whenEncodedDecoded_thenIsAsExpected() {
         // Exercises doFinalProtected logical branches
 
-        assertUtf8(hex = "c2")       // needed = 2, 1 buffered byte
-        assertUtf8(hex = "e0")       // needed = 3, 1 buffered byte
-        assertUtf8(hex = "f0")       // needed = 4, 1 buffered byte
+        // 1 buffered byte
+        assertUtf8(hex = "c2")       // needed = 2 (Replace)
+        assertUtf8(hex = "e0")       // needed = 3 (Replace)
+        assertUtf8(hex = "f0")       // needed = 4 (Replace)
 
-        assertUtf8(hex = "e0af")     // needed = 3, 2 buffered bytes (Index exhaustion)
-        assertUtf8(hex = "e080")     // needed = 3, 2 buffered bytes (Non-shortest form)
+        // 2 buffered bytes
+        assertUtf8(hex = "e0af")     // needed = 3 (Index exhaustion)
+        assertUtf8(hex = "e080")     // needed = 3 (Non-shortest form >> needed = 0 >> Replace)
+        assertUtf8(hex = "edaf")     // needed = 3 (Partial surrogate)
+        assertUtf8(hex = "ed1e")     // needed = 3 (Partial surrogate >> needed = 0 >> Success)
 
-        assertUtf8(hex = "f093")     // needed = 4, 2 buffered bytes (Index exhaustion)
-        assertUtf8(hex = "f080")     // needed = 4, 2 buffered bytes (Non-shortest form)
-        assertUtf8(hex = "f4f5")     // needed = 4, 2 buffered bytes (Exceeds Unicode max)
-        assertUtf8(hex = "f5f5")     // needed = 4, 2 buffered bytes (Exceeds Unicode max)
+        assertUtf8(hex = "f093")     // needed = 4 (Index exhaustion)
+        assertUtf8(hex = "f080")     // needed = 4 (Non-shortest form >> needed = 0 >> Replace)
+        assertUtf8(hex = "f4f5")     // needed = 4 (Exceeds Unicode max >> needed = 4 >> Replace)
+        assertUtf8(hex = "f5f5")     // needed = 4 (Exceeds Unicode max >> needed = 4 >> Replace)
 
-        assertUtf8(hex = "f09388")   // needed = 4, 3 buffered bytes (Index exhaustion)
-        assertUtf8(hex = "f0c288")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 2 >> Success)
-        assertUtf8(hex = "f0c2e0")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 2 >> Non-continuation)
-        assertUtf8(hex = "f0e088")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 3 >> Non-shortest form)
-        assertUtf8(hex = "f0e0af")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 3 >> Index exhaustion)
+        // 3 buffered bytes
+        assertUtf8(hex = "f09388")   // needed = 4 (Index exhaustion)
+        assertUtf8(hex = "f0c288")   // needed = 4 (Non-continuation >> needed = 2 >> Success)
+        assertUtf8(hex = "f0c2e0")   // needed = 4 (Non-continuation >> needed = 2 >> Non-continuation)
+        assertUtf8(hex = "f0e088")   // needed = 4 (Non-continuation >> needed = 3 >> Non-shortest form)
+        assertUtf8(hex = "f0e0af")   // needed = 4 (Non-continuation >> needed = 3 >> Index exhaustion)
+        assertUtf8(hex = "f0edaf")   // needed = 4 (Non-continuation >> needed = 3 >> Partial surrogate)
+        assertUtf8(hex = "f0ed1d")   // needed = 4 (Non-continuation >> needed = 3 >> Partial surrogate >> needed = 0 >> Success)
 
-        assertUtf8(hex = "f0f080")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 4 >> Non-shortest form)
-        assertUtf8(hex = "f0f4f5")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 4 >> Exceeds Unicode max)
-        assertUtf8(hex = "f0f0f0")   // needed = 4, 3 buffered bytes (Non-continuation >> needed = 4 >> Non-continuation)
+        assertUtf8(hex = "f0f080")   // needed = 4 (Non-continuation >> needed = 4 >> Non-shortest form)
+        assertUtf8(hex = "f0f4f5")   // needed = 4 (Non-continuation >> needed = 4 >> Exceeds Unicode max)
+        assertUtf8(hex = "f0f0f0")   // needed = 4 (Non-continuation >> needed = 4 >> Non-continuation)
     }
 
     @Test
