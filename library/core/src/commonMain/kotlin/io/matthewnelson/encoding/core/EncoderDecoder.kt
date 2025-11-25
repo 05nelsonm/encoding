@@ -71,8 +71,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * After encoding/decoding operations have completed, the initial buffer may be trimmed
          * to size in the event of an over-allocation. If that happens, the initial buffer is
          * then dropped and the correct sized copy is returned. Prior versions always back-filled
-         * the initial buffer when this occurred, but that can be expensive for large data sets
-         * and potentially unnecessary if data is known to not be sensitive in nature.
+         * the initial buffer with `0` or a space character when this occurred, but that can be
+         * computationally expensive for large data sets and potentially unnecessary if data is
+         * known to not be sensitive in nature.
          *
          * If `true`, the initial buffer (if it was trimmed to size) is back-filled. If `false`,
          * back-filling is skipped.
@@ -105,6 +106,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * Will always return a value greater than or equal to `0`.
          *
          * @param [unEncodedSize] The size of the data which is to be encoded.
+         *
          * @throws [EncodingSizeException] If [unEncodedSize] is negative, or the calculated
          *   size exceeds [Long.MAX_VALUE].
          * */

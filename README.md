@@ -36,7 +36,7 @@ API docs available at [https://encoding.matthewnelson.io][url-docs]
 
 <!-- TODO: Uncomment when published && update Get Started
 **UTF-8**
- - [RFC 3629 section 4][url-rfc3629-s4]
+ - [RFC 3629][url-rfc3629]
 -->
 
 ### Usage
@@ -330,7 +330,7 @@ dependencies {
 [url-kotlin]: https://kotlinlang.org
 [url-latest]: https://github.com/05nelsonm/encoding/releases/latest
 [url-license]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[url-rfc3629-s4]: https://datatracker.ietf.org/doc/html/rfc3629#page-4
+[url-rfc3629]: https://datatracker.ietf.org/doc/html/rfc3629
 [url-rfc4648-s4]: https://www.ietf.org/rfc/rfc4648.html#section-4
 [url-rfc4648-s5]: https://www.ietf.org/rfc/rfc4648.html#section-5
 [url-rfc4648-s6]: https://www.ietf.org/rfc/rfc4648.html#section-6

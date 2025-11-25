@@ -20,10 +20,10 @@ package io.matthewnelson.encoding.utf8
 import kotlin.test.Ignore
 import kotlin.test.Test
 
-class UTF8_U0034UnitTest: UTF8BaseUnitTest(utf8 = INSTANCE) {
+class UTF8_U003FUnitTest: UTF8BaseUnitTest(utf8 = INSTANCE) {
     private companion object {
         private val INSTANCE = UTF8.Builder {
-            replacement(strategy = UTF8.ReplacementStrategy.U_0034)
+            replacement(strategy = UTF8.ReplacementStrategy.U_003F)
         }
     }
 
