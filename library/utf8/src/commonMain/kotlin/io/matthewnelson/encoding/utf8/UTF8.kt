@@ -983,15 +983,17 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                     debug { "P3 - 2" }
                     // Partial surrogate code point
                     _out.outputReplacementChar()
-                    if (config.replacementStrategy.size == ReplacementStrategy.U_003F.size) {
-                        // Must check b2 to see if it needs to be run through process1()
-                        if (!b2.isContinuation()) {
-                            debug { "P3 - 2 ------ HIT[b2]" }
-                            return 1
-                        }
-                        // Replace all 3 bytes with single replacement character.
-                        return 3
-                    }
+                    if (config.replacementStrategy.size != ReplacementStrategy.U_003F.size) return 0
+
+                    // Replace all 3 bytes with the single replacement character.
+                    if (b2.isContinuation()) return 3
+                    debug { "P3 - 2 ------ !b2.isContinuation()" }
+
+                    // Replace b0 & b1 with the single replacement character.
+                    if (b1.isContinuation()) return 1
+                    debug { "P3 - 2 ------ !b1.isContinuation()" }
+
+                    // Replace only b0 with the single replacement character.
                     return 0
                 }
                 !b1.isContinuation() -> {
@@ -1035,6 +1037,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                 }
                 b0 and 0x0f > 0x04 -> {
                     debug { "P4 - 3" }
+                    // Exceeds Unicode code point maximum
                     _out.outputReplacementChar()
                     return 0
                 }
