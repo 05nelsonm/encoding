@@ -17,10 +17,12 @@
 import io.matthewnelson.encoding.base16.Base16
 import io.matthewnelson.encoding.base32.Base32
 import io.matthewnelson.encoding.base64.Base64
+import io.matthewnelson.encoding.core.Decoder.Companion.decodeToByteArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
+import io.matthewnelson.encoding.utf8.UTF8
 
 fun main() {
-    val bytes = "Hello World!".encodeToByteArray()
+    val bytes = "Hello World!".decodeToByteArray(UTF8)
 
     val base16 = bytes.encodeToString(Base16)
 
@@ -40,4 +42,6 @@ fun main() {
 
     println("    Base64 Default: $base64")
     println("    Base64 UrlSafe: $base64UrlSafe")
+
+    println("    UTF-8 (bytes): ${bytes.toList()}")
 }

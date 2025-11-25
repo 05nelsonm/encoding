@@ -15,17 +15,11 @@
  **/
 plugins {
     id("configuration")
-//    id("bom-include")
+    id("bom-include")
 }
 
 kmpConfiguration {
-    // TODO:
-    //  - Set publish = true
-    //  - Uncomment bom-include plugin
-    //  - Remove explicitApi definition
-    //  - Update tools/check-publication/build.gradle.kts
-    //  - Update root README.md
-    configureShared(java9ModuleName = "io.matthewnelson.encoding.utf8", publish = false) {
+    configureShared(java9ModuleName = "io.matthewnelson.encoding.utf8", publish = true) {
         common {
             sourceSetMain {
                 dependencies {
@@ -39,7 +33,5 @@ kmpConfiguration {
                 }
             }
         }
-
-        kotlin { explicitApi() }
     }
 }
