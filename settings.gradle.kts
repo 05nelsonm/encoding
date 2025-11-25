@@ -35,7 +35,6 @@ if (CHECK_PUBLICATION != null) {
         "base32",
         "base64",
         "core",
-        "test",
         "utf8",
     ).forEach { name ->
         include(":library:$name")
@@ -44,4 +43,5 @@ if (CHECK_PUBLICATION != null) {
     include(":benchmarks")
     include(":bom")
     include(":sample")
+    include(":tools:test")
 }

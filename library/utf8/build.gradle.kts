@@ -29,7 +29,7 @@ kmpConfiguration {
             sourceSetTest {
                 dependencies {
                     implementation(project(":library:base16"))
-                    implementation(project(":library:test"))
+                    implementation(project(":tools:test"))
                 }
             }
         }
