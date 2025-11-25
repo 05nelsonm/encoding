@@ -33,12 +33,35 @@ import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
 
 /**
- * TODO
+ * UTF-8 encoding/decoding in accordance with [RFC 3629](https://datatracker.ietf.org/doc/html/rfc3629).
+ *
+ * **NOTE:** Syntax utilized for encoding/decoding operations are reversed, as it relates to [UTF8],
+ * due to nomenclature used by the `encoding:core` module abstractions. The UTF-8 specification is a
+ * byte encoding, which differs from base encoding implementations which are text encodings. As such,
+ * [UTF8] "encoding" operations reflect the transformation of UTF-8 bytes to text, while [UTF8]
+ * "decoding" operations reflect the transformation of text to UTF-8 bytes.
+ *
+ * e.g.
+ *
+ *     val utf8 = UTF8.Builder {
+ *         replacement(strategy = UTF8.ReplacementStrategy.KOTLIN)
+ *     }
+ *
+ *     val text = "Hello World!"
+ *     val utf8Bytes = text.decodeToByteArray(utf8)
+ *     println(utf8Bytes.toList()) // [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33]
+ *     val text2 = utf8Bytes.encodeToString(utf8)
+ *     assertEquals(text, text2)
+ *
+ * @see [Builder]
+ * @see [Default.Builder]
+ * @see [Encoder.Companion]
+ * @see [Decoder.Companion]
  * */
 public open class UTF8: EncoderDecoder<UTF8.Config> {
 
     /**
-     * TODO
+     * A static instance of [UTF8] configured with [UTF8.Builder] `DEFAULT` values.
      * */
     public companion object Default: UTF8(config = Config.DEFAULT) {
 
@@ -48,7 +71,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         //  encoded password may be different on Java than on Native/Js.
 
         /**
-         * TODO
+         * Syntactic sugar for Kotlin consumers that like lambdas.
          * */
         @JvmStatic
         @JvmName("-Builder")
@@ -59,7 +82,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         }
 
         /**
-         * TODO
+         * Syntactic sugar for Kotlin consumers that like lambdas.
          * */
         @JvmStatic
         @JvmName("-Builder")
@@ -73,7 +96,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     }
 
     /**
-     * TODO
+     * A static instance of [UTF8] configured with a [UTF8.Builder.replacement] strategy of
+     * [ReplacementStrategy.THROW], and remaining [UTF8.Builder] `DEFAULT` values.
      * */
     public object ThrowOnInvalid: UTF8(config = Config.THROW) {
 
@@ -81,7 +105,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     }
 
     /**
-     * TODO
+     * A Builder
+     *
+     * @see [Default.Builder]
      * */
     public class Builder {
 
@@ -100,7 +126,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         internal var _backFillBuffers = true
 
         /**
-         * TODO
+         * DEFAULT: [ReplacementStrategy.KOTLIN]
+         *
+         * @see [ReplacementStrategy]
          * */
         public fun replacement(strategy: ReplacementStrategy): Builder = apply { _replacementStrategy = strategy }
 
@@ -114,18 +142,24 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         // TODO: constantTime
 
         /**
-         * TODO
+         * Commits configured options to [Config], creating the [UTF8] instance.
          * */
         public fun build(): UTF8 = Config.build(this)
     }
 
     /**
-     * TODO
+     * Defines behavior of UTF-8 transformations when an invalid sequence is encountered.
+     *
+     * @see [U_003F]
+     * @see [U_FFFD]
+     * @see [KOTLIN]
+     * @see [THROW]
      * */
     public class ReplacementStrategy private constructor(
 
         /**
-         * TODO
+         * The number of bytes output when replacing an invalid character sequence during text to UTF-8
+         * byte transformations.
          * */
         @JvmField
         public val size: Int,
@@ -134,25 +168,47 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         public companion object {
 
             /**
-             * TODO
+             * A strategy which replaces an invalid character sequence with a 1-byte sequence of `0x3f`
+             * (i.e. character `?`) during text to UTF-8 byte transformations, and will replace partial
+             * surrogate code points with `1` replacement `�` character during UTF-8 byte to text
+             * transformations.
+             *
+             * This strategy is reflective of how Kotlin Jvm encodes/decodes UTF-8.
+             *
+             * @see [KOTLIN]
              * */
             @JvmField
-            public val U_0034: ReplacementStrategy = ReplacementStrategy(size = 1)
+            public val U_003F: ReplacementStrategy = ReplacementStrategy(size = 1)
 
             /**
-             * TODO
+             * A strategy which replaces an invalid character sequence with a 3-byte sequence of `0xef`,
+             * `0xbf`, `0xbd` (i.e. character `�`) during text to UTF-8 byte transformations, and will
+             * replace partial surrogate code points with `3` replacement `�` characters during UTF-8
+             * byte to text transformations.
+             *
+             * This strategy is reflective of how Kotlin Js/WasmJs/Wasi/Native encodes/decodes UTF-8.
+             *
+             * @see [KOTLIN]
              * */
             @JvmField
             public val U_FFFD: ReplacementStrategy = ReplacementStrategy(size = 3)
 
             /**
-             * TODO
+             * A strategy for multiplatform library consumers which will be either [U_003F] or [U_FFFD],
+             * depending on the platform, and reflects how Kotlin's [decodeToString] and [encodeToByteArray]
+             * functions operate. On Jvm, this will be a reference to [U_003F]. On all other platforms,
+             * this will be a reference to [U_FFFD].
+             *
+             * @see [Default]
              * */
             @JvmField
-            public val KOTLIN: ReplacementStrategy = initializeKotlin(U_0034, U_FFFD)
+            public val KOTLIN: ReplacementStrategy = initializeKotlin(U_003F, U_FFFD)
 
             /**
-             * TODO
+             * A strategy which will throw an exception when any invalid sequence is encountered during
+             * text to UTF-8 byte, or UTF-8 byte to text transformations.
+             *
+             * @see [ThrowOnInvalid]
              * */
             @JvmField
             public val THROW: ReplacementStrategy = ReplacementStrategy(size = 0)
@@ -160,14 +216,17 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
         /** @suppress */
         public override fun toString(): String = when (size) {
-            U_0034.size -> "UTF8.ReplacementStrategy[U+0034]"
+            U_003F.size -> "UTF8.ReplacementStrategy[U+003F]"
             U_FFFD.size -> "UTF8.ReplacementStrategy[U+FFFD]"
             else        -> "UTF8.ReplacementStrategy[THROW]"
         }
     }
 
     /**
-     * TODO
+     * Holder of a configuration for the [UTF8] encoder/decoder.
+     *
+     * @see [Builder]
+     * @see [Default.Builder]
      * */
     public class Config private constructor(
         @JvmField
@@ -223,13 +282,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     }
 
     /**
-     * TODO
+     * A helper for calculating the exact output byte-size of a text to UTF-8 byte transformation.
      * */
     public open class CharPreProcessor private constructor(
-
-        /**
-         * TODO
-         * */
         @JvmField
         public val strategy: ReplacementStrategy,
     ) {
@@ -237,19 +292,21 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         public companion object {
 
             /**
-             * TODO
+             * Creates a new [CharPreProcessor] instance using the [ReplacementStrategy] of the given
+             * [UTF8] encoder/decoder.
              * */
             @JvmStatic
             public inline fun of(utf8: UTF8): CharPreProcessor = of(utf8.config.replacementStrategy)
 
             /**
-             * TODO
+             * Creates a new [CharPreProcessor] instance using the [ReplacementStrategy] of the given
+             * [UTF8.Config].
              * */
             @JvmStatic
             public inline fun of(config: Config): CharPreProcessor = of(config.replacementStrategy)
 
             /**
-             * TODO
+             * Creates a new [CharPreProcessor] instance for the given [ReplacementStrategy].
              * */
             @JvmStatic
             public fun of(strategy: ReplacementStrategy): CharPreProcessor = when (strategy.size) {
@@ -264,19 +321,30 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy] for the
+             * [UTF8] encoder/decoder.
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             public inline fun CharArray.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy] for the
+             * [UTF8.Config].
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             public inline fun CharArray.sizeUTF8(config: Config): Long = sizeUTF8(config.replacementStrategy)
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy].
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             public fun CharArray.sizeUTF8(strategy: ReplacementStrategy): Long {
@@ -286,19 +354,30 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
+             * [UTF8] encoder/decoder.
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             public inline fun CharSequence.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
+             * [UTF8.Config].
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             public inline fun CharSequence.sizeUTF8(config: Config): Long = sizeUTF8(config.replacementStrategy)
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy].
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             public fun CharSequence.sizeUTF8(strategy: ReplacementStrategy): Long {
@@ -308,30 +387,42 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
+             * [UTF8] encoder/decoder.
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
-            public inline fun Iterator<Char>.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
+            public inline fun CharIterator.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
+             * [UTF8.Config].
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
-            public inline fun Iterator<Char>.sizeUTF8(config: Config): Long = sizeUTF8(config.replacementStrategy)
+            public inline fun CharIterator.sizeUTF8(config: Config): Long = sizeUTF8(config.replacementStrategy)
 
             /**
-             * TODO
+             * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy].
+             *
+             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+             * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
-            public fun Iterator<Char>.sizeUTF8(strategy: ReplacementStrategy): Long {
+            public fun CharIterator.sizeUTF8(strategy: ReplacementStrategy): Long {
                 val cpp = CharPreProcessor.of(strategy)
-                while (hasNext()) { cpp + next() }
+                while (hasNext()) { cpp + nextChar() }
                 return cpp.doFinal()
             }
         }
 
         /**
-         * TODO
+         * The current would-be UTF-8 byte size of all accumulated input. This value does not include any
+         * potential final calculations performed by [doFinal].
          * */
         @get:JvmName("currentSize")
         public var currentSize: Long = 0L
@@ -341,20 +432,22 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         protected var checkNext: Boolean = false
 
         /**
-         * TODO
+         * Add input.
+         *
+         * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+         * is [ReplacementStrategy.THROW].
          * */
         public operator fun plus(input: Char) {
+            val c = input.code
             if (!checkNext) {
-                val c = input.code
                 if (c.process()) return
                 checkNext = true
                 return
             }
 
-            val cNext = input.code
-            if (cNext < 0xdc00 || cNext > 0xdfff) {
+            if (c < 0xdc00 || c > 0xdfff) {
                 currentSize += replacementSize()
-                if (cNext.process()) {
+                if (c.process()) {
                     checkNext = false
                     return
                 }
@@ -368,7 +461,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         }
 
         /**
-         * TODO
+         * Resets the [CharPreProcessor] and returns the final UTF-8 byte size of all accumulated input.
+         *
+         * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
+         * is [ReplacementStrategy.THROW].
          * */
         public fun doFinal(): Long {
             val s = currentSize
@@ -408,9 +504,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     protected final override fun newDecoderFeedProtected(out: Decoder.OutFeed): Decoder<Config>.Feed {
         // TODO: Constant Time
         return when (config.replacementStrategy.size) {
-            ReplacementStrategy.U_0034.size -> object : DecoderFeed(out) {
+            ReplacementStrategy.U_003F.size -> object : DecoderFeed(out) {
                 override fun Decoder.OutFeed.outputReplacementSequence() {
-                    output('?'.code.toByte())
+                    output(0x3f.toByte())
                 }
             }
             ReplacementStrategy.U_FFFD.size -> object : DecoderFeed(out) {
@@ -452,28 +548,27 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         private var hasBuffered = false
 
         final override fun consumeProtected(input: Char) {
+            val c = input.code
             if (!hasBuffered) {
-                val c = input.code
                 if (c.process()) return
                 buf = c
                 hasBuffered = true
                 return
             }
 
-            val cNext = input.code
-            if (cNext < 0xdc00 || cNext > 0xdfff) {
+            if (c < 0xdc00 || c > 0xdfff) {
                 _out.outputReplacementSequence()
-                if (cNext.process()) {
+                if (c.process()) {
                     hasBuffered = false
                     return
                 }
-                buf = cNext
+                buf = c
                 // hasBuffered = true
                 return
             }
 
             hasBuffered = false
-            val codePoint = ((buf shl 10) + cNext) + (0x010000 - (0xd800 shl 10) - 0xdc00)
+            val codePoint = ((buf shl 10) + c) + (0x010000 - (0xd800 shl 10) - 0xdc00)
             _out.output((codePoint shr 18          or 0xf0).toByte())
             _out.output((codePoint shr 12 and 0x3f or 0x80).toByte())
             _out.output((codePoint shr  6 and 0x3f or 0x80).toByte())
@@ -704,9 +799,9 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
             // The !isContinuation() value is used as a filler byte to
             // simulate index exhaustion for process3/process4 in order to
-            // kick it back to the previous processN step. This is so that
+            // kick it back to the previous process step. This is so that
             // buffered input is checked and any necessary replacement
-            // characters still get output, but process3/process4 will always
+            // characters are still output, but process3/process4 will always
             // return early as if the next byte in the array (if one had all
             // the input and were looping over it) was not available.
             val cN = 0x80 or 0xc0
@@ -810,7 +905,6 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             iBuf = 0
             needed = process1()
             if (needed > 0) buf[iBuf++] = this
-            return
         }
 
         /**
@@ -889,7 +983,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                     debug { "P3 - 2" }
                     // Partial surrogate code point
                     _out.outputReplacementChar()
-                    if (config.replacementStrategy.size == ReplacementStrategy.U_0034.size) {
+                    if (config.replacementStrategy.size == ReplacementStrategy.U_003F.size) {
                         // Must check b2 to see if it needs to be run through process1()
                         if (!b2.isContinuation()) {
                             debug { "P3 - 2 ------ HIT[b2]" }

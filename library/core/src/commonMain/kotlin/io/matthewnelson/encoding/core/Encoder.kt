@@ -116,8 +116,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             if (_isClosed) throw closedException()
 
             try {
-                // should not throw exception, but just
-                // in case, we close the Feed.
                 consumeProtected(input)
             } catch (t: Throwable) {
                 close()

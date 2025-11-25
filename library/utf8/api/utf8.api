@@ -32,9 +32,9 @@ public class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor {
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
 	public static final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8;)J
-	public static final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
-	public static final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
-	public static final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8;)J
+	public static final fun sizeUTF8 (Lkotlin/collections/CharIterator;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public static final fun sizeUTF8 (Lkotlin/collections/CharIterator;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public static final fun sizeUTF8 (Lkotlin/collections/CharIterator;Lio/matthewnelson/encoding/utf8/UTF8;)J
 	public static final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$Config;)J
 	public static final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
 	public static final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8;)J
@@ -47,9 +47,9 @@ public final class io/matthewnelson/encoding/utf8/UTF8$CharPreProcessor$Companio
 	public final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
 	public final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
 	public final fun sizeUTF8 (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/utf8/UTF8;)J
-	public final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
-	public final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
-	public final fun sizeUTF8 (Ljava/util/Iterator;Lio/matthewnelson/encoding/utf8/UTF8;)J
+	public final fun sizeUTF8 (Lkotlin/collections/CharIterator;Lio/matthewnelson/encoding/utf8/UTF8$Config;)J
+	public final fun sizeUTF8 (Lkotlin/collections/CharIterator;Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
+	public final fun sizeUTF8 (Lkotlin/collections/CharIterator;Lio/matthewnelson/encoding/utf8/UTF8;)J
 	public final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$Config;)J
 	public final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;)J
 	public final fun sizeUTF8 ([CLio/matthewnelson/encoding/utf8/UTF8;)J
@@ -69,7 +69,7 @@ public final class io/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy {
 	public static final field Companion Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy$Companion;
 	public static final field KOTLIN Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public static final field THROW Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
-	public static final field U_0034 Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
+	public static final field U_003F Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public static final field U_FFFD Lio/matthewnelson/encoding/utf8/UTF8$ReplacementStrategy;
 	public final field size I
 	public fun toString ()Ljava/lang/String;

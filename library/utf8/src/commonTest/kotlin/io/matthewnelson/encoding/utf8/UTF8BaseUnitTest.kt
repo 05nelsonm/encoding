@@ -205,7 +205,7 @@ abstract class UTF8BaseUnitTest(protected val utf8: UTF8) {
             // Js/WasmJs
             IS_JS -> 250 to 42
             // Jvm
-            utf8.config.replacementStrategy == UTF8.ReplacementStrategy.U_0034 -> 5_000 to 106
+            utf8.config.replacementStrategy == UTF8.ReplacementStrategy.U_003F -> 5_000 to 106
             // WasmWasi/Native
             else -> 2_500 to 88
         }
