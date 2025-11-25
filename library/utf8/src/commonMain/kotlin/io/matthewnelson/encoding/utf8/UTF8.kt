@@ -328,6 +328,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public inline fun CharArray.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
@@ -338,6 +339,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public inline fun CharArray.sizeUTF8(config: Config): Long = sizeUTF8(config.replacementStrategy)
 
             /**
@@ -347,6 +349,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public fun CharArray.sizeUTF8(strategy: ReplacementStrategy): Long {
                 val cpp = of(strategy)
                 for (i in indices) { cpp + this[i] }
@@ -361,6 +364,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public inline fun CharSequence.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
@@ -371,6 +375,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public inline fun CharSequence.sizeUTF8(config: Config): Long = sizeUTF8(config.replacementStrategy)
 
             /**
@@ -380,6 +385,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public fun CharSequence.sizeUTF8(strategy: ReplacementStrategy): Long {
                 val cpp = of(strategy)
                 for (i in indices) { cpp + this[i] }
@@ -394,6 +400,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public inline fun CharIterator.sizeUTF8(utf8: UTF8): Long = sizeUTF8(utf8.config.replacementStrategy)
 
             /**
@@ -404,6 +411,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public inline fun CharIterator.sizeUTF8(config: Config): Long = sizeUTF8(config.replacementStrategy)
 
             /**
@@ -413,6 +421,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
+            @JvmName("sizeOf")
             public fun CharIterator.sizeUTF8(strategy: ReplacementStrategy): Long {
                 val cpp = CharPreProcessor.of(strategy)
                 while (hasNext()) { cpp + nextChar() }
