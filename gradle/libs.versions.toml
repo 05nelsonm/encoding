@@ -1,7 +1,7 @@
 [versions]
 gradle-benchmark            = "0.4.14"
 gradle-binary-compat        = "0.18.1"
-gradle-dokka                = "2.0.0"
+gradle-dokka                = "2.1.0"
 gradle-kmp-configuration    = "0.5.2"
 gradle-kotlin               = "2.2.21"
 gradle-publish-maven        = "0.35.0"
