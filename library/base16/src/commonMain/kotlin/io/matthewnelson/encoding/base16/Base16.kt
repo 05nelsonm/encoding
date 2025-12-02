@@ -378,6 +378,10 @@ public class Base16: EncoderDecoder<Base16.Config> {
         final override fun doFinalProtected() { /* no-op */ }
     }
 
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
     @Deprecated(
         message = "This constructor is scheduled for removal. Use Base16.Builder or Base16.Companion.Builder.",
         level = DeprecationLevel.WARNING,

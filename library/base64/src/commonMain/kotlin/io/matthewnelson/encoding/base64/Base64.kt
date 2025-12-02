@@ -554,6 +554,10 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
     }
 
+    /**
+     * DEPRECATED
+     * @suppress
+     * */
     @Deprecated(
         message = "This constructor is scheduled for removal. Use Base64.Builder or Base64.Companion.Builder.",
         level = DeprecationLevel.WARNING,
