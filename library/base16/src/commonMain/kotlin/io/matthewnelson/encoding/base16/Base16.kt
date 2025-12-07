@@ -228,7 +228,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @JvmField
@@ -385,7 +385,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
     }
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.6.0`
      * @suppress
      * */
     @Deprecated(

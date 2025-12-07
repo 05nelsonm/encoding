@@ -51,7 +51,7 @@ public class DecoderInput {
     }
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.3.0`
      * @suppress
      * */
     @Deprecated(

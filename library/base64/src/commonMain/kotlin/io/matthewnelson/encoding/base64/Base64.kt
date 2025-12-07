@@ -303,7 +303,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @JvmField
@@ -561,7 +561,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
     }
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.6.0`
      * @suppress
      * */
     @Deprecated(

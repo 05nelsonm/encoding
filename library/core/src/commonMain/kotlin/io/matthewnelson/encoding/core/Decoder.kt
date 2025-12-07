@@ -171,7 +171,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         public final override fun toString(): String = "${this@Decoder}.Decoder.Feed@${hashCode()}"
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @Deprecated(
@@ -251,7 +251,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.3.0`
          * @suppress
          * */
         @JvmStatic
@@ -268,7 +268,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.3.0`
          * @suppress
          * */
         @JvmStatic

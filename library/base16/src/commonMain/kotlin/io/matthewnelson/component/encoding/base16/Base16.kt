@@ -24,7 +24,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -43,7 +43,7 @@ public inline fun String.decodeBase16ToArray(): ByteArray? {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -62,7 +62,7 @@ public fun CharArray.decodeBase16ToArray(): ByteArray? {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -81,7 +81,7 @@ public inline fun ByteArray.encodeBase16(): String {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -100,7 +100,7 @@ public inline fun ByteArray.encodeBase16ToCharArray(): CharArray {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(

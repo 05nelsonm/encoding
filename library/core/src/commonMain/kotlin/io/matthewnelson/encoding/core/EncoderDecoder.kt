@@ -463,7 +463,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @see [encodeOutMaxSize]
          * @suppress
          * */
@@ -475,7 +475,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public fun encodeOutSize(unEncodedSize: Long): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @see [encodeOutMaxSize]
          * @suppress
          * */
@@ -487,7 +487,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public fun encodeOutSize(unEncodedSize: Long, lineBreakInterval: Byte): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @Deprecated(

@@ -22,7 +22,7 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
@@ -37,7 +37,7 @@ public fun Base64(
 ): Base64 = Base64ConfigBuilder(config).apply(block).buildCompat()
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
@@ -51,7 +51,7 @@ public fun Base64(
 ): Base64 = Base64(null, block)
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
@@ -66,7 +66,7 @@ public fun Base64(
 ): Base64 = Base64.Builder { if (strict) strictSpec() }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base64.Builder]
  * @see [Base64.Companion.Builder]
@@ -135,7 +135,7 @@ public class Base64ConfigBuilder {
         .build()
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.3.1`
      * @suppress
      * */
     @JvmField
