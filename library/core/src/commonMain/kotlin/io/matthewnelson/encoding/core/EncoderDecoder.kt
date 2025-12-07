@@ -101,6 +101,20 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     ) {
 
         /**
+         * If greater than `0`, [Encoder.newEncoderFeed] will use the [LineBreakOutFeed] such that
+         * for every [lineBreakInterval] number of encoded characters output, the next encoded
+         * character will be preceded with the new line character `\n`.
+         *
+         * **NOTE:** This setting will always be `0` if [isLenient] is `false`.
+         * */
+        @JvmField
+        public val lineBreakInterval: Byte = if (isLenient != false && lineBreakInterval > 0) {
+            lineBreakInterval
+        } else {
+            0
+        }
+
+        /**
          * Instantiates a new [Config] instance.
          *
          * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than or equal to 0.
@@ -120,20 +134,6 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             unused = null,
         ) {
             require(maxDecodeEmit > 0) { "maxDecodeEmit must be greater than 0" }
-        }
-
-        /**
-         * If greater than `0`, [Encoder.newEncoderFeed] will use the [LineBreakOutFeed] such that
-         * for every [lineBreakInterval] number of encoded characters output, the next encoded
-         * character will be preceded with the new line character `\n`.
-         *
-         * **NOTE:** This setting will always be `0` if [isLenient] is `false`.
-         * */
-        @JvmField
-        public val lineBreakInterval: Byte = if (isLenient != false && lineBreakInterval > 0) {
-            lineBreakInterval
-        } else {
-            0
         }
 
         /**
