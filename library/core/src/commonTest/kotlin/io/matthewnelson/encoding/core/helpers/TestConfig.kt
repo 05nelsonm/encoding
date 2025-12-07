@@ -22,10 +22,11 @@ class TestConfig(
     isLenient: Boolean? = false,
     lineBreakInterval: Byte = 0,
     paddingChar: Char? = '=',
+    maxDecodeEmit: Int = 1,
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
     private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
-): EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, true) {
+): EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, maxDecodeEmit, true) {
     override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
         return decodeReturn.invoke(encodedSize)
     }

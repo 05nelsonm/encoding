@@ -19,6 +19,7 @@ import io.matthewnelson.encoding.core.helpers.TestConfig
 import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.fail
 
 class EncoderDecoderConfigUnitTest {
@@ -60,26 +61,11 @@ class EncoderDecoderConfigUnitTest {
             decodeReturn = { -1L }
         )
 
-        try {
-            config.decodeOutMaxSize(5)
-            fail()
-        } catch (_: EncodingSizeException) {
-            // pass
-        }
-
-        try {
-            config.decodeOutMaxSizeOrFail(DecoderInput("a"))
-            fail()
-        } catch (_: EncodingSizeException) {
-            // pass
-        }
-
-        try {
-            config.encodeOutMaxSize(5)
-            fail()
-        } catch (_: EncodingSizeException) {
-            // pass
-        }
+        assertFailsWith<EncodingSizeException> { config.decodeOutMaxSize(5) }
+        assertFailsWith<EncodingSizeException> { config.decodeOutMaxSizeOrFail(DecoderInput("a")) }
+        assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(5) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 0) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = -1) }
     }
 
     @Test

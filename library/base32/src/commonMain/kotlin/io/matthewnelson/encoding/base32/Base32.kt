@@ -228,7 +228,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @JvmField
             public val finalizeWhenFlushed: Boolean,
             backFillBuffers: Boolean,
-        ): EncoderDecoder.Config(isLenient, 0, null, backFillBuffers) {
+        ): EncoderDecoder.Config(
+            isLenient,
+            lineBreakInterval = 0,
+            paddingChar = null,
+            maxDecodeEmit = 5,
+            backFillBuffers,
+        ) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)
@@ -613,7 +619,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @JvmField
             public val padEncoded: Boolean,
             backFillBuffers: Boolean,
-        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', backFillBuffers) {
+        ): EncoderDecoder.Config(
+            isLenient,
+            lineBreakInterval,
+            paddingChar = '=',
+            maxDecodeEmit = 5,
+            backFillBuffers,
+        ) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)
@@ -932,7 +944,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             @JvmField
             public val padEncoded: Boolean,
             backFillBuffers: Boolean,
-        ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', backFillBuffers) {
+        ): EncoderDecoder.Config(
+            isLenient,
+            lineBreakInterval,
+            paddingChar = '=',
+            maxDecodeEmit = 5,
+            backFillBuffers,
+        ) {
 
             protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
                 return decodeOutMaxSize64(encodedSize)

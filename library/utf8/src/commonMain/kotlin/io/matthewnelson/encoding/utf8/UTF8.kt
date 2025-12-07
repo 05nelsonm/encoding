@@ -233,7 +233,13 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         @JvmField
         public val replacementStrategy: ReplacementStrategy,
         backFillBuffers: Boolean,
-    ): EncoderDecoder.Config(null, -1, null, backFillBuffers) {
+    ): EncoderDecoder.Config(
+        isLenient = null,
+        lineBreakInterval = -1,
+        paddingChar = null,
+        maxDecodeEmit = (3 + replacementStrategy.size).coerceAtLeast(4),
+        backFillBuffers,
+    ) {
 
         // Chars -> Bytes
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
