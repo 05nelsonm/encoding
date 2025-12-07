@@ -39,7 +39,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     /**
      * Base configuration for an [EncoderDecoder]. More options may be specified by the implementation.
      * */
-    public abstract class Config(
+    public abstract class Config private constructor(
 
         /**
          * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
@@ -65,6 +65,21 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public val paddingChar: Char?,
 
         /**
+         * The maximum number of bytes that the implementation's [Decoder.Feed] can potentially
+         * emit on a single invocation of [Decoder.Feed.consume]. For example, `Base16` decoding
+         * will emit `1` byte for every `2` characters of input, so its value is `1`. `Base32`
+         * decoding will emit `5` bytes for every `8` characters of input, so its value is `5`.
+         * `UTF8` decoding (character to byte transformations) can emit `4` to `6` bytes, depending
+         * on buffered input and the size of the replacement byte sequence being used, so would
+         * require a calculation such as `(3 + replacementStrategy.size).coerceAtLeast(4)`.
+         *
+         * Value will be greater than `0`, or `-1` which indicates that the [EncoderDecoder.Config]
+         * implementation has not updated to the new constructor introduced in version `2.6.0`.
+         * */
+        @JvmField
+        public val maxDecodeEmit: Int,
+
+        /**
          * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray], and
          * [Decoder.decodeToByteArray] are utilized, an initial buffer is allocated based on the
          * pre-calculated return values of [encodeOutMaxSize] or [decodeOutMaxSize] (respectively).
@@ -80,7 +95,32 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * */
         @JvmField
         public val backFillBuffers: Boolean,
+
+        // NOTE: Adding any parameters requires updating equals/hashCode/toString
+        @Suppress("UNUSED", "UNUSED_PARAMETER") unused: Any?,
     ) {
+
+        /**
+         * Instantiates a new [Config] instance.
+         *
+         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than or equal to 0.
+         * */
+        protected constructor(
+            isLenient: Boolean?,
+            lineBreakInterval: Byte,
+            paddingChar: Char?,
+            maxDecodeEmit: Int,
+            backFillBuffers: Boolean,
+        ): this(
+            isLenient = isLenient,
+            lineBreakInterval = lineBreakInterval,
+            paddingChar = paddingChar,
+            maxDecodeEmit = maxDecodeEmit,
+            backFillBuffers = backFillBuffers,
+            unused = null,
+        ) {
+            require(maxDecodeEmit > 0) { "maxDecodeEmit must be greater than 0" }
+        }
 
         /**
          * If greater than `0`, [Encoder.newEncoderFeed] will use the [LineBreakOutFeed] such that
@@ -361,8 +401,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public final override fun equals(other: Any?): Boolean {
             if (other !is Config) return false
             if (other.isLenient != this.isLenient) return false
-            if (other.paddingChar != this.paddingChar) return false
             if (other.lineBreakInterval != this.lineBreakInterval) return false
+            if (other.paddingChar != this.paddingChar) return false
+            if (other.maxDecodeEmit != this.maxDecodeEmit) return false
             if (other.backFillBuffers != this.backFillBuffers) return false
             if (other::class != this::class) return false
             return other._toStringAddSettings == this._toStringAddSettings
@@ -372,8 +413,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public final override fun hashCode(): Int {
             var result = 17
             result = result * 31 + isLenient.hashCode()
-            result = result * 31 + paddingChar.hashCode()
             result = result * 31 + lineBreakInterval.hashCode()
+            result = result * 31 + paddingChar.hashCode()
+            result = result * 31 + maxDecodeEmit.hashCode()
             result = result * 31 + backFillBuffers.hashCode()
             result = result * 31 + this::class.hashCode()
             result = result * 31 + _toStringAddSettings.hashCode()
@@ -388,9 +430,11 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             append("    lineBreakInterval: ")
             appendLine(lineBreakInterval)
             append("    paddingChar: ")
-            append(paddingChar)
+            appendLine(paddingChar)
+            append("    maxDecodeEmit: ")
+            appendLine(maxDecodeEmit)
             append("    backFillBuffers: ")
-            append(backFillBuffers)
+            append(backFillBuffers) // last one uses append, not appendLine
 
             for (setting in _toStringAddSettings) {
                 appendLine()
@@ -420,8 +464,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 
         /**
          * DEPRECATED
-         * @suppress
          * @see [encodeOutMaxSize]
+         * @suppress
          * */
         @Deprecated(
             message = "Function name changed.",
@@ -432,8 +476,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 
         /**
          * DEPRECATED
-         * @suppress
          * @see [encodeOutMaxSize]
+         * @suppress
          * */
         @Deprecated(
             message = "Function name changed.",
@@ -447,9 +491,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @suppress
          * */
         @Deprecated(
-            message = "Parameter backFillBuffers was added. Use new constructor.",
+            message = "Parameter maxDecodeEmit and backFillBuffers were added. Use the new constructor.",
             replaceWith = ReplaceWith(
-                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, backFillBuffers = true)"),
+                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, maxDecodeEmit = 0 /* TODO */, backFillBuffers = true)"),
             level = DeprecationLevel.WARNING,
         )
         public constructor(
@@ -460,7 +504,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             isLenient = isLenient,
             lineBreakInterval = lineBreakInterval,
             paddingChar = paddingChar,
+            maxDecodeEmit = -1,
             backFillBuffers = true,
+            unused = null,
         )
     }
 

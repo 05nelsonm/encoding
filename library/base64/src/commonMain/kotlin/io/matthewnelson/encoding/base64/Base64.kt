@@ -234,7 +234,13 @@ public class Base64: EncoderDecoder<Base64.Config> {
         @JvmField
         public val padEncoded: Boolean,
         backFillBuffers: Boolean,
-    ): EncoderDecoder.Config(isLenient, lineBreakInterval, '=', backFillBuffers) {
+    ): EncoderDecoder.Config(
+        isLenient,
+        lineBreakInterval,
+        paddingChar = '=',
+        maxDecodeEmit = 3,
+        backFillBuffers,
+    ) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             // Divide first instead of multiplying which ensures the Long

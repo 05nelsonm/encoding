@@ -183,7 +183,13 @@ public class Base16: EncoderDecoder<Base16.Config> {
         @JvmField
         public val encodeLowercase: Boolean,
         backFillBuffers: Boolean,
-    ): EncoderDecoder.Config(isLenient, lineBreakInterval, null, backFillBuffers) {
+    ): EncoderDecoder.Config(
+        isLenient,
+        lineBreakInterval,
+        paddingChar = null,
+        maxDecodeEmit = 1,
+        backFillBuffers,
+    ) {
 
         protected override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
             return encodedSize / 2L
