@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("LocalVariableName", "PropertyName", "RemoveRedundantQualifierName")
+@file:Suppress("LocalVariableName", "NOTHING_TO_INLINE", "PropertyName", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.EncoderDecoder.Companion.DEFAULT_BUFFER_SIZE
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.decode
+import io.matthewnelson.encoding.core.internal.decodeBuffered
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -207,16 +210,19 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * returns the decoded bytes.
          *
          * @see [decodeToByteArrayOrNull]
+         * @see [decodeBuffered]
+         *
          * @throws [EncodingException] if decoding failed.
          * */
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharSequence.decodeToByteArray(decoder: Decoder<*>): ByteArray {
-            return decoder.decode(DecoderInput(this)) { feed ->
-                forEach { c -> feed.consume(c) }
-            }
+            return decoder.decode(DecoderInput(this), ::get)
         }
 
+        /**
+         * TODO
+         * */
         @JvmStatic
         public fun CharSequence.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
             return try {
@@ -231,16 +237,19 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * returns the decoded bytes.
          *
          * @see [decodeToByteArrayOrNull]
+         * @see [decodeBuffered]
+         *
          * @throws [EncodingException] if decoding failed.
          * */
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
-            return decoder.decode(DecoderInput(this)) { feed ->
-                forEach { c -> feed.consume(c) }
-            }
+            return decoder.decode(DecoderInput(this), ::get)
         }
 
+        /**
+         * TODO
+         * */
         @JvmStatic
         public fun CharArray.decodeToByteArrayOrNull(decoder: Decoder<*>): ByteArray? {
             return try {
@@ -249,6 +258,110 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
                 null
             }
         }
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(EncodingException::class)
+        public inline fun CharSequence.decodeBuffered(
+            decoder: Decoder<*>,
+            noinline action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBuffered(DEFAULT_BUFFER_SIZE, decoder, action)
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(EncodingException::class)
+        public fun CharSequence.decodeBuffered(
+            maxBufSize: Int,
+            decoder: Decoder<*>,
+            action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decoder.decodeBuffered(
+            maxBufSize,
+            _get = ::get,
+            _input = { DecoderInput(this) },
+            _action = action,
+        )
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(CancellationException::class, EncodingException::class)
+        public suspend inline fun CharSequence.decodeBuffered(
+            decoder: Decoder<*>,
+            noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBuffered(DEFAULT_BUFFER_SIZE, decoder, action)
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(CancellationException::class, EncodingException::class)
+        public suspend fun CharSequence.decodeBuffered(
+            maxBufSize: Int,
+            decoder: Decoder<*>,
+            action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decoder.decodeBuffered(
+            maxBufSize,
+            _get = ::get,
+            _input = { DecoderInput(this) },
+            _action = { buf, offset, len -> action(buf, offset, len) },
+        )
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(EncodingException::class)
+        public inline fun CharArray.decodeBuffered(
+            decoder: Decoder<*>,
+            noinline action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBuffered(DEFAULT_BUFFER_SIZE, decoder, action)
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(EncodingException::class)
+        public fun CharArray.decodeBuffered(
+            maxBufSize: Int,
+            decoder: Decoder<*>,
+            action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decoder.decodeBuffered(
+            maxBufSize,
+            _get = ::get,
+            _input = { DecoderInput(this) },
+            _action = action,
+        )
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(CancellationException::class, EncodingException::class)
+        public suspend inline fun CharArray.decodeBuffered(
+            decoder: Decoder<*>,
+            noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBuffered(DEFAULT_BUFFER_SIZE, decoder, action)
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        @Throws(CancellationException::class, EncodingException::class)
+        public suspend fun CharArray.decodeBuffered(
+            maxBufSize: Int,
+            decoder: Decoder<*>,
+            action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decoder.decodeBuffered(
+            maxBufSize,
+            _get = ::get,
+            _input = { DecoderInput(this) },
+            _action = { buf, offset, len -> action(buf, offset, len) },
+        )
 
         /**
          * DEPRECATED since `2.3.0`
@@ -262,9 +375,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         )
         public fun ByteArray.decodeToByteArray(decoder: Decoder<*>): ByteArray {
             @Suppress("DEPRECATION_ERROR")
-            return decoder.decode(DecoderInput(this)) { feed ->
-                forEach { b -> feed.consume(b.toInt().toChar()) }
-            }
+            return decoder.decode(DecoderInput(this), _get = { i -> this[i].toInt().toChar() })
         }
 
         /**

@@ -135,8 +135,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             if (_isClosed) throw closedException()
 
             try {
-                // should not throw exception, but just
-                // in case, we close the Feed.
                 doFinalProtected()
                 (_out as? LineBreakOutFeed)?.reset()
             } catch (t: Throwable) {
@@ -258,7 +256,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 if (i == maxSize) return@block a
                 val copy = a.copyOf(i)
                 if (encoder.config.backFillBuffers) {
-                    copy.fill(0, 0, i)
+                    a.fill(0, 0, i)
                 }
                 copy
             }
