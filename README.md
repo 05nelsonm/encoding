@@ -39,6 +39,7 @@ Configurable, streamable, efficient and extensible encoding/decoding for Kotlin 
 ### Get Started
 
 <!-- TAG_VERSION -->
+<!-- TODO: Add utf8 -->
 
 ```kotlin
 // build.gradle.kts
@@ -54,6 +55,7 @@ dependencies {
 ```
 
 <!-- TAG_VERSION -->
+<!-- TODO: Add utf8 -->
 Alternatively, you can use the BOM.
 
 ```kotlin
