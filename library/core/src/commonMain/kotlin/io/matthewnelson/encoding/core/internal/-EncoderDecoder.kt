@@ -76,8 +76,8 @@ internal inline fun <C: Config> Decoder<C>.decode(
     return copy
 }
 
-@Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
+@Throws(EncodingException::class, IllegalArgumentException::class)
 internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     maxBufSize: Int,
     _get: (i: Int) -> Char,
@@ -93,10 +93,10 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     if (config.maxDecodeEmit == -1) {
         // EncoderDecoder.Config implementation has not updated to
         // new constructor which requires it to be greater than 0.
-        throw EncodingException("Decoder.Config.maxDecodeEmit == -1")
+        throw EncodingException("Decoder misconfiguration. ${this}.config.maxDecodeEmit == -1")
     }
     require(maxBufSize > config.maxDecodeEmit) {
-        "maxBufSize[$maxBufSize] <= Decoder.Config.maxDecodeEmit[${config.maxDecodeEmit}]"
+        "maxBufSize[$maxBufSize] <= ${this}.config.maxDecodeEmit[${config.maxDecodeEmit}]"
     }
 
     val input = _input()
@@ -138,7 +138,8 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
                 iBuf = 0
             }
         }
-        if (iBuf > 0) _action(buf, 0, iBuf)
+        if (iBuf == 0) return size
+        _action(buf, 0, iBuf)
         size += iBuf
     } finally {
         if (config.backFillBuffers) buf.fill(0)

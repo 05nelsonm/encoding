@@ -39,9 +39,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     public companion object {
 
         /**
-         * TODO
+         * A "default" buffer size of `8 * 1024`
          * */
-        public const val DEFAULT_BUFFER_SIZE: Int = 8 * 1024
+        public const val DEFAULT_BUFFER_SIZE: Int = 8 * 1024 // Note: If changing, update documentation.
     }
 
     /**
