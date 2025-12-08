@@ -35,22 +35,29 @@ internal inline fun <C: Config> Decoder<C>.decode(
 ): ByteArray {
     contract { callsInPlace(_get, InvocationKind.UNKNOWN) }
     val maxDecodeSize = config.decodeOutMaxSizeOrFail(input)
-    return decode(maxDecodeSize, input.size, _get)
+    val a = ByteArray(maxDecodeSize)
+    val len = decode(maxDecodeSizeArray = a, input.size, _get)
+    if (len == maxDecodeSize) return a
+    val copy = a.copyOf(len)
+    if (config.backFillBuffers) {
+        a.fill(0, 0, len)
+    }
+    return copy
 }
 
 @Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
 internal inline fun <C: Config> Decoder<C>.decode(
-    maxDecodeSize: Int,
+    maxDecodeSizeArray: ByteArray,
     inputSize: Int,
     _get: (i: Int) -> Char,
-): ByteArray {
+): Int {
     contract { callsInPlace(_get, InvocationKind.UNKNOWN) }
-    val a = ByteArray(maxDecodeSize)
+    if (inputSize == 0) return 0
 
     var i = 0
     try {
-        newDecoderFeed(out = { b -> a[i++] = b }).use { feed ->
+        newDecoderFeed(out = { b -> maxDecodeSizeArray[i++] = b }).use { feed ->
             var j = 0
             while (j < inputSize) {
                 feed.consume(_get(j++))
@@ -58,22 +65,15 @@ internal inline fun <C: Config> Decoder<C>.decode(
         }
     } catch (t: Throwable) {
         if (config.backFillBuffers) {
-            a.fill(0, toIndex = min(a.size, i))
+            maxDecodeSizeArray.fill(0, 0, min(maxDecodeSizeArray.size, i))
         }
-        if (t is IndexOutOfBoundsException && i >= maxDecodeSize) {
+        if (t is IndexOutOfBoundsException && i >= maxDecodeSizeArray.size) {
             // Something is wrong with the encoder's pre-calculation
-            throw EncodingSizeException("Encoder's pre-calculation of Size[$maxDecodeSize] was incorrect", t)
+            throw EncodingSizeException("Encoder's pre-calculation of Size[${maxDecodeSizeArray.size}] was incorrect", t)
         }
         throw t
     }
-
-    if (i == maxDecodeSize) return a
-
-    val copy = a.copyOf(i)
-    if (config.backFillBuffers) {
-        a.fill(0, 0, i)
-    }
-    return copy
+    return i
 }
 
 @OptIn(ExperimentalContracts::class)
@@ -112,13 +112,14 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
         if (maxDecodeSize !in 0..maxBufSize) return@let // Chunk
 
         // Maximum decoded size will be smaller than or equal to maxBufSize. One-shot it.
-        val decoded = decode(maxDecodeSize, input.size, _get)
+        val decoded = ByteArray(maxDecodeSize)
+        val len = decode(maxDecodeSizeArray = decoded, input.size, _get)
         try {
-            _action(decoded, 0, decoded.size)
+            _action(decoded, 0, len)
         } finally {
-            if (config.backFillBuffers) decoded.fill(0)
+            if (config.backFillBuffers) decoded.fill(0, 0, len)
         }
-        return decoded.size.toLong()
+        return len.toLong()
     }
 
     // Chunk
