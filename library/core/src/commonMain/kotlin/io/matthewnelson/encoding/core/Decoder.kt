@@ -290,17 +290,17 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * */
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
-        public suspend inline fun CharSequence.decodeBuffered(
+        public suspend inline fun CharSequence.decodeBufferedAsync(
             decoder: Decoder<*>,
             noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBuffered(DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBufferedAsync(DEFAULT_BUFFER_SIZE, decoder, action)
 
         /**
          * TODO
          * */
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
-        public suspend fun CharSequence.decodeBuffered(
+        public suspend fun CharSequence.decodeBufferedAsync(
             maxBufSize: Int,
             decoder: Decoder<*>,
             action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
@@ -342,17 +342,17 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * */
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
-        public suspend inline fun CharArray.decodeBuffered(
+        public suspend inline fun CharArray.decodeBufferedAsync(
             decoder: Decoder<*>,
             noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBuffered(DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBufferedAsync(DEFAULT_BUFFER_SIZE, decoder, action)
 
         /**
          * TODO
          * */
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
-        public suspend fun CharArray.decodeBuffered(
+        public suspend fun CharArray.decodeBufferedAsync(
             maxBufSize: Int,
             decoder: Decoder<*>,
             action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
