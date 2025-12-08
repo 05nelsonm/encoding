@@ -82,12 +82,13 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 
         /**
          * The maximum number of bytes that the implementation's [Decoder.Feed] can potentially
-         * emit on a single invocation of [Decoder.Feed.consume]. For example, `Base16` decoding
-         * will emit `1` byte for every `2` characters of input, so its value is `1`. `Base32`
-         * decoding will emit `5` bytes for every `8` characters of input, so its value is `5`.
-         * `UTF8` "decoding" (i.e. text to UTF-8 byte transformations) can emit `4` to `6` bytes,
-         * depending on buffered input and the size of the replacement byte sequence being used,
-         * so would require a calculation such as `(3 + replacementStrategy.size).coerceAtLeast(4)`.
+         * emit on a single invocation of [Decoder.Feed.consume] or [Decoder.Feed.doFinal]. For
+         * example, `Base16` decoding will emit `1` byte for every `2` characters of input, so
+         * its value is `1`. `Base32` decoding will emit `5` bytes for every `8` characters of
+         * input, so its value is `5`. `UTF8` "decoding" (i.e. text to UTF-8 byte transformations)
+         * can emit `4` to `6` bytes, depending on buffered input and the size of the replacement
+         * byte sequence being used, so would require a calculation such as
+         * `(replacementStrategy.size * 2).coerceAtLeast(4)`.
          *
          * Value will be greater than `0`, or `-1` which indicates that the [EncoderDecoder.Config]
          * implementation has not updated to the new constructor introduced in version `2.6.0`.
