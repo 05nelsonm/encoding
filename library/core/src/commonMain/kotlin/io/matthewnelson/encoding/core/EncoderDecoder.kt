@@ -94,10 +94,10 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * replacement byte sequence being used, can emit more; its maximum emission size is
          * required to be calculated, such as `(replacementStrategy.size * 2).coerceAtLeast(4)`.
          *
-         * Value will be greater than `0`, or `-1` which indicates that the [EncoderDecoder.Config]
-         * implementation has not updated to the new constructor introduced in version `2.6.0` and
-         * as such is unable to be used with `:core` module APIs dependent on this value (such as
-         * [Decoder.decodeBuffered] or [Decoder.decodeBufferedAsync]).
+         * Value will be between `1` and `255` (inclusive), or `-1` which indicates that the
+         * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
+         * in version `2.6.0` and as such is unable to be used with `:core` module APIs dependent
+         * on this value (such as [Decoder.decodeBuffered] or [Decoder.decodeBufferedAsync]).
          * */
         @JvmField
         public val maxDecodeEmit: Int,
@@ -126,7 +126,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         /**
          * Instantiates a new [Config] instance.
          *
-         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1`.
+         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1` or greater than `255`.
          * */
         protected constructor(
             isLenient: Boolean?,
@@ -143,6 +143,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             unused = null,
         ) {
             require(maxDecodeEmit > 0) { "maxDecodeEmit must be greater than 0" }
+            require(maxDecodeEmit < 256) { "maxDecodeEmit must be less than 256" }
         }
 
         /**
