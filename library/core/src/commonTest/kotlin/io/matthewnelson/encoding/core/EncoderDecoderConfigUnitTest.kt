@@ -58,7 +58,8 @@ class EncoderDecoderConfigUnitTest {
         val config = TestConfig(
             encodeReturn = { -1L },
             decodeInputReturn = { -1 },
-            decodeReturn = { -1L }
+            decodeReturn = { -1L },
+            maxDecodeEmit = 255,
         )
 
         assertFailsWith<EncodingSizeException> { config.decodeOutMaxSize(5) }
@@ -66,6 +67,7 @@ class EncoderDecoderConfigUnitTest {
         assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(5) }
         assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 0) }
         assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = -1) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 256) }
     }
 
     @Test
