@@ -44,8 +44,10 @@ import kotlin.jvm.JvmSynthetic
  *     val base64 = Base64.Builder {
  *         isLenient(enable = true)
  *         lineBreak(interval = 64)
+ *         lineBreakReset(onFlush = true)
  *         encodeUrlSafe(enable = false)
  *         padEncoded(enable = true)
+ *         backFillBuffers(enable = true)
  *     }
  *
  *     val text = "Hello World!"
@@ -108,26 +110,30 @@ public class Base64: EncoderDecoder<Base64.Config> {
             if (other == null) return
             this._isLenient = other.isLenient ?: true
             this._lineBreakInterval = other.lineBreakInterval
+            this._lineBreakResetOnFlush = other.lineBreakResetOnFlush
             this._encodeUrlSafe = other.encodeUrlSafe
             this._padEncoded = other.padEncoded
             this._backFillBuffers = other.backFillBuffers
         }
 
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _isLenient: Boolean = true
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _lineBreakInterval: Byte = 0
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
+        internal var _lineBreakResetOnFlush: Boolean = true
+            private set
+        @get:JvmSynthetic
         internal var _encodeUrlSafe: Boolean = false
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _padEncoded: Boolean = true
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _backFillBuffers: Boolean = true
+            private set
 
         /**
          * DEFAULT: `true`
@@ -169,6 +175,13 @@ public class Base64: EncoderDecoder<Base64.Config> {
          * @see [EncoderDecoder.Config.lineBreakInterval]
          * */
         public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
+
+        /**
+         * DEFAULT: `true`
+         *
+         * @see [EncoderDecoder.Config.lineBreakResetOnFlush]
+         * */
+        public fun lineBreakReset(onFlush: Boolean): Builder = apply { _lineBreakResetOnFlush = onFlush }
 
         /**
          * DEFAULT: `false`
@@ -229,6 +242,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
     public class Config private constructor(
         isLenient: Boolean,
         lineBreakInterval: Byte,
+        lineBreakResetOnFlush: Boolean,
         @JvmField
         public val encodeUrlSafe: Boolean,
         @JvmField
@@ -237,7 +251,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
     ): EncoderDecoder.Config(
         isLenient,
         lineBreakInterval,
-        lineBreakResetOnFlush = true, // TODO
+        lineBreakResetOnFlush,
         paddingChar = '=',
         maxDecodeEmit = 3,
         backFillBuffers,
@@ -288,6 +302,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             internal val DEFAULT: Config = Config(
                 isLenient = true,
                 lineBreakInterval = 64,
+                lineBreakResetOnFlush = true,
                 encodeUrlSafe = false,
                 padEncoded = true,
                 backFillBuffers = true,
@@ -297,6 +312,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             internal val URL_SAFE: Config = Config(
                 isLenient = DEFAULT.isLenient ?: true,
                 lineBreakInterval = DEFAULT.lineBreakInterval,
+                lineBreakResetOnFlush = DEFAULT.lineBreakResetOnFlush,
                 encodeUrlSafe = true,
                 padEncoded = DEFAULT.padEncoded,
                 backFillBuffers = DEFAULT.backFillBuffers

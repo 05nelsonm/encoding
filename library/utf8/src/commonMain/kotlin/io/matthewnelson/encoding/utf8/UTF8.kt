@@ -45,6 +45,7 @@ import kotlin.jvm.JvmSynthetic
  *
  *     val utf8 = UTF8.Builder {
  *         replacement(strategy = UTF8.ReplacementStrategy.KOTLIN)
+ *         backFillBuffers(enable = true)
  *     }
  *
  *     val text = "Hello World!"
@@ -120,11 +121,11 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         }
 
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _replacementStrategy = ReplacementStrategy.KOTLIN
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _backFillBuffers = true
+            private set
 
         /**
          * DEFAULT: [ReplacementStrategy.KOTLIN]
@@ -235,8 +236,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         backFillBuffers: Boolean,
     ): EncoderDecoder.Config(
         isLenient = null,
-        lineBreakInterval = -1,
-        lineBreakResetOnFlush = true, // TODO
+        lineBreakInterval = 0,
+        lineBreakResetOnFlush = false,
         paddingChar = null,
         maxDecodeEmit = (replacementStrategy.size * 2).coerceAtLeast(4),
         backFillBuffers,

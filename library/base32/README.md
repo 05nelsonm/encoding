@@ -8,6 +8,7 @@ val crockford = Base32.Crockford.Builder {
     encodeLowercase(enable = false)
     hyphen(interval = 5)
     check(symbol = '~')
+    backFillBuffers(enable = true)
 }
 
 val text = "Hello World!"
@@ -25,8 +26,10 @@ assertEquals(text, decoded)
 val default = Base32.Default.Builder {
     isLenient(enable = true)
     lineBreak(interval = 64)
+    lineBreakReset(onFlush = true)
     encodeLowercase(enable = false)
     padEncoded(enable = true)
+    backFillBuffers(enable = true)
 }
 
 val text = "Hello World!"
@@ -44,8 +47,10 @@ assertEquals(text, decoded)
 val hex = Base32.Hex.Builder {
     isLenient(enable = true)
     lineBreak(interval = 64)
+    lineBreakReset(onFlush = true)
     encodeLowercase(enable = false)
     padEncoded(enable = true)
+    backFillBuffers(enable = true)
 }
 
 val text = "Hello World!"

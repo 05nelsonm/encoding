@@ -40,7 +40,9 @@ import kotlin.jvm.JvmSynthetic
  *     val base16 = Base16.Builder {
  *         isLenient(enable = true)
  *         lineBreak(interval = 64)
+ *         lineBreakReset(onFlush = true)
  *         encodeLowercase(enable = true)
+ *         backFillBuffers(enable = true)
  *     }
  *
  *     val text = "Hello World!"
@@ -72,22 +74,26 @@ public class Base16: EncoderDecoder<Base16.Config> {
             if (other == null) return
             this._isLenient = other.isLenient ?: true
             this._lineBreakInterval = other.lineBreakInterval
+            this._lineBreakResetOnFlush = other.lineBreakResetOnFlush
             this._encodeLowercase = other.encodeLowercase
             this._backFillBuffers = other.backFillBuffers
         }
 
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _isLenient: Boolean = true
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _lineBreakInterval: Byte = 0
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
+        internal var _lineBreakResetOnFlush: Boolean = true
+            private set
+        @get:JvmSynthetic
         internal var _encodeLowercase: Boolean = false
+            private set
         @get:JvmSynthetic
-        @set:JvmSynthetic
         internal var _backFillBuffers: Boolean = true
+            private set
 
         /**
          * DEFAULT: `true`
@@ -129,6 +135,13 @@ public class Base16: EncoderDecoder<Base16.Config> {
          * @see [EncoderDecoder.Config.lineBreakInterval]
          * */
         public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
+
+        /**
+         * DEFAULT: `true`
+         *
+         * @see [EncoderDecoder.Config.lineBreakResetOnFlush]
+         * */
+        public fun lineBreakReset(onFlush: Boolean): Builder = apply { _lineBreakResetOnFlush = onFlush }
 
         /**
          * DEFAULT: `false`
@@ -180,13 +193,14 @@ public class Base16: EncoderDecoder<Base16.Config> {
     public class Config private constructor(
         isLenient: Boolean,
         lineBreakInterval: Byte,
+        lineBreakResetOnFlush: Boolean,
         @JvmField
         public val encodeLowercase: Boolean,
         backFillBuffers: Boolean,
     ): EncoderDecoder.Config(
         isLenient,
         lineBreakInterval,
-        lineBreakResetOnFlush = true, // TODO
+        lineBreakResetOnFlush,
         paddingChar = null,
         maxDecodeEmit = 1,
         backFillBuffers,
@@ -223,6 +237,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             internal val DEFAULT: Config = Config(
                 isLenient = true,
                 lineBreakInterval = 64,
+                lineBreakResetOnFlush = true,
                 encodeLowercase = false,
                 backFillBuffers = true,
             )

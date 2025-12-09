@@ -45,13 +45,14 @@ internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean, Boolean) -> Base32
     return crockford(config, null)
 }
 
-internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Default.Config).build(
+internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean, Boolean) -> Base32.Default.Config).build(
     b: Base32.Default.Builder,
     noinline default: (Base32.Default.Config, Any?) -> Base32.Default,
 ): Base32.Default {
     if (
         b._isLenient == Base32.Default.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base32.Default.DELEGATE.config.lineBreakInterval
+        && b._lineBreakResetOnFlush == Base32.Default.DELEGATE.config.lineBreakResetOnFlush
         && b._encodeLowercase == Base32.Default.DELEGATE.config.encodeLowercase
         && b._padEncoded == Base32.Default.DELEGATE.config.padEncoded
         && b._backFillBuffers == Base32.Default.DELEGATE.config.backFillBuffers
@@ -61,6 +62,7 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Defaul
     val config = this(
         b._isLenient,
         b._lineBreakInterval,
+        b._lineBreakResetOnFlush,
         b._encodeLowercase,
         b._padEncoded,
         b._backFillBuffers,
@@ -68,13 +70,14 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Defaul
     return default(config, null)
 }
 
-internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Hex.Config).build(
+internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean, Boolean) -> Base32.Hex.Config).build(
     b: Base32.Hex.Builder,
     noinline hex: (Base32.Hex.Config, Any?) -> Base32.Hex,
 ): Base32.Hex {
     if (
         b._isLenient == Base32.Hex.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base32.Hex.DELEGATE.config.lineBreakInterval
+        && b._lineBreakResetOnFlush == Base32.Hex.DELEGATE.config.lineBreakResetOnFlush
         && b._encodeLowercase == Base32.Hex.DELEGATE.config.encodeLowercase
         && b._padEncoded == Base32.Hex.DELEGATE.config.padEncoded
         && b._backFillBuffers == Base32.Hex.DELEGATE.config.backFillBuffers
@@ -84,6 +87,7 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base32.Hex.Co
     val config = this(
         b._isLenient,
         b._lineBreakInterval,
+        b._lineBreakResetOnFlush,
         b._encodeLowercase,
         b._padEncoded,
         b._backFillBuffers,

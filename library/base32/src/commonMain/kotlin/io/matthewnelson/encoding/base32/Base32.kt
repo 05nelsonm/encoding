@@ -56,6 +56,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *         encodeLowercase(enable = false)
      *         hyphen(interval = 5)
      *         check(symbol = '~')
+     *         backFillBuffers(enable = true)
      *     }
      *
      *     val text = "Hello World!"
@@ -94,20 +95,20 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _isLenient: Boolean = true
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _encodeLowercase: Boolean = false
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _hyphenInterval: Byte = 0
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _checkSymbol: Char? = null
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _backFillBuffers: Boolean = true
+                private set
 
             // Here for compatibility purposes with Base32CrockfordConfigBuilder
             @get:JvmSynthetic
@@ -231,7 +232,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(
             isLenient,
             lineBreakInterval = 0,
-            lineBreakResetOnFlush = true, // TODO
+            lineBreakResetOnFlush = false,
             paddingChar = null,
             maxDecodeEmit = 5,
             backFillBuffers,
@@ -414,7 +415,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             config.checkSymbol?.let { symbol ->
                                 output(symbol.lowercaseChar())
                             }
-                            (this as? HyphenOutFeed)?.reset()
+                            (this as? HyphenOutFeed)?.reset(isFlush = !isClosed())
                         }
                     }
                 }
@@ -428,7 +429,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                             config.checkSymbol?.let { symbol ->
                                 output(symbol.uppercaseChar())
                             }
-                            (this as? HyphenOutFeed)?.reset()
+                            (this as? HyphenOutFeed)?.reset(isFlush = !isClosed())
                         }
                     }
                 }
@@ -457,8 +458,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *     val default = Base32.Default.Builder {
      *         isLenient(enable = true)
      *         lineBreak(interval = 64)
+     *         lineBreakReset(onFlush = true)
      *         encodeLowercase(enable = false)
      *         padEncoded(enable = true)
+     *         backFillBuffers(enable = true)
      *     }
      *
      *     val text = "Hello World!"
@@ -490,26 +493,30 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
                 this._lineBreakInterval = other.lineBreakInterval
+                this._lineBreakResetOnFlush = other.lineBreakResetOnFlush
                 this._encodeLowercase = other.encodeLowercase
                 this._padEncoded = other.padEncoded
                 this._backFillBuffers = other.backFillBuffers
             }
 
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _isLenient: Boolean = true
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _lineBreakInterval: Byte = 0
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
+            internal var _lineBreakResetOnFlush: Boolean = true
+                private set
+            @get:JvmSynthetic
             internal var _encodeLowercase: Boolean = false
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _padEncoded: Boolean = true
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _backFillBuffers: Boolean = true
+                private set
 
             /**
              * DEFAULT: `true`
@@ -551,6 +558,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * @see [EncoderDecoder.Config.lineBreakInterval]
              * */
             public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
+
+            /**
+             * DEFAULT: `true`
+             *
+             * @see [EncoderDecoder.Config.lineBreakResetOnFlush]
+             * */
+            public fun lineBreakReset(onFlush: Boolean): Builder = apply { _lineBreakResetOnFlush = onFlush }
 
             /**
              * DEFAULT: `false`
@@ -615,6 +629,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         public class Config private constructor(
             isLenient: Boolean,
             lineBreakInterval: Byte,
+            lineBreakResetOnFlush: Boolean,
             @JvmField
             public val encodeLowercase: Boolean,
             @JvmField
@@ -623,7 +638,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(
             isLenient,
             lineBreakInterval,
-            lineBreakResetOnFlush = true, // TODO
+            lineBreakResetOnFlush,
             paddingChar = '=',
             maxDecodeEmit = 5,
             backFillBuffers,
@@ -656,6 +671,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 internal val DEFAULT: Config = Config(
                     isLenient = true,
                     lineBreakInterval = 64,
+                    lineBreakResetOnFlush = true,
                     encodeLowercase = false,
                     padEncoded = true,
                     backFillBuffers = true,
@@ -783,8 +799,10 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
      *     val hex = Base32.Hex.Builder {
      *         isLenient(enable = true)
      *         lineBreak(interval = 64)
+     *         lineBreakReset(onFlush = true)
      *         encodeLowercase(enable = false)
      *         padEncoded(enable = true)
+     *         backFillBuffers(enable = true)
      *     }
      *
      *     val text = "Hello World!"
@@ -816,26 +834,30 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 if (other == null) return
                 this._isLenient = other.isLenient ?: true
                 this._lineBreakInterval = other.lineBreakInterval
+                this._lineBreakResetOnFlush = other.lineBreakResetOnFlush
                 this._encodeLowercase = other.encodeLowercase
                 this._padEncoded = other.padEncoded
                 this._backFillBuffers = other.backFillBuffers
             }
 
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _isLenient: Boolean = true
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _lineBreakInterval: Byte = 0
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
+            internal var _lineBreakResetOnFlush: Boolean = true
+                private set
+            @get:JvmSynthetic
             internal var _encodeLowercase: Boolean = false
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _padEncoded: Boolean = true
+                private set
             @get:JvmSynthetic
-            @set:JvmSynthetic
             internal var _backFillBuffers: Boolean = true
+                private set
 
             /**
              * DEFAULT: `true`
@@ -877,6 +899,13 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * @see [EncoderDecoder.Config.lineBreakInterval]
              * */
             public fun lineBreak(interval: Byte): Builder = apply { _lineBreakInterval = interval }
+
+            /**
+             * DEFAULT: `true`
+             *
+             * @see [EncoderDecoder.Config.lineBreakResetOnFlush]
+             * */
+            public fun lineBreakReset(onFlush: Boolean): Builder = apply { _lineBreakResetOnFlush = onFlush }
 
             /**
              * DEFAULT: `false`
@@ -941,6 +970,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         public class Config private constructor(
             isLenient: Boolean,
             lineBreakInterval: Byte,
+            lineBreakResetOnFlush: Boolean,
             @JvmField
             public val encodeLowercase: Boolean,
             @JvmField
@@ -949,7 +979,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(
             isLenient,
             lineBreakInterval,
-            lineBreakResetOnFlush = true, // TODO
+            lineBreakResetOnFlush,
             paddingChar = '=',
             maxDecodeEmit = 5,
             backFillBuffers,
@@ -982,6 +1012,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 internal val DEFAULT: Config = Config(
                     isLenient = true,
                     lineBreakInterval = 64,
+                    lineBreakResetOnFlush = true,
                     encodeLowercase = false,
                     padEncoded = true,
                     backFillBuffers = true,
@@ -1544,10 +1575,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
         private var count: Byte = 0
 
-        fun reset() {
+        fun reset(isFlush: Boolean) {
             count = 0
-            // TODO: Check resetOnFlush
-            if (out is LineBreakOutFeed) out.reset()
+            if (!isFlush) return
+            if (out !is LineBreakOutFeed) return
+            if (out.resetOnFlush) out.reset()
         }
 
         override fun output(encoded: Char) {

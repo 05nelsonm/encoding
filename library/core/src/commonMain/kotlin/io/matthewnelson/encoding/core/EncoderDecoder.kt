@@ -132,7 +132,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public val backFillBuffers: Boolean,
 
         // NOTE: Adding any parameters requires updating equals/hashCode/toString
-        @Suppress("UNUSED", "UNUSED_PARAMETER") unused: Any?,
+        @Suppress("UNUSED_PARAMETER") unused: Any?,
     ) {
 
         /**
@@ -519,7 +519,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @suppress
          * */
         @Deprecated(
-            message = "Parameters maxDecodeEmit and backFillBuffers were added. Use the new constructor.",
+            message = "Parameters, lineBreakResetOnFlush, maxDecodeEmit, and backFillBuffers were added. Use the new constructor.",
             replaceWith = ReplaceWith(
                 expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, lineBreakResetOnFlush = false, paddingChar, maxDecodeEmit = 0 /* TODO */, backFillBuffers = true)"),
             level = DeprecationLevel.WARNING,

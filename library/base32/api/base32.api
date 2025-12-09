@@ -118,6 +118,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Builder {
 	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
 	public final fun lineBreak (B)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
+	public final fun lineBreakReset (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
 	public final fun padEncoded (Z)Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
 	public final fun strictSpec ()Lio/matthewnelson/encoding/base32/Base32$Default$Builder;
 }
@@ -132,7 +133,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Default$Config : io/m
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZBZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32$Hex : io/matthewnelson/encoding/base32/Base32 {
@@ -153,6 +154,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Builder {
 	public final fun encodeLowercase (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
 	public final fun isLenient (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
 	public final fun lineBreak (B)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
+	public final fun lineBreakReset (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
 	public final fun padEncoded (Z)Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
 	public final fun strictSpec ()Lio/matthewnelson/encoding/base32/Base32$Hex$Builder;
 }
@@ -167,7 +169,7 @@ public final class io/matthewnelson/encoding/base32/Base32$Hex$Config : io/matth
 	public final field encodeToLowercase Z
 	public final field isConstantTime Z
 	public final field padEncoded Z
-	public synthetic fun <init> (ZBZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZBZZZZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class io/matthewnelson/encoding/base32/Base32CrockfordConfigBuilder {

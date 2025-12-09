@@ -18,6 +18,7 @@ final class io.matthewnelson.encoding.base64/Base64 : io.matthewnelson.encoding.
         final fun encodeUrlSafe(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.encodeUrlSafe|encodeUrlSafe(kotlin.Boolean){}[0]
         final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.isLenient|isLenient(kotlin.Boolean){}[0]
         final fun lineBreak(kotlin/Byte): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.lineBreak|lineBreak(kotlin.Byte){}[0]
+        final fun lineBreakReset(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.lineBreakReset|lineBreakReset(kotlin.Boolean){}[0]
         final fun padEncoded(kotlin/Boolean): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.padEncoded|padEncoded(kotlin.Boolean){}[0]
         final fun strictSpec(): io.matthewnelson.encoding.base64/Base64.Builder // io.matthewnelson.encoding.base64/Base64.Builder.strictSpec|strictSpec(){}[0]
     }

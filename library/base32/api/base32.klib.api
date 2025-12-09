@@ -136,6 +136,7 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
             final fun encodeLowercase(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.encodeLowercase|encodeLowercase(kotlin.Boolean){}[0]
             final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.isLenient|isLenient(kotlin.Boolean){}[0]
             final fun lineBreak(kotlin/Byte): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.lineBreak|lineBreak(kotlin.Byte){}[0]
+            final fun lineBreakReset(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.lineBreakReset|lineBreakReset(kotlin.Boolean){}[0]
             final fun padEncoded(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.padEncoded|padEncoded(kotlin.Boolean){}[0]
             final fun strictSpec(): io.matthewnelson.encoding.base32/Base32.Default.Builder // io.matthewnelson.encoding.base32/Base32.Default.Builder.strictSpec|strictSpec(){}[0]
         }
@@ -174,6 +175,7 @@ sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matth
             final fun encodeLowercase(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.encodeLowercase|encodeLowercase(kotlin.Boolean){}[0]
             final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.isLenient|isLenient(kotlin.Boolean){}[0]
             final fun lineBreak(kotlin/Byte): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.lineBreak|lineBreak(kotlin.Byte){}[0]
+            final fun lineBreakReset(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.lineBreakReset|lineBreakReset(kotlin.Boolean){}[0]
             final fun padEncoded(kotlin/Boolean): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.padEncoded|padEncoded(kotlin.Boolean){}[0]
             final fun strictSpec(): io.matthewnelson.encoding.base32/Base32.Hex.Builder // io.matthewnelson.encoding.base32/Base32.Hex.Builder.strictSpec|strictSpec(){}[0]
         }
