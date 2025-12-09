@@ -79,6 +79,7 @@ internal inline fun <C: Config> Decoder<C>.decode(
 @OptIn(ExperimentalContracts::class)
 @Throws(EncodingException::class, IllegalArgumentException::class)
 internal inline fun <C: Config> Decoder<C>.decodeBuffered(
+    buf: ByteArray?,
     maxBufSize: Int,
     _get: (i: Int) -> Char,
     _input: () -> DecoderInput,
@@ -90,13 +91,18 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
         callsInPlace(_action, InvocationKind.UNKNOWN)
     }
 
+    if (buf != null) {
+        // Ensure function caller passed in buf.size for maxBufSize
+        check(buf.size == maxBufSize) { "buf.size[${buf.size}] != maxBufSize[$maxBufSize]" }
+    }
     if (config.maxDecodeEmit == -1) {
         // EncoderDecoder.Config implementation has not updated to
         // new constructor which requires it to be greater than 0.
         throw EncodingException("Decoder misconfiguration. ${this}.config.maxDecodeEmit == -1")
     }
     require(maxBufSize > config.maxDecodeEmit) {
-        "maxBufSize[$maxBufSize] <= ${this}.config.maxDecodeEmit[${config.maxDecodeEmit}]"
+        val parameter = if (buf != null) "buf.size" else "maxBufSize"
+        "$parameter[$maxBufSize] <= ${this}.config.maxDecodeEmit[${config.maxDecodeEmit}]"
     }
 
     val input = _input()
@@ -111,8 +117,8 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     }.let { maxDecodeSize ->
         if (maxDecodeSize !in 0..maxBufSize) return@let // Chunk
 
-        // Maximum decoded size will be smaller than or equal to maxBufSize. One-shot it.
-        val decoded = ByteArray(maxDecodeSize)
+        // Maximum decoded size will be less than or equal to maxBufSize. One-shot it.
+        val decoded = buf ?: ByteArray(maxDecodeSize)
         val len = decode(maxDecodeSizeArray = decoded, input.size, _get)
         try {
             _action(decoded, 0, len)
@@ -123,27 +129,27 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     }
 
     // Chunk
-    val buf = ByteArray(maxBufSize)
-    val limit = buf.size - config.maxDecodeEmit
+    val _buf = buf ?: ByteArray(maxBufSize)
+    val limit = _buf.size - config.maxDecodeEmit
     val inputSize = input.size
     var iBuf = 0
     var i = 0
     var size = 0L
     try {
-        newDecoderFeed(out = { b -> buf[iBuf++] = b }).use { feed ->
+        newDecoderFeed(out = { b -> _buf[iBuf++] = b }).use { feed ->
             while (i < inputSize) {
                 feed.consume(input = _get(i++))
                 if (iBuf <= limit) continue
-                _action(buf, 0, iBuf)
+                _action(_buf, 0, iBuf)
                 size += iBuf
                 iBuf = 0
             }
         }
         if (iBuf == 0) return size
-        _action(buf, 0, iBuf)
+        _action(_buf, 0, iBuf)
         size += iBuf
     } finally {
-        if (config.backFillBuffers) buf.fill(0)
+        if (config.backFillBuffers) _buf.fill(0)
     }
     return size
 }
