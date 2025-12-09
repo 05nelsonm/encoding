@@ -20,7 +20,7 @@ package io.matthewnelson.encoding.utf8
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder
-import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.MalformedEncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.utf8.internal.build
 import io.matthewnelson.encoding.utf8.internal.initializeKotlin
@@ -207,8 +207,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             public val KOTLIN: ReplacementStrategy = initializeKotlin(U_003F, U_FFFD)
 
             /**
-             * A strategy which will throw an exception when any invalid sequence is encountered during
-             * text to UTF-8 byte, or UTF-8 byte to text transformations.
+             * A strategy which will throw a [MalformedEncodingException] when any invalid sequence is
+             * encountered during text to UTF-8 byte, or UTF-8 byte to text transformations.
              *
              * @see [ThrowOnInvalid]
              * */
@@ -323,7 +323,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
                     override fun replacementSize(): Int {
                         currentSize = 0L
                         checkNext = false
-                        throw EncodingException("Malformed UTF-8 character sequence")
+                        throw MalformedEncodingException("Malformed UTF-8 character sequence")
                     }
                 }
                 else -> CharPreProcessor(strategy)
@@ -333,8 +333,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy] for the
              * [UTF8] encoder/decoder.
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -344,8 +344,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy] for the
              * [UTF8.Config].
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -354,8 +354,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             /**
              * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy].
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -369,8 +369,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8] encoder/decoder.
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -380,8 +380,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8.Config].
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -390,8 +390,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             /**
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy].
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -405,8 +405,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8] encoder/decoder.
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -416,8 +416,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8.Config].
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -426,8 +426,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             /**
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy].
              *
-             * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-             * is [ReplacementStrategy.THROW].
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
              * */
             @JvmStatic
             @JvmName("sizeOf")
@@ -452,8 +452,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         /**
          * Add input.
          *
-         * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-         * is [ReplacementStrategy.THROW].
+         * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+         *   [strategy] is [ReplacementStrategy.THROW].
          * */
         public operator fun plus(input: Char) {
             val c = input.code
@@ -481,8 +481,8 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         /**
          * Resets the [CharPreProcessor] and returns the final UTF-8 byte size of all accumulated input.
          *
-         * @throws [EncodingException] If an invalid character sequence is encountered and the [strategy]
-         * is [ReplacementStrategy.THROW].
+         * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+         *   [strategy] is [ReplacementStrategy.THROW].
          * */
         public fun doFinal(): Long {
             val s = currentSize
@@ -492,7 +492,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             return s + replacementSize()
         }
 
-        @Throws(EncodingException::class)
+        @Throws(MalformedEncodingException::class)
         protected open fun replacementSize(): Int = strategy.size
 
         private inline fun Int.process(): Boolean {
@@ -536,7 +536,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
             ReplacementStrategy.THROW.size -> object : DecoderFeed(out) {
                 override fun Decoder.OutFeed.outputReplacementSequence() {
-                    throw EncodingException("Malformed UTF-8 character sequence")
+                    throw MalformedEncodingException("Malformed UTF-8 character sequence")
                 }
             }
             // "Should" never make it here...
@@ -549,7 +549,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         return when (config.replacementStrategy.size) {
             ReplacementStrategy.THROW.size  -> object : EncoderFeed(out) {
                 override fun Encoder.OutFeed.outputReplacementChar() {
-                    throw EncodingException("Malformed UTF-8 character sequence")
+                    throw MalformedEncodingException("Malformed UTF-8 character sequence")
                 }
             }
             else -> EncoderFeed(out)
@@ -559,7 +559,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     // Chars -> Bytes
     private abstract inner class DecoderFeed(out: Decoder.OutFeed): Decoder<Config>.Feed(_out = out) {
 
-        @Throws(EncodingException::class)
+        @Throws(MalformedEncodingException::class)
         protected abstract fun Decoder.OutFeed.outputReplacementSequence()
 
         private var buf = 0
@@ -627,7 +627,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     // Bytes -> Chars
     private open inner class EncoderFeed(out: Encoder.OutFeed): Encoder<Config>.Feed(_out = out) {
 
-        @Throws(EncodingException::class)
+        @Throws(MalformedEncodingException::class)
         protected open fun Encoder.OutFeed.outputReplacementChar() {
             output('\ufffd')
         }

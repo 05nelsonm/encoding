@@ -26,6 +26,7 @@ import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.MalformedEncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
@@ -122,7 +123,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * allowed but ignored) during decoding operations. This is non-compliant with
              * the Crockford spec.
              *
-             * If `false`, an [EncodingException] will be thrown.
+             * If `false`, a [MalformedEncodingException] will be thrown.
              * */
             public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
@@ -260,7 +261,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                         } else {
                             "Missing check symbol. Expected[$checkSymbol]"
                         }
-                        throw EncodingException(msg)
+                        throw MalformedEncodingException(msg)
                     } else {
                         outSize--
                     }
@@ -525,7 +526,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * allowed but ignored) during decoding operations. This is non-compliant with
              * `RFC 4648`.
              *
-             * If `false`, an [EncodingException] will be thrown.
+             * If `false`, a [MalformedEncodingException] will be thrown.
              * */
             public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
@@ -866,7 +867,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
              * allowed but ignored) during decoding operations. This is non-compliant with
              * `RFC 4648`.
              *
-             * If `false`, an [EncodingException] will be thrown.
+             * If `false`, a [MalformedEncodingException] will be thrown.
              * */
             public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
@@ -1143,7 +1144,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             val code = input.code
             val diff = code.decodeDiff()
             if (diff == 0) {
-                throw Diff0EncodingException("Char[$input] is not a valid Base32 character")
+                throw MalformedEncodingException("Char[$input] is not a valid ${name()} character")
             }
 
             if (iBuf < 7) {
@@ -1463,7 +1464,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             if (isCheckSymbolSet) {
                 // If the set checkSymbol was not intended, it's only valid as the
                 // very last character and the previous update call was invalid.
-                throw EncodingException("CheckSymbol[${_config.checkSymbol}] was set")
+                throw MalformedEncodingException("CheckSymbol[${_config.checkSymbol}] was set")
             }
 
             // Crockford allows for insertion of hyphens, which are to be ignored.
@@ -1472,7 +1473,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             try {
                 super.consumeProtected(input)
                 hadInput = true
-            } catch (e: Diff0EncodingException) {
+            } catch (e: MalformedEncodingException) {
                 // decodeDiff returned 0. See if it's a check symbol.
                 if (!input.isCheckSymbol()) throw e
 
@@ -1483,14 +1484,14 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 }
 
                 // Have the wrong check symbol
-                throw EncodingException("Char[$input] IS a check symbol, but did not match config's CheckSymbol[${_config.checkSymbol}]", e)
+                throw MalformedEncodingException("Char[$input] IS a check symbol, but did not match config's CheckSymbol[${_config.checkSymbol}]", e)
             }
         }
 
         override fun doFinalProtected() {
             if (isClosed() || _config.finalizeWhenFlushed) {
                 if (hadInput && _config.checkSymbol != null && !isCheckSymbolSet) {
-                    throw EncodingException("Missing check symbol. Expected[${_config.checkSymbol}]")
+                    throw MalformedEncodingException("Missing check symbol. Expected[${_config.checkSymbol}]")
                 }
                 isCheckSymbolSet = false
                 hadInput = false
@@ -1558,10 +1559,6 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             return diff
         }
     }
-
-    // Thrown by AbstractDecoderFeed when decodeDiff returns 0.
-    // Is for Crockford in order to check input for a check symbol.
-    private class Diff0EncodingException(message: String): EncodingException(message)
 
     private class HyphenOutFeed(
         private val interval: Byte,

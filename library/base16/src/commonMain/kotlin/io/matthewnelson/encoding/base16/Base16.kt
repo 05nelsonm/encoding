@@ -21,7 +21,7 @@ import io.matthewnelson.encoding.base16.internal.build
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder
-import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.MalformedEncodingException
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.FeedBuffer
 import kotlin.contracts.ExperimentalContracts
@@ -102,7 +102,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
          * allowed but ignored) during decoding operations. This is non-compliant with
          * `RFC 4648`.
          *
-         * If `false`, an [EncodingException] will be thrown.
+         * If `false`, a [MalformedEncodingException] will be thrown.
          * */
         public fun isLenient(enable: Boolean): Builder = apply { _isLenient = enable }
 
@@ -367,7 +367,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
             diff += if (gea + lef == 2) -87 else 0
 
             if (diff == 0) {
-                throw EncodingException("Char[${input}] is not a valid Base16 character")
+                throw MalformedEncodingException("Char[${input}] is not a valid $NAME character")
             }
 
             if (!hasBuffered) {

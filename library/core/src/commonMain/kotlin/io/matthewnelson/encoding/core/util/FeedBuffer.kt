@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.core.util
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.MalformedEncodingException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -28,6 +29,9 @@ import kotlin.jvm.JvmStatic
  * Helper class for [Decoder.Feed] and [Encoder.Feed] to
  * buffer their input until ready to output data via their
  * supplied [Decoder.OutFeed]/[Encoder.OutFeed].
+ *
+ * **NOTE:** This adds significant overhead to operations.
+ * It is far better, performance wise, to not use.
  *
  * @see [Flush]
  * @see [Finalize]
@@ -104,12 +108,12 @@ constructor(
     public companion object {
 
         /**
-         * Helper for generating a standard [EncodingException] when
+         * Helper for generating a standard [MalformedEncodingException] when
          * an illegal modulus is encountered while decoding.
          * */
         @JvmStatic
         public fun truncatedInputEncodingException(modulus: Int): EncodingException {
-            return EncodingException("Truncated input. Illegal Modulus[$modulus]")
+            return MalformedEncodingException("Truncated input. Illegal Modulus[$modulus]")
         }
     }
 }
