@@ -33,7 +33,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.jvm.JvmOverloads
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -61,7 +61,7 @@ public sealed class Base64 {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -80,7 +80,7 @@ public inline fun String.decodeBase64ToArray(): ByteArray? {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -99,7 +99,7 @@ public fun CharArray.decodeBase64ToArray(): ByteArray? {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -119,7 +119,7 @@ public inline fun ByteArray.encodeBase64(base64: Base64.Default = Base64.Default
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -141,7 +141,7 @@ public inline fun ByteArray.encodeBase64(base64: Base64.UrlSafe): String {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -161,7 +161,7 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.Default = Bas
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -183,7 +183,7 @@ public inline fun ByteArray.encodeBase64ToCharArray(base64: Base64.UrlSafe): Cha
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -203,7 +203,7 @@ public fun ByteArray.encodeBase64ToByteArray(base64: Base64.Default = Base64.Def
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(

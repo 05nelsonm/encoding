@@ -5,6 +5,7 @@ higher level implementations.
 
 ```kotlin
 // Using modules :base64 and :utf8 for example purposes
+// Using io.matthewnelson.kmp-file:{file/async} for example purposes
 
 fun main() {
     //// Encoder.Feed example ////
@@ -16,16 +17,17 @@ fun main() {
     // come out of the Encoder.Feed
     val out = Encoder.OutFeed { char -> sb.append(char) }
 
-    // Wrap it in helper LineBreakOutFeed which will output \n every `interval`
+    // Wrap it in helper LineBreakOutFeed which will output `\n` every `interval`
     // characters of output.
     val outN = LineBreakOutFeed(interval = 64, out)
 
     Base64.Default.newEncoderFeed(outN).use { feed ->
+        // Encode UTF-8 bytes to base64
         "Hello World 1!".decodeToByteArray(UTF8).forEach { b -> feed.consume(b) }
         feed.flush() // Finalize first encoding to reuse the Feed
-        outN.output('.')
+        outN.output('.') // Add a separator or something.
         "Hello World 2!".decodeToByteArray(UTF8).forEach { b -> feed.consume(b) }
-    } // << `Feed.use` extension function will call Feed.doFinal automatically for us here
+    } // << `Feed.use` extension function will call Feed.doFinal automatically
 
     val encoded = sb.toString()
     println(encoded) // SGVsbG8gV29ybGQgMSE=.SGVsbG8gV29ybGQgMiE=
@@ -33,15 +35,42 @@ fun main() {
     //// Decoder.Feed example ////
     val decoded = StringBuilder()
 
-    UTF8.newEncoderFeed { char -> decoded.append(char) }.use { feedUTF8 ->
-        Base64.Default.newDecoderFeed { decodedByte -> feedUTF8.consume(decodedByte) }.use { feedB64 ->
+    UTF8.newEncoderFeed(decoded::append).use { feedUTF8 ->
+
+        // As the base64 decoder outputs decoded bytes, pipe them through
+        // the UTF8 "encoder" feed (i.e. UTF-8 byte to text transform),
+        // which will then pipe each "encoded" character of output to
+        // the StringBuilder.
+        Base64.Default.newDecoderFeed(feedUTF8::consume).use { feedB64 ->
             encoded.substringBefore('.').forEach { c -> feedB64.consume(c) }
             feedB64.flush() // Finalize first decoding to reuse the Feed
             feedUTF8.flush() // Prepare UTF8 feed for second decoding
             encoded.substringAfter('.').forEach { c -> feedB64.consume(c) }
-        } // << `Feed.use` extension function will call Feed.doFinal automatically for us here
-    } // << `Feed.use` extension function will call Feed.doFinal automatically for us here
+        } // << `Feed.use` extension function will call Feed.doFinal automatically
+    } // << `Feed.use` extension function will call Feed.doFinal automatically
 
     println(decoded.toString()) // Hello World 1!Hello World 2!
+
+    //// Decoder decodeBuffered/decodeBufferedAsync examples ///
+
+    // Write UTF-8 encoded bytes to a FileStream (kmp-file:file)
+    val file = "/path/to/file.txt".toFile()
+    file.openWrite(excl = null).use { stream ->
+        decoded.decodeBuffered(UTF8, action = stream::write)
+    }
+
+    // Now do it asynchronously (kmp-file:async)
+    GlobalScope.launch {
+        AsyncFs.Default.with {
+            file.openAppendAsync(excl = OpenExcl.MustExist)
+                .useAsync { stream ->
+                    decoded.decodeBufferedAsync(
+                        maxBufSize = 1024,
+                        decoder = UTF8.ThrowOnInvalid,
+                        action = stream::writeAsync,
+                    )
+                }
+        }
+    }
 }
 ```

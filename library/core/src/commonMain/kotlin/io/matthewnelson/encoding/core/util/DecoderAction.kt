@@ -18,7 +18,7 @@ package io.matthewnelson.encoding.core.util
 import kotlin.jvm.JvmField
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.3.1`
  * @suppress
  * */
 @Deprecated(
@@ -30,7 +30,7 @@ public fun interface DecoderAction {
     public fun convert(input: Char): Int
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.3.1`
      * @suppress
      * */
     @Deprecated(

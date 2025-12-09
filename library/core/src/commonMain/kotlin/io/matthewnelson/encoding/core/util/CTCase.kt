@@ -18,7 +18,7 @@ package io.matthewnelson.encoding.core.util
 import kotlin.jvm.JvmField
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.3.1`
  * @suppress
  * */
 @Deprecated(

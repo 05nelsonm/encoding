@@ -32,7 +32,6 @@ import kotlin.jvm.JvmSynthetic
  * @see [EncoderDecoder]
  * @see [encodeToString]
  * @see [encodeToCharArray]
- * @see [encodeToByteArray]
  * @see [Encoder.Feed]
  * */
 public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(config) {
@@ -46,6 +45,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * e.g.
      *
      *     val sb = StringBuilder()
+     *
+     *     // Alternatively use newEncoderFeed(sb::append)
      *     myEncoder.newEncoderFeed { encodedChar ->
      *         sb.append(encodedChar)
      *     }.use { feed ->
@@ -135,8 +136,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             if (_isClosed) throw closedException()
 
             try {
-                // should not throw exception, but just
-                // in case, we close the Feed.
                 doFinalProtected()
                 (_out as? LineBreakOutFeed)?.reset()
             } catch (t: Throwable) {
@@ -161,7 +160,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         public final override fun toString(): String = "${this@Encoder}.Encoder.Feed@${hashCode()}"
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @Deprecated(
@@ -176,6 +175,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * are produced by [Encoder.Feed].
      *
      * @see [newEncoderFeed]
+     * @see [NoOp]
      * */
     public fun interface OutFeed {
         public fun output(encoded: Char)
@@ -241,7 +241,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.3.0`
          * @suppress
          * */
         @JvmStatic
@@ -258,7 +258,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 if (i == maxSize) return@block a
                 val copy = a.copyOf(i)
                 if (encoder.config.backFillBuffers) {
-                    copy.fill(0, 0, i)
+                    a.fill(0, 0, i)
                 }
                 copy
             }

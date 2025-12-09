@@ -23,7 +23,7 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base16.Builder]
  * @see [Base16.Companion.Builder]
@@ -38,7 +38,7 @@ public fun Base16(
 ): Base16 = Base16ConfigBuilder(config).apply(block).buildCompat()
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base16.Builder]
  * @see [Base16.Companion.Builder]
@@ -52,7 +52,7 @@ public fun Base16(
 ): Base16 = Base16(config = null, block)
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base16.Builder]
  * @see [Base16.Companion.Builder]
@@ -67,7 +67,7 @@ public fun Base16(
 ): Base16 = Base16.Builder { if (strict) strictSpec() }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base16.Builder]
  * @see [Base16.Companion.Builder]
@@ -129,7 +129,7 @@ public class Base16ConfigBuilder {
         .build()
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.3.1`
      * @suppress
      * */
     @JvmField

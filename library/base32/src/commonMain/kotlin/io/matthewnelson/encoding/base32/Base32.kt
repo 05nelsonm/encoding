@@ -328,7 +328,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * DEPRECATED
+             * DEPRECATED since `2.6.0`
              * @suppress
              * */
             @JvmField
@@ -435,7 +435,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @Deprecated(
@@ -661,7 +661,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * DEPRECATED
+             * DEPRECATED since `2.6.0`
              * @suppress
              * */
             @JvmField
@@ -760,7 +760,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @Deprecated(
@@ -986,7 +986,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             /**
-             * DEPRECATED
+             * DEPRECATED since `2.6.0`
              * @suppress
              * */
             @JvmField
@@ -1085,7 +1085,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @Deprecated(

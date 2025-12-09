@@ -26,7 +26,7 @@ import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmSynthetic
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
@@ -41,7 +41,7 @@ public fun Base32Crockford(
 ): Base32.Crockford = Base32CrockfordConfigBuilder(config).apply(block).buildCompat()
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
@@ -55,7 +55,7 @@ public fun Base32Crockford(
 ): Base32.Crockford = Base32Crockford(config = null, block)
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
@@ -70,7 +70,7 @@ public fun Base32Crockford(
 ): Base32.Crockford = Base32Crockford { if (strict) strict() }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
@@ -85,7 +85,7 @@ public fun Base32Default(
 ): Base32.Default = Base32DefaultConfigBuilder(config).apply(block).buildCompat()
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
@@ -99,7 +99,7 @@ public fun Base32Default(
 ): Base32.Default = Base32Default(config = null, block)
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
@@ -114,7 +114,7 @@ public fun Base32Default(
 ): Base32.Default = Base32.Default.Builder { if (strict) strictSpec() }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Hex.Builder]
  * @see [Base32.Hex.Companion.Builder]
@@ -129,7 +129,7 @@ public fun Base32Hex(
 ): Base32.Hex = Base32HexConfigBuilder(config).apply(block).buildCompat()
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Hex.Builder]
  * @see [Base32.Hex.Companion.Builder]
@@ -143,7 +143,7 @@ public fun Base32Hex(
 ): Base32.Hex = Base32Hex(config = null, block)
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Hex.Builder]
  * @see [Base32.Hex.Companion.Builder]
@@ -158,7 +158,7 @@ public fun Base32Hex(
 ): Base32.Hex = Base32.Hex.Builder { if (strict) strictSpec() }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Crockford.Builder]
  * @see [Base32.Crockford.Companion.Builder]
@@ -315,7 +315,7 @@ public class Base32CrockfordConfigBuilder {
         .build()
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.3.1`
      * @suppress
      * */
     @JvmField
@@ -327,7 +327,7 @@ public class Base32CrockfordConfigBuilder {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Default.Builder]
  * @see [Base32.Default.Companion.Builder]
@@ -398,7 +398,7 @@ public class Base32DefaultConfigBuilder {
         .build()
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.3.1`
      * @suppress
      * */
     @JvmField
@@ -410,7 +410,7 @@ public class Base32DefaultConfigBuilder {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.6.0`
  * @suppress
  * @see [Base32.Hex.Builder]
  * @see [Base32.Hex.Companion.Builder]
@@ -481,7 +481,7 @@ public class Base32HexConfigBuilder {
         .build()
 
     /**
-     * DEPRECATED
+     * DEPRECATED since `2.3.1`
      * @suppress
      * */
     @JvmField

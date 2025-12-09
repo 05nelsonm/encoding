@@ -237,7 +237,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         isLenient = null,
         lineBreakInterval = -1,
         paddingChar = null,
-        maxDecodeEmit = (3 + replacementStrategy.size).coerceAtLeast(4),
+        maxDecodeEmit = (replacementStrategy.size * 2).coerceAtLeast(4),
         backFillBuffers,
     ) {
 

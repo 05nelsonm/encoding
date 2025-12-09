@@ -36,6 +36,14 @@ import kotlin.jvm.JvmStatic
  * */
 public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encoder<C>(config) {
 
+    public companion object {
+
+        /**
+         * A "default" buffer size of `8 * 1024`
+         * */
+        public const val DEFAULT_BUFFER_SIZE: Int = 8 * 1024 // Note: If changing, update documentation.
+    }
+
     /**
      * Base configuration for an [EncoderDecoder]. More options may be specified by the implementation.
      * */
@@ -50,7 +58,17 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         @JvmField
         public val isLenient: Boolean?,
 
-        lineBreakInterval: Byte,
+        /**
+         * If greater than `0`, [Encoder.newEncoderFeed] may use a [LineBreakOutFeed] such that
+         * for every [lineBreakInterval] number of encoded characters output by the [Encoder.Feed],
+         * the next encoded character output will be preceded with a new line character `\n`.
+         *
+         * **NOTE:** This setting will always be `0` if [isLenient] is `false`.
+         *
+         * @see [Encoder.newEncoderFeed]
+         * */
+        @JvmField
+        public val lineBreakInterval: Byte,
 
         /**
          * The character that is used when padding encoded output. This is used by [Decoder.Feed]
@@ -66,32 +84,37 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 
         /**
          * The maximum number of bytes that the implementation's [Decoder.Feed] can potentially
-         * emit on a single invocation of [Decoder.Feed.consume]. For example, `Base16` decoding
-         * will emit `1` byte for every `2` characters of input, so its value is `1`. `Base32`
-         * decoding will emit `5` bytes for every `8` characters of input, so its value is `5`.
-         * `UTF8` decoding (character to byte transformations) can emit `4` to `6` bytes, depending
-         * on buffered input and the size of the replacement byte sequence being used, so would
-         * require a calculation such as `(3 + replacementStrategy.size).coerceAtLeast(4)`.
+         * emit on a single invocation of [Decoder.Feed.consume], [Decoder.Feed.flush], or
+         * [Decoder.Feed.doFinal].
+         *
+         * For example, `Base16` decoding will emit `1` byte for every `2` characters of input,
+         * so its maximum emission is `1`. `Base32` decoding will emit `5` bytes for every `8`
+         * characters of input, so its maximum emission is `5`. `UTF8` "decoding" (i.e. text to
+         * UTF-8 byte transformations) can emit `4` bytes, but also depending on the size of the
+         * replacement byte sequence being used, can emit more; its maximum emission size is
+         * required to be calculated, such as `(replacementStrategy.size * 2).coerceAtLeast(4)`.
          *
          * Value will be greater than `0`, or `-1` which indicates that the [EncoderDecoder.Config]
-         * implementation has not updated to the new constructor introduced in version `2.6.0`.
+         * implementation has not updated to the new constructor introduced in version `2.6.0` and
+         * as such is unable to be used with `:core` module APIs dependent on this value (such as
+         * [Decoder.decodeBuffered] or [Decoder.decodeBufferedAsync]).
          * */
         @JvmField
         public val maxDecodeEmit: Int,
 
         /**
-         * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray], and
-         * [Decoder.decodeToByteArray] are utilized, an initial buffer is allocated based on the
-         * pre-calculated return values of [encodeOutMaxSize] or [decodeOutMaxSize] (respectively).
-         * After encoding/decoding operations have completed, the initial buffer may be trimmed
-         * to size in the event of an over-allocation. If that happens, the initial buffer is
-         * then dropped and the correct sized copy is returned. Prior versions always back-filled
-         * the initial buffer with `0` or a space character when this occurred, but that can be
-         * computationally expensive for large data sets and potentially unnecessary if data is
-         * known to not be sensitive in nature.
+         * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray],
+         * [Decoder.decodeToByteArray], [Decoder.decodeBuffered], and [Decoder.decodeBufferedAsync]
+         * are utilized, they may allocate an appropriate medium (a buffer) to store encoded/decoded
+         * data (e.g. a [StringBuilder], [CharArray], or [ByteArray]). Depending on the underlying
+         * encoding/decoding operation, such as an array over-allocation due to [encodeOutMaxSize]
+         * or [decodeOutMaxSize], those initially allocated buffers may not be returned as the
+         * function's result. Prior versions of this library always back-filled them with `0` or a
+         * space character, but that can be computationally expensive for large datasets and
+         * potentially unnecessary if data is known to not be sensitive in nature.
          *
-         * If `true`, the initial buffer (if it was trimmed to size) is back-filled. If `false`,
-         * back-filling is skipped.
+         * If `true`, any non-result buffer allocations are back-filled before being de-referenced
+         * by function return. If `false`, back-filling is skipped.
          * */
         @JvmField
         public val backFillBuffers: Boolean,
@@ -103,7 +126,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         /**
          * Instantiates a new [Config] instance.
          *
-         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than or equal to 0.
+         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1`.
          * */
         protected constructor(
             isLenient: Boolean?,
@@ -113,27 +136,13 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             backFillBuffers: Boolean,
         ): this(
             isLenient = isLenient,
-            lineBreakInterval = lineBreakInterval,
+            lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval),
             paddingChar = paddingChar,
             maxDecodeEmit = maxDecodeEmit,
             backFillBuffers = backFillBuffers,
             unused = null,
         ) {
             require(maxDecodeEmit > 0) { "maxDecodeEmit must be greater than 0" }
-        }
-
-        /**
-         * If greater than `0`, [Encoder.newEncoderFeed] will use the [LineBreakOutFeed] such that
-         * for every [lineBreakInterval] number of encoded characters output, the next encoded
-         * character will be preceded with the new line character `\n`.
-         *
-         * **NOTE:** This setting will always be `0` if [isLenient] is `false`.
-         * */
-        @JvmField
-        public val lineBreakInterval: Byte = if (isLenient != false && lineBreakInterval > 0) {
-            lineBreakInterval
-        } else {
-            0
         }
 
         /**
@@ -231,7 +240,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @see [decodeOutMaxSizeOrFail]
          * @param [encodedSize] The size of the encoded data being decoded.
          * @throws [EncodingSizeException] If [encodedSize] is negative, or
-         *   the calculated size exceeded [Long.MAX_VALUE].
+         *   the calculated output size exceeded [Long.MAX_VALUE].
          * */
         @Throws(EncodingSizeException::class)
         public fun decodeOutMaxSize(encodedSize: Long): Long {
@@ -270,8 +279,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          *
          * @param [input] The data which is to be decoded.
          * @see [DecoderInput]
-         * @throws [EncodingSizeException] If the calculates size exceeded
-         *   [Int.MAX_VALUE].
+         * @throws [EncodingSizeException] If the calculated output size
+         *   exceeds [Int.MAX_VALUE].
          * @throws [EncodingException] If the implementation has integrity
          *   checks to fail quickly and verification of the [input]
          *   failed (e.g. Base32 Crockford's checkSymbol).
@@ -463,7 +472,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         }
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @see [encodeOutMaxSize]
          * @suppress
          * */
@@ -475,7 +484,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public fun encodeOutSize(unEncodedSize: Long): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @see [encodeOutMaxSize]
          * @suppress
          * */
@@ -487,11 +496,11 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public fun encodeOutSize(unEncodedSize: Long, lineBreakInterval: Byte): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
 
         /**
-         * DEPRECATED
+         * DEPRECATED since `2.6.0`
          * @suppress
          * */
         @Deprecated(
-            message = "Parameter maxDecodeEmit and backFillBuffers were added. Use the new constructor.",
+            message = "Parameters maxDecodeEmit and backFillBuffers were added. Use the new constructor.",
             replaceWith = ReplaceWith(
                 expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, maxDecodeEmit = 0 /* TODO */, backFillBuffers = true)"),
             level = DeprecationLevel.WARNING,
@@ -502,9 +511,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             paddingChar: Char?,
         ): this(
             isLenient = isLenient,
-            lineBreakInterval = lineBreakInterval,
+            lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval),
             paddingChar = paddingChar,
-            maxDecodeEmit = -1,
+            maxDecodeEmit = -1, // NOTE: NEVER change.
             backFillBuffers = true,
             unused = null,
         )
@@ -663,4 +672,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     public final override fun toString(): String {
         return "EncoderDecoder[${name()}]@${hashCode()}"
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+private inline fun lineBreakIntervalOrZero(isLenient: Boolean?, interval: Byte): Byte {
+    return if (isLenient != false && interval > 0) interval else 0
 }

@@ -18,7 +18,7 @@
 package io.matthewnelson.encoding.core.internal
 
 /**
- * DEPRECATED
+ * DEPRECATED since `2.2.0`
  * @suppress
  * */
 @RequiresOptIn

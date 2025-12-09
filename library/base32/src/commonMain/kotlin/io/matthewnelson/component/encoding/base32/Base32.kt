@@ -24,7 +24,7 @@ import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import kotlin.jvm.JvmOverloads
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -71,7 +71,7 @@ public sealed class Base32 {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -91,7 +91,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Default = Base32.Def
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -110,7 +110,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -129,7 +129,7 @@ public inline fun String.decodeBase32ToArray(base32: Base32.Crockford): ByteArra
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -149,7 +149,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Default = Base32.Default
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -168,7 +168,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Hex): ByteArray? {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -187,7 +187,7 @@ public fun CharArray.decodeBase32ToArray(base32: Base32.Crockford): ByteArray? {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -207,7 +207,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Default = Base32.Default
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -226,7 +226,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Hex): String {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -245,7 +245,7 @@ public inline fun ByteArray.encodeBase32(base32: Base32.Crockford): String {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -265,7 +265,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Default = Bas
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -284,7 +284,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Hex): CharArr
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -303,7 +303,7 @@ public inline fun ByteArray.encodeBase32ToCharArray(base32: Base32.Crockford): C
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -323,7 +323,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Default = Base32.Def
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
@@ -342,7 +342,7 @@ public fun ByteArray.encodeBase32ToByteArray(base32: Base32.Hex): ByteArray {
 }
 
 /**
- * DEPRECATED
+ * DEPRECATED since `1.2.0`
  * @suppress
  * */
 @Deprecated(
