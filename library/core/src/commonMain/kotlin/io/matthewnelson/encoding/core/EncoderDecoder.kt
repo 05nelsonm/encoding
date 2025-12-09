@@ -51,7 +51,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 
         /**
          * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
-         * allowed but ignored) during decoding operations. If `false`, an [EncodingException]
+         * allowed but ignored) during decoding operations. If `false`, a [MalformedEncodingException]
          * will be thrown when those characters are encountered. If `null`, those characters
          * are passed along to the [Decoder.Feed] implementation as input.
          * */
@@ -85,7 +85,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         /**
          * The character that is used when padding encoded output. This is used by [Decoder.Feed]
          * to mark input as "completing" such that further non-padding input can be exceptionally
-         * rejected. If the encoding specification does not use padding, `null` may be specified.
+         * rejected with a [MalformedEncodingException]. If the encoding specification does not
+         * use padding, `null` may be specified.
          *
          * **NOTE:** [Decoder.Feed] will not pass along padding characters to the [Decoder.Feed]
          * implementation; they will be automatically dropped. If this is undesirable, consider
@@ -312,7 +313,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
                         lastRelevantChar--
                         continue
                     } else {
-                        throw EncodingException("Spaces and new lines are forbidden when isLenient[false]")
+                        throw MalformedEncodingException("Spaces and new lines are forbidden when isLenient[false]")
                     }
                 }
 

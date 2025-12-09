@@ -19,6 +19,7 @@ package io.matthewnelson.encoding.base32.internal
 
 import io.matthewnelson.encoding.base32.Base32
 import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.core.EncodingSizeException
 
 internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean, Boolean) -> Base32.Crockford.Config).build(
     b: Base32.Crockford.Builder,
@@ -110,6 +111,7 @@ internal inline fun EncoderDecoder.Config.Companion.decodeOutMaxSize32(encodedSi
     return (encodedSize.toLong() * 5L / 8L).toInt()
 }
 
+@Throws(EncodingSizeException::class)
 internal inline fun EncoderDecoder.Config.Companion.encodeOutSize64(unEncodedSize: Long, willBePadded: Boolean): Long {
     if (unEncodedSize > MAX_UNENCODED_SIZE) {
         throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Long.MAX_VALUE)

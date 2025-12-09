@@ -175,6 +175,11 @@ open class io.matthewnelson.encoding.core/EncodingSizeException : io.matthewnels
     constructor <init>(kotlin/String, kotlin/Throwable?) // io.matthewnelson.encoding.core/EncodingSizeException.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
 }
 
+open class io.matthewnelson.encoding.core/MalformedEncodingException : io.matthewnelson.encoding.core/EncodingException { // io.matthewnelson.encoding.core/MalformedEncodingException|null[0]
+    constructor <init>(kotlin/String) // io.matthewnelson.encoding.core/MalformedEncodingException.<init>|<init>(kotlin.String){}[0]
+    constructor <init>(kotlin/String, kotlin/Throwable?) // io.matthewnelson.encoding.core/MalformedEncodingException.<init>|<init>(kotlin.String;kotlin.Throwable?){}[0]
+}
+
 sealed class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.matthewnelson.encoding.core/Decoder { // io.matthewnelson.encoding.core/Decoder|null[0]
     final val config // io.matthewnelson.encoding.core/Decoder.config|{}config[0]
         final fun <get-config>(): #A // io.matthewnelson.encoding.core/Decoder.config.<get-config>|<get-config>(){}[0]

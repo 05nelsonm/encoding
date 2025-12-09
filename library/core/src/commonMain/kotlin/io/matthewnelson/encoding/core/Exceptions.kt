@@ -15,6 +15,15 @@
  **/
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.util.FeedBuffer
+
+/**
+ * The `EncodingException` class is a generic encoding exception class that provide
+ * type safety for all the encoding related exception classes that extend from it.
+ *
+ * @see [EncodingSizeException]
+ * @see [MalformedEncodingException]
+ * */
 public open class EncodingException: RuntimeException {
 
     final override val message: String
@@ -25,7 +34,24 @@ public open class EncodingException: RuntimeException {
     }
 }
 
+/**
+ * This exception is thrown to indicate that an [EncoderDecoder.Config] pre-calculation
+ * step for an operation failed.
+ *
+ * @see [EncoderDecoder.Config.outSizeExceedsMaxEncodingSizeException]
+ * */
 public open class EncodingSizeException: EncodingException {
+    public constructor(message: String): this(message, null)
+    public constructor(message: String, cause: Throwable?): super(message, cause)
+}
+
+/**
+ * This exception is thrown to indicate an encoding/decoding operation failed due to
+ * malformed input, such as an invalid character or byte sequence.
+ *
+ * @see [FeedBuffer.truncatedInputEncodingException]
+ * */
+public open class MalformedEncodingException: EncodingException {
     public constructor(message: String): this(message, null)
     public constructor(message: String, cause: Throwable?): super(message, cause)
 }

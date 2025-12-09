@@ -118,7 +118,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
                     if (config.isLenient) {
                         return
                     } else {
-                        throw EncodingException("Spaces and new lines are forbidden when isLenient[false]")
+                        throw MalformedEncodingException("Spaces and new lines are forbidden when isLenient[false]")
                     }
                 }
 
@@ -132,7 +132,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
                 if (_isPaddingSet) {
                     // Trying to decode something else that is not
                     // a space, new line, or padding. Fail.
-                    throw EncodingException(
+                    throw MalformedEncodingException(
                         "Padding[${config.paddingChar}] was previously passed, " +
                         "but decoding operations are still being attempted."
                     )

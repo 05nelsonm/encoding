@@ -180,6 +180,11 @@ public class io/matthewnelson/encoding/core/EncodingSizeException : io/matthewne
 public abstract interface annotation class io/matthewnelson/encoding/core/ExperimentalEncodingApi : java/lang/annotation/Annotation {
 }
 
+public class io/matthewnelson/encoding/core/MalformedEncodingException : io/matthewnelson/encoding/core/EncodingException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+}
+
 public final class io/matthewnelson/encoding/core/_FeedKt {
 	public static final fun use (Lio/matthewnelson/encoding/core/EncoderDecoder$Feed;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun useFinally (Lio/matthewnelson/encoding/core/EncoderDecoder$Feed;Ljava/lang/Throwable;)V
