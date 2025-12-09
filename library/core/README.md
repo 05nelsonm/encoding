@@ -15,11 +15,13 @@ fun main() {
 
     // Define the callback for where to dump encoded characters as they
     // come out of the Encoder.Feed
+    //
+    // Alternatively, use Encoder.OutFeed(sb::append)
     val out = Encoder.OutFeed { char -> sb.append(char) }
 
     // Wrap it in helper LineBreakOutFeed which will output `\n` every `interval`
     // characters of output.
-    val outN = LineBreakOutFeed(interval = 64, out)
+    val outN = LineBreakOutFeed(interval = 64, resetOnFlush = false, out)
 
     Base64.Default.newEncoderFeed(outN).use { feed ->
         // Encode UTF-8 bytes to base64

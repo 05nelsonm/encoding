@@ -146,9 +146,12 @@ final class io.matthewnelson.encoding.core.util/DecoderInput { // io.matthewnels
 
 final class io.matthewnelson.encoding.core.util/LineBreakOutFeed : io.matthewnelson.encoding.core/Encoder.OutFeed { // io.matthewnelson.encoding.core.util/LineBreakOutFeed|null[0]
     constructor <init>(kotlin/Byte, io.matthewnelson.encoding.core/Encoder.OutFeed) // io.matthewnelson.encoding.core.util/LineBreakOutFeed.<init>|<init>(kotlin.Byte;io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
+    constructor <init>(kotlin/Byte, kotlin/Boolean, io.matthewnelson.encoding.core/Encoder.OutFeed) // io.matthewnelson.encoding.core.util/LineBreakOutFeed.<init>|<init>(kotlin.Byte;kotlin.Boolean;io.matthewnelson.encoding.core.Encoder.OutFeed){}[0]
 
     final val interval // io.matthewnelson.encoding.core.util/LineBreakOutFeed.interval|{}interval[0]
         final fun <get-interval>(): kotlin/Byte // io.matthewnelson.encoding.core.util/LineBreakOutFeed.interval.<get-interval>|<get-interval>(){}[0]
+    final val resetOnFlush // io.matthewnelson.encoding.core.util/LineBreakOutFeed.resetOnFlush|{}resetOnFlush[0]
+        final fun <get-resetOnFlush>(): kotlin/Boolean // io.matthewnelson.encoding.core.util/LineBreakOutFeed.resetOnFlush.<get-resetOnFlush>|<get-resetOnFlush>(){}[0]
 
     final var count // io.matthewnelson.encoding.core.util/LineBreakOutFeed.count|{}count[0]
         final fun <get-count>(): kotlin/Byte // io.matthewnelson.encoding.core.util/LineBreakOutFeed.count.<get-count>|<get-count>(){}[0]

@@ -16,6 +16,7 @@
 package io.matthewnelson.encoding.core.util
 
 import io.matthewnelson.encoding.core.Encoder
+import io.matthewnelson.encoding.core.EncoderDecoder
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 
@@ -23,29 +24,31 @@ import kotlin.jvm.JvmName
  * A Wrapper around another [Encoder.OutFeed] to hijack the output and insert
  * new line characters at every expressed [interval].
  *
- * @param [interval] The interval at which new lines are inserted
- * @param [out] The other [Encoder.OutFeed]
+ * @param [interval] The interval at which new lines are output.
+ * @param [resetOnFlush] When `true` [Encoder.Feed.flush] will also call [reset].
+ * @param [out] The other [Encoder.OutFeed].
  *
- * @throws [IllegalArgumentException] if [interval] is less than 0
+ * @see [Encoder.newEncoderFeed]
+ * @see [EncoderDecoder.Config.lineBreakInterval]
+ *
+ * @throws [IllegalArgumentException] If [interval] is less than `0`.
  * */
-public class LineBreakOutFeed
-@Throws(IllegalArgumentException::class)
-public constructor(
+public class LineBreakOutFeed(
     @JvmField
     public val interval: Byte,
+    @JvmField
+    public val resetOnFlush: Boolean,
     private val out: Encoder.OutFeed,
 ): Encoder.OutFeed {
 
-    init {
-        require(interval > 0) { "interval must be greater than 0" }
-    }
+    init { require(interval > 0) { "interval must be greater than 0" } }
 
     @get:JvmName("count")
     public var count: Byte = 0
         private set
 
     /**
-     * Resets the [count] to 0
+     * Resets the [count] to `0`.
      * */
     public fun reset() { count = 0 }
 
@@ -58,4 +61,16 @@ public constructor(
         out.output(encoded)
         count++
     }
+
+    /**
+     * DEPRECATED since `2.6.0`
+     * @suppress
+     * */
+    @Deprecated(
+        message = "Parameter resetOnFlush was added. Use the new constructor.",
+        replaceWith = ReplaceWith("LineBreakOutFeed(interval, resetOnFlush = false, out)"),
+        level = DeprecationLevel.WARNING,
+    )
+    @Throws(IllegalArgumentException::class)
+    public constructor(interval: Byte, out: Encoder.OutFeed): this(interval, resetOnFlush = false, out)
 }

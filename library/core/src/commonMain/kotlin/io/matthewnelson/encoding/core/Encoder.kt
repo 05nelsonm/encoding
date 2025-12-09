@@ -61,6 +61,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * */
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
         val _out = if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
+            // TODO
+            @Suppress("DEPRECATION")
             LineBreakOutFeed(config.lineBreakInterval, out)
         } else {
             out
@@ -137,7 +139,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
             try {
                 doFinalProtected()
-                (_out as? LineBreakOutFeed)?.reset()
+                val lbf = (_out as? LineBreakOutFeed) ?: return
+                if (lbf.resetOnFlush) lbf.reset()
             } catch (t: Throwable) {
                 close()
                 throw t
@@ -146,7 +149,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
         public final override fun close() {
             _isClosed = true
-            (_out as? LineBreakOutFeed)?.reset()
             _out = OutFeed.NoOp
         }
 

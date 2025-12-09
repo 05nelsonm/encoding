@@ -1543,6 +1543,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
         fun reset() {
             count = 0
+            // TODO: Check resetOnFlush
             if (out is LineBreakOutFeed) out.reset()
         }
 
