@@ -231,6 +231,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(
             isLenient,
             lineBreakInterval = 0,
+            lineBreakResetOnFlush = true, // TODO
             paddingChar = null,
             maxDecodeEmit = 5,
             backFillBuffers,
@@ -622,6 +623,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(
             isLenient,
             lineBreakInterval,
+            lineBreakResetOnFlush = true, // TODO
             paddingChar = '=',
             maxDecodeEmit = 5,
             backFillBuffers,
@@ -947,6 +949,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         ): EncoderDecoder.Config(
             isLenient,
             lineBreakInterval,
+            lineBreakResetOnFlush = true, // TODO
             paddingChar = '=',
             maxDecodeEmit = 5,
             backFillBuffers,

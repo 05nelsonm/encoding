@@ -186,6 +186,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
     ): EncoderDecoder.Config(
         isLenient,
         lineBreakInterval,
+        lineBreakResetOnFlush = true, // TODO
         paddingChar = null,
         maxDecodeEmit = 1,
         backFillBuffers,

@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+@file:Suppress("RedundantVisibilityModifier")
+
 package io.matthewnelson.encoding.core.helpers
 
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.util.DecoderInput
 
-class TestConfig(
+class TestConfig public constructor(
     isLenient: Boolean? = false,
     lineBreakInterval: Byte = 0,
+    lineBreakResetOnFlush: Boolean = true,
     paddingChar: Char? = '=',
     maxDecodeEmit: Int = 1,
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
     private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
-): EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, maxDecodeEmit, true) {
+): EncoderDecoder.Config(
+    isLenient,
+    lineBreakInterval,
+    lineBreakResetOnFlush,
+    paddingChar,
+    maxDecodeEmit,
+    backFillBuffers = true,
+) {
     override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
         return decodeReturn.invoke(encodedSize)
     }

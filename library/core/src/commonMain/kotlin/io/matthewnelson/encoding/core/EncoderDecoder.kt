@@ -71,6 +71,18 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public val lineBreakInterval: Byte,
 
         /**
+         * If and only if [Encoder.newEncoderFeed] wraps the [Encoder.OutFeed] passed to it with a
+         * [LineBreakOutFeed], will this setting be used for [LineBreakOutFeed.resetOnFlush]. If
+         * `true` and [Encoder.newEncoderFeed] wrapped its provided [Encoder.OutFeed], then
+         * [LineBreakOutFeed.reset] will be called after every invocation of [Encoder.Feed.flush].
+         *
+         * @see [LineBreakOutFeed]
+         * @see [Encoder.newEncoderFeed]
+         * */
+        @JvmField
+        public val lineBreakResetOnFlush: Boolean,
+
+        /**
          * The character that is used when padding encoded output. This is used by [Decoder.Feed]
          * to mark input as "completing" such that further non-padding input can be exceptionally
          * rejected. If the encoding specification does not use padding, `null` may be specified.
@@ -131,12 +143,14 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         protected constructor(
             isLenient: Boolean?,
             lineBreakInterval: Byte,
+            lineBreakResetOnFlush: Boolean,
             paddingChar: Char?,
             maxDecodeEmit: Int,
             backFillBuffers: Boolean,
         ): this(
             isLenient = isLenient,
             lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval),
+            lineBreakResetOnFlush = lineBreakResetOnFlush,
             paddingChar = paddingChar,
             maxDecodeEmit = maxDecodeEmit,
             backFillBuffers = backFillBuffers,
@@ -412,6 +426,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             if (other !is Config) return false
             if (other.isLenient != this.isLenient) return false
             if (other.lineBreakInterval != this.lineBreakInterval) return false
+            if (other.lineBreakResetOnFlush != this.lineBreakResetOnFlush) return false
             if (other.paddingChar != this.paddingChar) return false
             if (other.maxDecodeEmit != this.maxDecodeEmit) return false
             if (other.backFillBuffers != this.backFillBuffers) return false
@@ -424,6 +439,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             var result = 17
             result = result * 31 + isLenient.hashCode()
             result = result * 31 + lineBreakInterval.hashCode()
+            result = result * 31 + lineBreakResetOnFlush.hashCode()
             result = result * 31 + paddingChar.hashCode()
             result = result * 31 + maxDecodeEmit.hashCode()
             result = result * 31 + backFillBuffers.hashCode()
@@ -439,6 +455,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             appendLine(isLenient)
             append("    lineBreakInterval: ")
             appendLine(lineBreakInterval)
+            append("    lineBreakResetOnFlush: ")
+            appendLine(lineBreakResetOnFlush)
             append("    paddingChar: ")
             appendLine(paddingChar)
             append("    maxDecodeEmit: ")
@@ -503,7 +521,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         @Deprecated(
             message = "Parameters maxDecodeEmit and backFillBuffers were added. Use the new constructor.",
             replaceWith = ReplaceWith(
-                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, paddingChar, maxDecodeEmit = 0 /* TODO */, backFillBuffers = true)"),
+                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, lineBreakResetOnFlush = false, paddingChar, maxDecodeEmit = 0 /* TODO */, backFillBuffers = true)"),
             level = DeprecationLevel.WARNING,
         )
         public constructor(
@@ -513,6 +531,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         ): this(
             isLenient = isLenient,
             lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval),
+            lineBreakResetOnFlush = false,
             paddingChar = paddingChar,
             maxDecodeEmit = -1, // NOTE: NEVER change.
             backFillBuffers = true,

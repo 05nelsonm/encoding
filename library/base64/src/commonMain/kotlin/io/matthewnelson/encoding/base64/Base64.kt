@@ -237,6 +237,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
     ): EncoderDecoder.Config(
         isLenient,
         lineBreakInterval,
+        lineBreakResetOnFlush = true, // TODO
         paddingChar = '=',
         maxDecodeEmit = 3,
         backFillBuffers,

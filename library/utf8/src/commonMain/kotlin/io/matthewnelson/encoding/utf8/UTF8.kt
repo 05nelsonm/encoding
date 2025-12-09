@@ -236,6 +236,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
     ): EncoderDecoder.Config(
         isLenient = null,
         lineBreakInterval = -1,
+        lineBreakResetOnFlush = true, // TODO
         paddingChar = null,
         maxDecodeEmit = (replacementStrategy.size * 2).coerceAtLeast(4),
         backFillBuffers,

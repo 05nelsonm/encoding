@@ -25,11 +25,15 @@ import kotlin.jvm.JvmName
  * new line characters at every expressed [interval].
  *
  * @param [interval] The interval at which new lines are output.
- * @param [resetOnFlush] When `true` [Encoder.Feed.flush] will also call [reset].
+ * @param [resetOnFlush] When `true` [Encoder.Feed.flush] will call [reset].
+ *   This setting has **no** effect if the [Encoder.Feed] implementation does
+ *   not pass in their supplied [Encoder.OutFeed] as a constructor parameter
+ *   to set [Encoder.Feed._out].
  * @param [out] The other [Encoder.OutFeed].
  *
  * @see [Encoder.newEncoderFeed]
  * @see [EncoderDecoder.Config.lineBreakInterval]
+ * @see [EncoderDecoder.Config.lineBreakResetOnFlush]
  *
  * @throws [IllegalArgumentException] If [interval] is less than `0`.
  * */
