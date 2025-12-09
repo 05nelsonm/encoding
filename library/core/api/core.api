@@ -122,10 +122,11 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field backFillBuffers Z
 	public final field isLenient Ljava/lang/Boolean;
 	public final field lineBreakInterval B
+	public final field lineBreakResetOnFlush Z
 	public final field maxDecodeEmit I
 	public final field paddingChar Ljava/lang/Character;
 	public fun <init> (Ljava/lang/Boolean;BLjava/lang/Character;)V
-	protected fun <init> (Ljava/lang/Boolean;BLjava/lang/Character;IZ)V
+	protected fun <init> (Ljava/lang/Boolean;BZLjava/lang/Character;IZ)V
 	public final fun decodeOutMaxSize (J)J
 	public final fun decodeOutMaxSizeOrFail (Lio/matthewnelson/encoding/core/util/DecoderInput;)I
 	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
@@ -236,7 +237,9 @@ public abstract interface class io/matthewnelson/encoding/core/util/FeedBuffer$F
 
 public final class io/matthewnelson/encoding/core/util/LineBreakOutFeed : io/matthewnelson/encoding/core/Encoder$OutFeed {
 	public final field interval B
+	public final field resetOnFlush Z
 	public fun <init> (BLio/matthewnelson/encoding/core/Encoder$OutFeed;)V
+	public fun <init> (BZLio/matthewnelson/encoding/core/Encoder$OutFeed;)V
 	public final fun count ()B
 	public fun output (C)V
 	public final fun reset ()V

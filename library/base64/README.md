@@ -6,8 +6,10 @@ Base64 encoding/decoding in accordance with [RFC 4648 section 4][url-rfc-4], [RF
 val base64 = Base64.Builder {
     isLenient(enable = true)
     lineBreak(interval = 64)
+    lineBreakReset(onFlush = true)
     encodeUrlSafe(enable = false)
     padEncoded(enable = true)
+    backFillBuffers(enable = true)
 }
 
 val text = "Hello World!"

@@ -18,6 +18,7 @@ final class io.matthewnelson.encoding.base16/Base16 : io.matthewnelson.encoding.
         final fun encodeLowercase(kotlin/Boolean): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.encodeLowercase|encodeLowercase(kotlin.Boolean){}[0]
         final fun isLenient(kotlin/Boolean): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.isLenient|isLenient(kotlin.Boolean){}[0]
         final fun lineBreak(kotlin/Byte): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.lineBreak|lineBreak(kotlin.Byte){}[0]
+        final fun lineBreakReset(kotlin/Boolean): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.lineBreakReset|lineBreakReset(kotlin.Boolean){}[0]
         final fun strictSpec(): io.matthewnelson.encoding.base16/Base16.Builder // io.matthewnelson.encoding.base16/Base16.Builder.strictSpec|strictSpec(){}[0]
     }
 

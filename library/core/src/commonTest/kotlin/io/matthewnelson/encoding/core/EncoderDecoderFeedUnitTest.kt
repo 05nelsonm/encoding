@@ -264,7 +264,7 @@ class EncoderDecoderFeedUnitTest {
         )
 
         val sb = StringBuilder()
-        encoder.newEncoderFeed(LineBreakOutFeed(10) { c ->
+        encoder.newEncoderFeed(LineBreakOutFeed(10, resetOnFlush = false) { c ->
             sb.append(c)
         }).use { feed ->
             assertEquals(0, sb.length)
@@ -305,15 +305,24 @@ class EncoderDecoderFeedUnitTest {
     }
 
     @Test
-    fun givenEncoderFeed_whenFlushed_thenLineBreakOutFeedIsReset() {
-        val lbf = LineBreakOutFeed(Byte.MAX_VALUE) {}
-        val feed = TestEncoderDecoder(TestConfig()).newEncoderFeed(lbf)
-        assertEquals(0, lbf.count)
-        feed.consume(2)
-        feed.consume(2)
-        assertEquals(2, lbf.count)
-        feed.flush()
-        assertEquals(0, lbf.count)
+    fun givenEncoderFeed_whenFlushed_thenResetsLineBreakOutFeedAsExpected() {
+        val lbfTrue = LineBreakOutFeed(Byte.MAX_VALUE, resetOnFlush = true) {}
+        val feedTrue = TestEncoderDecoder(TestConfig()).newEncoderFeed(lbfTrue)
+        assertEquals(0, lbfTrue.count)
+        feedTrue.consume(2)
+        feedTrue.consume(2)
+        assertEquals(2, lbfTrue.count)
+        feedTrue.flush()
+        assertEquals(0, lbfTrue.count)
+
+        val lbfFalse = LineBreakOutFeed(Byte.MAX_VALUE, resetOnFlush = false) {}
+        val feedFalse = TestEncoderDecoder(TestConfig()).newEncoderFeed(lbfFalse)
+        assertEquals(0, lbfFalse.count)
+        feedFalse.consume(2)
+        feedFalse.consume(2)
+        assertEquals(2, lbfFalse.count)
+        feedFalse.flush()
+        assertEquals(3, lbfFalse.count)
     }
 
     @Test

@@ -86,6 +86,13 @@ public class Base16ConfigBuilder {
         isLenient = compat._isLenient
         lineBreakInterval = compat._lineBreakInterval
         encodeToLowercase = compat._encodeLowercase
+
+        // Prior to 2.6.0, behavior was broken whereby the
+        // LineBreakOutFeed was not being reset whenever
+        // Encoder.Feed.flush was called. This maintains
+        // that behavior for consumers who have not updated
+        // to the Builder API.
+        compat.lineBreakReset(onFlush = false)
     }
 
     /**

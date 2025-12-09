@@ -5,6 +5,7 @@ UTF-8 encoding/decoding in accordance with [RFC 3629][url-rfc]
 ```kotlin
 val utf8 = UTF8.Builder {
     replacement(strategy = UTF8.ReplacementStrategy.KOTLIN)
+    backFillBuffers(enable = true)
 }
 
 val text = "Hello World!"

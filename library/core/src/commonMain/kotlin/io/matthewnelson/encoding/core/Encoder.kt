@@ -39,7 +39,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
     /**
      * Creates a new [Encoder.Feed], outputting encoded data to the supplied [Encoder.OutFeed].
      *
-     * **NOTE:** The supplied [Encoder.OutFeed] will be wrapped in [LineBreakOutFeed] (if not
+     * **NOTE:** The supplied [Encoder.OutFeed] will be wrapped in a [LineBreakOutFeed] (if not
      * already one) when [EncoderDecoder.Config.lineBreakInterval] is greater than `0`.
      *
      * e.g.
@@ -58,10 +58,12 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      *
      * @see [Encoder.Feed]
      * @see [LineBreakOutFeed]
+     * @see [EncoderDecoder.Config.lineBreakInterval]
+     * @see [EncoderDecoder.Config.lineBreakResetOnFlush]
      * */
     public fun newEncoderFeed(out: Encoder.OutFeed): Encoder<C>.Feed {
         val _out = if (config.lineBreakInterval > 0 && out !is LineBreakOutFeed) {
-            LineBreakOutFeed(config.lineBreakInterval, out)
+            LineBreakOutFeed(config.lineBreakInterval, config.lineBreakResetOnFlush, out)
         } else {
             out
         }
@@ -97,6 +99,10 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * is set to the [Encoder.OutFeed.NoOp] instance which ensures any local
          * object references that the initial [OutFeed] has are not leaked and can
          * be promptly GCd.
+         *
+         * **NOTE:** [LineBreakOutFeed.resetOnFlush] functionality relies on [Encoder]
+         * implementations instantiating their [Feed] with the [Encoder.OutFeed]
+         * provided to [newEncoderFeedProtected].
          * */
         @get:JvmName("_out")
         protected var _out: Encoder.OutFeed
@@ -137,7 +143,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
             try {
                 doFinalProtected()
-                (_out as? LineBreakOutFeed)?.reset()
+                val lbf = (_out as? LineBreakOutFeed) ?: return
+                if (lbf.resetOnFlush) lbf.reset()
             } catch (t: Throwable) {
                 close()
                 throw t
@@ -146,7 +153,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
         public final override fun close() {
             _isClosed = true
-            (_out as? LineBreakOutFeed)?.reset()
             _out = OutFeed.NoOp
         }
 

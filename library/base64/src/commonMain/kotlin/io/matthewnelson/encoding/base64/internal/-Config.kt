@@ -19,13 +19,14 @@ package io.matthewnelson.encoding.base64.internal
 
 import io.matthewnelson.encoding.base64.Base64
 
-internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base64.Config).build(
+internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean, Boolean) -> Base64.Config).build(
     b: Base64.Builder,
     noinline base64: (Base64.Config, Any?) -> Base64,
 ): Base64 {
     if (
         b._isLenient == Base64.Default.DELEGATE.config.isLenient
         && b._lineBreakInterval == Base64.Default.DELEGATE.config.lineBreakInterval
+        && b._lineBreakResetOnFlush == Base64.Default.DELEGATE.config.lineBreakResetOnFlush
         && b._padEncoded == Base64.Default.DELEGATE.config.padEncoded
         && b._backFillBuffers == Base64.Default.DELEGATE.config.backFillBuffers
     ) {
@@ -34,6 +35,7 @@ internal inline fun ((Boolean, Byte, Boolean, Boolean, Boolean) -> Base64.Config
     val config = this(
         b._isLenient,
         b._lineBreakInterval,
+        b._lineBreakResetOnFlush,
         b._encodeUrlSafe,
         b._padEncoded,
         b._backFillBuffers,

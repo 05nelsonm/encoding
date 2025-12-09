@@ -86,6 +86,13 @@ public class Base64ConfigBuilder {
         lineBreakInterval = compat._lineBreakInterval
         encodeToUrlSafe = compat._encodeUrlSafe
         padEncoded = compat._padEncoded
+
+        // Prior to 2.6.0, behavior was broken whereby the
+        // LineBreakOutFeed was not being reset whenever
+        // Encoder.Feed.flush was called. This maintains
+        // that behavior for consumers who have not updated
+        // to the Builder API.
+        compat.lineBreakReset(onFlush = false)
     }
 
     /**

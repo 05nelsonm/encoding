@@ -6,7 +6,9 @@ Base16 (a.k.a. "hex") encoding/decoding in accordance with [RFC 4648 section 8][
 val base16 = Base16.Builder {
     isLenient(enable = true)
     lineBreak(interval = 64)
+    lineBreakReset(onFlush = true)
     encodeLowercase(enable = true)
+    backFillBuffers(enable = true)
 }
 
 val text = "Hello World!"
