@@ -84,8 +84,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      * which will call [doFinal] (or [close] if there was an error with
      * encoding) for you.
      *
-     * @see [newEncoderFeed]
      * @see [use]
+     * @see [newEncoderFeed]
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
      * */
@@ -116,7 +116,9 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         /**
          * Updates the [Encoder.Feed] with a new byte to encode.
          *
-         * @throws [EncodingException] if [isClosed] is true.
+         * @throws [EncodingException] If [isClosed] is `true`, or the [Feed] is configured
+         *   to reject something, such as `UTF-8` byte to text transformations rejecting
+         *   invalid byte sequences.
          * */
         @Throws(EncodingException::class)
         public fun consume(input: Byte) {
@@ -135,7 +137,10 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * operations without closing the [Feed].
          *
          * @see [EncoderDecoder.Feed.flush]
-         * @throws [EncodingException] if [isClosed] is true.
+         *
+         * @throws [EncodingException] If [isClosed] is `true`, or the [Feed] is configured
+         *   to reject something, such as `UTF-8` byte to text transformations rejecting
+         *   invalid byte sequences.
          * */
         @Throws(EncodingException::class)
         public final override fun flush() {
@@ -199,14 +204,19 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
     public companion object {
 
         /**
-         * Encodes a [ByteArray] for the provided [encoder] and
-         * returns the encoded data in the form of a [String].
+         * Encode a [ByteArray].
          *
-         * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE].
+         * @param [encoder] The [Encoder] to use.
+         *
+         * @return The [String] of encoded data.
+         *
+         * @see [encodeToCharArray]
+         *
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If the encoded output would exceed [Int.MAX_VALUE].
          * */
         @JvmStatic
-        @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToString(encoder: Encoder<*>): String {
             return encoder.encodeOutMaxSizeOrFail(size) { maxSize ->
                 val sb = StringBuilder(maxSize)
@@ -224,14 +234,19 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         }
 
         /**
-         * Encodes a [ByteArray] for the provided [encoder] and
-         * returns the encoded data in the form of a [CharArray].
+         * Encode a [ByteArray].
          *
-         * @throws [EncodingSizeException] if the encoded output
-         *   exceeds [Int.MAX_VALUE].
+         * @param [encoder] The [Encoder] to use.
+         *
+         * @return The [CharArray] of encoded data.
+         *
+         * @see [encodeToString]
+         *
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If the encoded output exceeds [Int.MAX_VALUE].
          * */
         @JvmStatic
-        @Throws(EncodingSizeException::class)
         public fun ByteArray.encodeToCharArray(encoder: Encoder<*>): CharArray {
             return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
                 var i = 0
@@ -248,10 +263,12 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
 
         /**
          * DEPRECATED since `2.3.0`
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] if the encoded output exceeds [Int.MAX_VALUE].
          * @suppress
          * */
         @JvmStatic
-        @Throws(EncodingSizeException::class)
         @Deprecated(
             message = "Should not utilize. Underlying Char to Byte conversion can produce incorrect results",
             level = DeprecationLevel.ERROR,

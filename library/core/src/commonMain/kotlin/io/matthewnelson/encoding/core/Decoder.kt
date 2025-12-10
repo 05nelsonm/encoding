@@ -77,8 +77,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      * which will call [doFinal] (or [close] if there was an error with
      * decoding) for you.
      *
-     * @see [newDecoderFeed]
      * @see [use]
+     * @see [newDecoderFeed]
      * @see [EncoderDecoder.Feed]
      * @see [EncoderDecoder.Feed.doFinal]
      * */
@@ -106,8 +106,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         /**
          * Updates the [Decoder.Feed] with a new character to decode.
          *
-         * @throws [EncodingException] if [isClosed] is true, or if
-         *   there was an error decoding.
+         * @throws [EncodingException] If [isClosed] is `true`, or if there was an
+         *   error decoding.
          * */
         @Throws(EncodingException::class)
         public fun consume(input: Char) {
@@ -146,12 +146,13 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         }
 
         /**
-         * Flushes the buffered input and performs any final decoding
-         * operations without closing the [Feed].
+         * Flushes the buffered input and performs final decoding operations without
+         * closing the [Feed].
          *
          * @see [EncoderDecoder.Feed.flush]
-         * @throws [EncodingException] if [isClosed] is true, or if
-         *   there was an error decoding.
+         *
+         * @throws [EncodingException] If [isClosed] is `true`, or if there was an
+         *   error decoding.
          * */
         @Throws(EncodingException::class)
         public final override fun flush() {
@@ -224,7 +225,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharSequence.decodeBuffered]
          * @see [CharSequence.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
+         * @throws [EncodingSizeException] If the decoded output would exceed [Int.MAX_VALUE].
          * */
         @JvmStatic
         @Throws(EncodingException::class)
@@ -263,7 +266,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharArray.decodeBuffered]
          * @see [CharArray.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
+         * @throws [EncodingSizeException] If the decoded output would exceed [Int.MAX_VALUE].
          * */
         @JvmStatic
         @Throws(EncodingException::class)
@@ -340,7 +345,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharSequence.decodeToByteArrayOrNull]
          * @see [CharSequence.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * */
         @JvmStatic
         @Throws(EncodingException::class)
@@ -400,7 +406,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharSequence.decodeToByteArrayOrNull]
          * @see [CharSequence.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -477,7 +484,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharSequence.decodeToByteArrayOrNull]
          * @see [CharSequence.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [buf] size is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -545,7 +553,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharSequence.decodeBuffered]
          *
          * @throws [CancellationException]
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * */
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
@@ -607,7 +616,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharSequence.decodeBuffered]
          *
          * @throws [CancellationException]
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -686,7 +696,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharSequence.decodeBuffered]
          *
          * @throws [CancellationException]
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [buf] size is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -755,7 +766,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharArray.decodeToByteArrayOrNull]
          * @see [CharArray.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * */
         @JvmStatic
         @Throws(EncodingException::class)
@@ -817,7 +829,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharArray.decodeToByteArrayOrNull]
          * @see [CharArray.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -898,7 +911,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharArray.decodeToByteArrayOrNull]
          * @see [CharArray.decodeBufferedAsync]
          *
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [buf] size is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -967,7 +981,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharArray.decodeBuffered]
          *
          * @throws [CancellationException]
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * */
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
@@ -1030,7 +1045,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharArray.decodeBuffered]
          *
          * @throws [CancellationException]
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -1110,7 +1126,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @see [CharArray.decodeBuffered]
          *
          * @throws [CancellationException]
-         * @throws [EncodingException] If decoding failed.
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
          * @throws [IllegalArgumentException] If [buf] size is less than or equal to
          *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
@@ -1130,6 +1147,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
         /**
          * DEPRECATED since `2.3.0`
+         * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
+         *   an invalid character or sequence.
+         * @throws [EncodingSizeException] If the decoded output would exceed [Int.MAX_VALUE].
          * @suppress
          * */
         @JvmStatic
