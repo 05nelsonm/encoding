@@ -546,7 +546,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
      * [Feed]s are meant to be single use disposables for the
      * given encoding/decoding operation.
      *
-     * TLDR; [Feed]s only care about [Byte]s and [Char]s, not the medium
+     * TL;DR [Feed]s only care about [Byte]s and [Char]s, not the medium
      * for which they come from or are going to. Use the [use] extension
      * function.
      *
@@ -635,7 +635,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * will not be considered an error if already closed.
          *
          * After [close] has been called, any invocation of
-         * [Decoder.Feed.consume], [Encoder.Feed.consume],
+         * [Decoder.Feed.consume], [Encoder.Feed.consume], [flush]
          * or [doFinal] will be considered an error and throw an
          * [EncodingException].
          *
