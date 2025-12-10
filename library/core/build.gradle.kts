@@ -19,5 +19,19 @@ plugins {
 }
 
 kmpConfiguration {
-    configureShared(java9ModuleName = "io.matthewnelson.encoding.core", publish = true) {}
+    configureShared(java9ModuleName = "io.matthewnelson.encoding.core", publish = true) {
+        kotlin {
+            with(sourceSets) {
+                val sets = arrayOf(
+                    "jvm",
+                    "native",
+                    "wasmJs",
+                    "wasmWasi",
+                ).mapNotNull { name -> findByName(name + "Test") }
+                if (sets.isEmpty()) return@kotlin
+                val test = maybeCreate("nonJsTest").apply { dependsOn(getByName("commonTest")) }
+                sets.forEach { t -> t.dependsOn(test) }
+            }
+        }
+    }
 }
