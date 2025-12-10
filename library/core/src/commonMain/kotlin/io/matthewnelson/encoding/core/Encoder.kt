@@ -21,6 +21,7 @@ import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeOutMaxSizeOrFail
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
+import io.matthewnelson.encoding.core.util.wipe
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -221,14 +222,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             return encoder.encodeOutMaxSizeOrFail(size) { maxSize ->
                 val sb = StringBuilder(maxSize)
                 encoder.encode(this, sb::append)
-                val length = sb.length
                 val result = sb.toString()
-                if (encoder.config.backFillBuffers) {
-                    // Some implementations of StringBuilder do not overwrite buffered
-                    // data when clear() is used. Must set to 0 length and do manually.
-                    sb.setLength(0)
-                    repeat(length) { sb.append(' ') }
-                }
+                if (encoder.config.backFillBuffers) sb.wipe()
                 result
             }
         }
