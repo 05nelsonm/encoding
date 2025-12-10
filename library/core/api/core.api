@@ -250,3 +250,8 @@ public final class io/matthewnelson/encoding/core/util/LineBreakOutFeed : io/mat
 	public final fun reset ()V
 }
 
+public final class io/matthewnelson/encoding/core/util/TextUtil {
+	public static final fun wipe (Ljava/lang/StringBuilder;)Ljava/lang/StringBuilder;
+	public static final fun wipe (Ljava/lang/StringBuilder;I)Ljava/lang/StringBuilder;
+}
+

@@ -13,14 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("KotlinRedundantDiagnosticSuppress")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package io.matthewnelson.encoding.core.internal
 
-@Suppress("NOTHING_TO_INLINE")
 internal inline fun Char.isSpaceOrNewLine(): Boolean {
     return when(this) {
         '\n', '\r', ' ', '\t' -> true
         else -> false
     }
+}
+
+// Here for testing purposes. Implementation uses finalLen = 0
+internal inline fun StringBuilder.commonWipe(len: Int, finalLen: Int): StringBuilder {
+    setLength(0)
+    // Kotlin/Js returns StringBuilder.length for capacity() as there is
+    // no backing array. On all other platforms this will be the backing
+    // array size. So will always return here on Kotlin/Js b/c we just set
+    // length to 0.
+    @Suppress("DEPRECATION")
+    val cap = capacity()
+    if (cap == 0) return this
+    // All other platforms will set the new length from 0 to newLen, and
+    // in doing so will fill their backing arrays via Array.fill
+    val newLen = if (len !in 1..cap) cap else len
+    setLength(newLen)
+    setLength(finalLen)
+    return this
 }
