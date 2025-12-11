@@ -223,7 +223,9 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 val sb = StringBuilder(maxSize)
                 encoder.encode(this, sb::append)
                 val result = sb.toString()
-                if (encoder.config.backFillBuffers) sb.wipe()
+                if (encoder.config.backFillBuffers) {
+                    sb.wipe()
+                }
                 result
             }
         }
@@ -250,7 +252,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 if (i == maxSize) return@block a
                 val copy = a.copyOf(i)
                 if (encoder.config.backFillBuffers) {
-                    a.fill(' ', 0, i)
+                    a.fill('\u0000', 0, i)
                 }
                 copy
             }

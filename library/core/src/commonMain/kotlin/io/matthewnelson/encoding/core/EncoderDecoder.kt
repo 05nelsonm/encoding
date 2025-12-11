@@ -122,8 +122,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * data (e.g. a [StringBuilder], [CharArray], or [ByteArray]). Depending on the underlying
          * encoding/decoding operation, such as an array over-allocation due to [encodeOutMaxSize]
          * or [decodeOutMaxSize], those initially allocated buffers may not be returned as the
-         * function's result. Prior versions of this library always back-filled them with `0` or a
-         * space character, but that can be computationally expensive for large datasets and
+         * function's result. Prior versions of this library always back-filled them with `0` or the
+         * null character `\u0000`, but that can be computationally expensive for large datasets and
          * potentially unnecessary if data is known to not be sensitive in nature.
          *
          * If `true`, any non-result buffer allocations are back-filled before being de-referenced
