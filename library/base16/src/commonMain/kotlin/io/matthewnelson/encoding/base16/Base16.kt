@@ -203,6 +203,7 @@ public class Base16: EncoderDecoder<Base16.Config> {
         lineBreakResetOnFlush,
         paddingChar = null,
         maxDecodeEmit = 1,
+        maxEncodeEmit = 2,
         backFillBuffers,
     ) {
 

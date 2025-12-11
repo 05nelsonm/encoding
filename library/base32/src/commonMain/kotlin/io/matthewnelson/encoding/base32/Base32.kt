@@ -236,6 +236,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             lineBreakResetOnFlush = false,
             paddingChar = null,
             maxDecodeEmit = 5,
+            maxEncodeEmit = calculateMaxEncodeEmit(emitSize = 8, insertionInterval = hyphenInterval.toInt()),
             backFillBuffers,
         ) {
 
@@ -642,6 +643,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             lineBreakResetOnFlush,
             paddingChar = '=',
             maxDecodeEmit = 5,
+            maxEncodeEmit = 8,
             backFillBuffers,
         ) {
 
@@ -983,6 +985,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             lineBreakResetOnFlush,
             paddingChar = '=',
             maxDecodeEmit = 5,
+            maxEncodeEmit = 8,
             backFillBuffers,
         ) {
 

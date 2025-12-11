@@ -22,6 +22,9 @@ import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmStatic
 
@@ -109,11 +112,38 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          *
          * Value will be between `1` and `255` (inclusive), or `-1` which indicates that the
          * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
-         * in version `2.6.0` and as such is unable to be used with `:core` module APIs dependent
+         * in version `2.6.0`, and as such is unable to be used with `:core` module APIs dependent
          * on this value (such as [Decoder.decodeBuffered] or [Decoder.decodeBufferedAsync]).
          * */
         @JvmField
         public val maxDecodeEmit: Int,
+
+        /**
+         * The maximum number of characters that the implementation's [Encoder.Feed] can
+         * potentially emit on a single invocation of [Encoder.Feed.consume], [Encoder.Feed.flush],
+         * or [Encoder.Feed.doFinal].
+         *
+         * For example, `Base16` encoding will emit `2` characters for every `1` byte of input,
+         * so its maximum emission is `2`. `Base32` encoding will emit `8` characters for every
+         * `5` bytes of input, so its maximum emission is `8`. `UTF8` "encoding" (i.e. UTF-8 byte
+         * to text transformations) can emit `4` characters for every `4` bytes of input (depending
+         * on the implementation), so its maximum emission would be `4`.
+         *
+         * **NOTE:** This value does **not** take into consideration the [lineBreakInterval] setting,
+         * or any other [LineBreakOutFeed]-like implementation that may inflate the maximum character
+         * emission size. Implementations must **only** consider their own [LineBreakOutFeed]-like
+         * implementation details (such as the hyphen interval for `Base32.Crockford`) when calculating
+         * their maximum character emission size.
+         *
+         * Value will be between `1` and `255` (inclusive), or `-1` which indicates that the
+         * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
+         * in version `2.6.0`, and as such is unable to be used with `:core` module APIs dependent
+         * on this value.
+         *
+         * @see [Companion.calculateMaxEncodeEmit]
+         * */
+        @JvmField
+        public val maxEncodeEmit: Int,
 
         /**
          * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray],
@@ -139,7 +169,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         /**
          * Instantiates a new [Config] instance.
          *
-         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1` or greater than `255`.
+         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1` or greater than
+         *   `255`. If [maxEncodeEmit] is less than `1` or greater than `255`.
          * */
         protected constructor(
             isLenient: Boolean?,
@@ -147,6 +178,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             lineBreakResetOnFlush: Boolean,
             paddingChar: Char?,
             maxDecodeEmit: Int,
+            maxEncodeEmit: Int,
             backFillBuffers: Boolean,
         ): this(
             isLenient = isLenient,
@@ -154,11 +186,12 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             lineBreakResetOnFlush = lineBreakResetOnFlush,
             paddingChar = paddingChar,
             maxDecodeEmit = maxDecodeEmit,
+            maxEncodeEmit = maxEncodeEmit,
             backFillBuffers = backFillBuffers,
             unused = null,
         ) {
-            require(maxDecodeEmit > 0) { "maxDecodeEmit must be greater than 0" }
-            require(maxDecodeEmit < 256) { "maxDecodeEmit must be less than 256" }
+            checkMaxEmitSize(maxDecodeEmit) { "maxDecodeEmit" }
+            checkMaxEmitSize(maxEncodeEmit) { "maxEncodeEmit" }
         }
 
         /**
@@ -339,6 +372,76 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             return outSize
         }
 
+        public companion object {
+
+            /**
+             * Calculates and returns the maximum character emission size, given some sort of
+             * [emitSize] and desire to insert characters every [insertionInterval]. The way
+             * things are calculated are based on how [lineBreakInterval] operates, whereby
+             * if [insertionInterval] encoded characters have been output, the next encoded
+             * character output will be preceded with some arbitrary character (such as a
+             * hyphen for `Base32.Crockford`, which uses this function to calculate its final
+             * [maxEncodeEmit] value passed to the [Config] constructor).
+             *
+             *  **NOTE:** Implementors of [Config] utilizing this to calculate their [maxEncodeEmit]
+             * values must consider that it may return a value greater than `255`, depending on the
+             * input arguments, resulting in an [IllegalArgumentException] when passed into the
+             * [Config] constructor. For example, an [insertionInterval] of `1` will inflate the
+             * provided [emitSize] by 2x.
+             *
+             * @param [emitSize] The number of characters that are expected to be emitted.
+             * @param [insertionInterval] The interval at which `1` character is to be inserted.
+             *
+             * @return The calculated emission size for a provided character [insertionInterval], or
+             *   [emitSize] itself if [insertionInterval] is less than `1`.
+             *
+             * @see [lineBreakInterval]
+             * @see [maxEncodeEmit]
+             *
+             * @throws [IllegalArgumentException] If [emitSize] is less than `1` or greater than `255`.
+             * */
+            @JvmStatic
+            public fun calculateMaxEncodeEmit(emitSize: Int, insertionInterval: Int): Int {
+                checkMaxEmitSize(emitSize) { "emitSize" }
+                if (insertionInterval <= 0) return emitSize
+                if (insertionInterval >= emitSize) return emitSize + 1
+
+                // Starting count at insertionInterval instead of 0 simulates the case of
+                // the very next output of emitSize encoded characters is to be preceded
+                // by the insertion character, such as a new line `\n`, whereby the max
+                // can be calculated.
+                //
+                // The limits for when this run an emitSize of 255 and an insertionInterval
+                // of emitSize - 1. Given how small actual emitSizes are expected to be,
+                // such as 8 for Base32, calculating things this way is OK with me...
+                var count = insertionInterval
+                var output = 0
+                var i = 0
+                while (i++ < emitSize) {
+                    if (count == insertionInterval) {
+                        output++
+                        count = 0
+                    }
+                    output++
+                    count++
+                }
+                return output
+            }
+
+            /**
+             * Helper for generating an [EncodingSizeException] when the
+             * pre-calculated encoded/decoded output size exceeds the maximum for
+             * the given encoding/decoding specification.
+             * */
+            @JvmStatic
+            public fun outSizeExceedsMaxEncodingSizeException(
+                inputSize: Number,
+                maxSize: Number,
+            ): EncodingSizeException = EncodingSizeException(
+                "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
+            )
+        }
+
         /**
          * Calculate and return an exact (preferably), or maximum, size that an encoding would be
          * for the [unEncodedSize] data.
@@ -430,6 +533,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             if (other.lineBreakResetOnFlush != this.lineBreakResetOnFlush) return false
             if (other.paddingChar != this.paddingChar) return false
             if (other.maxDecodeEmit != this.maxDecodeEmit) return false
+            if (other.maxEncodeEmit != this.maxEncodeEmit) return false
             if (other.backFillBuffers != this.backFillBuffers) return false
             if (other::class != this::class) return false
             return other._toStringAddSettings == this._toStringAddSettings
@@ -443,6 +547,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             result = result * 31 + lineBreakResetOnFlush.hashCode()
             result = result * 31 + paddingChar.hashCode()
             result = result * 31 + maxDecodeEmit.hashCode()
+            result = result * 31 + maxEncodeEmit.hashCode()
             result = result * 31 + backFillBuffers.hashCode()
             result = result * 31 + this::class.hashCode()
             result = result * 31 + _toStringAddSettings.hashCode()
@@ -462,6 +567,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             appendLine(paddingChar)
             append("    maxDecodeEmit: ")
             appendLine(maxDecodeEmit)
+            append("    maxEncodeEmit: ")
+            appendLine(maxEncodeEmit)
             append("    backFillBuffers: ")
             append(backFillBuffers) // last one uses append, not appendLine
 
@@ -474,22 +581,6 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             appendLine()
             append(']')
         }.toString()
-
-        public companion object {
-
-            /**
-             * Helper for generating an [EncodingSizeException] when the
-             * pre-calculated encoded/decoded output size exceeds the maximum for
-             * the given encoding/decoding specification.
-             * */
-            @JvmStatic
-            public fun outSizeExceedsMaxEncodingSizeException(
-                inputSize: Number,
-                maxSize: Number,
-            ): EncodingSizeException = EncodingSizeException(
-                "Size[$inputSize] of input would exceed the maximum output Size[$maxSize] for this operation."
-            )
-        }
 
         /**
          * DEPRECATED since `2.6.0`
@@ -520,9 +611,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @suppress
          * */
         @Deprecated(
-            message = "Parameters, lineBreakResetOnFlush, maxDecodeEmit, and backFillBuffers were added. Use the new constructor.",
+            message = "Parameters, lineBreakResetOnFlush, maxDecodeEmit, maxEncodeEmit, and backFillBuffers were added. Use the new constructor.",
             replaceWith = ReplaceWith(
-                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, lineBreakResetOnFlush = false, paddingChar, maxDecodeEmit = 0 /* TODO */, backFillBuffers = true)"),
+                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, lineBreakResetOnFlush = false, paddingChar, maxDecodeEmit = 0 /* TODO */, maxEncodeEmit = 0 /* TODO */, backFillBuffers = true)"),
             level = DeprecationLevel.WARNING,
         )
         public constructor(
@@ -535,6 +626,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             lineBreakResetOnFlush = false,
             paddingChar = paddingChar,
             maxDecodeEmit = -1, // NOTE: NEVER change.
+            maxEncodeEmit = -1, // NOTE: NEVER change.
             backFillBuffers = true,
             unused = null,
         )
@@ -698,4 +790,18 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 @Suppress("NOTHING_TO_INLINE")
 private inline fun lineBreakIntervalOrZero(isLenient: Boolean?, interval: Byte): Byte {
     return if (isLenient != false && interval > 0) interval else 0
+}
+
+@OptIn(ExperimentalContracts::class)
+@Throws(IllegalArgumentException::class)
+private inline fun checkMaxEmitSize(size: Int, parameterName: () -> String) {
+    contract { callsInPlace(parameterName, InvocationKind.AT_MOST_ONCE) }
+    if (size <= 0) {
+        val n = parameterName()
+        throw IllegalArgumentException("$n must be greater than 0")
+    }
+    if (size >= 256) {
+        val n = parameterName()
+        throw IllegalArgumentException("$n must be less than 256")
+    }
 }

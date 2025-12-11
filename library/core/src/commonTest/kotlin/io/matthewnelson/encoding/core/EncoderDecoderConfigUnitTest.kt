@@ -60,6 +60,7 @@ class EncoderDecoderConfigUnitTest {
             decodeInputReturn = { -1 },
             decodeReturn = { -1L },
             maxDecodeEmit = 255,
+            maxEncodeEmit = 255,
         )
 
         assertFailsWith<EncodingSizeException> { config.decodeOutMaxSize(5) }
@@ -68,6 +69,9 @@ class EncoderDecoderConfigUnitTest {
         assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 0) }
         assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = -1) }
         assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 256) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = 0) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = -1) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = 256) }
     }
 
     @Test
@@ -181,4 +185,44 @@ class EncoderDecoderConfigUnitTest {
         }
     }
 
+    @Test
+    fun givenCalculateMaxEncodeEmit_whenInvalidEmitSize_thenThrowsException() {
+        assertFailsWith<IllegalArgumentException> { EncoderDecoder.Config.calculateMaxEncodeEmit(0, 2) }
+        assertFailsWith<IllegalArgumentException> { EncoderDecoder.Config.calculateMaxEncodeEmit(-1, 2) }
+        assertFailsWith<IllegalArgumentException> { EncoderDecoder.Config.calculateMaxEncodeEmit(256, 2) }
+    }
+
+    @Test
+    fun givenCalculateMaxEncodeEmit_whenIntervalLessThan1_thenReturnsEmitSize() {
+        val expected = 1
+        val actual = EncoderDecoder.Config.calculateMaxEncodeEmit(expected, 0)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun givenCalculateMaxEncodeEmit_whenIntervalGreaterOrEqualToThanEmitSize_thenReturnsExpected() {
+        val actual = EncoderDecoder.Config.calculateMaxEncodeEmit(1, 20)
+        assertEquals(1 + 1, actual)
+    }
+
+    @Test
+    fun givenCalculateMaxEncodeEmit_whenIntervalIn1ToEmitSize_thenReturnsExpected() {
+        var i = 0
+        arrayOf(
+            Triple(1, 1, 2),
+            Triple(2, 1, 4),
+            Triple(3, 2, 5),
+            Triple(10, 1, 20),
+            Triple(10, 2, 15),
+            Triple(10, 3, 14),
+            Triple(10, 4, 13),
+            Triple(10, 5, 12),
+            Triple(189, 5, 227),
+            Triple(189, 64, 192),
+        ).forEach { (size, interval, expected) ->
+            val actual = EncoderDecoder.Config.calculateMaxEncodeEmit(size, interval)
+            assertEquals(expected, actual, "arguments at index[$i]")
+            i++
+        }
+    }
 }
