@@ -254,6 +254,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
         lineBreakResetOnFlush,
         paddingChar = '=',
         maxDecodeEmit = 3,
+        maxEncodeEmit = 4,
         backFillBuffers,
     ) {
 

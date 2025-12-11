@@ -26,6 +26,7 @@ class TestConfig public constructor(
     lineBreakResetOnFlush: Boolean = true,
     paddingChar: Char? = '=',
     maxDecodeEmit: Int = 1,
+    maxEncodeEmit: Int = 1,
     private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
     private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
     private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
@@ -35,6 +36,7 @@ class TestConfig public constructor(
     lineBreakResetOnFlush,
     paddingChar,
     maxDecodeEmit,
+    maxEncodeEmit,
     backFillBuffers = true,
 ) {
     override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {

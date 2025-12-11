@@ -109,11 +109,36 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          *
          * Value will be between `1` and `255` (inclusive), or `-1` which indicates that the
          * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
-         * in version `2.6.0` and as such is unable to be used with `:core` module APIs dependent
+         * in version `2.6.0`, and as such is unable to be used with `:core` module APIs dependent
          * on this value (such as [Decoder.decodeBuffered] or [Decoder.decodeBufferedAsync]).
          * */
         @JvmField
         public val maxDecodeEmit: Int,
+
+        /**
+         * The maximum number of characters that the implementation's [Encoder.Feed] can
+         * potentially emit on a single invocation of [Encoder.Feed.consume], [Encoder.Feed.flush],
+         * or [Encoder.Feed.doFinal].
+         *
+         * For example, `Base16` encoding will emit `2` characters for every `1` byte of input,
+         * so its maximum emission is `2`. `Base32` encoding will emit `8` characters for every
+         * `5` bytes of input, so its maximum emission is `8`. `UTF8` "encoding" (i.e. UTF-8 byte
+         * to text transformations) can emit `4` characters for every `4` bytes of input (depending
+         * on the implementation), so its maximum emission would be `4`.
+         *
+         * **NOTE:** This value does **not** take into consideration the [lineBreakInterval] setting,
+         * or any other [LineBreakOutFeed]-like implementation that may inflate the maximum character
+         * emission size. Implementations must **only** consider their own [LineBreakOutFeed]-like
+         * implementation details (such as the hyphen interval for `Base32.Crockford`) when calculating
+         * their maximum character emission size. TODO: Reference calculateMaxEncodeEmit
+         *
+         * Value will be between `1` and `255` (inclusive), or `-1` which indicates that the
+         * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
+         * in version `2.6.0`, and as such is unable to be used with `:core` module APIs dependent
+         * on this value.
+         * */
+        @JvmField
+        public val maxEncodeEmit: Int,
 
         /**
          * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray],
@@ -139,7 +164,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         /**
          * Instantiates a new [Config] instance.
          *
-         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1` or greater than `255`.
+         * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1` or greater than
+         *   `255`. If [maxEncodeEmit] is less than `1` or greater than `255`.
          * */
         protected constructor(
             isLenient: Boolean?,
@@ -147,6 +173,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             lineBreakResetOnFlush: Boolean,
             paddingChar: Char?,
             maxDecodeEmit: Int,
+            maxEncodeEmit: Int,
             backFillBuffers: Boolean,
         ): this(
             isLenient = isLenient,
@@ -154,11 +181,14 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             lineBreakResetOnFlush = lineBreakResetOnFlush,
             paddingChar = paddingChar,
             maxDecodeEmit = maxDecodeEmit,
+            maxEncodeEmit = maxEncodeEmit,
             backFillBuffers = backFillBuffers,
             unused = null,
         ) {
             require(maxDecodeEmit > 0) { "maxDecodeEmit must be greater than 0" }
             require(maxDecodeEmit < 256) { "maxDecodeEmit must be less than 256" }
+            require(maxEncodeEmit > 0) { "maxEncodeEmit must be greater than 0" }
+            require(maxEncodeEmit < 256) { "maxEncodeEmit must be less than 256" }
         }
 
         /**
@@ -430,6 +460,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             if (other.lineBreakResetOnFlush != this.lineBreakResetOnFlush) return false
             if (other.paddingChar != this.paddingChar) return false
             if (other.maxDecodeEmit != this.maxDecodeEmit) return false
+            if (other.maxEncodeEmit != this.maxEncodeEmit) return false
             if (other.backFillBuffers != this.backFillBuffers) return false
             if (other::class != this::class) return false
             return other._toStringAddSettings == this._toStringAddSettings
@@ -443,6 +474,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             result = result * 31 + lineBreakResetOnFlush.hashCode()
             result = result * 31 + paddingChar.hashCode()
             result = result * 31 + maxDecodeEmit.hashCode()
+            result = result * 31 + maxEncodeEmit.hashCode()
             result = result * 31 + backFillBuffers.hashCode()
             result = result * 31 + this::class.hashCode()
             result = result * 31 + _toStringAddSettings.hashCode()
@@ -462,6 +494,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             appendLine(paddingChar)
             append("    maxDecodeEmit: ")
             appendLine(maxDecodeEmit)
+            append("    maxEncodeEmit: ")
+            appendLine(maxEncodeEmit)
             append("    backFillBuffers: ")
             append(backFillBuffers) // last one uses append, not appendLine
 
@@ -520,9 +554,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @suppress
          * */
         @Deprecated(
-            message = "Parameters, lineBreakResetOnFlush, maxDecodeEmit, and backFillBuffers were added. Use the new constructor.",
+            message = "Parameters, lineBreakResetOnFlush, maxDecodeEmit, maxEncodeEmit, and backFillBuffers were added. Use the new constructor.",
             replaceWith = ReplaceWith(
-                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, lineBreakResetOnFlush = false, paddingChar, maxDecodeEmit = 0 /* TODO */, backFillBuffers = true)"),
+                expression = "EncoderDecoder.Config(isLenient, lineBreakInterval, lineBreakResetOnFlush = false, paddingChar, maxDecodeEmit = 0 /* TODO */, maxEncodeEmit = 0 /* TODO */, backFillBuffers = true)"),
             level = DeprecationLevel.WARNING,
         )
         public constructor(
@@ -535,6 +569,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             lineBreakResetOnFlush = false,
             paddingChar = paddingChar,
             maxDecodeEmit = -1, // NOTE: NEVER change.
+            maxEncodeEmit = -1, // NOTE: NEVER change.
             backFillBuffers = true,
             unused = null,
         )

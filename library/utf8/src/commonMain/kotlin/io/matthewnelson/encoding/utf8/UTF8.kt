@@ -240,6 +240,7 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
         lineBreakResetOnFlush = false,
         paddingChar = null,
         maxDecodeEmit = (replacementStrategy.size * 2).coerceAtLeast(4),
+        maxEncodeEmit = if (replacementStrategy.size == ReplacementStrategy.THROW.size) 2 else 4,
         backFillBuffers,
     ) {
 

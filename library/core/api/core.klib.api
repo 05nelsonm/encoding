@@ -36,7 +36,7 @@ abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.mat
     final fun toString(): kotlin/String // io.matthewnelson.encoding.core/EncoderDecoder.toString|toString(){}[0]
 
     abstract class Config { // io.matthewnelson.encoding.core/EncoderDecoder.Config|null[0]
-        constructor <init>(kotlin/Boolean?, kotlin/Byte, kotlin/Boolean, kotlin/Char?, kotlin/Int, kotlin/Boolean) // io.matthewnelson.encoding.core/EncoderDecoder.Config.<init>|<init>(kotlin.Boolean?;kotlin.Byte;kotlin.Boolean;kotlin.Char?;kotlin.Int;kotlin.Boolean){}[0]
+        constructor <init>(kotlin/Boolean?, kotlin/Byte, kotlin/Boolean, kotlin/Char?, kotlin/Int, kotlin/Int, kotlin/Boolean) // io.matthewnelson.encoding.core/EncoderDecoder.Config.<init>|<init>(kotlin.Boolean?;kotlin.Byte;kotlin.Boolean;kotlin.Char?;kotlin.Int;kotlin.Int;kotlin.Boolean){}[0]
         constructor <init>(kotlin/Boolean?, kotlin/Byte, kotlin/Char?) // io.matthewnelson.encoding.core/EncoderDecoder.Config.<init>|<init>(kotlin.Boolean?;kotlin.Byte;kotlin.Char?){}[0]
 
         final val backFillBuffers // io.matthewnelson.encoding.core/EncoderDecoder.Config.backFillBuffers|{}backFillBuffers[0]
@@ -49,6 +49,8 @@ abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.mat
             final fun <get-lineBreakResetOnFlush>(): kotlin/Boolean // io.matthewnelson.encoding.core/EncoderDecoder.Config.lineBreakResetOnFlush.<get-lineBreakResetOnFlush>|<get-lineBreakResetOnFlush>(){}[0]
         final val maxDecodeEmit // io.matthewnelson.encoding.core/EncoderDecoder.Config.maxDecodeEmit|{}maxDecodeEmit[0]
             final fun <get-maxDecodeEmit>(): kotlin/Int // io.matthewnelson.encoding.core/EncoderDecoder.Config.maxDecodeEmit.<get-maxDecodeEmit>|<get-maxDecodeEmit>(){}[0]
+        final val maxEncodeEmit // io.matthewnelson.encoding.core/EncoderDecoder.Config.maxEncodeEmit|{}maxEncodeEmit[0]
+            final fun <get-maxEncodeEmit>(): kotlin/Int // io.matthewnelson.encoding.core/EncoderDecoder.Config.maxEncodeEmit.<get-maxEncodeEmit>|<get-maxEncodeEmit>(){}[0]
         final val paddingChar // io.matthewnelson.encoding.core/EncoderDecoder.Config.paddingChar|{}paddingChar[0]
             final fun <get-paddingChar>(): kotlin/Char? // io.matthewnelson.encoding.core/EncoderDecoder.Config.paddingChar.<get-paddingChar>|<get-paddingChar>(){}[0]
 
