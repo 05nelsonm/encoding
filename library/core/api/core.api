@@ -128,6 +128,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field paddingChar Ljava/lang/Character;
 	public fun <init> (Ljava/lang/Boolean;BLjava/lang/Character;)V
 	protected fun <init> (Ljava/lang/Boolean;BZLjava/lang/Character;IIZ)V
+	public static final fun calculateMaxEncodeEmit (II)I
 	public final fun decodeOutMaxSize (J)J
 	public final fun decodeOutMaxSizeOrFail (Lio/matthewnelson/encoding/core/util/DecoderInput;)I
 	protected abstract fun decodeOutMaxSizeOrFailProtected (ILio/matthewnelson/encoding/core/util/DecoderInput;)I
@@ -145,6 +146,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 }
 
 public final class io/matthewnelson/encoding/core/EncoderDecoder$Config$Companion {
+	public final fun calculateMaxEncodeEmit (II)I
 	public final fun outSizeExceedsMaxEncodingSizeException (Ljava/lang/Number;Ljava/lang/Number;)Lio/matthewnelson/encoding/core/EncodingSizeException;
 }
 

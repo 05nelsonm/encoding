@@ -82,6 +82,7 @@ abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.mat
         }
 
         final object Companion { // io.matthewnelson.encoding.core/EncoderDecoder.Config.Companion|null[0]
+            final fun calculateMaxEncodeEmit(kotlin/Int, kotlin/Int): kotlin/Int // io.matthewnelson.encoding.core/EncoderDecoder.Config.Companion.calculateMaxEncodeEmit|calculateMaxEncodeEmit(kotlin.Int;kotlin.Int){}[0]
             final fun outSizeExceedsMaxEncodingSizeException(kotlin/Number, kotlin/Number): io.matthewnelson.encoding.core/EncodingSizeException // io.matthewnelson.encoding.core/EncoderDecoder.Config.Companion.outSizeExceedsMaxEncodingSizeException|outSizeExceedsMaxEncodingSizeException(kotlin.Number;kotlin.Number){}[0]
         }
     }

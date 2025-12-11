@@ -236,8 +236,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             lineBreakResetOnFlush = false,
             paddingChar = null,
             maxDecodeEmit = 5,
-            // TODO: Add hyphen interval calculation
-            maxEncodeEmit = 8,
+            maxEncodeEmit = calculateMaxEncodeEmit(emitSize = 8, insertionInterval = hyphenInterval.toInt()),
             backFillBuffers,
         ) {
 

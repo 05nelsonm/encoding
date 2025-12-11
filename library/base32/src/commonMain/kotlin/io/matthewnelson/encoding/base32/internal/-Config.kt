@@ -25,10 +25,11 @@ internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean, Boolean) -> Base32
     b: Base32.Crockford.Builder,
     noinline crockford: (Base32.Crockford.Config, Any?) -> Base32.Crockford,
 ): Base32.Crockford {
+    val hyphenInterval = if (b._hyphenInterval <= 0) 0 else b._hyphenInterval
     if (
         b._isLenient == Base32.Crockford.DELEGATE.config.isLenient
         && b._encodeLowercase == Base32.Crockford.DELEGATE.config.encodeLowercase
-        && b._hyphenInterval == Base32.Crockford.DELEGATE.config.hyphenInterval
+        && hyphenInterval == Base32.Crockford.DELEGATE.config.hyphenInterval
         && b._checkSymbol == Base32.Crockford.DELEGATE.config.checkSymbol
         && b._finalizeWhenFlushed == Base32.Crockford.DELEGATE.config.finalizeWhenFlushed
         && b._backFillBuffers == Base32.Crockford.DELEGATE.config.backFillBuffers
@@ -38,7 +39,7 @@ internal inline fun ((Boolean, Boolean, Byte, Char?, Boolean, Boolean) -> Base32
     val config = this(
         b._isLenient,
         b._encodeLowercase,
-        b._hyphenInterval,
+        hyphenInterval,
         b._checkSymbol,
         b._finalizeWhenFlushed,
         b._backFillBuffers,
