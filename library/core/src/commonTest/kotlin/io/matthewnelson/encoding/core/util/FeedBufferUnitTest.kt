@@ -17,11 +17,12 @@ package io.matthewnelson.encoding.core.util
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.fail
 
 class FeedBufferUnitTest {
 
-    private inner class TestBuffer(
+    private class TestBuffer(
         blockSize: Int,
         flush: Flush = Flush { _ -> },
         finalize: Finalize = Finalize { _, _ -> },
@@ -31,12 +32,7 @@ class FeedBufferUnitTest {
 
     @Test
     fun givenFeedBuffer_whenBlockSizeLessThanOrEqualToZero_thenThrowsException() {
-        try {
-            TestBuffer(blockSize = 0)
-            fail()
-        } catch (_: IllegalArgumentException) {
-            // pass
-        }
+        assertFailsWith<IllegalArgumentException> { TestBuffer(0) }
     }
 
     @Test
@@ -51,6 +47,7 @@ class FeedBufferUnitTest {
                 }
             })
 
+            @Suppress("UNUSED")
             for (j in 0 until i) {
                 buffer.update(i)
             }

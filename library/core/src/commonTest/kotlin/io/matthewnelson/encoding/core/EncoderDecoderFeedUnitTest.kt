@@ -34,7 +34,7 @@ class EncoderDecoderFeedUnitTest {
     }
 
     @Test
-    fun givenDecoderFeed_whenClosed_thenConsumeAndDoFinalThrowException() {
+    fun givenDecoderFeed_whenClosed_thenThrowsClosedException() {
         val feed = TestEncoderDecoder(TestConfig()).newDecoderFeed {}
 
         feed.close()
@@ -42,20 +42,27 @@ class EncoderDecoderFeedUnitTest {
         try {
             feed.consume('d')
             fail()
-        } catch (_: EncodingException) {
-            // pass
+        } catch (e: EncodingException) {
+            assertTrue(e.message.contains("is closed"))
+        }
+
+        try {
+            feed.flush()
+            fail()
+        } catch (e: EncodingException) {
+            assertTrue(e.message.contains("is closed"))
         }
 
         try {
             feed.doFinal()
             fail()
-        } catch (_: EncodingException) {
-            // pass
+        } catch (e: EncodingException) {
+            assertTrue(e.message.contains("is closed"))
         }
     }
 
     @Test
-    fun givenEncoderFeed_whenClosed_thenConsumeAndDoFinalThrowException() {
+    fun givenEncoderFeed_whenClosed_thenThrowsClosedException() {
         val feed = TestEncoderDecoder(TestConfig()).newEncoderFeed {}
 
         feed.close()
@@ -63,15 +70,22 @@ class EncoderDecoderFeedUnitTest {
         try {
             feed.consume(5)
             fail()
-        } catch (_: EncodingException) {
-            // pass
+        } catch (e: EncodingException) {
+            assertTrue(e.message.contains("is closed"))
+        }
+
+        try {
+            feed.flush()
+            fail()
+        } catch (e: EncodingException) {
+            assertTrue(e.message.contains("is closed"))
         }
 
         try {
             feed.doFinal()
             fail()
-        } catch (_: EncodingException) {
-            // pass
+        } catch (e: EncodingException) {
+            assertTrue(e.message.contains("is closed"))
         }
     }
 
@@ -90,6 +104,20 @@ class EncoderDecoderFeedUnitTest {
     }
 
     @Test
+    fun givenDecoderFeed_whenFlushThrowsException_thenFeedClosesAutomaticallyBeforeThrowing() {
+        val feed = TestEncoderDecoder(TestConfig()).newDecoderFeed {
+            throw IllegalStateException("")
+        }
+
+        try {
+            feed.flush()
+            fail()
+        } catch (_: IllegalStateException) {
+            assertTrue(feed.isClosed())
+        }
+    }
+
+    @Test
     fun givenEncoderFeed_whenConsumeThrowsException_thenFeedClosesAutomaticallyBeforeThrowing() {
         val feed = TestEncoderDecoder(TestConfig()).newEncoderFeed {
             throw IllegalStateException("")
@@ -97,6 +125,20 @@ class EncoderDecoderFeedUnitTest {
 
         try {
             feed.consume(5)
+            fail()
+        } catch (_: IllegalStateException) {
+            assertTrue(feed.isClosed())
+        }
+    }
+
+    @Test
+    fun givenEncoderFeed_whenFlushThrowsException_thenFeedClosesAutomaticallyBeforeThrowing() {
+        val feed = TestEncoderDecoder(TestConfig()).newEncoderFeed {
+            throw IllegalStateException("")
+        }
+
+        try {
+            feed.flush()
             fail()
         } catch (_: IllegalStateException) {
             assertTrue(feed.isClosed())
@@ -137,7 +179,7 @@ class EncoderDecoderFeedUnitTest {
             try {
                 feed.consume(char)
                 fail()
-            } catch (_: EncodingException) {
+            } catch (_: MalformedEncodingException) {
                 assertTrue(feed.isClosed())
             }
         }
@@ -190,7 +232,7 @@ class EncoderDecoderFeedUnitTest {
         try {
             feed.consume('g')
             fail()
-        } catch (_: EncodingException) {
+        } catch (_: MalformedEncodingException) {
             assertTrue(feed.isClosed())
         }
     }

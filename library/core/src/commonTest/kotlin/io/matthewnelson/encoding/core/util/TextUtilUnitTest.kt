@@ -19,6 +19,7 @@ import io.matthewnelson.encoding.core.internal.commonWipe
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+// See also nonJsTest TextUtilNonJsUnitTest
 @Suppress("DEPRECATION")
 class TextUtilUnitTest {
 

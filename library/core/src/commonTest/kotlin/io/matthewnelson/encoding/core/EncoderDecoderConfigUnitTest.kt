@@ -28,29 +28,18 @@ class EncoderDecoderConfigUnitTest {
     fun givenConfig_whenNegativeValuesSent_thenThrowsEncodingSizeExceptionBeforePassingToProtected() {
         val config = TestConfig(
             encodeReturn = {
-                fail("Should not make it here")
+                error("Should not make it here")
             },
             decodeInputReturn = {
-                fail("Should not make it here")
+                error("Should not make it here")
             },
             decodeReturn = {
-                fail("Should not make it here")
+                error("Should not make it here")
             }
         )
 
-        try {
-            config.decodeOutMaxSize(-1L)
-            fail()
-        } catch (_: EncodingSizeException) {
-            // pass
-        }
-
-        try {
-            config.encodeOutMaxSize(-1L)
-            fail()
-        } catch (_: EncodingSizeException) {
-            // pass
-        }
+        assertFailsWith<EncodingSizeException> { config.decodeOutMaxSize(-1L) }
+        assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(-1L) }
     }
 
     @Test
@@ -160,13 +149,7 @@ class EncoderDecoderConfigUnitTest {
     @Test
     fun givenLineBreakInterval_whenSizeIncreaseWouldExceedMaxValue_thenThrowsEncodingSizeException() {
         val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeReturn = { it })
-
-        try {
-            config.encodeOutMaxSize(Long.MAX_VALUE - 10L)
-            fail()
-        } catch (_: EncodingSizeException) {
-            // pass
-        }
+        assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(Long.MAX_VALUE - 10L) }
     }
 
     @Test
