@@ -221,7 +221,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
         public fun ByteArray.encodeToString(encoder: Encoder<*>): String {
             return encoder.encodeOutMaxSizeOrFail(size) { maxSize ->
                 val sb = StringBuilder(maxSize)
-                encoder.encode(this, sb::append)
+                encoder.encode(this, _outFeed = { OutFeed(sb::append) })
                 val result = sb.toString()
                 if (encoder.config.backFillBuffers) {
                     sb.wipe()
@@ -248,7 +248,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
                 var i = 0
                 val a = CharArray(maxSize)
-                encoder.encode(this) { c -> a[i++] = c }
+                encoder.encode(this, _outFeed = { OutFeed { c -> a[i++] = c } })
                 if (i == maxSize) return@block a
                 val copy = a.copyOf(i)
                 if (encoder.config.backFillBuffers) {
@@ -274,7 +274,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
                 var i = 0
                 val a = ByteArray(maxSize)
-                encoder.encode(this) { char -> a[i++] = char.code.toByte() }
+                encoder.encode(this, _outFeed = { OutFeed { char -> a[i++] = char.code.toByte() } })
                 if (i == maxSize) return@block a
                 val copy = a.copyOf(i)
                 if (encoder.config.backFillBuffers) {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("LocalVariableName", "NOTHING_TO_INLINE")
+@file:Suppress("LocalVariableName")
 
 package io.matthewnelson.encoding.core.internal
 
@@ -37,19 +37,20 @@ internal inline fun <T: Any> Encoder<*>.encodeOutMaxSizeOrFail(
     _block: (maxSize: Int) -> T,
 ): T {
     contract { callsInPlace(_block, InvocationKind.AT_MOST_ONCE) }
-
     val maxSize = config.encodeOutMaxSize(size.toLong())
     if (maxSize > MAX_ENCODE_OUT_SIZE) {
         throw Config.outSizeExceedsMaxEncodingSizeException(maxSize, MAX_ENCODE_OUT_SIZE)
     }
-
     return _block(maxSize.toInt())
 }
 
+@OptIn(ExperimentalContracts::class)
 internal inline fun <C: Config> Encoder<C>.encode(
     data: ByteArray,
-    out: Encoder.OutFeed,
+    _outFeed: () -> Encoder.OutFeed,
 ) {
+    contract { callsInPlace(_outFeed, InvocationKind.AT_MOST_ONCE) }
     if (data.isEmpty()) return
+    val out = _outFeed()
     newEncoderFeed(out).use { feed -> data.forEach { b -> feed.consume(b) } }
 }
