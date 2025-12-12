@@ -58,7 +58,11 @@ fun main() {
     // Write UTF-8 encoded bytes to a FileStream (kmp-file:file)
     val file = "/path/to/file.txt".toFile()
     file.openWrite(excl = null).use { stream ->
-        decoded.decodeBuffered(UTF8, action = stream::write)
+        decoded.decodeBuffered(
+            decoder = UTF8,
+            throwOnOverflow = false,
+            action = stream::write,
+        )
     }
 
     // Now do it asynchronously (kmp-file:async)
@@ -67,8 +71,9 @@ fun main() {
             file.openAppendAsync(excl = OpenExcl.MustExist)
                 .useAsync { stream ->
                     decoded.decodeBufferedAsync(
-                        maxBufSize = 1024,
                         decoder = UTF8.ThrowOnInvalid,
+                        throwOnOverflow = false,
+                        maxBufSize = 1024,
                         action = stream::writeAsync,
                     )
                 }
