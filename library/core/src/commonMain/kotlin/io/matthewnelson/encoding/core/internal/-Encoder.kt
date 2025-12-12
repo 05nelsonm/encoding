@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("LocalVariableName")
+@file:Suppress("LocalVariableName", "NOTHING_TO_INLINE")
 
 package io.matthewnelson.encoding.core.internal
 
 import io.matthewnelson.encoding.core.Encoder
 import io.matthewnelson.encoding.core.EncoderDecoder.Config
+import io.matthewnelson.encoding.core.EncodingException
 import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.core.use
 import kotlin.contracts.ExperimentalContracts
@@ -51,6 +52,82 @@ internal inline fun <C: Config> Encoder<C>.encode(
 ) {
     contract { callsInPlace(_outFeed, InvocationKind.AT_MOST_ONCE) }
     if (data.isEmpty()) return
-    val out = _outFeed()
-    newEncoderFeed(out).use { feed -> data.forEach { b -> feed.consume(b) } }
+    encode(data, out = _outFeed())
+}
+
+internal inline fun <C: Config> Encoder<C>.encode(
+    data: ByteArray,
+    out: Encoder.OutFeed,
+) {
+    newEncoderFeed(out).use { feed -> data.forEach(feed::consume) }
+}
+
+@OptIn(ExperimentalContracts::class)
+@Throws(EncodingException::class)
+internal inline fun <C: Config> Encoder<C>.encodeBuffered(
+    data: ByteArray,
+    buf: CharArray?,
+    maxBufSize: Int,
+    throwOnOverflow: Boolean,
+    _action: (buf: CharArray, offset: Int, len: Int) -> Unit,
+): Long {
+    contract { callsInPlace(_action, InvocationKind.UNKNOWN) }
+
+    if (buf != null) {
+        // Ensure function caller passed in buf.size for maxBufSize
+        check(buf.size == maxBufSize) { "buf.size[${buf.size}] != maxBufSize" }
+    }
+    if (config.maxEncodeEmitWithLineBreak == -1) {
+        // EncoderDecoder.Config implementation has not updated to
+        // new constructor which requires it to be greater than 0.
+        throw EncodingException("Encoder misconfiguration. ${this}.config.maxEncodeEmitWithLineBreak == -1")
+    }
+    require(maxBufSize > config.maxEncodeEmitWithLineBreak) {
+        val parameter = if (buf != null) "buf.size" else "maxBufSize"
+        "$parameter[$maxBufSize] <= ${this}.config.maxEncodeEmitWithLineBreak[${config.maxEncodeEmitWithLineBreak}]"
+    }
+    if (data.isEmpty()) return 0L
+
+    try {
+        encodeOutMaxSizeOrFail(data.size) { it }
+    } catch (e: EncodingSizeException) {
+        if (throwOnOverflow) throw e
+        -1
+    }.let { maxEncodeSize ->
+        if (maxEncodeSize !in 0..maxBufSize) return@let // Chunk
+
+        // Maximum encoded size will be less than or equal to maxBufSize. One-shot it.
+        var i = 0
+        val encoded = buf ?: CharArray(maxEncodeSize)
+        encode(data, out = { c -> encoded[i++] = c })
+        try {
+            _action(encoded, 0, i)
+        } finally {
+            if (config.backFillBuffers) encoded.fill('\u0000', 0, i)
+        }
+        return i.toLong()
+    }
+
+    // Chunk
+    val _buf = buf ?: CharArray(maxBufSize)
+    val limit = _buf.size - config.maxEncodeEmitWithLineBreak
+    var iBuf = 0
+    var size = 0L
+    try {
+        newEncoderFeed(out = { c -> _buf[iBuf++] = c }).use { feed ->
+            for (b in data) {
+                feed.consume(b)
+                if (iBuf <= limit) continue
+                _action(_buf, 0, iBuf)
+                size += iBuf
+                iBuf = 0
+            }
+        }
+        if (iBuf == 0) return size
+        _action(_buf, 0, iBuf)
+        size += iBuf
+    } finally {
+        if (config.backFillBuffers) _buf.fill('\u0000')
+    }
+    return size
 }

@@ -25,6 +25,21 @@ import kotlin.test.fail
 class EncoderDecoderConfigUnitTest {
 
     @Test
+    fun givenConfig_whenUsingDeprecatedConstructor_thenVersion260DefaultsAreUsed() {
+        // This also checks for any initialization logic that could throw exception
+        @Suppress("DEPRECATION")
+        val config = object : EncoderDecoder.Config(isLenient = null, lineBreakInterval = 0, paddingChar = null) {
+            override fun encodeOutSizeProtected(unEncodedSize: Long): Long = error("")
+            override fun decodeOutMaxSizeProtected(encodedSize: Long): Long = error("")
+            override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int = error("")
+            override fun toStringAddSettings(): Set<Setting> = error("")
+        }
+        assertEquals(-1, config.maxDecodeEmit)
+        assertEquals(-1, config.maxEncodeEmit)
+        assertEquals(-1, config.maxEncodeEmitWithLineBreak)
+    }
+
+    @Test
     fun givenConfig_whenNegativeValuesSent_thenThrowsEncodingSizeExceptionBeforePassingToProtected() {
         val config = TestConfig(
             encodeReturn = {
@@ -192,6 +207,7 @@ class EncoderDecoderConfigUnitTest {
     fun givenCalculateMaxEncodeEmit_whenIntervalIn1ToEmitSize_thenReturnsExpected() {
         var i = 0
         arrayOf(
+            Triple(1, 0, 1), // minimum possible value
             Triple(1, 1, 2),
             Triple(2, 1, 4),
             Triple(3, 2, 5),
@@ -202,6 +218,7 @@ class EncoderDecoderConfigUnitTest {
             Triple(10, 5, 12),
             Triple(189, 5, 227),
             Triple(189, 64, 192),
+            Triple(255, 1, 510), // maximum possible value
         ).forEach { (size, interval, expected) ->
             val actual = EncoderDecoder.Config.calculateMaxEncodeEmit(size, interval)
             assertEquals(expected, actual, "arguments at index[$i]")

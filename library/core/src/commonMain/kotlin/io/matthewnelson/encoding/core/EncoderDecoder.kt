@@ -49,7 +49,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     /**
      * Base configuration for an [EncoderDecoder]. More options may be specified by the implementation.
      * */
-    public abstract class Config private constructor(
+    public abstract class Config {
 
         /**
          * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e. allowed
@@ -58,7 +58,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * are passed along to the [Decoder.Feed] implementation as input.
          * */
         @JvmField
-        public val isLenient: Boolean?,
+        public val isLenient: Boolean?
 
         /**
          * If greater than `0`, [Encoder.newEncoderFeed] may use a [LineBreakOutFeed] such that
@@ -70,7 +70,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @see [Encoder.newEncoderFeed]
          * */
         @JvmField
-        public val lineBreakInterval: Byte,
+        public val lineBreakInterval: Byte
 
         /**
          * If and only if [Encoder.newEncoderFeed] wraps the [Encoder.OutFeed] passed to it with a
@@ -82,7 +82,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * @see [Encoder.newEncoderFeed]
          * */
         @JvmField
-        public val lineBreakResetOnFlush: Boolean,
+        public val lineBreakResetOnFlush: Boolean
 
         /**
          * The character that is used when padding encoded output. This is used by [Decoder.Feed]
@@ -95,7 +95,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * specifying `null` and managing it in the implementation.
          * */
         @JvmField
-        public val paddingChar: Char?,
+        public val paddingChar: Char?
 
         /**
          * The maximum number of bytes that the implementation's [Decoder.Feed] can potentially
@@ -115,7 +115,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * on this value (such as [Decoder.decodeBuffered] and [Decoder.decodeBufferedAsync]).
          * */
         @JvmField
-        public val maxDecodeEmit: Int,
+        public val maxDecodeEmit: Int
 
         /**
          * The maximum number of characters that the implementation's [Encoder.Feed] can
@@ -138,12 +138,19 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * Value will be between `1` and `255` (inclusive), or `-1` which indicates that the
          * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
          * in version `2.6.0`, and as such is unable to be used with `:core` module APIs dependent
-         * on this value.
+         * on this value (such as [Encoder.encodeBuffered] and [Encoder.encodeBufferedAsync]).
          *
+         * @see [maxEncodeEmitWithLineBreak]
          * @see [Companion.calculateMaxEncodeEmit]
          * */
         @JvmField
-        public val maxEncodeEmit: Int,
+        public val maxEncodeEmit: Int
+
+        /**
+         * TODO
+         * */
+        @JvmField
+        public val maxEncodeEmitWithLineBreak: Int
 
         /**
          * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray],
@@ -160,17 +167,13 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * by function return. If `false`, back-filling is skipped.
          * */
         @JvmField
-        public val backFillBuffers: Boolean,
-
-        // NOTE: Adding any parameters requires updating equals/hashCode/toString
-        @Suppress("UNUSED_PARAMETER") unused: Any?,
-    ) {
+        public val backFillBuffers: Boolean
 
         /**
          * Instantiates a new [Config] instance.
          *
          * @throws [IllegalArgumentException] If [maxDecodeEmit] is less than `1` or greater than
-         *   `255`. If [maxEncodeEmit] is less than `1` or greater than `255`.
+         *   `255`, or if [maxEncodeEmit] is less than `1` or greater than `255`.
          * */
         protected constructor(
             isLenient: Boolean?,
@@ -180,18 +183,17 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             maxDecodeEmit: Int,
             maxEncodeEmit: Int,
             backFillBuffers: Boolean,
-        ): this(
-            isLenient = isLenient,
-            lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval),
-            lineBreakResetOnFlush = lineBreakResetOnFlush,
-            paddingChar = paddingChar,
-            maxDecodeEmit = maxDecodeEmit,
-            maxEncodeEmit = maxEncodeEmit,
-            backFillBuffers = backFillBuffers,
-            unused = null,
         ) {
             checkMaxEmitSize(maxDecodeEmit) { "maxDecodeEmit" }
             checkMaxEmitSize(maxEncodeEmit) { "maxEncodeEmit" }
+            this.isLenient = isLenient
+            this.lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval)
+            this.lineBreakResetOnFlush = lineBreakResetOnFlush
+            this.paddingChar = paddingChar
+            this.maxDecodeEmit = maxDecodeEmit
+            this.maxEncodeEmit = maxEncodeEmit
+            this.maxEncodeEmitWithLineBreak = calculateMaxEncodeEmit(maxEncodeEmit, this.lineBreakInterval.toInt())
+            this.backFillBuffers = backFillBuffers
         }
 
         /**
@@ -620,16 +622,16 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             isLenient: Boolean?,
             lineBreakInterval: Byte,
             paddingChar: Char?,
-        ): this(
-            isLenient = isLenient,
-            lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval),
-            lineBreakResetOnFlush = false,
-            paddingChar = paddingChar,
-            maxDecodeEmit = -1, // NOTE: NEVER change.
-            maxEncodeEmit = -1, // NOTE: NEVER change.
-            backFillBuffers = true,
-            unused = null,
-        )
+        ) {
+            this.isLenient = isLenient
+            this.lineBreakInterval = lineBreakIntervalOrZero(isLenient, lineBreakInterval)
+            this.lineBreakResetOnFlush = false
+            this.paddingChar = paddingChar
+            this.maxDecodeEmit = -1 // NOTE: NEVER change.
+            this.maxEncodeEmit = -1 // NOTE: NEVER change.
+            this.maxEncodeEmitWithLineBreak = -1 // NOTE: NEVER change.
+            this.backFillBuffers = true
+        }
     }
 
     /**

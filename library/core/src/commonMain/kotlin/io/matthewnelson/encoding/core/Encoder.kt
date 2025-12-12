@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("LocalVariableName", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
+@file:Suppress("LocalVariableName", "NOTHING_TO_INLINE", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.EncoderDecoder.Companion.DEFAULT_BUFFER_SIZE
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
+import io.matthewnelson.encoding.core.internal.encodeBuffered
 import io.matthewnelson.encoding.core.internal.encodeOutMaxSizeOrFail
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import io.matthewnelson.encoding.core.util.wipe
@@ -257,6 +259,94 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
                 copy
             }
         }
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        public inline fun ByteArray.encodeBuffered(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            noinline action: (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encodeBuffered(encoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        public fun ByteArray.encodeBuffered(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            maxBufSize: Int,
+            action: (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = null,
+            maxBufSize = maxBufSize,
+            throwOnOverflow = throwOnOverflow,
+            _action = action,
+        )
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        public fun ByteArray.encodeBuffered(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            buf: CharArray,
+            action: (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = buf,
+            maxBufSize = buf.size,
+            throwOnOverflow = throwOnOverflow,
+            _action = action,
+        )
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        public suspend inline fun ByteArray.encodeBufferedAsync(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            noinline action: suspend (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encodeBufferedAsync(encoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        public suspend fun ByteArray.encodeBufferedAsync(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            maxBufSize: Int,
+            action: suspend (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = null,
+            maxBufSize = maxBufSize,
+            throwOnOverflow = throwOnOverflow,
+            _action = { buf, offset, len -> action(buf, offset, len) },
+        )
+
+        /**
+         * TODO
+         * */
+        @JvmStatic
+        public suspend fun ByteArray.encodeBufferedAsync(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            buf: CharArray,
+            action: suspend (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = buf,
+            maxBufSize = buf.size,
+            throwOnOverflow = throwOnOverflow,
+            _action = { _buf, offset, len -> action(_buf, offset, len) },
+        )
 
         /**
          * DEPRECATED since `2.3.0`

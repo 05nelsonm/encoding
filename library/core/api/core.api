@@ -77,6 +77,12 @@ public final class io/matthewnelson/encoding/core/Decoder$OutFeed$Companion {
 public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/encoding/core/Decoder {
 	public static final field Companion Lio/matthewnelson/encoding/core/Encoder$Companion;
 	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun encodeBuffered ([BLio/matthewnelson/encoding/core/Encoder;ZILkotlin/jvm/functions/Function3;)J
+	public static final fun encodeBuffered ([BLio/matthewnelson/encoding/core/Encoder;ZLkotlin/jvm/functions/Function3;)J
+	public static final fun encodeBuffered ([BLio/matthewnelson/encoding/core/Encoder;Z[CLkotlin/jvm/functions/Function3;)J
+	public static final fun encodeBufferedAsync ([BLio/matthewnelson/encoding/core/Encoder;ZILkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun encodeBufferedAsync ([BLio/matthewnelson/encoding/core/Encoder;ZLkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun encodeBufferedAsync ([BLio/matthewnelson/encoding/core/Encoder;Z[CLkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun encodeToByteArray ([BLio/matthewnelson/encoding/core/Encoder;)[B
 	public static final fun encodeToCharArray ([BLio/matthewnelson/encoding/core/Encoder;)[C
 	public static final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
@@ -85,6 +91,12 @@ public abstract class io/matthewnelson/encoding/core/Encoder : io/matthewnelson/
 }
 
 public final class io/matthewnelson/encoding/core/Encoder$Companion {
+	public final fun encodeBuffered ([BLio/matthewnelson/encoding/core/Encoder;ZILkotlin/jvm/functions/Function3;)J
+	public final fun encodeBuffered ([BLio/matthewnelson/encoding/core/Encoder;ZLkotlin/jvm/functions/Function3;)J
+	public final fun encodeBuffered ([BLio/matthewnelson/encoding/core/Encoder;Z[CLkotlin/jvm/functions/Function3;)J
+	public final fun encodeBufferedAsync ([BLio/matthewnelson/encoding/core/Encoder;ZILkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun encodeBufferedAsync ([BLio/matthewnelson/encoding/core/Encoder;ZLkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun encodeBufferedAsync ([BLio/matthewnelson/encoding/core/Encoder;Z[CLkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun encodeToByteArray ([BLio/matthewnelson/encoding/core/Encoder;)[B
 	public final fun encodeToCharArray ([BLio/matthewnelson/encoding/core/Encoder;)[C
 	public final fun encodeToString ([BLio/matthewnelson/encoding/core/Encoder;)Ljava/lang/String;
@@ -133,6 +145,7 @@ public abstract class io/matthewnelson/encoding/core/EncoderDecoder$Config {
 	public final field lineBreakResetOnFlush Z
 	public final field maxDecodeEmit I
 	public final field maxEncodeEmit I
+	public final field maxEncodeEmitWithLineBreak I
 	public final field paddingChar Ljava/lang/Character;
 	public fun <init> (Ljava/lang/Boolean;BLjava/lang/Character;)V
 	protected fun <init> (Ljava/lang/Boolean;BZLjava/lang/Character;IIZ)V
