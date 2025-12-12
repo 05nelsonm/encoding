@@ -36,7 +36,8 @@ internal inline fun <C: Config> Decoder<C>.decode(
     contract { callsInPlace(_get, InvocationKind.UNKNOWN) }
     val maxDecodeSize = config.decodeOutMaxSizeOrFail(input)
     val a = ByteArray(maxDecodeSize)
-    val len = decode(maxDecodeSizeArray = a, input.size, _get)
+    @Suppress("DEPRECATION")
+    val len = decodeTo(maxDecodeSizeArray = a, input.size, _get)
     if (len == maxDecodeSize) return a
     val copy = a.copyOf(len)
     if (config.backFillBuffers) {
@@ -47,7 +48,8 @@ internal inline fun <C: Config> Decoder<C>.decode(
 
 @Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
-internal inline fun <C: Config> Decoder<C>.decode(
+@Deprecated("UNSAFE; do not reference directly. Used by decode/decodeBuffered only.")
+internal inline fun <C: Config> Decoder<C>.decodeTo(
     maxDecodeSizeArray: ByteArray,
     inputSize: Int,
     _get: (i: Int) -> Char,
@@ -81,6 +83,7 @@ internal inline fun <C: Config> Decoder<C>.decode(
 internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     buf: ByteArray?,
     maxBufSize: Int,
+    throwOnOverflow: Boolean,
     _get: (i: Int) -> Char,
     _input: () -> DecoderInput,
     _action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
@@ -108,18 +111,20 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     val input = _input()
     try {
         config.decodeOutMaxSizeOrFail(input)
-    } catch (_: EncodingSizeException) {
-        // Only ignore EncodingSizeException such that any checks
-        // the implementation has (such as Base32 Crockford) can
-        // fall through and end early.
+    } catch (e: EncodingSizeException) {
+        // Only ignore EncodingSizeException such that any checks the
+        // implementation has (such as Base32 Crockford check symbols)
+        // can fall through and end early.
 
-        -1 // output size exceeded Int.MAX_VALUE
+        if (throwOnOverflow) throw e
+        -1
     }.let { maxDecodeSize ->
         if (maxDecodeSize !in 0..maxBufSize) return@let // Chunk
 
         // Maximum decoded size will be less than or equal to maxBufSize. One-shot it.
         val decoded = buf ?: ByteArray(maxDecodeSize)
-        val len = decode(maxDecodeSizeArray = decoded, input.size, _get)
+        @Suppress("DEPRECATION")
+        val len = decodeTo(maxDecodeSizeArray = decoded, input.size, _get)
         try {
             _action(decoded, 0, len)
         } finally {

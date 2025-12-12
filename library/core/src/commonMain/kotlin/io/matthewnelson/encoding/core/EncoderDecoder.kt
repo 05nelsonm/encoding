@@ -42,9 +42,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     public companion object {
 
         /**
-         * A "default" buffer size of `8 * 1024`
+         * A "default" buffer size of `8 * 1024`; it's a great value.
          * */
-        public const val DEFAULT_BUFFER_SIZE: Int = 8 * 1024 // Note: If changing, update documentation.
+        public const val DEFAULT_BUFFER_SIZE: Int = 8 * 1024
     }
 
     /**
@@ -107,13 +107,13 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * so its maximum emission is `1`. `Base32` decoding will emit `5` bytes for every `8`
          * characters of input, so its maximum emission is `5`. `UTF8` "decoding" (i.e. text to
          * UTF-8 byte transformations) can emit `4` bytes, but also depending on the size of the
-         * replacement byte sequence being used, can emit more; its maximum emission size is
-         * required to be calculated, such as `(replacementStrategy.size * 2).coerceAtLeast(4)`.
+         * replacement byte sequence being used, can emit more; its maximum emission size needs
+         * a calculation, such as `(replacementStrategy.size * 2).coerceAtLeast(4)`.
          *
          * Value will be between `1` and `255` (inclusive), or `-1` which indicates that the
          * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
          * in version `2.6.0`, and as such is unable to be used with `:core` module APIs dependent
-         * on this value (such as [Decoder.decodeBuffered] or [Decoder.decodeBufferedAsync]).
+         * on this value (such as [Decoder.decodeBuffered] and [Decoder.decodeBufferedAsync]).
          * */
         @JvmField
         public val maxDecodeEmit: Int,
@@ -126,8 +126,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * For example, `Base16` encoding will emit `2` characters for every `1` byte of input,
          * so its maximum emission is `2`. `Base32` encoding will emit `8` characters for every
          * `5` bytes of input, so its maximum emission is `8`. `UTF8` "encoding" (i.e. UTF-8 byte
-         * to text transformations) can emit `4` characters for every `4` bytes of input (depending
-         * on the implementation), so its maximum emission would be `4`.
+         * to text transformations) can emit `2` characters, but also depending on the strategy
+         * being used for replacement sequences, can emit more; its maximum emission size needs
+         * some logic, such as `if (replacementStrategy == ReplacementStrategy.THROW) 2 else 4`.
          *
          * **NOTE:** This value does **not** take into consideration the [lineBreakInterval] setting,
          * or any other [LineBreakOutFeed]-like implementation that may inflate the maximum character
