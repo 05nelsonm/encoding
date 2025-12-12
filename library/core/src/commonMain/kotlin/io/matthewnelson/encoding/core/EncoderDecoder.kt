@@ -17,7 +17,6 @@
 
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.internal.calculatedOutputNegativeEncodingSizeException
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.isSpaceOrNewLine
 import io.matthewnelson.encoding.core.util.DecoderInput
@@ -53,8 +52,8 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     public abstract class Config private constructor(
 
         /**
-         * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e.
-         * allowed but ignored) during decoding operations. If `false`, a [MalformedEncodingException]
+         * If `true`, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e. allowed
+         * but ignored) during decoding operations. If `false`, a [MalformedEncodingException]
          * will be thrown when those characters are encountered. If `null`, those characters
          * are passed along to the [Decoder.Feed] implementation as input.
          * */
@@ -240,7 +239,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             if (outSize < 0L) {
                 // Long.MAX_VALUE was exceeded and encodeOutSizeProtected
                 // did not implement checks to throw an exception.
-                throw calculatedOutputNegativeEncodingSizeException(outSize)
+                throw negativeEncodingSizeException(outSize)
             }
 
             if (lineBreakInterval > 0) {
@@ -305,7 +304,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             if (outSize < 0L) {
                 // Long.MAX_VALUE was exceeded and decodeOutMaxSizeProtected
                 // did not implement checks to throw an exception.
-                throw calculatedOutputNegativeEncodingSizeException(outSize)
+                throw negativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -368,7 +367,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             if (outSize < 0) {
                 // Long.MAX_VALUE was exceeded and decodeOutMaxSizeOrFailProtected
                 // did not implement checks to throw an exception.
-                throw calculatedOutputNegativeEncodingSizeException(outSize)
+                throw negativeEncodingSizeException(outSize)
             }
             return outSize
         }
@@ -805,4 +804,9 @@ private inline fun checkMaxEmitSize(size: Int, parameterName: () -> String) {
         val n = parameterName()
         throw IllegalArgumentException("$n must be less than 256")
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun negativeEncodingSizeException(outSize: Number): EncodingSizeException {
+    return EncodingSizeException("Calculated output of Size[$outSize] was negative")
 }
