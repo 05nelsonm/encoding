@@ -15,11 +15,6 @@ workflow run on the [GitHub Actions][url-actions] tab of the repository.
   ./gradlew jvmBenchmark
   ```
 
-- Run Js:
-  ```shell
-  ./gradlew jsBenchmark
-  ```
-
 - Run WasmJs:
   ```shell
   ./gradlew wasmJsBenchmark

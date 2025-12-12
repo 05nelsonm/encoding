@@ -807,6 +807,6 @@ private inline fun checkMaxEmitSize(size: Int, parameterName: () -> String) {
 }
 
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun negativeEncodingSizeException(outSize: Number): EncodingSizeException {
+private inline fun negativeEncodingSizeException(outSize: Number): EncodingSizeException {
     return EncodingSizeException("Calculated output of Size[$outSize] was negative")
 }
