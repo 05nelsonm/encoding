@@ -1246,6 +1246,36 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         )
 
         /**
+         * TODO: Remove. See https://github.com/05nelsonm/encoding/issues/225
+         * @suppress
+         * */
+        @JvmStatic
+        @Throws(EncodingException::class)
+        @Deprecated(
+            message = "Will be removed upon 2.6.0 release",
+            replaceWith = ReplaceWith("decodeBuffered(false, decoder, action)")
+        )
+        public inline fun CharSequence.decodeBuffered(
+            decoder: Decoder<*>,
+            noinline action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBuffered(throwOnOverflow = false, DEFAULT_BUFFER_SIZE, decoder, action)
+
+        /**
+         * TODO: Remove. See https://github.com/05nelsonm/encoding/issues/225
+         * @suppress
+         * */
+        @JvmStatic
+        @Throws(CancellationException::class, EncodingException::class)
+        @Deprecated(
+            message = "Will be removed upon 2.6.0 release",
+            replaceWith = ReplaceWith("decodeBufferedAsync(false, decoder, action)")
+        )
+        public suspend inline fun CharSequence.decodeBufferedAsync(
+            decoder: Decoder<*>,
+            noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBufferedAsync(throwOnOverflow = false, DEFAULT_BUFFER_SIZE, decoder, action)
+
+        /**
          * DEPRECATED since `2.3.0`
          * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
          *   an invalid character or sequence.
