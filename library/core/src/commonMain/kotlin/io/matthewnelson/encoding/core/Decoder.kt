@@ -863,7 +863,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *     val d = SHA256()
          *     "SGVsbG8gV29ybGQh"
          *         .toCharArray()
-         *         .decodeBuffered(false, 1024, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, 1024, d::update)
          *     // ...
          *
          * **NOTE:** The [Decoder] implementation must be compatible with version `2.6.0+`
@@ -1205,12 +1205,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
