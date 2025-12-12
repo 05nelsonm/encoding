@@ -17,6 +17,13 @@
 
 package io.matthewnelson.encoding.core.internal
 
+import io.matthewnelson.encoding.core.EncoderDecoder
+import io.matthewnelson.encoding.core.EncodingException
+
+internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
+    return EncodingException("$this is closed")
+}
+
 internal inline fun Char.isSpaceOrNewLine(): Boolean {
     return when(this) {
         '\n', '\r', ' ', '\t' -> true

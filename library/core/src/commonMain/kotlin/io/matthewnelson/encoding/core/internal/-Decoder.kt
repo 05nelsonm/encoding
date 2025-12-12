@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("LocalVariableName", "NOTHING_TO_INLINE")
+@file:Suppress("LocalVariableName")
 
 package io.matthewnelson.encoding.core.internal
 
@@ -25,8 +25,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.math.min
 
-private const val MAX_ENCODE_OUT_SIZE: Long = Int.MAX_VALUE.toLong()
-
 @Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
 internal inline fun <C: Config> Decoder<C>.decode(
@@ -36,7 +34,8 @@ internal inline fun <C: Config> Decoder<C>.decode(
     contract { callsInPlace(_get, InvocationKind.UNKNOWN) }
     val maxDecodeSize = config.decodeOutMaxSizeOrFail(input)
     val a = ByteArray(maxDecodeSize)
-    val len = decode(maxDecodeSizeArray = a, input.size, _get)
+    @Suppress("DEPRECATION")
+    val len = decodeTo(maxDecodeSizeArray = a, input.size, _get)
     if (len == maxDecodeSize) return a
     val copy = a.copyOf(len)
     if (config.backFillBuffers) {
@@ -45,42 +44,12 @@ internal inline fun <C: Config> Decoder<C>.decode(
     return copy
 }
 
-@Throws(EncodingException::class)
-@OptIn(ExperimentalContracts::class)
-internal inline fun <C: Config> Decoder<C>.decode(
-    maxDecodeSizeArray: ByteArray,
-    inputSize: Int,
-    _get: (i: Int) -> Char,
-): Int {
-    contract { callsInPlace(_get, InvocationKind.UNKNOWN) }
-    if (inputSize == 0) return 0
-
-    var i = 0
-    try {
-        newDecoderFeed(out = { b -> maxDecodeSizeArray[i++] = b }).use { feed ->
-            var j = 0
-            while (j < inputSize) {
-                feed.consume(_get(j++))
-            }
-        }
-    } catch (t: Throwable) {
-        if (config.backFillBuffers) {
-            maxDecodeSizeArray.fill(0, 0, min(maxDecodeSizeArray.size, i))
-        }
-        if (t is IndexOutOfBoundsException && i >= maxDecodeSizeArray.size) {
-            // Something is wrong with the encoder's pre-calculation
-            throw EncodingSizeException("Encoder's pre-calculation of Size[${maxDecodeSizeArray.size}] was incorrect", t)
-        }
-        throw t
-    }
-    return i
-}
-
 @OptIn(ExperimentalContracts::class)
 @Throws(EncodingException::class, IllegalArgumentException::class)
 internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     buf: ByteArray?,
     maxBufSize: Int,
+    throwOnOverflow: Boolean,
     _get: (i: Int) -> Char,
     _input: () -> DecoderInput,
     _action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
@@ -108,18 +77,20 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     val input = _input()
     try {
         config.decodeOutMaxSizeOrFail(input)
-    } catch (_: EncodingSizeException) {
-        // Only ignore EncodingSizeException such that any checks
-        // the implementation has (such as Base32 Crockford) can
-        // fall through and end early.
+    } catch (e: EncodingSizeException) {
+        // Only ignore EncodingSizeException such that any checks the
+        // implementation has (such as Base32 Crockford check symbols)
+        // can fall through and end early.
 
-        -1 // output size exceeded Int.MAX_VALUE
+        if (throwOnOverflow) throw e
+        -1
     }.let { maxDecodeSize ->
         if (maxDecodeSize !in 0..maxBufSize) return@let // Chunk
 
         // Maximum decoded size will be less than or equal to maxBufSize. One-shot it.
         val decoded = buf ?: ByteArray(maxDecodeSize)
-        val len = decode(maxDecodeSizeArray = decoded, input.size, _get)
+        @Suppress("DEPRECATION")
+        val len = decodeTo(maxDecodeSizeArray = decoded, input.size, _get)
         try {
             _action(decoded, 0, len)
         } finally {
@@ -154,38 +125,34 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     return size
 }
 
-/**
- * Fails if the returned [Long] for [Config.encodeOutMaxSize] exceeds [Int.MAX_VALUE].
- * */
+@Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
-@Throws(EncodingSizeException::class)
-internal inline fun <T: Any> Encoder<*>.encodeOutMaxSizeOrFail(
-    size: Int,
-    _block: (maxSize: Int) -> T,
-): T {
-    contract { callsInPlace(_block, InvocationKind.AT_MOST_ONCE) }
+@Deprecated("UNSAFE; do not reference directly. Used by decode/decodeBuffered only.")
+internal inline fun <C: Config> Decoder<C>.decodeTo(
+    maxDecodeSizeArray: ByteArray,
+    inputSize: Int,
+    _get: (i: Int) -> Char,
+): Int {
+    contract { callsInPlace(_get, InvocationKind.UNKNOWN) }
+    if (inputSize == 0) return 0
 
-    val maxSize = config.encodeOutMaxSize(size.toLong())
-    if (maxSize > MAX_ENCODE_OUT_SIZE) {
-        throw Config.outSizeExceedsMaxEncodingSizeException(maxSize, MAX_ENCODE_OUT_SIZE)
+    var i = 0
+    try {
+        newDecoderFeed(out = { b -> maxDecodeSizeArray[i++] = b }).use { feed ->
+            var j = 0
+            while (j < inputSize) {
+                feed.consume(_get(j++))
+            }
+        }
+    } catch (t: Throwable) {
+        if (config.backFillBuffers) {
+            maxDecodeSizeArray.fill(0, 0, min(maxDecodeSizeArray.size, i))
+        }
+        if (t is IndexOutOfBoundsException && i >= maxDecodeSizeArray.size) {
+            // Something is wrong with the encoder's pre-calculation
+            throw EncodingSizeException("Decoder's pre-calculation of Size[${maxDecodeSizeArray.size}] was incorrect", t)
+        }
+        throw t
     }
-
-    return _block(maxSize.toInt())
-}
-
-internal inline fun <C: Config> Encoder<C>.encode(
-    data: ByteArray,
-    out: Encoder.OutFeed,
-) {
-    if (data.isEmpty()) return
-    newEncoderFeed(out).use { feed -> data.forEach { b -> feed.consume(b) } }
-}
-
-internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
-    return EncodingException("$this is closed")
-}
-
-@Suppress("UnusedReceiverParameter")
-internal inline fun Config.calculatedOutputNegativeEncodingSizeException(outSize: Number): EncodingSizeException {
-    return EncodingSizeException("Calculated output of Size[$outSize] was negative")
+    return i
 }
