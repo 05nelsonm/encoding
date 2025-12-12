@@ -1,6 +1,7 @@
 public abstract class io/matthewnelson/encoding/core/Decoder {
 	public static final field Companion Lio/matthewnelson/encoding/core/Decoder$Companion;
 	public synthetic fun <init> (Lio/matthewnelson/encoding/core/EncoderDecoder$Config;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun decodeBuffered (Ljava/lang/CharSequence;ILio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function3;)J
 	public static final fun decodeBuffered (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function3;)J
 	public static final fun decodeBuffered (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZILkotlin/jvm/functions/Function3;)J
 	public static final fun decodeBuffered (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZLkotlin/jvm/functions/Function3;)J
@@ -8,6 +9,7 @@ public abstract class io/matthewnelson/encoding/core/Decoder {
 	public static final fun decodeBuffered ([CLio/matthewnelson/encoding/core/Decoder;ZILkotlin/jvm/functions/Function3;)J
 	public static final fun decodeBuffered ([CLio/matthewnelson/encoding/core/Decoder;ZLkotlin/jvm/functions/Function3;)J
 	public static final fun decodeBuffered ([CLio/matthewnelson/encoding/core/Decoder;Z[BLkotlin/jvm/functions/Function3;)J
+	public static final fun decodeBufferedAsync (Ljava/lang/CharSequence;ILio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun decodeBufferedAsync (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun decodeBufferedAsync (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZILkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun decodeBufferedAsync (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZLkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -27,6 +29,7 @@ public abstract class io/matthewnelson/encoding/core/Decoder {
 }
 
 public final class io/matthewnelson/encoding/core/Decoder$Companion {
+	public final fun decodeBuffered (Ljava/lang/CharSequence;ILio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function3;)J
 	public final fun decodeBuffered (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function3;)J
 	public final fun decodeBuffered (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZILkotlin/jvm/functions/Function3;)J
 	public final fun decodeBuffered (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZLkotlin/jvm/functions/Function3;)J
@@ -34,6 +37,7 @@ public final class io/matthewnelson/encoding/core/Decoder$Companion {
 	public final fun decodeBuffered ([CLio/matthewnelson/encoding/core/Decoder;ZILkotlin/jvm/functions/Function3;)J
 	public final fun decodeBuffered ([CLio/matthewnelson/encoding/core/Decoder;ZLkotlin/jvm/functions/Function3;)J
 	public final fun decodeBuffered ([CLio/matthewnelson/encoding/core/Decoder;Z[BLkotlin/jvm/functions/Function3;)J
+	public final fun decodeBufferedAsync (Ljava/lang/CharSequence;ILio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun decodeBufferedAsync (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;Lkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun decodeBufferedAsync (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZILkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun decodeBufferedAsync (Ljava/lang/CharSequence;Lio/matthewnelson/encoding/core/Decoder;ZLkotlin/jvm/functions/Function4;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

@@ -1265,6 +1265,22 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @suppress
          * */
         @JvmStatic
+        @Throws(EncodingException::class)
+        @Deprecated(
+            message = "Will be removed upon 2.6.0 release",
+            replaceWith = ReplaceWith("decodeBuffered(decoder, false, maxBufSize, action)")
+        )
+        public fun CharSequence.decodeBuffered(
+            maxBufSize: Int,
+            decoder: Decoder<*>,
+            action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBuffered(decoder, false, maxBufSize, action)
+
+        /**
+         * TODO: Remove. See https://github.com/05nelsonm/encoding/issues/225
+         * @suppress
+         * */
+        @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
         @Deprecated(
             message = "Will be removed upon 2.6.0 release",
@@ -1274,6 +1290,22 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
             decoder: Decoder<*>,
             noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decodeBufferedAsync(decoder, false, DEFAULT_BUFFER_SIZE, action)
+
+        /**
+         * TODO: Remove. See https://github.com/05nelsonm/encoding/issues/225
+         * @suppress
+         * */
+        @JvmStatic
+        @Throws(CancellationException::class, EncodingException::class)
+        @Deprecated(
+            message = "Will be removed upon 2.6.0 release",
+            replaceWith = ReplaceWith("decodeBufferedAsync(decoder, false, maxBufSize, action)")
+        )
+        public suspend fun CharSequence.decodeBufferedAsync(
+            maxBufSize: Int,
+            decoder: Decoder<*>,
+            action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
+        ): Long = decodeBufferedAsync(decoder, false, maxBufSize, action)
 
         /**
          * DEPRECATED since `2.3.0`
