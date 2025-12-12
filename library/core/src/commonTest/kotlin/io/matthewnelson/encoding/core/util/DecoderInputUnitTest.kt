@@ -136,6 +136,4 @@ class DecoderInputUnitTest {
         @Suppress("DEPRECATION_ERROR")
         config.decodeOutMaxSizeOrFail(DecoderInput(validInput))
     }
-
-
 }

@@ -22,6 +22,8 @@ import io.matthewnelson.encoding.core.Decoder
 
 class TestEncoderDecoder(
     config: TestConfig,
+    private val encoderConsume: Encoder.OutFeed.(input: Byte) -> Unit = { output(Char.MAX_VALUE) },
+    private val decoderConsume: Decoder.OutFeed.(input: Char) -> Unit = { output(Byte.MAX_VALUE) },
     private val encoderDoFinal: ((Encoder<TestConfig>.Feed) -> Unit)? = null,
     private val decoderDoFinal: ((Decoder<TestConfig>.Feed) -> Unit)? = null,
 ): EncoderDecoder<TestConfig>(config) {
@@ -33,7 +35,9 @@ class TestEncoderDecoder(
 
     inner class DecoderFeed(out: Decoder.OutFeed): Decoder<TestConfig>.Feed(_out = out) {
         fun getOut(): Decoder.OutFeed = _out
-        override fun consumeProtected(input: Char) { _out.output(Byte.MAX_VALUE) }
+        override fun consumeProtected(input: Char) {
+            decoderConsume(_out, input)
+        }
         override fun doFinalProtected() {
             decoderDoFinal?.invoke(this) ?: _out.output(Byte.MIN_VALUE)
         }
@@ -41,7 +45,9 @@ class TestEncoderDecoder(
 
     inner class EncoderFeed(out: Encoder.OutFeed): Encoder<TestConfig>.Feed(_out = out) {
         fun getOut(): Encoder.OutFeed = _out
-        override fun consumeProtected(input: Byte) { _out.output(Char.MAX_VALUE) }
+        override fun consumeProtected(input: Byte) {
+            encoderConsume(_out, input)
+        }
         override fun doFinalProtected() {
             encoderDoFinal?.invoke(this) ?: _out.output(Char.MIN_VALUE)
         }
