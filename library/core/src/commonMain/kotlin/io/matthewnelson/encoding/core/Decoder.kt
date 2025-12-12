@@ -316,7 +316,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *
          *     "/path/to/file.txt".toFile().openWrite(excl = null).use { stream ->
          *         val n = "Some long string"
-         *             .decodeBuffered(false, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, stream::write)
          *         println("Wrote $n UTF-8 bytes to file.txt")
          *     }
          *
@@ -324,7 +324,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *
          *     val d = SHA256()
          *     "SGVsbG8gV29ybGQh"
-         *         .decodeBuffered(false, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, d::update)
          *     // ...
          *
          * **NOTE:** The [Decoder] implementation must be compatible with version `2.6.0+`
@@ -335,10 +335,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -357,10 +357,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public inline fun CharSequence.decodeBuffered(
-            throwOnOverflow: Boolean,
             decoder: Decoder<*>,
+            throwOnOverflow: Boolean,
             noinline action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBuffered(throwOnOverflow, DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBuffered(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
          * Decode a [CharSequence] using a maximum array size of [maxBufSize].
@@ -382,7 +382,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *
          *     "/path/to/file.txt".toFile().openWrite(excl = null).use { stream ->
          *         val n = "Some string"
-         *             .decodeBuffered(false, 1024, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, 1024, stream::write)
          *         println("Wrote $n UTF-8 bytes to file.txt")
          *     }
          *
@@ -390,7 +390,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *
          *     val d = SHA256()
          *     "SGVsbG8gV29ybGQh"
-         *         .decodeBuffered(false, 1024, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, 1024, d::update)
          *     // ...
          *
          * **NOTE:** The [Decoder] implementation must be compatible with version `2.6.0+`
@@ -401,12 +401,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -427,9 +427,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharSequence.decodeBuffered(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             maxBufSize: Int,
-            decoder: Decoder<*>,
             action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = null,
@@ -463,9 +463,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *     "/path/to/file.txt".toFile().openWrite(excl = null).use { stream ->
          *         val buf = ByteArray(DEFAULT_BUFFER_SIZE)
          *         var n = "Some string"
-         *             .decodeBuffered(false, buf, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, buf, stream::write)
          *         n += "Some other string"
-         *             .decodeBuffered(false, buf, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, buf, stream::write)
          *         println("Wrote $n UTF-8 bytes to file.txt")
          *     }
          *
@@ -474,9 +474,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *     val d = SHA256()
          *     val buf = ByteArray(DEFAULT_BUFFER_SIZE)
          *     "SGVsbG8gV29ybGQh"
-         *         .decodeBuffered(false, buf, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, buf, d::update)
          *     "SGVsbG8gV29ybGQh"
-         *         .decodeBuffered(false, buf, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, buf, d::update)
          *     // ...
          *
          * **NOTE:** The [Decoder] implementation must be compatible with version `2.6.0+`
@@ -487,12 +487,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -513,9 +513,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharSequence.decodeBuffered(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             buf: ByteArray,
-            decoder: Decoder<*>,
             action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = buf,
@@ -550,8 +550,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *             .useAsync { stream ->
          *                 val text = "Some long string"
          *                 val n = text.decodeBufferedAsync(
-         *                     false,
          *                     UTF8,
+         *                     false,
          *                     stream::writeAsync,
          *                 )
          *                 println("Wrote $n UTF-8 bytes to file.txt")
@@ -566,10 +566,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
@@ -589,10 +589,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
         public suspend inline fun CharSequence.decodeBufferedAsync(
-            throwOnOverflow: Boolean,
             decoder: Decoder<*>,
+            throwOnOverflow: Boolean,
             noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBufferedAsync(throwOnOverflow, DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBufferedAsync(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
          * Decode a [CharSequence] using a maximum array size of [maxBufSize].
@@ -618,9 +618,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *             .useAsync { stream ->
          *                 val text = "Some long string"
          *                 val n = text.decodeBufferedAsync(
+         *                     UTF8,
          *                     false,
          *                     1024,
-         *                     UTF8,
          *                     stream::writeAsync,
          *                 )
          *                 println("Wrote $n UTF-8 bytes to file.txt")
@@ -635,12 +635,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
@@ -662,9 +662,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
         public suspend fun CharSequence.decodeBufferedAsync(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             maxBufSize: Int,
-            decoder: Decoder<*>,
             action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = null,
@@ -702,15 +702,15 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *                 val text = "Some long string"
          *                 val buf = ByteArray(DEFAULT_BUFFER_SIZE)
          *                 var n = text.decodeBufferedAsync(
+         *                     UTF8,
          *                     false,
          *                     buf,
-         *                     UTF8,
          *                     stream::writeAsync,
          *                 )
          *                 n += text.decodeBufferedAsync(
+         *                     UTF8,
          *                     false,
          *                     buf,
-         *                     UTF8,
          *                     stream::writeAsync,
          *                 )
          *                 println("Wrote $n UTF-8 bytes to file.txt")
@@ -725,12 +725,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
@@ -752,9 +752,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
         public suspend fun CharSequence.decodeBufferedAsync(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             buf: ByteArray,
-            decoder: Decoder<*>,
             action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = buf,
@@ -786,7 +786,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *     "/path/to/file.txt".toFile().openWrite(excl = null).use { stream ->
          *         val n = "Some long string"
          *             .toCharArray()
-         *             .decodeBuffered(false, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, stream::write)
          *         println("Wrote $n UTF-8 bytes to file.txt")
          *     }
          *
@@ -795,7 +795,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *     val d = SHA256()
          *     "SGVsbG8gV29ybGQh"
          *         .toCharArray()
-         *         .decodeBuffered(false, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, d::update)
          *     // ...
          *
          * **NOTE:** The [Decoder] implementation must be compatible with version `2.6.0+`
@@ -806,10 +806,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -828,10 +828,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public inline fun CharArray.decodeBuffered(
-            throwOnOverflow: Boolean,
             decoder: Decoder<*>,
+            throwOnOverflow: Boolean,
             noinline action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBuffered(throwOnOverflow, DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBuffered(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
          * Decode a [CharArray] using a maximum array size of [maxBufSize].
@@ -854,7 +854,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *     "/path/to/file.txt".toFile().openWrite(excl = null).use { stream ->
          *         val n = "Some string"
          *             .toCharArray()
-         *             .decodeBuffered(false, 1024, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, 1024, stream::write)
          *         println("Wrote $n UTF-8 bytes to file.txt")
          *     }
          *
@@ -874,12 +874,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -900,9 +900,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharArray.decodeBuffered(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             maxBufSize: Int,
-            decoder: Decoder<*>,
             action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = null,
@@ -937,10 +937,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *         val buf = ByteArray(DEFAULT_BUFFER_SIZE)
          *         var n = "Some string"
          *             .toCharArray()
-         *             .decodeBuffered(false, buf, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, buf, stream::write)
          *         n += "Some other string"
          *             .toCharArray()
-         *             .decodeBuffered(false, buf, UTF8, stream::write)
+         *             .decodeBuffered(UTF8, false, buf, stream::write)
          *         println("Wrote $n UTF-8 bytes to file.txt")
          *     }
          *
@@ -950,10 +950,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *     val buf = ByteArray(DEFAULT_BUFFER_SIZE)
          *     "SGVsbG8gV29ybGQh"
          *         .toCharArray()
-         *         .decodeBuffered(false, buf, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, buf, d::update)
          *     "SGVsbG8gV29ybGQh"
          *         .toCharArray()
-         *         .decodeBuffered(false, buf, Base64.Default, d::update)
+         *         .decodeBuffered(Base64.Default, false, buf, d::update)
          *     // ...
          *
          * **NOTE:** The [Decoder] implementation must be compatible with version `2.6.0+`
@@ -964,12 +964,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -990,9 +990,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(EncodingException::class)
         public fun CharArray.decodeBuffered(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             buf: ByteArray,
-            decoder: Decoder<*>,
             action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = buf,
@@ -1028,8 +1028,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *                 val chars = "Some long string"
          *                     .toCharArray()
          *                 val n = chars.decodeBufferedAsync(
-         *                     false,
          *                     UTF8,
+         *                     false,
          *                     stream::writeAsync,
          *                 )
          *                 println("Wrote $n UTF-8 bytes to file.txt")
@@ -1044,10 +1044,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
@@ -1067,10 +1067,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
         public suspend inline fun CharArray.decodeBufferedAsync(
-            throwOnOverflow: Boolean,
             decoder: Decoder<*>,
+            throwOnOverflow: Boolean,
             noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBufferedAsync(throwOnOverflow, DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBufferedAsync(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
          * Decode a [CharArray] using a maximum array size of [maxBufSize].
@@ -1097,9 +1097,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *                 val chars = "Some long string"
          *                     .toCharArray()
          *                 val n = chars.decodeBufferedAsync(
+         *                     UTF8,
          *                     false,
          *                     1024,
-         *                     UTF8,
          *                     stream::writeAsync,
          *                 )
          *                 println("Wrote $n UTF-8 bytes to file.txt")
@@ -1114,12 +1114,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * library that have not updated yet may fail when using them with [decodeBuffered]
          * and [decodeBufferedAsync] APIs.
          *
+         * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be swallowed and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
-         * @param [decoder] The [Decoder] to use.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
@@ -1141,9 +1141,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
         public suspend fun CharArray.decodeBufferedAsync(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             maxBufSize: Int,
-            decoder: Decoder<*>,
             action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = null,
@@ -1182,15 +1182,15 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *                     .toCharArray()
          *                 val buf = ByteArray(DEFAULT_BUFFER_SIZE)
          *                 var n = chars.decodeBufferedAsync(
+         *                     UTF8,
          *                     false,
          *                     buf,
-         *                     UTF8,
          *                     stream::writeAsync,
          *                 )
          *                 n += chars.decodeBufferedAsync(
+         *                     UTF8,
          *                     false,
          *                     buf,
-         *                     UTF8,
          *                     stream::writeAsync,
          *                 )
          *                 println("Wrote $n UTF-8 bytes to file.txt")
@@ -1232,9 +1232,9 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @JvmStatic
         @Throws(CancellationException::class, EncodingException::class)
         public suspend fun CharArray.decodeBufferedAsync(
+            decoder: Decoder<*>,
             throwOnOverflow: Boolean,
             buf: ByteArray,
-            decoder: Decoder<*>,
             action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
         ): Long = decoder.decodeBuffered(
             buf = buf,
@@ -1253,12 +1253,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @Throws(EncodingException::class)
         @Deprecated(
             message = "Will be removed upon 2.6.0 release",
-            replaceWith = ReplaceWith("decodeBuffered(false, decoder, action)")
+            replaceWith = ReplaceWith("decodeBuffered(decoder, false, action)")
         )
         public inline fun CharSequence.decodeBuffered(
             decoder: Decoder<*>,
             noinline action: (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBuffered(throwOnOverflow = false, DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBuffered(decoder, false, DEFAULT_BUFFER_SIZE, action)
 
         /**
          * TODO: Remove. See https://github.com/05nelsonm/encoding/issues/225
@@ -1268,12 +1268,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         @Throws(CancellationException::class, EncodingException::class)
         @Deprecated(
             message = "Will be removed upon 2.6.0 release",
-            replaceWith = ReplaceWith("decodeBufferedAsync(false, decoder, action)")
+            replaceWith = ReplaceWith("decodeBufferedAsync(decoder, false, action)")
         )
         public suspend inline fun CharSequence.decodeBufferedAsync(
             decoder: Decoder<*>,
             noinline action: suspend (buf: ByteArray, offset: Int, len: Int) -> Unit,
-        ): Long = decodeBufferedAsync(throwOnOverflow = false, DEFAULT_BUFFER_SIZE, decoder, action)
+        ): Long = decodeBufferedAsync(decoder, false, DEFAULT_BUFFER_SIZE, action)
 
         /**
          * DEPRECATED since `2.3.0`
