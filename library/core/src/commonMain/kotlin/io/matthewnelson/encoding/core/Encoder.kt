@@ -59,7 +59,7 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
      *     }.use { feed ->
      *         "Hello World!"
      *             .encodeToByteArray()
-     *             .forEach { b -> feed.consume(b) }
+     *             .forEach(feed::consume)
      *     }
      *     println(sb.toString())
      *
