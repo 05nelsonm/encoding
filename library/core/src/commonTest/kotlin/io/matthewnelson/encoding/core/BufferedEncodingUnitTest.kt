@@ -15,28 +15,27 @@
  **/
 package io.matthewnelson.encoding.core
 
-import io.matthewnelson.encoding.core.Decoder.Companion.decodeBuffered
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeBuffered
 import io.matthewnelson.encoding.core.EncoderDecoder.Companion.DEFAULT_BUFFER_SIZE
 import io.matthewnelson.encoding.core.helpers.TestConfig
 import io.matthewnelson.encoding.core.helpers.TestEncoderDecoder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.fail
 
-class DecodeBufferedUnitTest {
+class BufferedEncodingUnitTest {
 
     @Test
-    fun givenBufferSize_whenLessThanOrEqualToConfigMaxDecodeEmit_thenThrowsIllegalArgumentException() {
-        val decoder = TestEncoderDecoder(TestConfig(
-            maxDecodeEmit = 255,
+    fun givenBufferSize_whenLessThanOrEqualToConfigMaxEncodeEmitWithLineBreak_thenThrowsIllegalArgumentException() {
+        val encoder = TestEncoderDecoder(TestConfig(
+            maxEncodeEmit = 255,
             decodeOutInputReturn = { error("Should not make it here") },
         ))
 
         intArrayOf(254, 255).forEach { testSize ->
             assertFailsWith<IllegalArgumentException> {
-                "a".decodeBuffered(
-                    decoder,
+                ByteArray(1).encodeBuffered(
+                    encoder,
                     throwOnOverflow = true,
                     maxBufSize = testSize,
                     action = { _, _, _ -> error("Should not make it here") },
@@ -44,10 +43,10 @@ class DecodeBufferedUnitTest {
             }
 
             assertFailsWith<IllegalArgumentException> {
-                "a".decodeBuffered(
-                    decoder,
+                ByteArray(1).encodeBuffered(
+                    encoder,
                     throwOnOverflow = true,
-                    buf = ByteArray(testSize),
+                    buf = CharArray(testSize),
                     action = { _, _, _ -> error("Should not make it here") },
                 )
             }
@@ -55,31 +54,11 @@ class DecodeBufferedUnitTest {
     }
 
     @Test
-    fun givenDecodeInputNonSizeException_whenConfigThrows_thenIsNeverIgnored() {
-        val expected = "Config implementation has some sort of checksum at end of encoding and it did not pass"
-        val decoder = TestEncoderDecoder(TestConfig(
-            decodeOutInputReturn = { throw EncodingException(expected) },
-        ))
-        try {
-            "a".decodeBuffered(decoder, throwOnOverflow = true) { _, _, _ -> error("Should not make it here") }
-            fail()
-        } catch (e: EncodingException) {
-            assertEquals(expected, e.message)
-        }
-        try {
-            "a".decodeBuffered(decoder, throwOnOverflow = false) { _, _, _ -> error("Should not make it here") }
-            fail()
-        } catch (e: EncodingException) {
-            assertEquals(expected, e.message)
-        }
-    }
-
-    @Test
-    fun givenDecodeInputSizeException_whenThrowOnOverflowTrue_thenEncodingSizeExceptionIsRethrown() {
-        val decoder = TestEncoderDecoder(TestConfig())
+    fun givenEncodeOutMaxSizeException_whenThrowOnOverflowTrue_thenEncodingSizeExceptionIsRethrown() {
+        val encoder = TestEncoderDecoder(TestConfig())
         assertFailsWith<EncodingSizeException> {
-            "a".decodeBuffered(
-                decoder,
+            ByteArray(1).encodeBuffered(
+                encoder,
                 throwOnOverflow = true,
                 action = { _, _, _ -> error("Should not make it here") },
             )
@@ -87,50 +66,42 @@ class DecodeBufferedUnitTest {
     }
 
     @Test
-    fun givenDecodeInputSizeException_whenThrowOnOverflowFalse_thenEncodingSizeExceptionIsIgnored() {
-        var invocationInput = 0
-        val decoder = TestEncoderDecoder(TestConfig(
-            decodeOutInputReturn = { invocationInput++; -1 },
+    fun givenEncodeOutMaxSizeException_whenThrowOnOverflowFalse_thenEncodingSizeExceptionIsIgnored() {
+        var invocationEncodeOut = 0
+        val encoder = TestEncoderDecoder(TestConfig(
+            encodeOutReturn = { invocationEncodeOut++; -1 },
         ))
 
         var invocationAction = 0
-        object : CharSequence {
-            override val length: Int = DEFAULT_BUFFER_SIZE + 50
-            override fun get(index: Int): Char = 'a'
-            override fun subSequence(startIndex: Int, endIndex: Int): CharSequence { error("unused") }
-        }.decodeBuffered(
-            decoder,
+        ByteArray(DEFAULT_BUFFER_SIZE + 50).encodeBuffered(
+            encoder,
             throwOnOverflow = false,
             action = { buf, _, _ ->
                 invocationAction++
                 assertEquals(DEFAULT_BUFFER_SIZE, buf.size)
             },
         )
-        assertEquals(1, invocationInput)
+        assertEquals(1, invocationEncodeOut)
         // Confirms that it went into stream decoding b/c was flushed 2 times
         assertEquals(2, invocationAction)
     }
 
     @Test
-    fun givenDecodeInputSize_whenLessThanBufferSize_thenOneShotDecodesWithSmallerSize() {
+    fun givenInputSize_whenLessThanBufferSize_thenOneShotEncodesWithSmallerSize() {
         val expectedSize = 2
         val expectedInputSize = DEFAULT_BUFFER_SIZE + 50
         var invocationConsume = 0
-        val decoder = TestEncoderDecoder(
+        val encoder = TestEncoderDecoder(
             config = TestConfig(
-                decodeOutInputReturn = { expectedSize },
+                encodeOutReturn = { expectedSize.toLong() },
             ),
-            decoderConsume = { invocationConsume++ },
-            decoderDoFinal = { (it as TestEncoderDecoder.DecoderFeed).getOut().output(1) },
+            encoderConsume = { invocationConsume++ },
+            encoderDoFinal = { (it as TestEncoderDecoder.EncoderFeed).getOut().output(Char.MAX_VALUE) },
         )
 
         var invocationAction = 0
-        val result = object : CharSequence {
-            override val length: Int = expectedInputSize
-            override fun get(index: Int): Char = 'a'
-            override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = error("unused")
-        }.decodeBuffered(
-            decoder,
+        val result = ByteArray(expectedInputSize).encodeBuffered(
+            encoder,
             throwOnOverflow = true,
             maxBufSize = expectedSize * 10,
             action = { buf, _, len ->
@@ -145,18 +116,14 @@ class DecodeBufferedUnitTest {
     }
 
     @Test
-    fun givenConfigMaxDecodeEmit_whenDecodingBuffered_thenFlushesIfLastIndexWouldBeExceeded() {
-        val decoder = TestEncoderDecoder(TestConfig(maxDecodeEmit = 50))
+    fun givenConfigMaxEncodeEmitWithLineBreak_whenEncodingBuffered_thenFlushesIfLastIndexWouldBeExceeded() {
+        val encoder = TestEncoderDecoder(TestConfig(maxEncodeEmit = 50))
 
         var invocationAction = 0
         var invocationActionAssertion = 0
         var actualLen = 0
-        val result = object : CharSequence {
-            override val length: Int = DEFAULT_BUFFER_SIZE
-            override fun get(index: Int): Char = 'a'
-            override fun subSequence(startIndex: Int, endIndex: Int): CharSequence = error("unused")
-        }.decodeBuffered(
-            decoder,
+        val result = ByteArray(DEFAULT_BUFFER_SIZE).encodeBuffered(
+            encoder,
             throwOnOverflow = false,
             maxBufSize = DEFAULT_BUFFER_SIZE,
             action = { buf, _, len ->
@@ -165,11 +132,11 @@ class DecodeBufferedUnitTest {
                 assertEquals(DEFAULT_BUFFER_SIZE, buf.size)
                 if (invocationAction == 1) {
                     invocationActionAssertion++
-                    assertEquals(DEFAULT_BUFFER_SIZE - decoder.config.maxDecodeEmit + 1, len, "invocationAction[$invocationAction]")
+                    assertEquals(DEFAULT_BUFFER_SIZE - encoder.config.maxEncodeEmitWithLineBreak + 1, len, "invocationAction[$invocationAction]")
                 }
                 if (invocationAction == 2) {
                     invocationActionAssertion++
-                    assertEquals(decoder.config.maxDecodeEmit, len)
+                    assertEquals(encoder.config.maxEncodeEmitWithLineBreak, len)
                 }
             },
         )
