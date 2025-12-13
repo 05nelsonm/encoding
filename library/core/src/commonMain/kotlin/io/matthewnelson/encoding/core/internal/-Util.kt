@@ -19,6 +19,9 @@ package io.matthewnelson.encoding.core.internal
 
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 internal inline fun EncoderDecoder.Feed<*>.closedException(): EncodingException {
     return EncodingException("$this is closed")
@@ -47,4 +50,24 @@ internal inline fun StringBuilder.commonWipe(len: Int, finalLen: Int): StringBui
     setLength(newLen)
     setLength(finalLen)
     return this
+}
+
+@Throws(IndexOutOfBoundsException::class)
+internal inline fun ByteArray.checkBounds(offset: Int, len: Int) { size.checkBounds(offset, len) { "size" } }
+@Throws(IndexOutOfBoundsException::class)
+internal inline fun CharArray.checkBounds(offset: Int, len: Int) { size.checkBounds(offset, len) { "size" } }
+@Throws(IndexOutOfBoundsException::class)
+internal inline fun CharSequence.checkBounds(offset: Int, len: Int) { length.checkBounds(offset, len) { "length" } }
+
+@OptIn(ExperimentalContracts::class)
+@Throws(IndexOutOfBoundsException::class)
+internal inline fun Int.checkBounds(offset: Int, len: Int, paramName: () -> String) {
+    contract { callsInPlace(paramName, InvocationKind.AT_MOST_ONCE) }
+    val size = this
+    if (offset < 0) throw IndexOutOfBoundsException("offset[$offset] < 0")
+    if (len < 0) throw IndexOutOfBoundsException("len[$len] < 0")
+    if (offset > size - len) {
+        val parameter = paramName()
+        throw IndexOutOfBoundsException("offset[$offset] > $parameter[$size] - len[$len]")
+    }
 }
