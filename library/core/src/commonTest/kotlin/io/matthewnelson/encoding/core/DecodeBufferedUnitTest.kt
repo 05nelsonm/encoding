@@ -30,7 +30,7 @@ class DecodeBufferedUnitTest {
     fun givenBufferSize_whenLessThanOrEqualToConfigMaxDecodeEmit_thenThrowsIllegalArgumentException() {
         val decoder = TestEncoderDecoder(TestConfig(
             maxDecodeEmit = 255,
-            decodeInputReturn = { error("Should not make it here") }
+            decodeOutInputReturn = { error("Should not make it here") }
         ))
 
         intArrayOf(254, 255).forEach { testSize ->
@@ -58,7 +58,7 @@ class DecodeBufferedUnitTest {
     fun givenDecodeInputNonSizeException_whenConfigThrows_thenIsNeverIgnored() {
         val expected = "Config implementation has some sort of checksum at end of encoding and it did not pass"
         val decoder = TestEncoderDecoder(TestConfig(
-            decodeInputReturn = { throw EncodingException(expected) }
+            decodeOutInputReturn = { throw EncodingException(expected) }
         ))
         try {
             "a".decodeBuffered(decoder, throwOnOverflow = true) { _, _, _ -> error("Should not make it here") }
@@ -90,7 +90,7 @@ class DecodeBufferedUnitTest {
     fun givenDecodeInputSizeException_whenThrowOnOverflowFalse_thenEncodingSizeExceptionIsIgnored() {
         var invocationInput = 0
         val decoder = TestEncoderDecoder(TestConfig(
-            decodeInputReturn = { invocationInput++; -1 },
+            decodeOutInputReturn = { invocationInput++; -1 },
         ))
 
         var invocationAction = 0
@@ -118,7 +118,7 @@ class DecodeBufferedUnitTest {
         var invocationConsume = 0
         val decoder = TestEncoderDecoder(
             config = TestConfig(
-                decodeInputReturn = { expectedSize },
+                decodeOutInputReturn = { expectedSize },
             ),
             decoderConsume = { invocationConsume++ },
             decoderDoFinal = { (it as TestEncoderDecoder.DecoderFeed).getOut().output(1) },

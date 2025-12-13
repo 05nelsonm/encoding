@@ -267,7 +267,7 @@ class EncoderDecoderFeedUnitTest {
             config = TestConfig(
                 isLenient = true,
                 lineBreakInterval = 2,
-                encodeReturn = { it }
+                encodeOutReturn = { it }
             )
         )
         
@@ -301,7 +301,7 @@ class EncoderDecoderFeedUnitTest {
             config = TestConfig(
                 isLenient = true,
                 lineBreakInterval = 2,
-                encodeReturn = { it }
+                encodeOutReturn = { it }
             )
         )
 

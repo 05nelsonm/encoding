@@ -26,25 +26,6 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-private const val MAX_ENCODE_OUT_SIZE: Long = Int.MAX_VALUE.toLong()
-
-/**
- * Fails if the returned [Long] for [Config.encodeOutMaxSize] exceeds [Int.MAX_VALUE].
- * */
-@OptIn(ExperimentalContracts::class)
-@Throws(EncodingSizeException::class)
-internal inline fun <T: Any> Encoder<*>.encodeOutMaxSizeOrFail(
-    size: Int,
-    _block: (maxSize: Int) -> T,
-): T {
-    contract { callsInPlace(_block, InvocationKind.AT_MOST_ONCE) }
-    val maxSize = config.encodeOutMaxSize(size.toLong())
-    if (maxSize > MAX_ENCODE_OUT_SIZE) {
-        throw Config.outSizeExceedsMaxEncodingSizeException(maxSize, MAX_ENCODE_OUT_SIZE)
-    }
-    return _block(maxSize.toInt())
-}
-
 @OptIn(ExperimentalContracts::class)
 internal inline fun <C: Config> Encoder<C>.encode(
     data: ByteArray,
@@ -89,7 +70,7 @@ internal inline fun <C: Config> Encoder<C>.encodeBuffered(
     if (data.isEmpty()) return 0L
 
     try {
-        encodeOutMaxSizeOrFail(data.size) { it }
+        config.encodeOutMaxSize(data.size)
     } catch (e: EncodingSizeException) {
         if (throwOnOverflow) throw e
         -1

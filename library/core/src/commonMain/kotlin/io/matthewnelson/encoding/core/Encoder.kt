@@ -21,7 +21,6 @@ import io.matthewnelson.encoding.core.EncoderDecoder.Companion.DEFAULT_BUFFER_SI
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
 import io.matthewnelson.encoding.core.internal.encodeBuffered
-import io.matthewnelson.encoding.core.internal.encodeOutMaxSizeOrFail
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import io.matthewnelson.encoding.core.util.wipe
 import kotlin.jvm.JvmField
@@ -35,6 +34,8 @@ import kotlin.jvm.JvmSynthetic
  * @see [EncoderDecoder]
  * @see [encodeToString]
  * @see [encodeToCharArray]
+ * @see [encodeBuffered]
+ * @see [encodeBufferedAsync]
  * @see [Encoder.Feed]
  * */
 public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(config) {
@@ -214,6 +215,8 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * @return The [String] of encoded data.
          *
          * @see [encodeToCharArray]
+         * @see [encodeBuffered]
+         * @see [encodeBufferedAsync]
          *
          * @throws [EncodingException] If the [encoder] is configured to reject something,
          *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
@@ -221,15 +224,14 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * */
         @JvmStatic
         public fun ByteArray.encodeToString(encoder: Encoder<*>): String {
-            return encoder.encodeOutMaxSizeOrFail(size) { maxSize ->
-                val sb = StringBuilder(maxSize)
-                encoder.encode(this, _outFeed = { OutFeed(sb::append) })
-                val result = sb.toString()
-                if (encoder.config.backFillBuffers) {
-                    sb.wipe()
-                }
-                result
+            val maxSize = encoder.config.encodeOutMaxSize(size)
+            val sb = StringBuilder(maxSize)
+            encoder.encode(this, _outFeed = { OutFeed(sb::append) })
+            val result = sb.toString()
+            if (encoder.config.backFillBuffers) {
+                sb.wipe()
             }
+            return result
         }
 
         /**
@@ -240,24 +242,25 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * @return The [CharArray] of encoded data.
          *
          * @see [encodeToString]
+         * @see [encodeBuffered]
+         * @see [encodeBufferedAsync]
          *
          * @throws [EncodingException] If the [encoder] is configured to reject something,
          *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
-         * @throws [EncodingSizeException] If the encoded output exceeds [Int.MAX_VALUE].
+         * @throws [EncodingSizeException] If the encoded output would exceed [Int.MAX_VALUE].
          * */
         @JvmStatic
         public fun ByteArray.encodeToCharArray(encoder: Encoder<*>): CharArray {
-            return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
-                var i = 0
-                val a = CharArray(maxSize)
-                encoder.encode(this, _outFeed = { OutFeed { c -> a[i++] = c } })
-                if (i == maxSize) return@block a
-                val copy = a.copyOf(i)
-                if (encoder.config.backFillBuffers) {
-                    a.fill('\u0000', 0, i)
-                }
-                copy
+            val maxSize = encoder.config.encodeOutMaxSize(size)
+            var i = 0
+            val a = CharArray(maxSize)
+            encoder.encode(this, _outFeed = { OutFeed { c -> a[i++] = c } })
+            if (i == maxSize) return a
+            val copy = a.copyOf(i)
+            if (encoder.config.backFillBuffers) {
+                a.fill('\u0000', 0, i)
             }
+            return copy
         }
 
         /**
@@ -361,17 +364,16 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             level = DeprecationLevel.ERROR,
         )
         public fun ByteArray.encodeToByteArray(encoder: Encoder<*>): ByteArray {
-            return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
-                var i = 0
-                val a = ByteArray(maxSize)
-                encoder.encode(this, _outFeed = { OutFeed { char -> a[i++] = char.code.toByte() } })
-                if (i == maxSize) return@block a
-                val copy = a.copyOf(i)
-                if (encoder.config.backFillBuffers) {
-                    a.fill(0, 0, i)
-                }
-                copy
+            val maxSize = encoder.config.encodeOutMaxSize(size)
+            var i = 0
+            val a = ByteArray(maxSize)
+            encoder.encode(this, _outFeed = { OutFeed { char -> a[i++] = char.code.toByte() } })
+            if (i == maxSize) return a
+            val copy = a.copyOf(i)
+            if (encoder.config.backFillBuffers) {
+                a.fill(0, 0, i)
             }
+            return copy
         }
     }
 }

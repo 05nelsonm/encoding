@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("RedundantVisibilityModifier", "RemoveRedundantQualifierName")
+@file:Suppress("NOTHING_TO_INLINE", "RedundantVisibilityModifier", "RemoveRedundantQualifierName")
 
 package io.matthewnelson.encoding.core
 
@@ -74,9 +74,9 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
 
         /**
          * If and only if [Encoder.newEncoderFeed] wraps the [Encoder.OutFeed] passed to it with a
-         * [LineBreakOutFeed], will this setting be used for [LineBreakOutFeed.resetOnFlush]. If
-         * `true` and [Encoder.newEncoderFeed] wrapped its provided [Encoder.OutFeed], then
-         * [LineBreakOutFeed.reset] will be called after every invocation of [Encoder.Feed.flush].
+         * [LineBreakOutFeed], will this setting then be used for the [LineBreakOutFeed.resetOnFlush]
+         * parameter. If `true` and [Encoder.newEncoderFeed] wrapped its provided [Encoder.OutFeed],
+         * then [LineBreakOutFeed.reset] will be called after every invocation of [Encoder.Feed.flush].
          *
          * @see [LineBreakOutFeed]
          * @see [Encoder.newEncoderFeed]
@@ -105,7 +105,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          * For example, `Base16` decoding will emit `1` byte for every `2` characters of input,
          * so its maximum emission is `1`. `Base32` decoding will emit `5` bytes for every `8`
          * characters of input, so its maximum emission is `5`. `UTF8` "decoding" (i.e. text to
-         * UTF-8 byte transformations) can emit `4` bytes, but also depending on the size of the
+         * `UTF-8` byte transformations) can emit `4` bytes, but also depending on the size of the
          * replacement byte sequence being used, can emit more; its maximum emission size needs
          * a calculation, such as `(replacementStrategy.size * 2).coerceAtLeast(4)`.
          *
@@ -124,7 +124,7 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
          *
          * For example, `Base16` encoding will emit `2` characters for every `1` byte of input,
          * so its maximum emission is `2`. `Base32` encoding will emit `8` characters for every
-         * `5` bytes of input, so its maximum emission is `8`. `UTF8` "encoding" (i.e. UTF-8 byte
+         * `5` bytes of input, so its maximum emission is `8`. `UTF8` "encoding" (i.e. `UTF-8` byte
          * to text transformations) can emit `2` characters, but also depending on the strategy
          * being used for replacement sequences, can emit more; its maximum emission size needs
          * some logic, such as `if (replacementStrategy == ReplacementStrategy.THROW) 2 else 4`.
@@ -147,21 +147,38 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public val maxEncodeEmit: Int
 
         /**
-         * TODO
+         * The maximum number of characters that the [Encoder.Feed] produced by [Encoder.newEncoderFeed]
+         * can potentially emit on a single invocation of [Encoder.Feed.consume], [Encoder.Feed.flush],
+         * or [Encoder.Feed.doFinal]. This is the calculated result from [Companion.calculateMaxEncodeEmit]
+         * using [maxEncodeEmit] and [lineBreakInterval] as arguments.
+         *
+         * **NOTE:** This value is not applicable if passing as an argument to [Encoder.newEncoderFeed]
+         * your own [LineBreakOutFeed] that has been instantiated with a value than [lineBreakInterval].
+         * Passing a custom stack of [Encoder.OutFeed] which would inflate the encoded output size must
+         * be calculated using [maxEncodeEmit] and [calculateMaxEncodeEmit].
+         *
+         * Value will be between `1` and `510` (inclusive), or `-1` which indicates that the
+         * [EncoderDecoder.Config] implementation has not updated to the new constructor introduced
+         * in version `2.6.0`, and as such is unable to be used with `:core` module APIs dependent
+         * on this value (such as [Encoder.encodeBuffered] and [Encoder.encodeBufferedAsync]).
+         *
+         * @see [maxEncodeEmit]
+         * @see [Companion.calculateMaxEncodeEmit]
          * */
         @JvmField
         public val maxEncodeEmitWithLineBreak: Int
 
         /**
          * When the functions [Encoder.encodeToString], [Encoder.encodeToCharArray],
-         * [Decoder.decodeToByteArray], [Decoder.decodeBuffered], and [Decoder.decodeBufferedAsync]
-         * are utilized, they may allocate an appropriate medium (a buffer) to store encoded/decoded
-         * data (e.g. a [StringBuilder], [CharArray], or [ByteArray]). Depending on the underlying
-         * encoding/decoding operation, such as an array over-allocation due to [encodeOutMaxSize]
-         * or [decodeOutMaxSize], those initially allocated buffers may not be returned as the
-         * function's result. Prior versions of this library always back-filled them with `0` or the
-         * null character `\u0000`, but that can be computationally expensive for large datasets and
-         * potentially unnecessary if data is known to not be sensitive in nature.
+         * [Encoder.encodeBuffered], [Encoder.encodeBufferedAsync] [Decoder.decodeToByteArray],
+         * [Decoder.decodeBuffered], and [Decoder.decodeBufferedAsync] are utilized, they may
+         * allocate an appropriate medium (a buffer) to store encoded/decoded data (e.g. a
+         * [StringBuilder], [CharArray], or [ByteArray]). Depending on the underlying operation,
+         * such as an array over-allocation due to [encodeOutMaxSize] or [decodeOutMaxSize],
+         * those initially allocated buffers may not be returned as the function's result. Prior
+         * versions of this library always back-filled them with `0` or the null character
+         * `\u0000`, but that can be computationally expensive for large datasets and potentially
+         * unnecessary if data is known to not be sensitive in nature.
          *
          * If `true`, any non-result buffer allocations are back-filled before being de-referenced
          * by function return. If `false`, back-filling is skipped.
@@ -197,13 +214,14 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         }
 
         /**
-         * Pre-calculates and returns the maximum size of the output, after encoding would occur,
-         * based off the [Config] options set for the implementation. Most implementations (such
-         * as `Base16`, `Base32`, and `Base64`) are able to return an exact size whereby no
-         * post-encoding resize is necessary, while others (such as `UTF-8`) return a maximum
-         * and may require a post-encoding resize.
+         * Pre-calculates and returns the maximum size of the output, after encoding
+         * would occur, based off the [Config] options set for the implementation.
+         * Most implementations, such as `Base16`, `Base32`, and `Base64`, are able
+         * to return an exact size whereby no post-encoding resize is necessary, while
+         * others, such as `UTF-8` byte to text transformations, return a maximum and
+         * may require a post-encoding resize.
          *
-         * Will always return a value greater than or equal to `0`.
+         * Will always return a value greater than or equal to `0L`.
          *
          * @param [unEncodedSize] The size of the data which is to be encoded.
          *
@@ -214,13 +232,14 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
         public fun encodeOutMaxSize(unEncodedSize: Long): Long = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
 
         /**
-         * Pre-calculates and returns the maximum size of the output, after encoding would occur,
-         * based off the [Config] options set for the implementation and expressed [lineBreakInterval].
-         * Most implementations (such as `Base16`, `Base32`, and `Base64`) are able to return an
-         * exact size whereby no post-encoding resize is necessary, while others (such as `UTF-8`)
-         * return a maximum and may require a post-encoding resize.
+         * Pre-calculates and returns the maximum size of the output, after encoding
+         * would occur, based off the [Config] options set for the implementation.
+         * Most implementations, such as `Base16`, `Base32`, and `Base64`, are able
+         * to return an exact size whereby no post-encoding resize is necessary, while
+         * others, such as `UTF-8` byte to text transformations, return a maximum and
+         * may require a post-encoding resize.
          *
-         * Will always return a value greater than or equal to `0`.
+         * Will always return a value greater than or equal to `0L`.
          *
          * @param [unEncodedSize] The size of the data which is to be encoded.
          * @param [lineBreakInterval] The interval at which new line characters are to be inserted.
@@ -261,6 +280,47 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
             }
 
             return outSize
+        }
+
+        /**
+         * Pre-calculates and returns the maximum size of the output, after encoding
+         * would occur, based off the [Config] options set for the implementation.
+         * Most implementations, such as `Base16`, `Base32`, and `Base64`, are able
+         * to return an exact size whereby no post-encoding resize is necessary, while
+         * others, such as `UTF-8` byte to text transformations, return a maximum and
+         * may require a post-encoding resize.
+         *
+         * Will always return a value greater than or equal to `0`.
+         *
+         * @param [unEncodedSize] The size of the data which is to be encoded.
+         *
+         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or the calculated
+         *   size exceeds [Int.MAX_VALUE].
+         * */
+        @Throws(EncodingSizeException::class)
+        public inline fun encodeOutMaxSize(unEncodedSize: Int): Int = encodeOutMaxSize(unEncodedSize, lineBreakInterval)
+
+        /**
+         * Pre-calculates and returns the maximum size of the output, after encoding
+         * would occur, based off the [Config] options set for the implementation.
+         * Most implementations, such as `Base16`, `Base32`, and `Base64`, are able
+         * to return an exact size whereby no post-encoding resize is necessary, while
+         * others, such as `UTF-8` byte to text transformations, return a maximum and
+         * may require a post-encoding resize.
+         *
+         * Will always return a value greater than or equal to `0`.
+         *
+         * @param [unEncodedSize] The size of the data which is to be encoded.
+         * @param [lineBreakInterval] The interval at which new line characters are to be inserted.
+         *
+         * @throws [EncodingSizeException] If [unEncodedSize] is negative, or the calculated
+         *   size exceeds [Int.MAX_VALUE].
+         * */
+        @Throws(EncodingSizeException::class)
+        public fun encodeOutMaxSize(unEncodedSize: Int, lineBreakInterval: Byte): Int {
+            val outSize = encodeOutMaxSize(unEncodedSize.toLong(), lineBreakInterval)
+            if (outSize <= Int.MAX_VALUE) return outSize.toInt()
+            throw outSizeExceedsMaxEncodingSizeException(unEncodedSize, Int.MAX_VALUE)
         }
 
         /**
@@ -789,7 +849,6 @@ public abstract class EncoderDecoder<C: EncoderDecoder.Config>(config: C): Encod
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 private inline fun lineBreakIntervalOrZero(isLenient: Boolean?, interval: Byte): Byte {
     return if (isLenient != false && interval > 0) interval else 0
 }
@@ -808,7 +867,6 @@ private inline fun checkMaxEmitSize(size: Int, parameterName: () -> String) {
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 private inline fun negativeEncodingSizeException(outSize: Number): EncodingSizeException {
     return EncodingSizeException("Calculated output of Size[$outSize] was negative")
 }

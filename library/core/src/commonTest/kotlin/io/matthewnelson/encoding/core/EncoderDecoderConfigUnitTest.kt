@@ -20,13 +20,13 @@ import io.matthewnelson.encoding.core.util.DecoderInput
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class EncoderDecoderConfigUnitTest {
 
     @Test
-    fun givenConfig_whenUsingDeprecatedConstructor_thenVersion260DefaultsAreUsed() {
-        // This also checks for any initialization logic that could throw exception
+    fun givenConfig_whenUsingDeprecatedConstructor_thenVersion260ParametersAreNegative1() {
         @Suppress("DEPRECATION")
         val config = object : EncoderDecoder.Config(isLenient = null, lineBreakInterval = 0, paddingChar = null) {
             override fun encodeOutSizeProtected(unEncodedSize: Long): Long = error("")
@@ -42,85 +42,90 @@ class EncoderDecoderConfigUnitTest {
     @Test
     fun givenConfig_whenNegativeValuesSent_thenThrowsEncodingSizeExceptionBeforePassingToProtected() {
         val config = TestConfig(
-            encodeReturn = {
-                error("Should not make it here")
-            },
-            decodeInputReturn = {
-                error("Should not make it here")
-            },
-            decodeReturn = {
-                error("Should not make it here")
-            }
+            encodeOutReturn = { error("Should not make it here") },
+            decodeOutInputReturn = { error("Should not make it here") },
+            decodeOutReturn = { error("Should not make it here") },
         )
 
         assertFailsWith<EncodingSizeException> { config.decodeOutMaxSize(-1L) }
         assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(-1L) }
+        assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(-1) }
     }
 
     @Test
     fun givenConfig_whenNegativeValuesReturned_thenThrowsEncodingSizeException() {
         val config = TestConfig(
-            encodeReturn = { -1L },
-            decodeInputReturn = { -1 },
-            decodeReturn = { -1L },
+            encodeOutReturn = { -1L },
+            decodeOutInputReturn = { -1 },
+            decodeOutReturn = { -1L },
             maxDecodeEmit = 255,
             maxEncodeEmit = 255,
         )
 
         assertFailsWith<EncodingSizeException> { config.decodeOutMaxSize(5) }
         assertFailsWith<EncodingSizeException> { config.decodeOutMaxSizeOrFail(DecoderInput("a")) }
+        assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(5L) }
         assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(5) }
-        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 0) }
-        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = -1) }
-        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 256) }
-        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = 0) }
-        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = -1) }
-        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = 256) }
     }
 
     @Test
     fun givenConfig_whenPositiveValuesSentAndReturned_thenDoseNotThrowException() {
         val config = TestConfig(
-            encodeReturn = { 1L },
-            decodeInputReturn = { 1 },
-            decodeReturn = { 1L },
+            encodeOutReturn = { 1L },
+            decodeOutInputReturn = { 1 },
+            decodeOutReturn = { 1L },
         )
 
         config.decodeOutMaxSizeOrFail(DecoderInput("a"))
         config.decodeOutMaxSize(1L)
         config.encodeOutMaxSize(1L)
+        config.encodeOutMaxSize(1)
     }
 
     @Test
     fun givenConfig_whenZeroPassed_thenReturns0Immediately() {
         val config = TestConfig(
-            encodeReturn = { fail("Should not make it here") },
-            decodeInputReturn = { fail("Should not make it here") },
-            decodeReturn = { fail("Should not make it here") },
+            encodeOutReturn = { fail("Should not make it here") },
+            decodeOutInputReturn = { fail("Should not make it here") },
+            decodeOutReturn = { fail("Should not make it here") },
         )
 
-        config.decodeOutMaxSizeOrFail(DecoderInput(""))
-        config.decodeOutMaxSize(0L)
-        config.encodeOutMaxSize(0L)
+        assertEquals(0, config.decodeOutMaxSizeOrFail(DecoderInput("")))
+        assertEquals(0L, config.decodeOutMaxSize(0L))
+        assertEquals(0, config.encodeOutMaxSize(0))
+        assertEquals(0L, config.encodeOutMaxSize(0L))
     }
 
     @Test
     fun givenConfig_whenZeroReturned_thenDoesNotThrowException() {
         val config = TestConfig(
-            encodeReturn = { 0L },
-            decodeInputReturn = { 0 },
-            decodeReturn = { 0L },
+            encodeOutReturn = { 0L },
+            decodeOutInputReturn = { 0 },
+            decodeOutReturn = { 0L },
         )
 
-        config.decodeOutMaxSizeOrFail(DecoderInput("a"))
-        config.decodeOutMaxSize(1L)
-        config.encodeOutMaxSize(1L)
+        assertEquals(0, config.decodeOutMaxSizeOrFail(DecoderInput("a")))
+        assertEquals(0L, config.decodeOutMaxSize(1L))
+        assertEquals(0, config.encodeOutMaxSize(1))
+        assertEquals(0L, config.encodeOutMaxSize(1L))
+    }
+
+    @Test
+    fun givenConfig_whenEncodeOutMaxSizeLongReturnsGreaterThanIntMax_thenEncodeOutMaxSizeIntThrowsEncodingSizeException() {
+        val config = TestConfig(
+            encodeOutReturn = { Int.MAX_VALUE.toLong() },
+        )
+        try {
+            config.encodeOutMaxSize(1, lineBreakInterval = 64)
+            fail()
+        } catch (e: EncodingSizeException) {
+            assertTrue(e.message.contains("maximum output Size[${Int.MAX_VALUE}]"))
+        }
     }
 
     @Test
     fun givenLineBreakInterval_whenIsLenientFalse_thenIsZero() {
         val config = TestConfig(isLenient = false, lineBreakInterval = 20)
-
         assertEquals(0, config.lineBreakInterval)
     }
 
@@ -128,7 +133,6 @@ class EncoderDecoderConfigUnitTest {
     fun givenLineBreakInterval_whenIsLenientTrue_thenIsExpected() {
         val expected: Byte = 20
         val config = TestConfig(isLenient = true, lineBreakInterval = expected)
-
         assertEquals(expected, config.lineBreakInterval)
     }
 
@@ -136,40 +140,41 @@ class EncoderDecoderConfigUnitTest {
     fun givenLineBreakInterval_whenIsLenientNull_thenIsExpected() {
         val expected: Byte = 20
         val config = TestConfig(isLenient = null, lineBreakInterval = expected)
-
         assertEquals(expected, config.lineBreakInterval)
     }
 
     @Test
     fun givenConfig_whenLineBreakIntervalNegative_thenIsZero() {
         val config = TestConfig(isLenient = true, lineBreakInterval = -5)
-
         assertEquals(0, config.lineBreakInterval)
     }
 
     @Test
-    fun givenConfig_whenLineBreakIntervalExpressed_thenIncreasesEncodeOutSize() {
-        val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeReturn = { it })
+    fun givenConfig_whenLineBreakIntervalExpressed_thenCalculatesInflatedSize() {
+        val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeOutReturn = { it })
         listOf(
-            Pair(5L, 5L),
-            Pair(10L, 10L),
-            Pair(21L, 20L),
-            Pair(32L, 30L),
-            Pair(43L, 40L),
-        ).forEach { (expected, actual) ->
+            Pair(0L, 5L),
+            Pair(0L, 10L),
+            Pair(1L, 20L),
+            Pair(2L, 30L),
+            Pair(3L, 40L),
+            Pair(399_999_999L, 4_000_000_000L),
+            Pair(400_000_000L, 4_000_000_019L),
+        ).forEach { (expectedInflation, actual) ->
+            val expected = actual + expectedInflation
             assertEquals(expected, config.encodeOutMaxSize(actual))
         }
     }
 
     @Test
     fun givenLineBreakInterval_whenSizeIncreaseWouldExceedMaxValue_thenThrowsEncodingSizeException() {
-        val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeReturn = { it })
+        val config = TestConfig(isLenient = true, lineBreakInterval = 10, encodeOutReturn = { it })
         assertFailsWith<EncodingSizeException> { config.encodeOutMaxSize(Long.MAX_VALUE - 10L) }
     }
 
     @Test
-    fun givenConfig_whenLineBreakIntervalZero_thenDoesNotAffectEncodeOutSize() {
-        val config = TestConfig(encodeReturn = { it })
+    fun givenConfig_whenLineBreakIntervalZero_thenDoesNotInflateEncodeOutSize() {
+        val config = TestConfig(encodeOutReturn = { it })
         assertEquals(0, config.lineBreakInterval)
 
         listOf(
@@ -181,6 +186,16 @@ class EncoderDecoderConfigUnitTest {
         ).forEach { size ->
             assertEquals(size, config.encodeOutMaxSize(size))
         }
+    }
+
+    @Test
+    fun givenConfig_whenInvalidMaxEmitArguments_thenThrowsIllegalArgumentException() {
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 0) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = -1) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxDecodeEmit = 256) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = 0) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = -1) }
+        assertFailsWith<IllegalArgumentException> { TestConfig(maxEncodeEmit = 256) }
     }
 
     @Test

@@ -33,7 +33,7 @@ class DecoderInputUnitTest {
 
         val config = TestConfig(
             paddingChar = pad,
-            decodeInputReturn = { encodedSize ->
+            decodeOutInputReturn = { encodedSize ->
                 assertEquals(expectedEncodedSize, encodedSize)
                 expectedOutSize // return
             }
@@ -50,7 +50,7 @@ class DecoderInputUnitTest {
 
         val config = TestConfig(
             isLenient = false,
-            decodeInputReturn = { validSize ->
+            decodeOutInputReturn = { validSize ->
                 assertEquals(valid.length, validSize)
                 1 // return some positive value
             }
@@ -83,7 +83,7 @@ class DecoderInputUnitTest {
         val expected = 1
         val config = TestConfig(
             isLenient = true,
-            decodeInputReturn = { expected }
+            decodeOutInputReturn = { expected }
         )
 
         listOf(
@@ -102,7 +102,7 @@ class DecoderInputUnitTest {
         // Include spaces and set isLenient = true (so they are
         // skipped) in order to exercise DecoderInput.get
         val validInput = "D    " as CharSequence
-        val config = TestConfig(isLenient = true, decodeInputReturn = { inputSize ->
+        val config = TestConfig(isLenient = true, decodeOutInputReturn = { inputSize ->
             assertEquals(1, inputSize)
             inputSize// pass
         })
@@ -115,7 +115,7 @@ class DecoderInputUnitTest {
         // Include spaces and set isLenient = true (so they are
         // skipped) in order to exercise DecoderInput.get
         val validInput = CharArray(5) { ' ' }.apply { set(0, 'D') }
-        val config = TestConfig(isLenient = true, decodeInputReturn = { inputSize ->
+        val config = TestConfig(isLenient = true, decodeOutInputReturn = { inputSize ->
             assertEquals(1, inputSize)
             inputSize// pass
         })
@@ -128,7 +128,7 @@ class DecoderInputUnitTest {
         // Include spaces and set isLenient = true (so they are
         // skipped) in order to exercise DecoderInput.get
         val validInput = ByteArray(5) { ' '.code.toByte() }.apply { set(0, 'D'.code.toByte()) }
-        val config = TestConfig(isLenient = true, decodeInputReturn = { inputSize ->
+        val config = TestConfig(isLenient = true, decodeOutInputReturn = { inputSize ->
             assertEquals(1, inputSize)
             inputSize// pass
         })

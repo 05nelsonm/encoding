@@ -62,6 +62,7 @@ abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.mat
         abstract fun toStringAddSettings(): kotlin.collections/Set<io.matthewnelson.encoding.core/EncoderDecoder.Config.Setting> // io.matthewnelson.encoding.core/EncoderDecoder.Config.toStringAddSettings|toStringAddSettings(){}[0]
         final fun decodeOutMaxSize(kotlin/Long): kotlin/Long // io.matthewnelson.encoding.core/EncoderDecoder.Config.decodeOutMaxSize|decodeOutMaxSize(kotlin.Long){}[0]
         final fun decodeOutMaxSizeOrFail(io.matthewnelson.encoding.core.util/DecoderInput): kotlin/Int // io.matthewnelson.encoding.core/EncoderDecoder.Config.decodeOutMaxSizeOrFail|decodeOutMaxSizeOrFail(io.matthewnelson.encoding.core.util.DecoderInput){}[0]
+        final fun encodeOutMaxSize(kotlin/Int, kotlin/Byte): kotlin/Int // io.matthewnelson.encoding.core/EncoderDecoder.Config.encodeOutMaxSize|encodeOutMaxSize(kotlin.Int;kotlin.Byte){}[0]
         final fun encodeOutMaxSize(kotlin/Long): kotlin/Long // io.matthewnelson.encoding.core/EncoderDecoder.Config.encodeOutMaxSize|encodeOutMaxSize(kotlin.Long){}[0]
         final fun encodeOutMaxSize(kotlin/Long, kotlin/Byte): kotlin/Long // io.matthewnelson.encoding.core/EncoderDecoder.Config.encodeOutMaxSize|encodeOutMaxSize(kotlin.Long;kotlin.Byte){}[0]
         final fun encodeOutSize(kotlin/Long): kotlin/Long // io.matthewnelson.encoding.core/EncoderDecoder.Config.encodeOutSize|encodeOutSize(kotlin.Long){}[0]
@@ -69,6 +70,7 @@ abstract class <#A: io.matthewnelson.encoding.core/EncoderDecoder.Config> io.mat
         final fun equals(kotlin/Any?): kotlin/Boolean // io.matthewnelson.encoding.core/EncoderDecoder.Config.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // io.matthewnelson.encoding.core/EncoderDecoder.Config.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // io.matthewnelson.encoding.core/EncoderDecoder.Config.toString|toString(){}[0]
+        final inline fun encodeOutMaxSize(kotlin/Int): kotlin/Int // io.matthewnelson.encoding.core/EncoderDecoder.Config.encodeOutMaxSize|encodeOutMaxSize(kotlin.Int){}[0]
 
         final inner class Setting { // io.matthewnelson.encoding.core/EncoderDecoder.Config.Setting|null[0]
             constructor <init>(kotlin/String, kotlin/Any?) // io.matthewnelson.encoding.core/EncoderDecoder.Config.Setting.<init>|<init>(kotlin.String;kotlin.Any?){}[0]

@@ -27,9 +27,9 @@ class TestConfig public constructor(
     paddingChar: Char? = '=',
     maxDecodeEmit: Int = 1,
     maxEncodeEmit: Int = 1,
-    private val encodeReturn: (unEncodedSize: Long) -> Long = { -1L },
-    private val decodeInputReturn: (encodedSize: Int) -> Int = { -1 },
-    private val decodeReturn: (encodedSize: Long) -> Long = { -1L },
+    private val encodeOutReturn: (unEncodedSize: Long) -> Long = { -1L },
+    private val decodeOutInputReturn: (encodedSize: Int) -> Int = { -1 },
+    private val decodeOutReturn: (encodedSize: Long) -> Long = { -1L },
 ): EncoderDecoder.Config(
     isLenient,
     lineBreakInterval,
@@ -40,13 +40,13 @@ class TestConfig public constructor(
     backFillBuffers = true,
 ) {
     override fun decodeOutMaxSizeProtected(encodedSize: Long): Long {
-        return decodeReturn.invoke(encodedSize)
+        return decodeOutReturn.invoke(encodedSize)
     }
     override fun decodeOutMaxSizeOrFailProtected(encodedSize: Int, input: DecoderInput): Int {
-        return decodeInputReturn.invoke(encodedSize)
+        return decodeOutInputReturn.invoke(encodedSize)
     }
     override fun encodeOutSizeProtected(unEncodedSize: Long): Long {
-        return encodeReturn.invoke(unEncodedSize)
+        return encodeOutReturn.invoke(unEncodedSize)
     }
     override fun toStringAddSettings(): Set<Setting> = emptySet()
 }
