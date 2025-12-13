@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-@file:Suppress("LocalVariableName", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
+@file:Suppress("LocalVariableName", "NOTHING_TO_INLINE", "PropertyName", "RemoveRedundantQualifierName", "RedundantVisibilityModifier")
 
 package io.matthewnelson.encoding.core
 
+import io.matthewnelson.encoding.core.EncoderDecoder.Companion.DEFAULT_BUFFER_SIZE
 import io.matthewnelson.encoding.core.internal.closedException
 import io.matthewnelson.encoding.core.internal.encode
-import io.matthewnelson.encoding.core.internal.encodeOutMaxSizeOrFail
+import io.matthewnelson.encoding.core.internal.encodeBuffered
 import io.matthewnelson.encoding.core.util.LineBreakOutFeed
 import io.matthewnelson.encoding.core.util.wipe
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.jvm.JvmField
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
@@ -33,6 +35,8 @@ import kotlin.jvm.JvmSynthetic
  * @see [EncoderDecoder]
  * @see [encodeToString]
  * @see [encodeToCharArray]
+ * @see [encodeBuffered]
+ * @see [encodeBufferedAsync]
  * @see [Encoder.Feed]
  * */
 public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(config) {
@@ -212,22 +216,24 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * @return The [String] of encoded data.
          *
          * @see [encodeToCharArray]
+         * @see [encodeBuffered]
+         * @see [encodeBufferedAsync]
          *
          * @throws [EncodingException] If the [encoder] is configured to reject something,
          *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
-         * @throws [EncodingSizeException] If the encoded output would exceed [Int.MAX_VALUE].
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an exception (i.e. output would exceed [Int.MAX_VALUE]).
          * */
         @JvmStatic
         public fun ByteArray.encodeToString(encoder: Encoder<*>): String {
-            return encoder.encodeOutMaxSizeOrFail(size) { maxSize ->
-                val sb = StringBuilder(maxSize)
-                encoder.encode(this, _outFeed = { OutFeed(sb::append) })
-                val result = sb.toString()
-                if (encoder.config.backFillBuffers) {
-                    sb.wipe()
-                }
-                result
+            val maxSize = encoder.config.encodeOutMaxSize(size)
+            val sb = StringBuilder(maxSize)
+            encoder.encode(this, _outFeed = { OutFeed(sb::append) })
+            val result = sb.toString()
+            if (encoder.config.backFillBuffers) {
+                sb.wipe()
             }
+            return result
         }
 
         /**
@@ -238,25 +244,389 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * @return The [CharArray] of encoded data.
          *
          * @see [encodeToString]
+         * @see [encodeBuffered]
+         * @see [encodeBufferedAsync]
          *
          * @throws [EncodingException] If the [encoder] is configured to reject something,
          *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
-         * @throws [EncodingSizeException] If the encoded output exceeds [Int.MAX_VALUE].
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an exception (i.e. output would exceed [Int.MAX_VALUE]).
          * */
         @JvmStatic
         public fun ByteArray.encodeToCharArray(encoder: Encoder<*>): CharArray {
-            return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
-                var i = 0
-                val a = CharArray(maxSize)
-                encoder.encode(this, _outFeed = { OutFeed { c -> a[i++] = c } })
-                if (i == maxSize) return@block a
-                val copy = a.copyOf(i)
-                if (encoder.config.backFillBuffers) {
-                    a.fill('\u0000', 0, i)
-                }
-                copy
+            val maxSize = encoder.config.encodeOutMaxSize(size)
+            var i = 0
+            val a = CharArray(maxSize)
+            encoder.encode(this, _outFeed = { OutFeed { c -> a[i++] = c } })
+            if (i == maxSize) return a
+            val copy = a.copyOf(i)
+            if (encoder.config.backFillBuffers) {
+                a.fill('\u0000', 0, i)
             }
+            return copy
         }
+
+        /**
+         * Encode a [ByteArray] using a maximum array size of [DEFAULT_BUFFER_SIZE].
+         * The encoding operation will allocate a single array, streaming encoded
+         * characters to it and flushing to [action] when needed. If the
+         * pre-calculated size returned by [EncoderDecoder.Config.encodeOutMaxSize]
+         * is less than or equal to the [DEFAULT_BUFFER_SIZE], then an array of that
+         * size will be allocated and [action] is only invoked once (single-shot
+         * encoding). In the event that [EncoderDecoder.Config.encodeOutMaxSize]
+         * throws its [EncodingSizeException] (i.e. encoding would exceed [Int.MAX_VALUE])
+         * while [throwOnOverflow] is `false`, or its return value is greater than
+         * [DEFAULT_BUFFER_SIZE], then this function will always stream encode to
+         * a buffer while flushing to [action] until the encoding operation has
+         * completed.
+         *
+         * **NOTE:** Documented exceptions thrown by this function do not include those
+         * for which [action] may throw.
+         *
+         * **NOTE:** The [Encoder] implementation must be compatible with version `2.6.0+`
+         * APIs and define a [EncoderDecoder.Config.maxEncodeEmit]. If the value is `-1` (i.e.
+         * it has not updated to the new API yet), then this function will fail with an
+         * [EncodingException]. All implementations provided by this library have been updated
+         * to meet the API requirement; only [EncoderDecoder] implementations external to this
+         * library that have not updated yet may fail when using them with [encodeBuffered]
+         * and [encodeBufferedAsync] APIs.
+         *
+         * @param [encoder] The [Encoder] to use.
+         * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
+         *   is ignored and stream encoding to the buffer will continue.
+         * @param [action] The function to flush the buffer to; a destination to "write"
+         *   encoded data to whereby `len` is the number of characters within `buf`, starting
+         *   at index `offset`, to "write".
+         *
+         * @return The number of encoded characters.
+         *
+         * @see [encodeToString]
+         * @see [encodeToCharArray]
+         * @see [encodeBufferedAsync]
+         *
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
+         *   [throwOnOverflow] is `true`.
+         * */
+        @JvmStatic
+        public inline fun ByteArray.encodeBuffered(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            noinline action: (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encodeBuffered(encoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
+
+        /**
+         * Encode a [ByteArray] using a maximum array size of [maxBufSize].
+         * The encoding operation will allocate a single array, streaming encoded
+         * characters to it and flushing to [action] when needed. If the
+         * pre-calculated size returned by [EncoderDecoder.Config.encodeOutMaxSize]
+         * is less than or equal to the [maxBufSize], then an array of that
+         * size will be allocated and [action] is only invoked once (single-shot
+         * encoding). In the event that [EncoderDecoder.Config.encodeOutMaxSize]
+         * throws its [EncodingSizeException] (i.e. encoding would exceed [Int.MAX_VALUE])
+         * while [throwOnOverflow] is `false`, or its return value is greater than
+         * [maxBufSize], then this function will always stream encode to
+         * a buffer while flushing to [action] until the encoding operation has
+         * completed.
+         *
+         * **NOTE:** Documented exceptions thrown by this function do not include those
+         * for which [action] may throw.
+         *
+         * **NOTE:** The [Encoder] implementation must be compatible with version `2.6.0+`
+         * APIs and define a [EncoderDecoder.Config.maxEncodeEmit]. If the value is `-1` (i.e.
+         * it has not updated to the new API yet), then this function will fail with an
+         * [EncodingException]. All implementations provided by this library have been updated
+         * to meet the API requirement; only [EncoderDecoder] implementations external to this
+         * library that have not updated yet may fail when using them with [encodeBuffered]
+         * and [encodeBufferedAsync] APIs.
+         *
+         * @param [encoder] The [Encoder] to use.
+         * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
+         *   is ignored and stream encoding to the buffer will continue.
+         * @param [maxBufSize] The maximum size array this function will allocate. Must
+         *   be greater than [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * @param [action] The function to flush the buffer to; a destination to "write"
+         *   encoded data to whereby `len` is the number of characters within `buf`, starting
+         *   at index `offset`, to "write".
+         *
+         * @return The number of encoded characters.
+         *
+         * @see [encodeToString]
+         * @see [encodeToCharArray]
+         * @see [encodeBufferedAsync]
+         *
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
+         *   [throwOnOverflow] is `true`.
+         * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
+         *   [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * */
+        @JvmStatic
+        public fun ByteArray.encodeBuffered(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            maxBufSize: Int,
+            action: (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = null,
+            maxBufSize = maxBufSize,
+            throwOnOverflow = throwOnOverflow,
+            _action = action,
+        )
+
+        /**
+         * Encode a [ByteArray] using the provided pre-allocated, reusable, [buf] array.
+         * The encoding operation will stream encoded characters to the provided array,
+         * flushing to [action] when needed. If the pre-calculated size returned by
+         * [EncoderDecoder.Config.encodeOutMaxSize] is less than or equal to the [buf]
+         * size, then [action] is only invoked once (single-shot encoding). In the event
+         * that [EncoderDecoder.Config.encodeOutMaxSize] throws its [EncodingSizeException]
+         * (i.e. encoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow] is `false`,
+         * or its return value is greater than [buf] size, then this function will always
+         * stream encode to a buffer while flushing to [action] until the encoding operation
+         * has completed.
+         *
+         * **NOTE:** Documented exceptions thrown by this function do not include those
+         * for which [action] may throw.
+         *
+         * **NOTE:** If [EncoderDecoder.Config.backFillBuffers] is `true`, provided [buf]
+         * array will be back-filled with null character `\u0000` upon encoding completion.
+         *
+         * **NOTE:** The [Encoder] implementation must be compatible with version `2.6.0+`
+         * APIs and define a [EncoderDecoder.Config.maxEncodeEmit]. If the value is `-1` (i.e.
+         * it has not updated to the new API yet), then this function will fail with an
+         * [EncodingException]. All implementations provided by this library have been updated
+         * to meet the API requirement; only [EncoderDecoder] implementations external to this
+         * library that have not updated yet may fail when using them with [encodeBuffered]
+         * and [encodeBufferedAsync] APIs.
+         *
+         * @param [encoder] The [Encoder] to use.
+         * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
+         *   is ignored and stream encoding to the buffer will continue.
+         * @param [buf] The pre-allocated array to use as the buffer. Its size must
+         *   be greater than [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * @param [action] The function to flush the buffer to; a destination to "write"
+         *   encoded data to whereby `len` is the number of characters within `buf`, starting
+         *   at index `offset`, to "write".
+         *
+         * @return The number of encoded characters.
+         *
+         * @see [encodeToString]
+         * @see [encodeToCharArray]
+         * @see [encodeBufferedAsync]
+         *
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
+         *   [throwOnOverflow] is `true`.
+         * @throws [IllegalArgumentException] If [buf] size is less than or equal to
+         *   [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * */
+        @JvmStatic
+        public fun ByteArray.encodeBuffered(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            buf: CharArray,
+            action: (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = buf,
+            maxBufSize = buf.size,
+            throwOnOverflow = throwOnOverflow,
+            _action = action,
+        )
+
+        /**
+         * Encode a [ByteArray] using a maximum array size of [DEFAULT_BUFFER_SIZE].
+         * The encoding operation will allocate a single array, streaming encoded
+         * characters to it and flushing to [action] when needed. If the
+         * pre-calculated size returned by [EncoderDecoder.Config.encodeOutMaxSize]
+         * is less than or equal to the [DEFAULT_BUFFER_SIZE], then an array of that
+         * size will be allocated and [action] is only invoked once (single-shot
+         * encoding). In the event that [EncoderDecoder.Config.encodeOutMaxSize]
+         * throws its [EncodingSizeException] (i.e. encoding would exceed [Int.MAX_VALUE])
+         * while [throwOnOverflow] is `false`, or its return value is greater than
+         * [DEFAULT_BUFFER_SIZE], then this function will always stream encode to
+         * a buffer while flushing to [action] until the encoding operation has
+         * completed.
+         *
+         * **NOTE:** Documented exceptions thrown by this function do not include those
+         * for which [action] may throw.
+         *
+         * **NOTE:** The [Encoder] implementation must be compatible with version `2.6.0+`
+         * APIs and define a [EncoderDecoder.Config.maxEncodeEmit]. If the value is `-1` (i.e.
+         * it has not updated to the new API yet), then this function will fail with an
+         * [EncodingException]. All implementations provided by this library have been updated
+         * to meet the API requirement; only [EncoderDecoder] implementations external to this
+         * library that have not updated yet may fail when using them with [encodeBuffered]
+         * and [encodeBufferedAsync] APIs.
+         *
+         * @param [encoder] The [Encoder] to use.
+         * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
+         *   is ignored and stream encoding to the buffer will continue.
+         * @param [action] The suspend function to flush the buffer to; a destination to
+         *   "write" encoded data to whereby `len` is the number of characters within `buf`,
+         *   starting at index `offset`, to "write".
+         *
+         * @return The number of encoded characters.
+         *
+         * @see [encodeToString]
+         * @see [encodeToCharArray]
+         * @see [encodeBuffered]
+         *
+         * @throws [CancellationException]
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
+         *   [throwOnOverflow] is `true`.
+         *   and [throwOnOverflow] is `true`.
+         * */
+        @JvmStatic
+        public suspend inline fun ByteArray.encodeBufferedAsync(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            noinline action: suspend (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encodeBufferedAsync(encoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
+
+        /**
+         * Encode a [ByteArray] using a maximum array size of [maxBufSize].
+         * The encoding operation will allocate a single array, streaming encoded
+         * characters to it and flushing to [action] when needed. If the
+         * pre-calculated size returned by [EncoderDecoder.Config.encodeOutMaxSize]
+         * is less than or equal to the [maxBufSize], then an array of that
+         * size will be allocated and [action] is only invoked once (single-shot
+         * encoding). In the event that [EncoderDecoder.Config.encodeOutMaxSize]
+         * throws its [EncodingSizeException] (i.e. encoding would exceed [Int.MAX_VALUE])
+         * while [throwOnOverflow] is `false`, or its return value is greater than
+         * [maxBufSize], then this function will always stream encode to
+         * a buffer while flushing to [action] until the encoding operation has
+         * completed.
+         *
+         * **NOTE:** Documented exceptions thrown by this function do not include those
+         * for which [action] may throw.
+         *
+         * **NOTE:** The [Encoder] implementation must be compatible with version `2.6.0+`
+         * APIs and define a [EncoderDecoder.Config.maxEncodeEmit]. If the value is `-1` (i.e.
+         * it has not updated to the new API yet), then this function will fail with an
+         * [EncodingException]. All implementations provided by this library have been updated
+         * to meet the API requirement; only [EncoderDecoder] implementations external to this
+         * library that have not updated yet may fail when using them with [encodeBuffered]
+         * and [encodeBufferedAsync] APIs.
+         *
+         * @param [encoder] The [Encoder] to use.
+         * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
+         *   is ignored and stream encoding to the buffer will continue.
+         * @param [maxBufSize] The maximum size array this function will allocate. Must
+         *   be greater than [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * @param [action] The suspend function to flush the buffer to; a destination to
+         *   "write" encoded data to whereby `len` is the number of characters within `buf`,
+         *   starting at index `offset`, to "write".
+         *
+         * @return The number of encoded characters.
+         *
+         * @see [encodeToString]
+         * @see [encodeToCharArray]
+         * @see [encodeBuffered]
+         *
+         * @throws [CancellationException]
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
+         *   [throwOnOverflow] is `true`.
+         * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
+         *   [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * */
+        @JvmStatic
+        public suspend fun ByteArray.encodeBufferedAsync(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            maxBufSize: Int,
+            action: suspend (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = null,
+            maxBufSize = maxBufSize,
+            throwOnOverflow = throwOnOverflow,
+            _action = { buf, offset, len -> action(buf, offset, len) },
+        )
+
+        /**
+         * Encode a [ByteArray] using the provided pre-allocated, reusable, [buf] array.
+         * The encoding operation will stream encoded characters to the provided array,
+         * flushing to [action] when needed. If the pre-calculated size returned by
+         * [EncoderDecoder.Config.encodeOutMaxSize] is less than or equal to the [buf]
+         * size, then [action] is only invoked once (single-shot encoding). In the event
+         * that [EncoderDecoder.Config.encodeOutMaxSize] throws its [EncodingSizeException]
+         * (i.e. encoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow] is `false`,
+         * or its return value is greater than [buf] size, then this function will always
+         * stream encode to a buffer while flushing to [action] until the encoding operation
+         * has completed.
+         *
+         * **NOTE:** Documented exceptions thrown by this function do not include those
+         * for which [action] may throw.
+         *
+         * **NOTE:** If [EncoderDecoder.Config.backFillBuffers] is `true`, provided [buf]
+         * array will be back-filled with null character `\u0000` upon encoding completion.
+         *
+         * **NOTE:** The [Encoder] implementation must be compatible with version `2.6.0+`
+         * APIs and define a [EncoderDecoder.Config.maxEncodeEmit]. If the value is `-1` (i.e.
+         * it has not updated to the new API yet), then this function will fail with an
+         * [EncodingException]. All implementations provided by this library have been updated
+         * to meet the API requirement; only [EncoderDecoder] implementations external to this
+         * library that have not updated yet may fail when using them with [encodeBuffered]
+         * and [encodeBufferedAsync] APIs.
+         *
+         * @param [encoder] The [Encoder] to use.
+         * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.encodeOutMaxSize]
+         *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
+         *   is ignored and stream encoding to the buffer will continue.
+         * @param [buf] The pre-allocated array to use as the buffer. Its size must
+         *   be greater than [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * @param [action] The suspend function to flush the buffer to; a destination to
+         *   "write" encoded data to whereby `len` is the number of characters within `buf`,
+         *   starting at index `offset`, to "write".
+         *
+         * @return The number of encoded characters.
+         *
+         * @see [encodeToString]
+         * @see [encodeToCharArray]
+         * @see [encodeBuffered]
+         *
+         * @throws [CancellationException]
+         * @throws [EncodingException] If the [encoder] is configured to reject something,
+         *   such as `UTF-8` byte to text transformations rejecting invalid byte sequences.
+         * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
+         *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
+         *   [throwOnOverflow] is `true`.
+         * @throws [IllegalArgumentException] If [buf] size is less than or equal to
+         *   [EncoderDecoder.Config.maxEncodeEmitWithLineBreak].
+         * */
+        @JvmStatic
+        public suspend fun ByteArray.encodeBufferedAsync(
+            encoder: Encoder<*>,
+            throwOnOverflow: Boolean,
+            buf: CharArray,
+            action: suspend (buf: CharArray, offset: Int, len: Int) -> Unit,
+        ): Long = encoder.encodeBuffered(
+            data = this,
+            buf = buf,
+            maxBufSize = buf.size,
+            throwOnOverflow = throwOnOverflow,
+            _action = { _buf, offset, len -> action(_buf, offset, len) },
+        )
 
         /**
          * DEPRECATED since `2.3.0`
@@ -271,17 +641,16 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
             level = DeprecationLevel.ERROR,
         )
         public fun ByteArray.encodeToByteArray(encoder: Encoder<*>): ByteArray {
-            return encoder.encodeOutMaxSizeOrFail(size) block@ { maxSize ->
-                var i = 0
-                val a = ByteArray(maxSize)
-                encoder.encode(this, _outFeed = { OutFeed { char -> a[i++] = char.code.toByte() } })
-                if (i == maxSize) return@block a
-                val copy = a.copyOf(i)
-                if (encoder.config.backFillBuffers) {
-                    a.fill(0, 0, i)
-                }
-                copy
+            val maxSize = encoder.config.encodeOutMaxSize(size)
+            var i = 0
+            val a = ByteArray(maxSize)
+            encoder.encode(this, _outFeed = { OutFeed { char -> a[i++] = char.code.toByte() } })
+            if (i == maxSize) return a
+            val copy = a.copyOf(i)
+            if (encoder.config.backFillBuffers) {
+                a.fill(0, 0, i)
             }
+            return copy
         }
     }
 }
