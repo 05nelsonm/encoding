@@ -297,11 +297,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         }
 
         /**
-         * Decode a [CharSequence] using a maximum array size of [DEFAULT_BUFFER_SIZE].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharSequence] using a buffer of maximum size [DEFAULT_BUFFER_SIZE].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [DEFAULT_BUFFER_SIZE], then an array of that size will be allocated
+         * equal to the [DEFAULT_BUFFER_SIZE], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -363,11 +364,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         ): Long = decodeBuffered(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
-         * Decode a [CharSequence] using a maximum array size of [maxBufSize].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharSequence] using a buffer of maximum size [maxBufSize].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [maxBufSize], then an array of that size will be allocated
+         * equal to the [maxBufSize], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -405,7 +407,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be ignored and stream decoding to the buffer will continue.
-         * @param [maxBufSize] The maximum size array this function will allocate. Must
+         * @param [maxBufSize] The maximum size buffer this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
@@ -442,7 +444,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
         /**
          * Decode a [CharSequence] using the provided pre-allocated, reusable, [buf] array.
-         * The decoding operation will stream decoded bytes to the provided array, flushing
+         *
+         * The decoding operation will stream decoded bytes to the provided [buf], flushing
          * to [action] when needed. If the pre-calculated size returned by
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or equal to the [buf]
          * size, then [action] is only invoked once (single-shot decoding). In the event that
@@ -527,11 +530,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         )
 
         /**
-         * Decode a [CharSequence] using a maximum array size of [DEFAULT_BUFFER_SIZE].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharSequence] using a buffer of maximum of [DEFAULT_BUFFER_SIZE].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [DEFAULT_BUFFER_SIZE], then an array of that size will be allocated
+         * equal to the [DEFAULT_BUFFER_SIZE], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -595,11 +599,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         ): Long = decodeBufferedAsync(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
-         * Decode a [CharSequence] using a maximum array size of [maxBufSize].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharSequence] using a buffer of maximum size [maxBufSize].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [maxBufSize], then an array of that size will be allocated
+         * equal to the [maxBufSize], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -639,7 +644,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be ignored and stream decoding to the buffer will continue.
-         * @param [maxBufSize] The maximum size array this function will allocate. Must
+         * @param [maxBufSize] The maximum size buffer this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
@@ -677,7 +682,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
         /**
          * Decode a [CharSequence] using the provided pre-allocated, reusable, [buf] array.
-         * The decoding operation will stream decoded bytes to the provided array, flushing
+         *
+         * The decoding operation will stream decoded bytes to the provided [buf], flushing
          * to [action] when needed. If the pre-calculated size returned by
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or equal to the [buf]
          * size, then [action] is only invoked once (single-shot decoding). In the event that
@@ -766,11 +772,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         )
 
         /**
-         * Decode a [CharArray] using a maximum array size of [DEFAULT_BUFFER_SIZE].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharArray] using a buffer of maximum size [DEFAULT_BUFFER_SIZE].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [DEFAULT_BUFFER_SIZE], then an array of that size will be allocated
+         * equal to the [DEFAULT_BUFFER_SIZE], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -834,11 +841,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         ): Long = decodeBuffered(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
-         * Decode a [CharArray] using a maximum array size of [maxBufSize].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharArray] using a buffer of maximum size [maxBufSize].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [maxBufSize], then an array of that size will be allocated
+         * equal to the [maxBufSize], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -878,7 +886,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be ignored and stream decoding to the buffer will continue.
-         * @param [maxBufSize] The maximum size array this function will allocate. Must
+         * @param [maxBufSize] The maximum size buffer this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
@@ -915,7 +923,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
         /**
          * Decode a [CharArray] using the provided pre-allocated, reusable, [buf] array.
-         * The decoding operation will stream decoded bytes to the provided array, flushing
+         *
+         * The decoding operation will stream decoded bytes to the provided [buf], flushing
          * to [action] when needed. If the pre-calculated size returned by
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or equal to the [buf]
          * size, then [action] is only invoked once (single-shot decoding). In the event that
@@ -1004,11 +1013,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         )
 
         /**
-         * Decode a [CharArray] using a maximum array size of [DEFAULT_BUFFER_SIZE].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharArray] using a buffer of maximum size [DEFAULT_BUFFER_SIZE].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [DEFAULT_BUFFER_SIZE], then an array of that size will be allocated
+         * equal to the [DEFAULT_BUFFER_SIZE], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -1073,11 +1083,12 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
         ): Long = decodeBufferedAsync(decoder, throwOnOverflow, DEFAULT_BUFFER_SIZE, action)
 
         /**
-         * Decode a [CharArray] using a maximum array size of [maxBufSize].
-         * The decoding operation will allocate a single array, streaming decoded bytes
+         * Decode a [CharArray] using a buffer of maximum size [maxBufSize].
+         *
+         * The decoding operation will allocate a single buffer, streaming decoded bytes
          * to it and flushing to [action] when needed. If the pre-calculated size
          * returned by [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or
-         * equal to the [maxBufSize], then an array of that size will be allocated
+         * equal to the [maxBufSize], then a buffer of that size will be allocated
          * and [action] is only invoked once (single-shot decoding). In the event that
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] throws its [EncodingSizeException]
          * due to an overflow (i.e. decoding would exceed [Int.MAX_VALUE]) while [throwOnOverflow]
@@ -1118,7 +1129,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
          *   will be ignored and stream decoding to the buffer will continue.
-         * @param [maxBufSize] The maximum size array this function will allocate. Must
+         * @param [maxBufSize] The maximum size buffer this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
@@ -1156,7 +1167,8 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
 
         /**
          * Decode a [CharArray] using the provided pre-allocated, reusable, [buf] array.
-         * The decoding operation will stream decoded bytes to the provided array, flushing
+         *
+         * The decoding operation will stream decoded bytes to the provided [buf], flushing
          * to [action] when needed. If the pre-calculated size returned by
          * [EncoderDecoder.Config.decodeOutMaxSizeOrFail] is less than or equal to the [buf]
          * size, then [action] is only invoked once (single-shot decoding). In the event that

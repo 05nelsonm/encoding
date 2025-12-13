@@ -26,27 +26,27 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
+// Does not check offset/len, thus the *Unsafe suffix
 @OptIn(ExperimentalContracts::class)
-internal inline fun <C: Config> Encoder<C>.encode(
+internal inline fun <C: Config> Encoder<C>.encodeUnsafe(
     data: ByteArray,
+    offset: Int,
+    len: Int,
     _outFeed: () -> Encoder.OutFeed,
 ) {
     contract { callsInPlace(_outFeed, InvocationKind.AT_MOST_ONCE) }
-    if (data.isEmpty()) return
-    encode(data, out = _outFeed())
+    if (len == 0) return
+    @Suppress("DEPRECATION")
+    encodeToUnsafe(data, offset, len, out = _outFeed())
 }
 
-internal inline fun <C: Config> Encoder<C>.encode(
-    data: ByteArray,
-    out: Encoder.OutFeed,
-) {
-    newEncoderFeed(out).use { feed -> data.forEach(feed::consume) }
-}
-
+// Does not check offset/len, thus the *Unsafe suffix
 @OptIn(ExperimentalContracts::class)
 @Throws(EncodingException::class)
-internal inline fun <C: Config> Encoder<C>.encodeBuffered(
+internal inline fun <C: Config> Encoder<C>.encodeBufferedUnsafe(
     data: ByteArray,
+    offset: Int,
+    len: Int,
     buf: CharArray?,
     maxBufSize: Int,
     throwOnOverflow: Boolean,
@@ -67,10 +67,10 @@ internal inline fun <C: Config> Encoder<C>.encodeBuffered(
         val parameter = if (buf != null) "buf.size" else "maxBufSize"
         "$parameter[$maxBufSize] <= ${this}.config.maxEncodeEmitWithLineBreak[${config.maxEncodeEmitWithLineBreak}]"
     }
-    if (data.isEmpty()) return 0L
+    if (len == 0) return 0L
 
     try {
-        config.encodeOutMaxSize(data.size)
+        config.encodeOutMaxSize(len)
     } catch (e: EncodingSizeException) {
         if (throwOnOverflow) throw e
         -1
@@ -80,7 +80,8 @@ internal inline fun <C: Config> Encoder<C>.encodeBuffered(
         // Maximum encoded size will be less than or equal to maxBufSize. One-shot it.
         var i = 0
         val encoded = buf ?: CharArray(maxEncodeSize)
-        encode(data, out = { c -> encoded[i++] = c })
+        @Suppress("DEPRECATION")
+        encodeToUnsafe(data, offset, len, out = { c -> encoded[i++] = c })
         try {
             _action(encoded, 0, i)
         } finally {
@@ -96,8 +97,8 @@ internal inline fun <C: Config> Encoder<C>.encodeBuffered(
     var size = 0L
     try {
         newEncoderFeed(out = { c -> _buf[iBuf++] = c }).use { feed ->
-            for (b in data) {
-                feed.consume(b)
+            for (i in 0 until len) {
+                feed.consume(data[offset + i])
                 if (iBuf <= limit) continue
                 _action(_buf, 0, iBuf)
                 size += iBuf
@@ -111,4 +112,19 @@ internal inline fun <C: Config> Encoder<C>.encodeBuffered(
         if (config.backFillBuffers) _buf.fill('\u0000')
     }
     return size
+}
+
+// Does not check offset/len, thus the *Unsafe suffix
+@Deprecated("UNSAFE; do not reference directly. Used by encodeUnsafe/encodeBufferedUnsafe only.")
+internal inline fun <C: Config> Encoder<C>.encodeToUnsafe(
+    data: ByteArray,
+    offset: Int,
+    len: Int,
+    out: Encoder.OutFeed,
+) {
+    newEncoderFeed(out).use { feed ->
+        repeat(len) { i ->
+            feed.consume(data[offset + i])
+        }
+    }
 }
