@@ -741,7 +741,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
          *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
          *   [throwOnOverflow] is `true`.
-         *   and [throwOnOverflow] is `true`.
          * */
         @JvmStatic
         public suspend inline fun ByteArray.encodeBufferedAsync(
@@ -797,7 +796,6 @@ public sealed class Encoder<C: EncoderDecoder.Config>(config: C): Decoder<C>(con
          * @throws [EncodingSizeException] If [EncoderDecoder.Config.encodeOutMaxSize]
          *   threw its exception (i.e. output would exceed [Int.MAX_VALUE]) and
          *   [throwOnOverflow] is `true`.
-         *   and [throwOnOverflow] is `true`.
          * @throws [IndexOutOfBoundsException] If [offset] or [len] are inappropriate.
          * */
         @JvmStatic
