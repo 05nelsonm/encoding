@@ -36,8 +36,12 @@ internal inline fun <C: Config> Encoder<C>.encodeUnsafe(
 ) {
     contract { callsInPlace(_outFeed, InvocationKind.AT_MOST_ONCE) }
     if (len == 0) return
-    @Suppress("DEPRECATION")
-    encodeToUnsafe(data, offset, len, out = _outFeed())
+    val out = _outFeed()
+    newEncoderFeed(out).use { feed ->
+        repeat(len) { i ->
+            feed.consume(data[offset + i])
+        }
+    }
 }
 
 // Does not check offset/len, thus the *Unsafe suffix
@@ -67,7 +71,6 @@ internal inline fun <C: Config> Encoder<C>.encodeBufferedUnsafe(
         val parameter = if (buf != null) "buf.size" else "maxBufSize"
         "$parameter[$maxBufSize] <= ${this}.config.maxEncodeEmitWithLineBreak[${config.maxEncodeEmitWithLineBreak}]"
     }
-    if (len == 0) return 0L
 
     try {
         config.encodeOutMaxSize(len)
@@ -80,8 +83,7 @@ internal inline fun <C: Config> Encoder<C>.encodeBufferedUnsafe(
         // Maximum encoded size will be less than or equal to maxBufSize. One-shot it.
         var i = 0
         val encoded = buf ?: CharArray(maxEncodeSize)
-        @Suppress("DEPRECATION")
-        encodeToUnsafe(data, offset, len, out = { c -> encoded[i++] = c })
+        encodeUnsafe(data, offset, len, _outFeed = { Encoder.OutFeed { c -> encoded[i++] = c } })
         try {
             _action(encoded, 0, i)
         } finally {
@@ -112,19 +114,4 @@ internal inline fun <C: Config> Encoder<C>.encodeBufferedUnsafe(
         if (config.backFillBuffers) _buf.fill('\u0000')
     }
     return size
-}
-
-// Does not check offset/len, thus the *Unsafe suffix
-@Deprecated("UNSAFE; do not reference directly. Used by encodeUnsafe/encodeBufferedUnsafe only.")
-internal inline fun <C: Config> Encoder<C>.encodeToUnsafe(
-    data: ByteArray,
-    offset: Int,
-    len: Int,
-    out: Encoder.OutFeed,
-) {
-    newEncoderFeed(out).use { feed ->
-        repeat(len) { i ->
-            feed.consume(data[offset + i])
-        }
-    }
 }

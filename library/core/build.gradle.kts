@@ -20,6 +20,14 @@ plugins {
 
 kmpConfiguration {
     configureShared(java9ModuleName = "io.matthewnelson.encoding.core", publish = true) {
+        common {
+            sourceSetTest {
+                dependencies {
+                    implementation(libs.kotlinx.coroutines.test)
+                }
+            }
+        }
+
         kotlin {
             with(sourceSets) {
                 val sets = arrayOf(

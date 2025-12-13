@@ -6,6 +6,8 @@ gradle-kmp-configuration    = "0.5.2"
 gradle-kotlin               = "2.2.21"
 gradle-publish-maven        = "0.35.0"
 
+kotlinx-coroutines          = "1.10.2"
+
 [libraries]
 benchmark-runtime           = { module = "org.jetbrains.kotlinx:kotlinx-benchmark-runtime", version.ref = "gradle-benchmark" }
 
@@ -13,6 +15,9 @@ gradle-dokka                = { module = "org.jetbrains.dokka:dokka-gradle-plugi
 gradle-kmp-configuration    = { module = "io.matthewnelson:gradle-kmp-configuration-plugin", version.ref = "gradle-kmp-configuration" }
 gradle-kotlin               = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "gradle-kotlin" }
 gradle-publish-maven        = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "gradle-publish-maven" }
+
+# tests
+kotlinx-coroutines-test     = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 benchmark                   = { id = "org.jetbrains.kotlinx.benchmark", version.ref = "gradle-benchmark" }

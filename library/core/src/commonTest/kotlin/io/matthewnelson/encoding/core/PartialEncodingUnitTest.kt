@@ -16,10 +16,12 @@
 package io.matthewnelson.encoding.core
 
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeBuffered
+import io.matthewnelson.encoding.core.Encoder.Companion.encodeBufferedAsync
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToCharArray
 import io.matthewnelson.encoding.core.Encoder.Companion.encodeToString
 import io.matthewnelson.encoding.core.helpers.TestConfig
 import io.matthewnelson.encoding.core.helpers.TestEncoderDecoder
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -40,8 +42,17 @@ class PartialEncodingUnitTest {
     }
 
     @Test
-    fun givenEncodeBuffered_whenPartialEncoding_thenChecksBounds() {
+    fun givenEncodeBuffered_whenPartialEncoding_thenChecksBounds() = runTest {
         val encoder = TestEncoderDecoder(TestConfig())
+        assertFailsWith<IndexOutOfBoundsException> {
+            ByteArray(1).encodeBuffered(
+                encoder,
+                true,
+                offset = -1,
+                len = 1,
+                action = { _, _, _ -> error("Should not make it here") }
+            )
+        }
         assertFailsWith<IndexOutOfBoundsException> {
             ByteArray(1).encodeBuffered(
                 encoder,
@@ -54,6 +65,35 @@ class PartialEncodingUnitTest {
         }
         assertFailsWith<IndexOutOfBoundsException> {
             ByteArray(1).encodeBuffered(
+                encoder,
+                true,
+                offset = -1,
+                len = 1,
+                buf = CharArray(25),
+                action = { _, _, _ -> error("Should not make it here") }
+            )
+        }
+        assertFailsWith<IndexOutOfBoundsException> {
+            ByteArray(1).encodeBufferedAsync(
+                encoder,
+                true,
+                offset = -1,
+                len = 1,
+                action = { _, _, _ -> error("Should not make it here") }
+            )
+        }
+        assertFailsWith<IndexOutOfBoundsException> {
+            ByteArray(1).encodeBufferedAsync(
+                encoder,
+                true,
+                offset = -1,
+                len = 1,
+                maxBufSize = 25,
+                action = { _, _, _ -> error("Should not make it here") }
+            )
+        }
+        assertFailsWith<IndexOutOfBoundsException> {
+            ByteArray(1).encodeBufferedAsync(
                 encoder,
                 true,
                 offset = -1,
@@ -86,14 +126,18 @@ class PartialEncodingUnitTest {
         )
 
         val data = byteArrayOf(0, expected.toByte(), expected.toByte(), expected.toByte(), expected.toByte(), 0)
+
+        // Exercises -Encoder.kt encodeUnsafe for the ToString implementation
         assertEquals("bbbb", data.encodeToString(encoder, 1, expected))
         assertEquals(1, invocationEncodeOut)
         assertEquals(expected, invocationEncoderConsume)
 
+        // Exercises -Encoder.kt encodeUnsafe for the ToCharArray implementation
         assertContentEquals(charArrayOf('b', 'b', 'b', 'b'), data.encodeToCharArray(encoder, 1, expected))
         assertEquals(2, invocationEncodeOut)
         assertEquals(expected * 2, invocationEncoderConsume)
 
+        // Exercises -Encoder.kt encodeBufferedUnsafe
         var invocationAction = 0
         // single shot encode
         var result = data.encodeBuffered(
