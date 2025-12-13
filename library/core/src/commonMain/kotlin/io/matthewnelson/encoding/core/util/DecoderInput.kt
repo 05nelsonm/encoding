@@ -20,6 +20,7 @@ package io.matthewnelson.encoding.core.util
 import io.matthewnelson.encoding.core.Decoder
 import io.matthewnelson.encoding.core.EncoderDecoder
 import io.matthewnelson.encoding.core.EncodingException
+import io.matthewnelson.encoding.core.internal.checkBounds
 import kotlin.jvm.JvmSynthetic
 
 /**
@@ -34,17 +35,33 @@ import kotlin.jvm.JvmSynthetic
 public class DecoderInput {
 
     @get:JvmSynthetic
+    internal val offset: Int
+    @get:JvmSynthetic
     internal val size: Int
     private val _get: (Int) -> Char
 
-    private constructor(size: Int, get: (Int) -> Char) { this.size = size; this._get = get }
-    public constructor(input: CharSequence): this(input.length, get = input::get)
-    public constructor(input: CharArray): this(input.size, get = input::get)
+    private constructor(offset: Int, size: Int, get: (Int) -> Char) {
+        this.offset = offset
+        this.size = size
+        this._get = get
+    }
+
+    public constructor(input: CharSequence): this(offset = 0, size = input.length, input::get)
+    @Throws(IndexOutOfBoundsException::class)
+    public constructor(input: CharSequence, offset: Int, len: Int): this(offset = offset, size = len, input::get) {
+        input.checkBounds(offset, len)
+    }
+
+    public constructor(input: CharArray): this(offset = 0, size = input.size, input::get)
+    @Throws(IndexOutOfBoundsException::class)
+    public constructor(input: CharArray, offset: Int, len: Int): this(offset = offset, size = len, input::get) {
+        input.checkBounds(offset, len)
+    }
 
     @Throws(EncodingException::class)
     public operator fun get(index: Int): Char {
         try {
-            return _get(index)
+            return _get(index + offset)
         } catch (e: IndexOutOfBoundsException) {
             throw EncodingException("Index out of bounds", e)
         }
@@ -58,5 +75,5 @@ public class DecoderInput {
         message = "Should not utilize. Underlying Byte to Char conversion can produce incorrect results",
         level = DeprecationLevel.ERROR,
     )
-    public constructor(input: ByteArray): this(input.size, get = { i -> input[i].toInt().toChar() })
+    public constructor(input: ByteArray): this(0, input.size, get = { i -> input[i].toInt().toChar() })
 }

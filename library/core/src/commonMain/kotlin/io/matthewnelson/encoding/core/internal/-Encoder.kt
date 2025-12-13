@@ -92,11 +92,11 @@ internal inline fun <C: Config> Encoder<C>.encodeBufferedUnsafe(
 
     // Chunk
     val _buf = buf ?: CharArray(maxBufSize)
-    val limit = _buf.size - config.maxEncodeEmitWithLineBreak
-    var iBuf = 0
     var size = 0L
     try {
+        var iBuf = 0
         newEncoderFeed(out = { c -> _buf[iBuf++] = c }).use { feed ->
+            val limit = _buf.size - config.maxEncodeEmitWithLineBreak
             for (i in 0 until len) {
                 feed.consume(data[offset + i])
                 if (iBuf <= limit) continue

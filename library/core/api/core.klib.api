@@ -148,7 +148,9 @@ final class io.matthewnelson.encoding.core.util/CTCase { // io.matthewnelson.enc
 final class io.matthewnelson.encoding.core.util/DecoderInput { // io.matthewnelson.encoding.core.util/DecoderInput|null[0]
     constructor <init>(kotlin/ByteArray) // io.matthewnelson.encoding.core.util/DecoderInput.<init>|<init>(kotlin.ByteArray){}[0]
     constructor <init>(kotlin/CharArray) // io.matthewnelson.encoding.core.util/DecoderInput.<init>|<init>(kotlin.CharArray){}[0]
+    constructor <init>(kotlin/CharArray, kotlin/Int, kotlin/Int) // io.matthewnelson.encoding.core.util/DecoderInput.<init>|<init>(kotlin.CharArray;kotlin.Int;kotlin.Int){}[0]
     constructor <init>(kotlin/CharSequence) // io.matthewnelson.encoding.core.util/DecoderInput.<init>|<init>(kotlin.CharSequence){}[0]
+    constructor <init>(kotlin/CharSequence, kotlin/Int, kotlin/Int) // io.matthewnelson.encoding.core.util/DecoderInput.<init>|<init>(kotlin.CharSequence;kotlin.Int;kotlin.Int){}[0]
 
     final fun get(kotlin/Int): kotlin/Char // io.matthewnelson.encoding.core.util/DecoderInput.get|get(kotlin.Int){}[0]
 }

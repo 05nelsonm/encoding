@@ -25,10 +25,10 @@ fun main() {
 
     Base64.Default.newEncoderFeed(outN).use { feed ->
         // Encode UTF-8 bytes to base64
-        "Hello World 1!".decodeToByteArray(UTF8).forEach { b -> feed.consume(b) }
+        "Hello World 1!".decodeToByteArray(UTF8).forEach(feed::consume)
         feed.flush() // Finalize first encoding to reuse the Feed
         outN.output('.') // Add a separator or something.
-        "Hello World 2!".decodeToByteArray(UTF8).forEach { b -> feed.consume(b) }
+        "Hello World 2!".decodeToByteArray(UTF8).forEach(feed::consume)
     } // << `Feed.use` extension function will call Feed.doFinal automatically
 
     val encoded = sb.toString()
@@ -44,10 +44,10 @@ fun main() {
         // which will then pipe each "encoded" character of output to
         // the StringBuilder.
         Base64.Default.newDecoderFeed(feedUTF8::consume).use { feedB64 ->
-            encoded.substringBefore('.').forEach { c -> feedB64.consume(c) }
+            encoded.substringBefore('.').forEach(feedB64::consume)
             feedB64.flush() // Finalize first decoding to reuse the Feed
             feedUTF8.flush() // Prepare UTF8 feed for second decoding
-            encoded.substringAfter('.').forEach { c -> feedB64.consume(c) }
+            encoded.substringAfter('.').forEach(feedB64::consume)
         } // << `Feed.use` extension function will call Feed.doFinal automatically
     } // << `Feed.use` extension function will call Feed.doFinal automatically
 

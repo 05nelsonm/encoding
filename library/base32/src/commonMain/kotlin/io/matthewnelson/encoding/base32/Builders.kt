@@ -263,9 +263,9 @@ public class Base32CrockfordConfigBuilder {
      *     }.newEncoderFeed { encodedChar ->
      *         sb.append(encodedChar)
      *     }.use { feed ->
-     *         bytes1.forEach { b -> feed.consume(b) }
+     *         bytes1.forEach(feed::consume)
      *         feed.flush()
-     *         bytes2.forEach { b -> feed.consume(b) }
+     *         bytes2.forEach(feed::consume)
      *     }
      *     println(sb.toString())
      *     // 91JP-RV3F-*41BP-YWKC-CGGG-*
@@ -280,9 +280,9 @@ public class Base32CrockfordConfigBuilder {
      *     }.newEncoderFeed { encodedChar ->
      *         sb.append(encodedChar)
      *     }.use { feed ->
-     *         bytes1.forEach { b -> feed.consume(b) }
+     *         bytes1.forEach(feed::consume)
      *         feed.flush()
-     *         bytes2.forEach { b -> feed.consume(b) }
+     *         bytes2.forEach(feed::consume)
      *     }
      *     println(sb.toString())
      *     // 91JP-RV3F-41BP-YWKC-CGGG-*

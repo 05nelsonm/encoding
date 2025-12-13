@@ -52,7 +52,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
      *     myDecoder.newDecoderFeed { decodedByte ->
      *         sb.append(decodedByte)
      *     }.use { feed ->
-     *         "MYencoDEdTEXt".forEach { c -> feed.consume(c) }
+     *         "MYencoDEdTEXt".forEach(feed::consume)
      *     }
      *     println(sb.toString())
      *

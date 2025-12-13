@@ -20,6 +20,7 @@ import io.matthewnelson.encoding.core.EncodingSizeException
 import io.matthewnelson.encoding.core.helpers.TestConfig
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.fail
 
 class DecoderInputUnitTest {
@@ -135,5 +136,21 @@ class DecoderInputUnitTest {
 
         @Suppress("DEPRECATION_ERROR")
         config.decodeOutMaxSizeOrFail(DecoderInput(validInput))
+    }
+
+    @Test
+    fun givenDecoderInput_whenOffsetLen_thenChecksBounds() {
+        // internal checkBounds function is tested. Just need to verify
+        // it is being utilized in the offset/len constructor.
+        assertFailsWith<IndexOutOfBoundsException> { DecoderInput("123", offset = -1, len = 2) }
+        assertFailsWith<IndexOutOfBoundsException> { DecoderInput(charArrayOf(' '), offset = -1, len = 2) }
+    }
+
+    @Test
+    fun givenDecoderInput_whenOffset_thenGetReturnsExpected() {
+        val input = DecoderInput("123", offset = 1, len = 2)
+        assertEquals(1, input.offset)
+        assertEquals(2, input.size)
+        assertEquals('2', input[0])
     }
 }

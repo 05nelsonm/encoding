@@ -255,8 +255,10 @@ public final class io/matthewnelson/encoding/core/util/DecoderAction$Parser {
 
 public final class io/matthewnelson/encoding/core/util/DecoderInput {
 	public fun <init> (Ljava/lang/CharSequence;)V
+	public fun <init> (Ljava/lang/CharSequence;II)V
 	public fun <init> ([B)V
 	public fun <init> ([C)V
+	public fun <init> ([CII)V
 	public final fun get (I)C
 }
 

@@ -35,7 +35,7 @@ internal inline fun <C: Config> Decoder<C>.decode(
     val maxDecodeSize = config.decodeOutMaxSizeOrFail(input)
     val a = ByteArray(maxDecodeSize)
     @Suppress("DEPRECATION")
-    val len = decodeTo(maxDecodeSizeArray = a, input.size, _get)
+    val len = decodeToUnsafe(maxDecodeSizeArray = a, input.offset, input.size, _get)
     if (len == maxDecodeSize) return a
     val copy = a.copyOf(len)
     if (config.backFillBuffers) {
@@ -90,7 +90,7 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
         // Maximum decoded size will be less than or equal to maxBufSize. One-shot it.
         val decoded = buf ?: ByteArray(maxDecodeSize)
         @Suppress("DEPRECATION")
-        val len = decodeTo(maxDecodeSizeArray = decoded, input.size, _get)
+        val len = decodeToUnsafe(maxDecodeSizeArray = decoded, input.offset, input.size, _get)
         try {
             _action(decoded, 0, len)
         } finally {
@@ -101,15 +101,15 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
 
     // Chunk
     val _buf = buf ?: ByteArray(maxBufSize)
-    val limit = _buf.size - config.maxDecodeEmit
-    val inputSize = input.size
-    var iBuf = 0
-    var i = 0
     var size = 0L
     try {
+        var iBuf = 0
         newDecoderFeed(out = { b -> _buf[iBuf++] = b }).use { feed ->
-            while (i < inputSize) {
-                feed.consume(input = _get(i++))
+            val limit = _buf.size - config.maxDecodeEmit
+            val offset = input.offset
+
+            for (i in 0 until input.size) {
+                feed.consume(_get(offset + i))
                 if (iBuf <= limit) continue
                 _action(_buf, 0, iBuf)
                 size += iBuf
@@ -125,23 +125,24 @@ internal inline fun <C: Config> Decoder<C>.decodeBuffered(
     return size
 }
 
+// Does not check offset/len, thus the *Unsafe suffix
 @Throws(EncodingException::class)
 @OptIn(ExperimentalContracts::class)
 @Deprecated("UNSAFE; do not reference directly. Used by decode/decodeBuffered only.")
-internal inline fun <C: Config> Decoder<C>.decodeTo(
+internal inline fun <C: Config> Decoder<C>.decodeToUnsafe(
     maxDecodeSizeArray: ByteArray,
-    inputSize: Int,
+    offset: Int,
+    len: Int,
     _get: (i: Int) -> Char,
 ): Int {
     contract { callsInPlace(_get, InvocationKind.UNKNOWN) }
-    if (inputSize == 0) return 0
+    if (len == 0) return 0
 
     var i = 0
     try {
         newDecoderFeed(out = { b -> maxDecodeSizeArray[i++] = b }).use { feed ->
-            var j = 0
-            while (j < inputSize) {
-                feed.consume(_get(j++))
+            for (j in 0 until len) {
+                feed.consume(_get(offset + j))
             }
         }
     } catch (t: Throwable) {
@@ -149,7 +150,6 @@ internal inline fun <C: Config> Decoder<C>.decodeTo(
             maxDecodeSizeArray.fill(0, 0, min(maxDecodeSizeArray.size, i))
         }
         if (t is IndexOutOfBoundsException && i >= maxDecodeSizeArray.size) {
-            // Something is wrong with the encoder's pre-calculation
             throw EncodingSizeException("Decoder's pre-calculation of Size[${maxDecodeSizeArray.size}] was incorrect", t)
         }
         throw t
