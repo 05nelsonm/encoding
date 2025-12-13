@@ -338,7 +338,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -404,7 +404,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The function to flush the buffer to; a destination to "write"
@@ -419,10 +419,10 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          *
          * @throws [EncodingException] If decoding failed, such as the [decoder] rejecting
          *   an invalid character or sequence.
-         * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
-         *   [EncoderDecoder.Config.maxDecodeEmit].
          * @throws [EncodingSizeException] If [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   threw its exception and [throwOnOverflow] is `true`.
+         * @throws [IllegalArgumentException] If [maxBufSize] is less than or equal to
+         *   [EncoderDecoder.Config.maxDecodeEmit].
          * */
         @JvmStatic
         @Throws(EncodingException::class)
@@ -490,7 +490,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The function to flush the buffer to; a destination to "write"
@@ -569,7 +569,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
@@ -638,7 +638,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The suspend function to flush the buffer to; a destination to
@@ -728,7 +728,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The suspend function to flush the buffer to; a destination to
@@ -809,7 +809,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [action] The function to flush the buffer to; a destination to "write"
          *   decoded data to whereby `len` is the number of bytes within `buf`, starting
          *   at index `offset`, to "write".
@@ -877,7 +877,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The function to flush the buffer to; a destination to "write"
@@ -967,7 +967,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The function to flush the buffer to; a destination to "write"
@@ -1047,7 +1047,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [action] The suspend function to flush the buffer to; a destination to
          *   "write" decoded data to whereby `len` is the number of bytes within `buf`,
          *   starting at index `offset`, to "write".
@@ -1117,7 +1117,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [maxBufSize] The maximum size array this function will allocate. Must
          *   be greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The suspend function to flush the buffer to; a destination to
@@ -1208,7 +1208,7 @@ public sealed class Decoder<C: EncoderDecoder.Config>(public val config: C) {
          * @param [decoder] The [Decoder] to use.
          * @param [throwOnOverflow] If `true` and [EncoderDecoder.Config.decodeOutMaxSizeOrFail]
          *   throws an [EncodingSizeException], it will be re-thrown. If `false`, the exception
-         *   will be swallowed and stream decoding to the buffer will continue.
+         *   will be ignored and stream decoding to the buffer will continue.
          * @param [buf] The pre-allocated array to use as the buffer. Its size must be
          *   greater than [EncoderDecoder.Config.maxDecodeEmit].
          * @param [action] The suspend function to flush the buffer to; a destination to
