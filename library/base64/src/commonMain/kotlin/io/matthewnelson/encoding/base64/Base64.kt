@@ -417,8 +417,8 @@ public class Base64: EncoderDecoder<Base64.Config> {
 
     private inner class DecoderFeed(out: Decoder.OutFeed): Decoder<Config>.Feed(_out = out) {
 
-        private val buf = IntArray(3)
-        private var iBuf = 0
+        private var _count = 0
+        private var _word = 0
 
         override fun consumeProtected(input: Char) {
             val code = input.code
@@ -460,17 +460,15 @@ public class Base64: EncoderDecoder<Base64.Config> {
                 throw MalformedEncodingException("Char[$input] is not a valid $NAME character")
             }
 
-            if (iBuf < 3) {
-                buf[iBuf++] = code + diff
+            // Append each character's 6 bits to the word
+            val word = _word shl 6 or (code + diff)
+
+            if (_count++ < 3) {
+                _word = word
                 return // Await more input
             }
-
-            // Append each character's 6 bits to the word
-            var word = buf[0]
-            word = word shl 6 or buf[1]
-            word = word shl 6 or buf[2]
-            word = word shl 6 or (code + diff)
-            iBuf = 0
+            _count = 0
+            _word = 0
 
             // For every 4 characters of input, 24 bits of output are accumulated. Emit 3 bytes.
             _out.output((word shr 16).toByte())
@@ -479,32 +477,23 @@ public class Base64: EncoderDecoder<Base64.Config> {
         }
 
         override fun doFinalProtected() {
-            if (iBuf == 0) return buf.fill(0)
+            val count = _count
+            if (count == 0) return
+            var word = _word
+            _count = 0
+            _word = 0
 
-            if (iBuf == 1) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 1) {
                 // 1 character followed by "===". But 6 bits is a truncated byte, fail.
                 throw FeedBuffer.truncatedInputEncodingException(1)
             }
-
-            // Append each character's 6 bits to the word
-            var word = buf[0]
-            word = word shl 6 or buf[1]
-
-            if (iBuf == 2) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 2) {
                 // 2 characters followed by "==". Emit 1 byte for 8 of those 12 bits.
                 word = word shl 12
                 _out.output((word shr 16).toByte())
                 return
             }
-
-            word = word shl 6 or buf[2]
-            if (iBuf == 3) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 3) {
                 // 3 characters followed by "=". Emit 2 byte for 16 of those 18 bits.
                 word = word shl 6
                 _out.output((word shr 16).toByte())
@@ -513,7 +502,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
             }
 
             // "Should" never make it here
-            error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}]")
+            error("Illegal configuration >> count[$count]")
         }
     }
 
