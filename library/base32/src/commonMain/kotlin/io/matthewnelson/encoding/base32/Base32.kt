@@ -1140,8 +1140,8 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
 
         protected abstract fun Int.decodeDiff(): Int
 
-        private val buf = IntArray(7)
-        private var iBuf = 0
+        private var _count = 0
+        private var _word = 0L
 
         override fun consumeProtected(input: Char) {
             val code = input.code
@@ -1150,21 +1150,15 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 throw MalformedEncodingException("Char[$input] is not a valid ${name()} character")
             }
 
-            if (iBuf < 7) {
-                buf[iBuf++] = code + diff
+            // Append each character's 5 bits to the word
+            val word = _word shl 5 or (code + diff).toLong()
+
+            if (_count++ < 7) {
+                _word = word
                 return // Await more input
             }
-
-            // Append each character's 5 bits to the word
-            var word: Long = buf[0].toLong()
-            word = word shl 5 or buf[1].toLong()
-            word = word shl 5 or buf[2].toLong()
-            word = word shl 5 or buf[3].toLong()
-            word = word shl 5 or buf[4].toLong()
-            word = word shl 5 or buf[5].toLong()
-            word = word shl 5 or buf[6].toLong()
-            word = word shl 5 or (code + diff).toLong()
-            iBuf = 0
+            _count = 0
+            _word = 0L
 
             // For every 8 characters of input, 40 bits of output are accumulated. Emit 5 bytes.
             _out.output((word shr 32).toByte())
@@ -1175,34 +1169,17 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         override fun doFinalProtected() {
-            if (iBuf == 0) return buf.fill(0)
+            val count = _count
+            if (count == 0) return
+            var word = _word
+            _count = 0
+            _word = 0L
 
-            if (iBuf == 1) {
+            if (count == 1) {
                 // 5*1 =  5 bits. Truncated, fail.
-                iBuf = 0
-                buf.fill(0)
                 throw FeedBuffer.truncatedInputEncodingException(1)
             }
-            if (iBuf == 3) {
-                // 5*3 = 15 bits. Truncated, fail.
-                iBuf = 0
-                buf.fill(0)
-                throw FeedBuffer.truncatedInputEncodingException(3)
-            }
-            if (iBuf == 6) {
-                // 5*6 = 30 bits. Truncated, fail.
-                iBuf = 0
-                buf.fill(0)
-                throw FeedBuffer.truncatedInputEncodingException(6)
-            }
-
-            // iBuf == 2, 4, 5 or 7
-            // Append each character's 5 bits to the word
-            var word: Long = buf[0].toLong()
-            word = word shl 5 or buf[1].toLong()
-            if (iBuf == 2) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 2) {
                 // 5*2 = 10 bits. Drop 2
                 word = word shr 2
 
@@ -1210,12 +1187,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 _out.output((word       ).toByte())
                 return
             }
-
-            word = word shl 5 or buf[2].toLong()
-            word = word shl 5 or buf[3].toLong()
-            if (iBuf == 4) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 3) {
+                // 5*3 = 15 bits. Truncated, fail.
+                throw FeedBuffer.truncatedInputEncodingException(3)
+            }
+            if (count == 4) {
                 // 5*4 = 20 bits. Drop 4
                 word = word shr 4
 
@@ -1224,11 +1200,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 _out.output((word       ).toByte())
                 return
             }
-
-            word = word shl 5 or buf[4].toLong()
-            if (iBuf == 5) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 5) {
                 // 5*5 = 25 bits. Drop 1
                 word = word shr 1
 
@@ -1238,12 +1210,11 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 _out.output((word       ).toByte())
                 return
             }
-
-            word = word shl 5 or buf[5].toLong()
-            word = word shl 5 or buf[6].toLong()
-            if (iBuf == 7) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 6) {
+                // 5*6 = 30 bits. Truncated, fail.
+                throw FeedBuffer.truncatedInputEncodingException(6)
+            }
+            if (count == 7) {
                 // 5*7 = 35 bits. Drop 3
                 word = word shr 3
 
@@ -1256,7 +1227,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             // "Should" never make it here
-            error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}, ${buf[4]}, ${buf[5]}, ${buf[6]}]")
+            error("Illegal configuration >> count[$count]")
         }
     }
 
@@ -1265,22 +1236,19 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         protected abstract fun Encoder.OutFeed.output1(i: Int)
         protected abstract fun Encoder.OutFeed.outputPadding(n: Int)
 
-        private val buf = ByteArray(4)
-        private var iBuf = 0
+        private var _count = 0
+        private var _word = 0L
 
         final override fun consumeProtected(input: Byte) {
-            if (iBuf < 4) {
-                buf[iBuf++] = input
+            // Append each character's 8 bits to the word
+            val word = (_word shl 8) + input.toBits()
+
+            if (_count++ < 4) {
+                _word = word
                 return // Await more input
             }
-
-            // Append each character's 8 bits to the word
-            var word: Long = buf[0].toBits()
-            word = (word shl 8) + buf[1].toBits()
-            word = (word shl 8) + buf[2].toBits()
-            word = (word shl 8) + buf[3].toBits()
-            word = (word shl 8) + input.toBits()
-            iBuf = 0
+            _count = 0
+            _word = 0L
 
             // For every 5 bytes of input, 40 bits of output are accumulated. Emit 8 characters.
             _out.output1(i = (word shr 35 and 0x1fL).toInt()) // 40-1*5 = 35
@@ -1294,26 +1262,22 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
         }
 
         final override fun doFinalProtected() {
-            if (iBuf == 0) {
-                buf.fill(0)
+            val count = _count
+            if (count == 0) {
                 // Still call with 0 b/c Crockford uses to append its check symbol
                 return _out.outputPadding(n = 0)
             }
+            val word = _word
+            _count = 0
+            _word = 0L
 
-            var word: Long = buf[0].toBits()
-            if (iBuf == 1) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 1) {
                 // 8*1 = 8 bits
                 _out.output1(i = (word shr  3 and 0x1fL).toInt()) //  8-1*5 =  3
                 _out.output1(i = (word shl  2 and 0x1fL).toInt()) //  5-3   =  2
                 return _out.outputPadding(n = 6)
             }
-
-            word = (word shl 8) + buf[1].toBits()
-            if (iBuf == 2) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 2) {
                 // 8*2 = 16 bits
                 _out.output1(i = (word shr 11 and 0x1fL).toInt()) // 16-1*5 = 11
                 _out.output1(i = (word shr  6 and 0x1fL).toInt()) // 16-2*5 =  6
@@ -1321,11 +1285,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 _out.output1(i = (word shl  4 and 0x1fL).toInt()) //  5-1   =  4
                 return _out.outputPadding(n = 4)
             }
-
-            word = (word shl 8) + buf[2].toBits()
-            if (iBuf == 3) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 3) {
                 // 8*3 = 24 bits
                 _out.output1(i = (word shr 19 and 0x1fL).toInt()) // 24-1*5 = 19
                 _out.output1(i = (word shr 14 and 0x1fL).toInt()) // 24-2*5 = 14
@@ -1334,11 +1294,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
                 _out.output1(i = (word shl  1 and 0x1fL).toInt()) //  5-4   =  1
                 return _out.outputPadding(n = 3)
             }
-
-            word = (word shl 8) + buf[3].toBits()
-            if (iBuf == 4) {
-                iBuf = 0
-                buf.fill(0)
+            if (count == 4) {
                 // 8*4 = 32 bits
                 _out.output1(i = (word shr 27 and 0x1fL).toInt()) // 32-1*5 = 27
                 _out.output1(i = (word shr 22 and 0x1fL).toInt()) // 32-2*5 = 22
@@ -1351,7 +1307,7 @@ public sealed class Base32<C: EncoderDecoder.Config>(config: C): EncoderDecoder<
             }
 
             // "Should" never make it here
-            error("Illegal configuration >> iBuf[$iBuf] - buf[${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}]")
+            error("Illegal configuration >> count[$count]")
         }
 
         private inline fun Byte.toBits(): Long = if (this < 0) this + 256L else toLong()
