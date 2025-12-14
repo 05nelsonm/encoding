@@ -422,40 +422,7 @@ public class Base64: EncoderDecoder<Base64.Config> {
 
         override fun consumeProtected(input: Char) {
             val code = input.code
-
-            val ge0:   Byte = if (code >= '0'.code) 1 else 0
-            val le9:   Byte = if (code <= '9'.code) 1 else 0
-            val geA:   Byte = if (code >= 'A'.code) 1 else 0
-            val leZ:   Byte = if (code <= 'Z'.code) 1 else 0
-            val gea:   Byte = if (code >= 'a'.code) 1 else 0
-            val lez:   Byte = if (code <= 'z'.code) 1 else 0
-            val eqPlu: Byte = if (code == '+'.code) 1 else 0
-            val eqMin: Byte = if (code == '-'.code) 1 else 0
-            val eqSla: Byte = if (code == '/'.code) 1 else 0
-            val eqUSc: Byte = if (code == '_'.code) 1 else 0
-
-            var diff = 0
-
-            // char ASCII value
-            //  0     48   52
-            //  9     57   61 (ASCII + 4)
-            diff += if (ge0 + le9 == 2) 4 else 0
-
-            // char ASCII value
-            //  A     65    0
-            //  Z     90   25 (ASCII - 65)
-            diff += if (geA + leZ == 2) -65 else 0
-
-            // char ASCII value
-            //  a     97   26
-            //  z    122   51 (ASCII - 71)
-            diff += if (gea + lez == 2) -71 else 0
-
-            val h = 62 - code
-            val k = 63 - code
-            diff += if (eqPlu + eqMin == 1) h else 0
-            diff += if (eqSla + eqUSc == 1) k else 0
-
+            val diff = code.decodeDiff()
             if (diff == 0) {
                 throw MalformedEncodingException("Char[$input] is not a valid $NAME character")
             }
@@ -503,6 +470,42 @@ public class Base64: EncoderDecoder<Base64.Config> {
 
             // "Should" never make it here
             error("Illegal configuration >> count[$count]")
+        }
+
+        private fun Int.decodeDiff(): Int {
+            val ge0:   Byte = if (this >= '0'.code) 1 else 0
+            val le9:   Byte = if (this <= '9'.code) 1 else 0
+            val geA:   Byte = if (this >= 'A'.code) 1 else 0
+            val leZ:   Byte = if (this <= 'Z'.code) 1 else 0
+            val gea:   Byte = if (this >= 'a'.code) 1 else 0
+            val lez:   Byte = if (this <= 'z'.code) 1 else 0
+            val eqPlu: Byte = if (this == '+'.code) 1 else 0
+            val eqMin: Byte = if (this == '-'.code) 1 else 0
+            val eqSla: Byte = if (this == '/'.code) 1 else 0
+            val eqUSc: Byte = if (this == '_'.code) 1 else 0
+
+            var diff = 0
+
+            // char ASCII value
+            //  0     48   52
+            //  9     57   61 (ASCII + 4)
+            diff += if (ge0 + le9 == 2) 4 else 0
+
+            // char ASCII value
+            //  A     65    0
+            //  Z     90   25 (ASCII - 65)
+            diff += if (geA + leZ == 2) -65 else 0
+
+            // char ASCII value
+            //  a     97   26
+            //  z    122   51 (ASCII - 71)
+            diff += if (gea + lez == 2) -71 else 0
+
+            val h = 62 - this
+            val k = 63 - this
+            diff += if (eqPlu + eqMin == 1) h else 0
+            diff += if (eqSla + eqUSc == 1) k else 0
+            return diff
         }
     }
 
