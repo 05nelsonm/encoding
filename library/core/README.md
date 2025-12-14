@@ -24,7 +24,10 @@ fun main() {
     val outN = LineBreakOutFeed(interval = 64, resetOnFlush = false, out)
 
     Base64.Default.newEncoderFeed(outN).use { feed ->
-        // Encode UTF-8 bytes to base64
+        // Encode UTF-8 bytes then pipe through base64 feed.
+        //
+        // Syntax "decode" is weird b/c extension comes from
+        // module :core, and UTF-8 is a byte encoding, so...
         "Hello World 1!".decodeToByteArray(UTF8).forEach(feed::consume)
         feed.flush() // Finalize first encoding to reuse the Feed
         outN.output('.') // Add a separator or something.
@@ -35,9 +38,12 @@ fun main() {
     println(encoded) // SGVsbG8gV29ybGQgMSE=.SGVsbG8gV29ybGQgMiE=
 
     //// Decoder.Feed example ////
-    val decoded = StringBuilder()
 
-    UTF8.newEncoderFeed(decoded::append).use { feedUTF8 ->
+    // Helper function for resetting & back-filling StringBuilder's
+    // backing array (only sets to 0 on Kotlin/Js, does not back-fill)
+    sb.wipe()
+
+    UTF8.newEncoderFeed(sb::append).use { feedUTF8 ->
 
         // As the base64 decoder outputs decoded bytes, pipe them through
         // the UTF8 "encoder" feed (i.e. UTF-8 byte to text transform),
@@ -51,14 +57,14 @@ fun main() {
         } // << `Feed.use` extension function will call Feed.doFinal automatically
     } // << `Feed.use` extension function will call Feed.doFinal automatically
 
-    println(decoded.toString()) // Hello World 1!Hello World 2!
+    println(sb.toString()) // Hello World 1!Hello World 2!
 
     //// Decoder decodeBuffered/decodeBufferedAsync examples ///
 
     // Write UTF-8 encoded bytes to a FileStream (kmp-file:file)
     val file = "/path/to/file.txt".toFile()
     file.openWrite(excl = null).use { stream ->
-        decoded.decodeBuffered(
+        sb.decodeBuffered(
             decoder = UTF8,
             throwOnOverflow = false,
             action = stream::write,
@@ -70,7 +76,7 @@ fun main() {
         AsyncFs.Default.with {
             file.openAppendAsync(excl = OpenExcl.MustExist)
                 .useAsync { stream ->
-                    decoded.decodeBufferedAsync(
+                    sb.decodeBufferedAsync(
                         decoder = UTF8.ThrowOnInvalid,
                         throwOnOverflow = false,
                         maxBufSize = 1024,
