@@ -39,15 +39,15 @@ Configurable, streamable, efficient and extensible encoding/decoding for Kotlin 
 ### Get Started
 
 <!-- TAG_VERSION -->
-<!-- TODO: Add utf8 -->
 
 ```kotlin
 // build.gradle.kts
 dependencies {
-    val encoding = "2.5.0"
+    val encoding = "2.6.0"
     implementation("io.matthewnelson.encoding:base16:$encoding")
     implementation("io.matthewnelson.encoding:base32:$encoding")
     implementation("io.matthewnelson.encoding:base64:$encoding")
+    implementation("io.matthewnelson.encoding:utf8:$encoding")
 
     // Only necessary if you just want the abstractions to create your own EncoderDecoder(s)
     implementation("io.matthewnelson.encoding:core:$encoding")
@@ -55,19 +55,19 @@ dependencies {
 ```
 
 <!-- TAG_VERSION -->
-<!-- TODO: Add utf8 -->
 Alternatively, you can use the BOM.
 
 ```kotlin
 // build.gradle.kts
 dependencies {
     // define the BOM and its version
-    implementation(project.dependencies.platform("io.matthewnelson.encoding:bom:2.5.0"))
+    implementation(project.dependencies.platform("io.matthewnelson.encoding:bom:2.6.0"))
 
     // define artifacts without version
     implementation("io.matthewnelson.encoding:base16")
     implementation("io.matthewnelson.encoding:base32")
     implementation("io.matthewnelson.encoding:base64")
+    implementation("io.matthewnelson.encoding:utf8")
 
     // Only necessary if you just want the abstractions to create your own EncoderDecoder(s)
     implementation("io.matthewnelson.encoding:core")
@@ -75,11 +75,11 @@ dependencies {
 ```
 
 <!-- TAG_VERSION -->
-[badge-latest]: https://img.shields.io/badge/latest--release-2.5.0-blue.svg?style=flat
+[badge-latest]: https://img.shields.io/badge/latest--release-2.6.0-blue.svg?style=flat
 [badge-license]: https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat
 
 <!-- TAG_DEPENDENCIES -->
-[badge-kotlin]: https://img.shields.io/badge/kotlin-2.2.20-blue.svg?logo=kotlin
+[badge-kotlin]: https://img.shields.io/badge/kotlin-2.2.21-blue.svg?logo=kotlin
 
 <!-- TAG_PLATFORMS -->
 [badge-platform-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat

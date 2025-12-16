@@ -1,5 +1,60 @@
 # CHANGELOG
 
+## Version 2.6.0 (2025-12-16)
+ - Update dependencies [[#206]][206]:
+     - Kotlin `2.2.20` -> `2.2.21`
+ - Fixes `Base32.Crockford` check symbol validation when `Feed.doFinal` is called [[#179]][179]
+ - Fixes `EncoderDecoder` and `EncoderDecoder.Config` equals/hashCode overrides [[#180]][180]
+ - Fixes 64-bit integer overflow for `Base32` and `Base64` implementations of 
+   `Config.decodeOutMaxSizeProtected` [[#183]][183]
+ - Fixes `LineBreakOutFeed` not being reset as intended when `Encoder.Feed.flush` is 
+   called [[#193]][193]
+ - Fixes `Encoder.Feed` and `Decoder.Feed` implementations holding onto their respective 
+   `OutFeed` callback references after `close` has been called [[#194]][194]
+ - Fixes `Encoder.Companion.encodeToString` back-fill implementation of its temporary 
+   `StringBuilder` buffer [[#220]][220]
+     - Adds the `StringBuilder.wipe` extension functions
+ - Aligns `Base16`, `Base32`, and `Base64` builder implementations' syntax/layout [[#176]][176]
+     - Deprecates all old builders and replaces them with:
+         - `Base16.Builder`
+         - `Base32.Crockford.Builder`
+         - `Base32.Default.Builder`
+         - `Base32.Hex.Builder`
+         - `Base64.Builder`
+ - Deprecates `Base16`, `Base32.Crockford`, `Base32.Default`, `Base32.Hex`, and `Base64` 
+   public constructors [[#177]][177]
+ - Increases all `DeprecationLevel.WARNING` to `DeprecationLevel.ERROR` [[#178]][178]
+ - Moves `Feed.use` extension function's `finally` logic to internal function [[#189]][189]
+ - Renames `EncoderDecoder.Config.encodeOutSize` to `encodeOutMaxSize` [[#196]][196]
+     - Deprecates `encodeOutSize`
+ - Adds ability to configure temporary buffer back-fill behavior when using `:core` 
+   module encoding/decoding extension functions [[#190]][190]
+ - Adds `EncoderDecoder.Config.maxDecodeEmit` constructor parameter [[#208]][208] [[#215]][215]
+ - Adds `Decoder.Companion.decodeBuffered` and `Decoder.Companion.decodeBufferedAsync` extension 
+   functions [[#210]][210] [[#226]][226] [[#228]][228] [[#235]][235]
+ - Adds ability to configure `LineBreakOutFeed` reset behavior when `Encoder.Feed.flush`
+   is called [[#216]][216]
+     - Deprecates `LineBreakOutFeed` constructor and adds new `resetOnFlush` parameter
+     - Adds `EncoderDecoder.Config.lineBreakResetOnFlush` constructor parameter
+     - Adds to `EncoderDecoder` implementations' `Builder` the `lineBreakReset` function to configure
+ - Adds `UTF-8` encoding/decoding [[#170]][170] [[#185]][185] [[#200]][200] [[#201]][201] [[#202]][202] [[#203]][203]
+     - Module `:utf8` contains the `UTF8` implementation of `EncoderDecoder`
+ - Adds the `MalformedEncodingException` type [[#217]][217]
+ - Removes checked exception `@Throws` annotation for `EncodingException` from 
+   `Encoder.Companion.encodeToString` and `Encoder.Companion.encodeToCharArray` extension 
+   functions [[#218]][218]
+ - Adds `EncoderDecoder.Config.maxEncodeEmit` constructor parameter [[#223]][223]
+ - Adds `Encoder.Companion.encodeBuffered` and `Encoder.Companion.encodeBufferedAsync` extension
+   functions [[#232]][232]
+ - Adds partial array encoding [[#233]][233]
+     - All `Encoder.Companion` extension functions can now take additional `offset` and `len` arguments
+ - Adds partial text decoding [[#234]][234]
+     - All `Decoder.Companion` extension functions can now take additional `offset` and `len` arguments
+ - Performance improvements for `DecoderInput` [[#169]][169]
+ - Performance improvements for `Base16` [[#186]][186]
+ - Performance improvements for `Base32` [[#188]][188] [[#236]][236]
+ - Performance improvements for `Base64` [[#187]][187] [[#236]][236] [[#237]][237]
+
 ## Version 2.5.0 (2025-09-19)
  - Update dependencies [[#167]][167]:
      - Kotlin `2.1.10` -> `2.2.20`
@@ -242,4 +297,42 @@
 [166]: https://github.com/05nelsonm/encoding/pull/166
 [167]: https://github.com/05nelsonm/encoding/pull/167
 [168]: https://github.com/05nelsonm/encoding/pull/168
+[169]: https://github.com/05nelsonm/encoding/pull/169
+[170]: https://github.com/05nelsonm/encoding/pull/170
+[176]: https://github.com/05nelsonm/encoding/pull/176
+[177]: https://github.com/05nelsonm/encoding/pull/177
+[178]: https://github.com/05nelsonm/encoding/pull/178
+[179]: https://github.com/05nelsonm/encoding/pull/179
+[180]: https://github.com/05nelsonm/encoding/pull/180
+[183]: https://github.com/05nelsonm/encoding/pull/183
+[185]: https://github.com/05nelsonm/encoding/pull/185
+[186]: https://github.com/05nelsonm/encoding/pull/186
+[187]: https://github.com/05nelsonm/encoding/pull/187
+[188]: https://github.com/05nelsonm/encoding/pull/188
+[189]: https://github.com/05nelsonm/encoding/pull/189
+[190]: https://github.com/05nelsonm/encoding/pull/190
+[193]: https://github.com/05nelsonm/encoding/pull/193
+[194]: https://github.com/05nelsonm/encoding/pull/194
+[196]: https://github.com/05nelsonm/encoding/pull/196
+[200]: https://github.com/05nelsonm/encoding/pull/200
+[201]: https://github.com/05nelsonm/encoding/pull/201
+[202]: https://github.com/05nelsonm/encoding/pull/202
+[203]: https://github.com/05nelsonm/encoding/pull/203
+[206]: https://github.com/05nelsonm/encoding/pull/206
+[208]: https://github.com/05nelsonm/encoding/pull/208
+[210]: https://github.com/05nelsonm/encoding/pull/210
+[215]: https://github.com/05nelsonm/encoding/pull/215
+[216]: https://github.com/05nelsonm/encoding/pull/216
+[217]: https://github.com/05nelsonm/encoding/pull/217
+[218]: https://github.com/05nelsonm/encoding/pull/218
+[220]: https://github.com/05nelsonm/encoding/pull/220
+[223]: https://github.com/05nelsonm/encoding/pull/223
+[226]: https://github.com/05nelsonm/encoding/pull/226
+[228]: https://github.com/05nelsonm/encoding/pull/228
+[232]: https://github.com/05nelsonm/encoding/pull/232
+[233]: https://github.com/05nelsonm/encoding/pull/233
+[234]: https://github.com/05nelsonm/encoding/pull/234
+[235]: https://github.com/05nelsonm/encoding/pull/235
+[236]: https://github.com/05nelsonm/encoding/pull/236
+[237]: https://github.com/05nelsonm/encoding/pull/237
 [MIGRATION]: https://github.com/05nelsonm/encoding/blob/master/MIGRATION.md
