@@ -1,22 +1,22 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Feed</title>
-<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
@@ -24,33 +24,31 @@
 <link href="../../../../../styles/main.css" rel="Stylesheet">
 <link href="../../../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <link href="../../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../../../ui-kit/ui-kit.min.js" defer></script>
-<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../../../ui-kit/ui-kit.min.js" defer></script></head>
 <body>
-    <div class="root">
-    <nav class="navigation theme-dark" id="navigation-wrapper">
-<a class="library-name--link" href="../../../../../index.html">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../../../index.html" tabindex="1">
                     encoding
             </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
-        <div class="library-version" id="library-version">2.5.0
+        <div class="library-version" id="library-version">2.6.0
         </div>
         <div class="navigation-controls">
-        <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":library:core/commonMain">common</button>
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":library:core/commonMain">common</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
-                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
-                    <div class="dropdown--header"><span>Platform filter</span>
-                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
@@ -64,54 +62,75 @@
                 </ul>
                 <div class="dropdown--overlay"></div>
             </div>
-        </div>
+        </ul>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
             </button>
             <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
                 API
             </div>
         </div>
-    </nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
-                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
-                        <div class="dropdown--header">
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
                             <span>
                                     encoding
                             </span>
-                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
-                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
-                            </button>
-                        </div>
-                        <div class="sidebar--inner" id="sideMenu"></div>
-                    </ul>
-                    <div class="dropdown--overlay"></div>
-                </div>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="core::io.matthewnelson.encoding.core/Encoder.Feed///PointingToDeclaration//319166921">
   <div class="breadcrumbs"><a href="../../../index.html">core</a><span class="delimiter">/</span><a href="../../index.html">io.matthewnelson.encoding.core</a><span class="delimiter">/</span><a href="../index.html">Encoder</a><span class="delimiter">/</span><span class="current">Feed</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Feed</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">inner </span><span class="token keyword">class </span><a href="index.html">Feed</a> : <a href="../../-encoder-decoder/-feed/index.html">EncoderDecoder.Feed</a><span class="token operator">&lt;</span><a href="../index.html">C</a><span class="token operator">&gt; </span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/Encoder.kt#L82">source</a>)</span></span></div><p class="paragraph">Data to encode is fed into <a href="consume.html">consume</a> and, as the <a href="index.html">Encoder.Feed</a>'s buffer fills, encoded data is output to the supplied <a href="../-out-feed/index.html">Encoder.OutFeed</a>. This allows for a "lazy" encode, or streaming of encoded data.</p><p class="paragraph">Once all data has been fed through <a href="consume.html">consume</a>, call <a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder/-feed/do-final.html">doFinal</a> to process remaining data in the <a href="index.html">Encoder.Feed</a> buffer. Alternatively, utilize the <a href="../../use.html">use</a> extension function (highly recommended) which will call <a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder/-feed/do-final.html">doFinal</a> (or <a href="close.html">close</a> if there was an error with encoding) for you.</p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../new-encoder-feed.html"><span>Encoder.</span><wbr><span>new</span><wbr><span>Encoder</span><wbr><span><span>Feed</span></span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../use.html"><span><span>use</span></span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../-encoder-decoder/-feed/index.html"><span>Encoder</span><wbr><span>Decoder.</span><wbr><span>Feed</span></a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../-encoder-decoder/-feed/do-final.html"><span>Encoder</span><wbr><span>Decoder.</span><wbr><span>Feed.</span><wbr><span>doFinal</span></a></div></span></div><div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">inner </span><span class="token keyword">class </span><a href="index.html">Feed</a> : <a href="../../-encoder-decoder/-feed/index.html">EncoderDecoder.Feed</a><span class="token operator">&lt;</span><a href="../index.html">C</a><span class="token operator">&gt; </span><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/Encoder.kt#L99">source</a>)</span></span></div><p class="paragraph">Data to encode is fed into <a href="consume.html">consume</a> and, as the <a href="index.html">Encoder.Feed</a>'s buffer fills, encoded data is output to the supplied <a href="../-out-feed/index.html">Encoder.OutFeed</a>. This allows for a "lazy" encode, or streaming of encoded data.</p><p class="paragraph">Once all data has been fed through <a href="consume.html">consume</a>, call <a href="../../-encoder-decoder/-feed/do-final.html">doFinal</a> to process remaining data in the <a href="index.html">Encoder.Feed</a> buffer. Alternatively, utilize the <a href="../../use.html">use</a> extension function (highly recommended) which will call <a href="../../-encoder-decoder/-feed/do-final.html">doFinal</a> (or <a href="close.html">close</a> if there was an error with encoding) for you.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../use.html"><span><span>use</span></span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../new-encoder-feed.html"><span>Encoder.</span><wbr><span>new</span><wbr><span>Encoder</span><wbr><span><span>Feed</span></span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../-encoder-decoder/-feed/index.html"><span>Encoder</span><wbr><span>Decoder.</span><wbr><span>Feed</span></a></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../-encoder-decoder/-feed/do-final.html"><span>Encoder</span><wbr><span>Decoder.</span><wbr><span>Feed.</span><wbr><span>doFinal</span></a></div></span></div><div></div></div></div></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
-        <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="1244406184%2FConstructors%2F319166921" anchor-label="Feed" id="1244406184%2FConstructors%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="1472650805%2FConstructors%2F319166921" anchor-label="Feed" id="1472650805%2FConstructors%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-feed.html"><span><span>Feed</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1244406184%2FConstructors%2F319166921"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1472650805%2FConstructors%2F319166921"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">_out<span class="token operator">: </span><a href="../-out-feed/index.html">Encoder.OutFeed</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="1841953271%2FProperties%2F319166921" anchor-label="_out" id="1841953271%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="_out.html"><span>_</span><wbr><span>out</span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1841953271%2FProperties%2F319166921"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@get:</span><span data-unresolved-link="kotlin.jvm/JvmName///PointingToDeclaration/"><span class="token annotation builtin">JvmName</span></span><span class="token punctuation">(</span><span>name<span class="token operator"> = </span><span class="breakable-word"><span class="token string">"_out"</span></span></span><wbr><span class="token punctuation">)</span></div></div><span class="token keyword">protected </span><span class="token keyword">var </span><a href="_out.html">_out</a><span class="token operator">: </span><a href="../-out-feed/index.html">Encoder.OutFeed</a></div><div class="brief "><p class="paragraph">For implementations to pass in as a constructor argument and reference while performing encoding operations. Upon <a href="close.html">close</a> being called, this is set to the <a href="../-out-feed/-companion/-no-op.html">Encoder.OutFeed.NoOp</a> instance which ensures any local object references that the initial <a href="../-out-feed/index.html">OutFeed</a> has are not leaked and can be promptly GCd.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -119,9 +138,9 @@
         </div>
       </div>
       <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
+        <h2 class="tableheader">Functions</h2>
         <div class="table"><a data-name="930718716%2FFunctions%2F319166921" anchor-label="close" id="930718716%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="close.html"><span><span>close</span></span></a></div>
@@ -136,7 +155,7 @@
             </div>
           </div>
 <a data-name="-1125326987%2FFunctions%2F319166921" anchor-label="consume" id="-1125326987%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="consume.html"><span><span>consume</span></span></a></div>
@@ -151,7 +170,7 @@
             </div>
           </div>
 <a data-name="670582105%2FFunctions%2F319166921" anchor-label="consumeProtected" id="670582105%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="consume-protected.html"><span>consume</span><wbr><span><span>Protected</span></span></a></div>
@@ -166,7 +185,7 @@
             </div>
           </div>
 <a data-name="143867203%2FFunctions%2F319166921" anchor-label="doFinalProtected" id="143867203%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="do-final-protected.html"><span>do</span><wbr><span>Final</span><wbr><span><span>Protected</span></span></a></div>
@@ -175,13 +194,13 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="do-final-protected.html"><span class="token function">doFinalProtected</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Implementations should perform final operations on their buffered input, <strong>AND</strong> reset any stateful variables they may have. This is called by both <a href="flush.html">flush</a> and <a href="../../../../../library/core/io.matthewnelson.encoding.core/-encoder/-feed/do-final.html">doFinal</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="do-final-protected.html"><span class="token function">doFinalProtected</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Implementations should perform final operations on their buffered input, <strong>AND</strong> reset any stateful variables they may have. This is called by both <a href="../../-encoder-decoder/-feed/flush.html">flush</a> and <a href="../../-encoder-decoder/-feed/do-final.html">doFinal</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
 <a data-name="-470692752%2FFunctions%2F319166921" anchor-label="flush" id="-470692752%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="flush.html"><span><span>flush</span></span></a></div>
@@ -196,7 +215,7 @@
             </div>
           </div>
 <a data-name="1100784304%2FFunctions%2F319166921" anchor-label="isClosed" id="1100784304%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="is-closed.html"><span>is</span><wbr><span><span>Closed</span></span></a></div>
@@ -216,17 +235,21 @@
   </div>
 </div>
     <div class="footer">
-        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
-        <span>© 2021-2025 Copyright Matthew Nelson</span>
-        <span class="pull-right">
-            <span>Generated by </span>
-            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
-                <span>dokka</span>
-            </a>
-        </span>
-    </div>
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2021-2025 Copyright Matthew Nelson</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

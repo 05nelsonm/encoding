@@ -10,3 +10,5 @@ io.matthewnelson.encoding.base64
 module:library/core
 io.matthewnelson.encoding.core
 io.matthewnelson.encoding.core.util
+module:library/utf8
+io.matthewnelson.encoding.utf8

@@ -1,22 +1,22 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>Config</title>
-<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../../";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+<link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../../../scripts/sourceset_dependencies.js" async></script>
@@ -24,33 +24,31 @@
 <link href="../../../../../styles/main.css" rel="Stylesheet">
 <link href="../../../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <link href="../../../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../../scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="../../../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../../../ui-kit/ui-kit.min.js" defer></script>
-<script type="text/javascript" src="../../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../../../ui-kit/ui-kit.min.js" defer></script></head>
 <body>
-    <div class="root">
-    <nav class="navigation theme-dark" id="navigation-wrapper">
-<a class="library-name--link" href="../../../../../index.html">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../../../index.html" tabindex="1">
                     encoding
             </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
-        <div class="library-version" id="library-version">2.5.0
+        <div class="library-version" id="library-version">2.6.0
         </div>
         <div class="navigation-controls">
-        <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":library:core/commonMain">common</button>
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":library:core/commonMain">common</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
-                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
-                    <div class="dropdown--header"><span>Platform filter</span>
-                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
@@ -64,54 +62,56 @@
                 </ul>
                 <div class="dropdown--overlay"></div>
             </div>
-        </div>
+        </ul>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
             </button>
             <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
                 API
             </div>
         </div>
-    </nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
-                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
-                        <div class="dropdown--header">
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
                             <span>
                                     encoding
                             </span>
-                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
-                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
-                            </button>
-                        </div>
-                        <div class="sidebar--inner" id="sideMenu"></div>
-                    </ul>
-                    <div class="dropdown--overlay"></div>
-                </div>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
 <div class="main-content" data-page-type="classlike" id="content" pageids="core::io.matthewnelson.encoding.core/EncoderDecoder.Config///PointingToDeclaration//319166921">
   <div class="breadcrumbs"><a href="../../../index.html">core</a><span class="delimiter">/</span><a href="../../index.html">io.matthewnelson.encoding.core</a><span class="delimiter">/</span><a href="../index.html">EncoderDecoder</a><span class="delimiter">/</span><span class="current">Config</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Config</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">Config</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>isLenient<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>paddingChar<span class="token operator">: </span><span data-unresolved-link="kotlin/Char///PointingToDeclaration/">Char</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="clearfix"><span class="floating-right">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/EncoderDecoder.kt#L55">source</a>)</span></span></div><p class="paragraph">Base configuration for an <a href="../index.html">EncoderDecoder</a>. More options may be specified by the implementing class.</p><h4 class="">Parameters</h4><div class="table"><div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>is</span><wbr><span><span>Lenient</span></span></u></div></span></div><div><div class="title"><p class="paragraph">If true, decoding will skip over spaces and new lines ('\n', '\r', ' ', '\t'). If false, an <a href="../../-encoding-exception/index.html">EncodingException</a> will be thrown when encountering those characters. If null, those characters are passed along to <a href="../../-decoder/-feed/consume-protected.html">Decoder.Feed.consumeProtected</a>.</p></div></div></div></div><div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>line</span><wbr><span>Break</span><wbr><span><span>Interval</span></span></u></div></span></div><div><div class="title"><p class="paragraph">If greater than 0 and <a href="is-lenient.html">isLenient</a> is not <strong>false</strong> (i.e. is null or true), new lines will be output at the expressed <a href="line-break-interval.html">lineBreakInterval</a> when encoding.</p></div></div></div></div><div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><u><span>padding</span><wbr><span><span>Char</span></span></u></div></span></div><div><div class="title"><p class="paragraph">The character that would be used when padding the encoded output; <strong>NOT</strong> "if padding should be used". If the encoding specification does not use padding, pass <code class="lang-kotlin">null</code>.</p></div></div></div></div></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">Config</a><span class="source-link-wrapper"><span class="source-link" data-element-type="source-link">(<a href="https://github.com/05nelsonm/encoding/tree/master/library/core/src/commonMain/kotlin/io/matthewnelson/encoding/core/EncoderDecoder.kt#L52">source</a>)</span></span></div><p class="paragraph">Base configuration for an <a href="../index.html">EncoderDecoder</a>. More options may be specified by the implementation.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="CONSTRUCTOR">
-        <h2 class="">Constructors</h2>
-        <div class="table"><a data-name="-372188605%2FConstructors%2F319166921" anchor-label="Config" id="-372188605%2FConstructors%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+        <h2 class="tableheader">Constructors</h2>
+        <div class="table"><a data-name="-691777787%2FConstructors%2F319166921" anchor-label="Config" id="-691777787%2FConstructors%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-config.html"><span><span>Config</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-372188605%2FConstructors%2F319166921"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-691777787%2FConstructors%2F319166921"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isLenient<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span><span class="token punctuation">, </span></span><span class="parameter ">paddingChar<span class="token operator">: </span><span data-unresolved-link="kotlin/Char///PointingToDeclaration/">Char</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">isLenient<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakResetOnFlush<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token punctuation">, </span></span><span class="parameter ">paddingChar<span class="token operator">: </span><span data-unresolved-link="kotlin/Char///PointingToDeclaration/">Char</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">maxDecodeEmit<span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span><span class="token punctuation">, </span></span><span class="parameter ">maxEncodeEmit<span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span><span class="token punctuation">, </span></span><span class="parameter ">backFillBuffers<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Instantiates a new <a href="-config.html">Config</a> instance.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -119,9 +119,9 @@
         </div>
       </div>
       <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
+        <h2 class="tableheader">Types</h2>
         <div class="table"><a data-name="1943048787%2FClasslikes%2F319166921" anchor-label="Companion" id="1943048787%2FClasslikes%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
@@ -136,7 +136,7 @@
             </div>
           </div>
 <a data-name="1479700239%2FClasslikes%2F319166921" anchor-label="Setting" id="1479700239%2FClasslikes%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-setting/index.html"><span><span>Setting</span></span></a></div>
@@ -153,9 +153,24 @@
         </div>
       </div>
       <div data-togglable="PROPERTY">
-        <h2 class="">Properties</h2>
-        <div class="table"><a data-name="-383001921%2FProperties%2F319166921" anchor-label="isLenient" id="-383001921%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+        <h2 class="tableheader">Properties</h2>
+        <div class="table"><a data-name="1044603939%2FProperties%2F319166921" anchor-label="backFillBuffers" id="1044603939%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="back-fill-buffers.html"><span>back</span><wbr><span>Fill</span><wbr><span><span>Buffers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1044603939%2FProperties%2F319166921"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="back-fill-buffers.html">backFillBuffers</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span></div><div class="brief "><p class="paragraph">When the functions <a href="../../-encoder/-companion/encode-to-string.html">Encoder.encodeToString</a>, <a href="../../-encoder/-companion/encode-to-char-array.html">Encoder.encodeToCharArray</a>, <a href="../../-encoder/-companion/encode-buffered.html">Encoder.encodeBuffered</a>, <a href="../../-decoder/-companion/decode-to-byte-array.html">Encoder.encodeBufferedAsync</a>, <a href="../../-decoder/-companion/decode-buffered.html">Decoder.decodeBuffered</a>, and <a href="../../-decoder/-companion/decode-buffered-async.html">Decoder.decodeBufferedAsync</a> are utilized, they may allocate an appropriate medium (a buffer) to store encoded/decoded data (e.g. a <span data-unresolved-link="kotlin.text/StringBuilder///PointingToDeclaration/">StringBuilder</span>, <span data-unresolved-link="kotlin/CharArray///PointingToDeclaration/">CharArray</span>, or <span data-unresolved-link="kotlin/ByteArray///PointingToDeclaration/">ByteArray</span>). Depending on the underlying operation, such as an array over-allocation due to <a href="encode-out-max-size.html">encodeOutMaxSize</a> or <a href="decode-out-max-size.html">decodeOutMaxSize</a>, those initially allocated buffers may not be returned as the function's result. Prior versions of this library always back-filled them with <code class="lang-kotlin">0</code> or the null character <code class="lang-kotlin">\u0000</code>, but that can be computationally expensive for large datasets and potentially unnecessary if data is known to not be sensitive in nature.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-383001921%2FProperties%2F319166921" anchor-label="isLenient" id="-383001921%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="is-lenient.html"><span>is</span><wbr><span><span>Lenient</span></span></a></div>
@@ -164,13 +179,13 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="is-lenient.html">isLenient</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token operator">?</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="is-lenient.html">isLenient</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">If <code class="lang-kotlin">true</code>, the characters ('\n', '\r', ' ', '\t') will be skipped over (i.e. allowed but ignored) during decoding operations. If <code class="lang-kotlin">false</code>, a <a href="../../-malformed-encoding-exception/index.html">MalformedEncodingException</a> will be thrown when those characters are encountered. If <code class="lang-kotlin">null</code>, those characters are passed along to the <a href="../../-decoder/-feed/index.html">Decoder.Feed</a> implementation as input.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
 <a data-name="-46687044%2FProperties%2F319166921" anchor-label="lineBreakInterval" id="-46687044%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="line-break-interval.html"><span>line</span><wbr><span>Break</span><wbr><span><span>Interval</span></span></a></div>
@@ -179,13 +194,73 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="line-break-interval.html">lineBreakInterval</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="line-break-interval.html">lineBreakInterval</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span></div><div class="brief "><p class="paragraph">If greater than <code class="lang-kotlin">0</code>, <a href="../../-encoder/new-encoder-feed.html">Encoder.newEncoderFeed</a> may use a <a href="../../../io.matthewnelson.encoding.core.util/-line-break-out-feed/index.html">LineBreakOutFeed</a> such that for every <a href="line-break-interval.html">lineBreakInterval</a> number of encoded characters output by the <a href="../../-encoder/-feed/index.html">Encoder.Feed</a>, the next encoded character output will be preceded with a new line character <code class="lang-kotlin">\n</code>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1305557131%2FProperties%2F319166921" anchor-label="lineBreakResetOnFlush" id="1305557131%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="line-break-reset-on-flush.html"><span>line</span><wbr><span>Break</span><wbr><span>Reset</span><wbr><span>On</span><wbr><span><span>Flush</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1305557131%2FProperties%2F319166921"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="line-break-reset-on-flush.html">lineBreakResetOnFlush</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span></div><div class="brief "><p class="paragraph">If and only if <a href="../../-encoder/new-encoder-feed.html">Encoder.newEncoderFeed</a> wraps the <a href="../../-encoder/-out-feed/index.html">Encoder.OutFeed</a> passed to it with a <a href="../../../io.matthewnelson.encoding.core.util/-line-break-out-feed/index.html">LineBreakOutFeed</a>, will this setting then be used for the <a href="../../../io.matthewnelson.encoding.core.util/-line-break-out-feed/reset-on-flush.html">LineBreakOutFeed.resetOnFlush</a> parameter. If <code class="lang-kotlin">true</code> and <a href="../../-encoder/new-encoder-feed.html">Encoder.newEncoderFeed</a> wrapped its provided <a href="../../-encoder/-out-feed/index.html">Encoder.OutFeed</a>, then <a href="../../../io.matthewnelson.encoding.core.util/-line-break-out-feed/reset.html">LineBreakOutFeed.reset</a> will be called after every invocation of <a href="../../-encoder/-feed/flush.html">Encoder.Feed.flush</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1686219207%2FProperties%2F319166921" anchor-label="maxDecodeEmit" id="1686219207%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-decode-emit.html"><span>max</span><wbr><span>Decode</span><wbr><span><span>Emit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1686219207%2FProperties%2F319166921"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="max-decode-emit.html">maxDecodeEmit</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></div><div class="brief "><p class="paragraph">The maximum number of bytes that the implementation's <a href="../../-decoder/-feed/index.html">Decoder.Feed</a> can potentially emit on a single invocation of <a href="../../-decoder/-feed/consume.html">Decoder.Feed.consume</a>, <a href="../../-decoder/-feed/flush.html">Decoder.Feed.flush</a>, or <a href="../-feed/do-final.html">Decoder.Feed.doFinal</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-243773793%2FProperties%2F319166921" anchor-label="maxEncodeEmit" id="-243773793%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-encode-emit.html"><span>max</span><wbr><span>Encode</span><wbr><span><span>Emit</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-243773793%2FProperties%2F319166921"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="max-encode-emit.html">maxEncodeEmit</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></div><div class="brief "><p class="paragraph">The maximum number of characters that the implementation's <a href="../../-encoder/-feed/index.html">Encoder.Feed</a> can potentially emit on a single invocation of <a href="../../-encoder/-feed/consume.html">Encoder.Feed.consume</a>, <a href="../../-encoder/-feed/flush.html">Encoder.Feed.flush</a>, or <a href="../-feed/do-final.html">Encoder.Feed.doFinal</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="354249878%2FProperties%2F319166921" anchor-label="maxEncodeEmitWithLineBreak" id="354249878%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="max-encode-emit-with-line-break.html"><span>max</span><wbr><span>Encode</span><wbr><span>Emit</span><wbr><span>With</span><wbr><span>Line</span><wbr><span><span>Break</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="354249878%2FProperties%2F319166921"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="max-encode-emit-with-line-break.html">maxEncodeEmitWithLineBreak</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></div><div class="brief "><p class="paragraph">The maximum number of characters that the <a href="../../-encoder/-feed/index.html">Encoder.Feed</a> produced by <a href="../../-encoder/new-encoder-feed.html">Encoder.newEncoderFeed</a> can potentially emit on a single invocation of <a href="../../-encoder/-feed/consume.html">Encoder.Feed.consume</a>, <a href="../../-encoder/-feed/flush.html">Encoder.Feed.flush</a>, or <a href="../-feed/do-final.html">Encoder.Feed.doFinal</a>. This is the calculated result from <a href="-companion/calculate-max-encode-emit.html">Companion.calculateMaxEncodeEmit</a> using <a href="max-encode-emit.html">maxEncodeEmit</a> and <a href="line-break-interval.html">lineBreakInterval</a> as arguments.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
 <a data-name="-1512801243%2FProperties%2F319166921" anchor-label="paddingChar" id="-1512801243%2FProperties%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="padding-char.html"><span>padding</span><wbr><span><span>Char</span></span></a></div>
@@ -194,7 +269,7 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="padding-char.html">paddingChar</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Char///PointingToDeclaration/">Char</span><span class="token operator">?</span></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><span data-unresolved-link="kotlin.jvm/JvmField///PointingToDeclaration/"><span class="token annotation builtin">JvmField</span></span></div></div><span class="token keyword">val </span><a href="padding-char.html">paddingChar</a><span class="token operator">: </span><span data-unresolved-link="kotlin/Char///PointingToDeclaration/">Char</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The character that is used when padding encoded output. This is used by <a href="../../-decoder/-feed/index.html">Decoder.Feed</a> to mark input as "completing" such that further non-padding input can be exceptionally rejected with a <a href="../../-malformed-encoding-exception/index.html">MalformedEncodingException</a>. If the encoding specification does not use padding, <code class="lang-kotlin">null</code> may be specified.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -202,9 +277,9 @@
         </div>
       </div>
       <div data-togglable="FUNCTION">
-        <h2 class="">Functions</h2>
+        <h2 class="tableheader">Functions</h2>
         <div class="table"><a data-name="-506535600%2FFunctions%2F319166921" anchor-label="decodeOutMaxSize" id="-506535600%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="decode-out-max-size.html"><span>decode</span><wbr><span>Out</span><wbr><span>Max</span><wbr><span><span>Size</span></span></a></div>
@@ -219,7 +294,7 @@
             </div>
           </div>
 <a data-name="-1455390403%2FFunctions%2F319166921" anchor-label="decodeOutMaxSizeOrFail" id="-1455390403%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="decode-out-max-size-or-fail.html"><span>decode</span><wbr><span>Out</span><wbr><span>Max</span><wbr><span>Size</span><wbr><span>Or</span><wbr><span><span>Fail</span></span></a></div>
@@ -234,7 +309,7 @@
             </div>
           </div>
 <a data-name="1698331986%2FFunctions%2F319166921" anchor-label="decodeOutMaxSizeOrFailProtected" id="1698331986%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="decode-out-max-size-or-fail-protected.html"><span>decode</span><wbr><span>Out</span><wbr><span>Max</span><wbr><span>Size</span><wbr><span>Or</span><wbr><span>Fail</span><wbr><span><span>Protected</span></span></a></div>
@@ -243,13 +318,13 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="decode-out-max-size-or-fail-protected.html"><span class="token function">decodeOutMaxSizeOrFailProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">encodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span><span class="token punctuation">, </span></span><span class="parameter ">input<span class="token operator">: </span><a href="../../../io.matthewnelson.encoding.core.util/-decoder-input/index.html">DecoderInput</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></div><div class="brief "><p class="paragraph">Will only receive values greater than 0.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="decode-out-max-size-or-fail-protected.html"><span class="token function">decodeOutMaxSizeOrFailProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">encodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span><span class="token punctuation">, </span></span><span class="parameter ">input<span class="token operator">: </span><a href="../../../io.matthewnelson.encoding.core.util/-decoder-input/index.html">DecoderInput</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></div><div class="brief "><p class="paragraph">Calculate and return a maximum size that a decoding would be for the <a href="decode-out-max-size-or-fail-protected.html">encodedSize</a> data.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
 <a data-name="-1674032010%2FFunctions%2F319166921" anchor-label="decodeOutMaxSizeProtected" id="-1674032010%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="decode-out-max-size-protected.html"><span>decode</span><wbr><span>Out</span><wbr><span>Max</span><wbr><span>Size</span><wbr><span><span>Protected</span></span></a></div>
@@ -258,28 +333,28 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="decode-out-max-size-protected.html"><span class="token function">decodeOutMaxSizeProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">encodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="brief "><p class="paragraph">Will only receive values greater than 0.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="decode-out-max-size-protected.html"><span class="token function">decodeOutMaxSizeProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">encodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="brief "><p class="paragraph">Calculate and return a maximum size that a decoding would be for the <a href="decode-out-max-size-protected.html">encodedSize</a> data.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
-<a data-name="-32702706%2FFunctions%2F319166921" anchor-label="encodeOutSize" id="-32702706%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+<a data-name="284974194%2FFunctions%2F319166921" anchor-label="encodeOutMaxSize" id="284974194%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="encode-out-size.html"><span>encode</span><wbr><span>Out</span><wbr><span><span>Size</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-32702706%2FFunctions%2F319166921"></span>
+                  <div><a href="encode-out-max-size.html"><span>encode</span><wbr><span>Out</span><wbr><span>Max</span><wbr><span><span>Size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="284974194%2FFunctions%2F319166921"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="encode-out-size.html"><span class="token function">encodeOutSize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="brief "><p class="paragraph">Pre-calculates and returns the size of the output, after encoding would occur, based off of the <a href="index.html">Config</a> options set.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="encode-out-size.html"><span class="token function">encodeOutSize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="brief "><p class="paragraph">Pre-calculates and returns the size of the output, after encoding would occur, based off of the <a href="index.html">Config</a> options set and expressed <a href="encode-out-size.html">lineBreakInterval</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><a href="encode-out-max-size.html"><span class="token function">encodeOutMaxSize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="encode-out-max-size.html"><span class="token function">encodeOutMaxSize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="encode-out-max-size.html"><span class="token function">encodeOutMaxSize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="encode-out-max-size.html"><span class="token function">encodeOutMaxSize</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span><span class="token punctuation">, </span></span><span class="parameter ">lineBreakInterval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="brief "><p class="paragraph">Pre-calculates and returns the maximum size of the output, after encoding would occur, based off the <a href="index.html">Config</a> options set for the implementation. Most implementations, such as <code class="lang-kotlin">Base16</code>, <code class="lang-kotlin">Base32</code>, and <code class="lang-kotlin">Base64</code>, are able to return an exact size whereby no post-encoding resize is necessary, while others, such as <code class="lang-kotlin">UTF-8</code> byte to text transformations, return a maximum and may require a post-encoding resize.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
 <a data-name="-1702716576%2FFunctions%2F319166921" anchor-label="encodeOutSizeProtected" id="-1702716576%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="encode-out-size-protected.html"><span>encode</span><wbr><span>Out</span><wbr><span>Size</span><wbr><span><span>Protected</span></span></a></div>
@@ -288,13 +363,13 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="encode-out-size-protected.html"><span class="token function">encodeOutSizeProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="brief "><p class="paragraph">Will only receive values greater than 0.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">abstract </span><span class="token keyword">fun </span><a href="encode-out-size-protected.html"><span class="token function">encodeOutSizeProtected</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">unEncodedSize<span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin/Long///PointingToDeclaration/">Long</span></div><div class="brief "><p class="paragraph">Calculate and return an exact (preferably), or maximum, size that an encoding would be for the <a href="encode-out-size-protected.html">unEncodedSize</a> data.</p></div></div></div>
                 </div>
               </div>
             </div>
           </div>
 <a data-name="460434292%2FFunctions%2F319166921" anchor-label="toStringAddSettings" id="460434292%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="to-string-add-settings.html"><span>to</span><wbr><span>String</span><wbr><span>Add</span><wbr><span><span>Settings</span></span></a></div>
@@ -314,17 +389,21 @@
   </div>
 </div>
     <div class="footer">
-        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
-        <span>© 2021-2025 Copyright Matthew Nelson</span>
-        <span class="pull-right">
-            <span>Generated by </span>
-            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
-                <span>dokka</span>
-            </a>
-        </span>
-    </div>
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2021-2025 Copyright Matthew Nelson</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

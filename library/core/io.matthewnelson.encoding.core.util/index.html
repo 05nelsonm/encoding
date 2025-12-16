@@ -1,22 +1,22 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>io.matthewnelson.encoding.core.util</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
 <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
@@ -24,33 +24,31 @@
 <link href="../../../styles/main.css" rel="Stylesheet">
 <link href="../../../styles/prism.css" rel="Stylesheet">
 <link href="../../../styles/logo-styles.css" rel="Stylesheet">
-<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
 <link href="../../../ui-kit/ui-kit.min.css" rel="Stylesheet">
-<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../../scripts/main.js" defer></script>
 <script type="text/javascript" src="../../../scripts/prism.js" async></script>
-<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script>
-<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<script type="text/javascript" src="../../../ui-kit/ui-kit.min.js" defer></script></head>
 <body>
-    <div class="root">
-    <nav class="navigation theme-dark" id="navigation-wrapper">
-<a class="library-name--link" href="../../../index.html">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+<a class="library-name--link" href="../../../index.html" tabindex="1">
                     encoding
             </a>        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle" type="button">Toggle table of contents
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
-        <div class="library-version" id="library-version">2.5.0
+        <div class="library-version" id="library-version">2.6.0
         </div>
         <div class="navigation-controls">
-        <div class="filter-section filter-section_loading" id="filter-section">
-                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":library:core/commonMain">common</button>
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":library:core/commonMain">common</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
-                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox">
-                    <div class="dropdown--header"><span>Platform filter</span>
-                        <button class="button" data-role="dropdown-toggle" aria-label="Close platform filter">
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
@@ -64,44 +62,46 @@
                 </ul>
                 <div class="dropdown--overlay"></div>
             </div>
-        </div>
+        </ul>
             <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button" type="button">Switch theme
             </button>
             <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
                 API
             </div>
         </div>
-    </nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
-                    <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox">
-                        <div class="dropdown--header">
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config="{&quot;defaultSize&quot;: 280, &quot;minSize&quot;: 200, &quot;maxSize&quot;: 400}">
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list" data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
                             <span>
                                     encoding
                             </span>
-                            <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
-                                <i class="ui-kit-icon ui-kit-icon_cross"></i>
-                            </button>
-                        </div>
-                        <div class="sidebar--inner" id="sideMenu"></div>
-                    </ul>
-                    <div class="dropdown--overlay"></div>
-                </div>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
 <div class="main-content" data-page-type="package" id="content" pageids="core::io.matthewnelson.encoding.core.util////PointingToDeclaration//319166921">
   <div class="breadcrumbs"><a href="../index.html">core</a><span class="delimiter">/</span><span class="current">io.matthewnelson.encoding.core.util</span></div>
   <div class="cover ">
     <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
-    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
     <div class="tabs-section-body">
       <div data-togglable="TYPE">
-        <h2 class="">Types</h2>
+        <h2 class="tableheader">Types</h2>
         <div class="table"><a data-name="1257673765%2FClasslikes%2F319166921" anchor-label="DecoderInput" id="1257673765%2FClasslikes%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-decoder-input/index.html"><span>Decoder</span><wbr><span><span>Input</span></span></a></div>
@@ -116,7 +116,7 @@
             </div>
           </div>
 <a data-name="1497635853%2FClasslikes%2F319166921" anchor-label="FeedBuffer" id="1497635853%2FClasslikes%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-feed-buffer/index.html"><span>Feed</span><wbr><span><span>Buffer</span></span></a></div>
@@ -131,7 +131,7 @@
             </div>
           </div>
 <a data-name="1318947658%2FClasslikes%2F319166921" anchor-label="LineBreakOutFeed" id="1318947658%2FClasslikes%2F319166921" data-filterable-set=":library:core/commonMain"></a>
-          <div class="table-row" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-line-break-out-feed/index.html"><span>Line</span><wbr><span>Break</span><wbr><span>Out</span><wbr><span><span>Feed</span></span></a></div>
@@ -140,7 +140,26 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-line-break-out-feed/index.html">LineBreakOutFeed</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>interval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span><span class="token punctuation">, </span></span><span class="parameter ">out<span class="token operator">: </span><a href="../io.matthewnelson.encoding.core/-encoder/-out-feed/index.html">Encoder.OutFeed</a></span></span><span class="token punctuation">)</span> : <a href="../io.matthewnelson.encoding.core/-encoder/-out-feed/index.html">Encoder.OutFeed</a></div><div class="brief "><p class="paragraph">A Wrapper around another <a href="../io.matthewnelson.encoding.core/-encoder/-out-feed/index.html">Encoder.OutFeed</a> to hijack the output and insert new line characters at every expressed <a href="-line-break-out-feed/interval.html">interval</a>.</p></div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-line-break-out-feed/index.html">LineBreakOutFeed</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>interval<span class="token operator">: </span><span data-unresolved-link="kotlin/Byte///PointingToDeclaration/">Byte</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>resetOnFlush<span class="token operator">: </span><span data-unresolved-link="kotlin/Boolean///PointingToDeclaration/">Boolean</span><span class="token punctuation">, </span></span><span class="parameter ">out<span class="token operator">: </span><a href="../io.matthewnelson.encoding.core/-encoder/-out-feed/index.html">Encoder.OutFeed</a></span></span><span class="token punctuation">)</span> : <a href="../io.matthewnelson.encoding.core/-encoder/-out-feed/index.html">Encoder.OutFeed</a></div><div class="brief "><p class="paragraph">A Wrapper around another <a href="../io.matthewnelson.encoding.core/-encoder/-out-feed/index.html">Encoder.OutFeed</a> to hijack the output and insert new line characters at every expressed <a href="../../../library/core/io.matthewnelson.encoding.core.util/-line-break-out-feed/--root--.html">interval</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="EXTENSION_FUNCTION">
+        <h2 class="tableheader">Functions</h2>
+        <div class="table"><a data-name="-723719478%2FFunctions%2F319166921" anchor-label="wipe" id="-723719478%2FFunctions%2F319166921" data-filterable-set=":library:core/commonMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":library:core/commonMain" data-filterable-set=":library:core/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="wipe.html"><span><span>wipe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-723719478%2FFunctions%2F319166921"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":library:core/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span data-unresolved-link="kotlin.text/StringBuilder///PointingToDeclaration/">StringBuilder</span><span class="token punctuation">.</span><a href="wipe.html"><span class="token function">wipe</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin.text/StringBuilder///PointingToDeclaration/">StringBuilder</span></div><div class="brief "><p class="paragraph">Wipes the <span data-unresolved-link="kotlin.text/StringBuilder///PointingToDeclaration/">StringBuilder</span> backing array from index <code class="lang-kotlin">0</code> to <span data-unresolved-link="kotlin.text/StringBuilder/length/#/PointingToDeclaration/">StringBuilder.length</span> (exclusive) with the null character <code class="lang-kotlin">\u0000</code>, and then sets it's length back to <code class="lang-kotlin">0</code>. If <span data-unresolved-link="kotlin.text/StringBuilder/length/#/PointingToDeclaration/">StringBuilder.length</span> is <code class="lang-kotlin">0</code>, then <span data-unresolved-link="kotlin.text/StringBuilder/capacity/#/PointingToDeclaration/">StringBuilder.capacity</span> will be used.</p></div><div class="symbol monospace"><span class="token keyword">fun </span><span data-unresolved-link="kotlin.text/StringBuilder///PointingToDeclaration/">StringBuilder</span><span class="token punctuation">.</span><a href="wipe.html"><span class="token function">wipe</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">len<span class="token operator">: </span><span data-unresolved-link="kotlin/Int///PointingToDeclaration/">Int</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="kotlin.text/StringBuilder///PointingToDeclaration/">StringBuilder</span></div><div class="brief "><p class="paragraph">Wipes the <span data-unresolved-link="kotlin.text/StringBuilder///PointingToDeclaration/">StringBuilder</span> backing array from index <code class="lang-kotlin">0</code> to <a href="wipe.html">len</a> (exclusive) with the null character <code class="lang-kotlin">\u0000</code>, and then sets it's length back to <code class="lang-kotlin">0</code>. If <a href="wipe.html">len</a> is less than <code class="lang-kotlin">1</code> or greater than <span data-unresolved-link="kotlin.text/StringBuilder/capacity/#/PointingToDeclaration/">StringBuilder.capacity</span>, then <span data-unresolved-link="kotlin.text/StringBuilder/capacity/#/PointingToDeclaration/">StringBuilder.capacity</span> is used in place of <a href="wipe.html">len</a>.</p></div></div></div>
                 </div>
               </div>
             </div>
@@ -151,17 +170,21 @@
   </div>
 </div>
     <div class="footer">
-        <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
-        <span>© 2021-2025 Copyright Matthew Nelson</span>
-        <span class="pull-right">
-            <span>Generated by </span>
-            <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
-                <span>dokka</span>
-            </a>
-        </span>
-    </div>
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2021-2025 Copyright Matthew Nelson</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
