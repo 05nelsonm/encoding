@@ -295,6 +295,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
      * A helper for calculating the exact output byte-size of a text to UTF-8 byte transformation.
      * */
     public open class CharPreProcessor private constructor(
+
+        /**
+         * The strategy to use when encountering invalid character sequences.
+         * */
         @JvmField
         public val strategy: ReplacementStrategy,
     ) {
@@ -334,6 +338,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy] for the
              * [UTF8] encoder/decoder.
              *
+             * @param [utf8] The encoder/decoder to retrieve the [ReplacementStrategy] from.
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
              * */
@@ -345,6 +353,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy] for the
              * [UTF8.Config].
              *
+             * @param [config] The [Config] to retrieve the [ReplacementStrategy] from.
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
              * */
@@ -354,6 +366,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
             /**
              * Calculate the UTF-8 byte output size for the provided array and [ReplacementStrategy].
+             *
+             * @param [strategy] The [ReplacementStrategy].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
              *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
@@ -367,8 +383,80 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
 
             /**
+             * Calculate the UTF-8 byte output size for [len] number of characters, starting at index [offset],
+             * from the provided array, and [ReplacementStrategy] for the [UTF8] encoder/decoder.
+             *
+             * @param [utf8] The encoder/decoder to retrieve the [ReplacementStrategy] from.
+             * @param [offset] The index in the array to start at.
+             * @param [len] The number of characters, starting at index [offset].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
+             * @throws [IndexOutOfBoundsException] If [offset] or [len] are inappropriate.
+             * */
+            @JvmStatic
+            @JvmName("sizeOf")
+            public inline fun CharArray.sizeUTF8(utf8: UTF8, offset: Int, len: Int): Long {
+                return sizeUTF8(utf8.config.replacementStrategy, offset, len)
+            }
+
+            /**
+             * Calculate the UTF-8 byte output size for [len] number of characters, starting at index [offset],
+             * from the provided array, and [ReplacementStrategy] for the [UTF8.Config].
+             *
+             * @param [config] The [Config] to retrieve the [ReplacementStrategy] from.
+             * @param [offset] The index in the array to start at.
+             * @param [len] The number of characters, starting at index [offset].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
+             * @throws [IndexOutOfBoundsException] If [offset] or [len] are inappropriate.
+             * */
+            @JvmStatic
+            @JvmName("sizeOf")
+            public inline fun CharArray.sizeUTF8(config: Config, offset: Int, len: Int): Long {
+                return sizeUTF8(config.replacementStrategy, offset, len)
+            }
+
+            /**
+             * Calculate the UTF-8 byte output size for [len] number of characters, starting at index [offset],
+             * from the provided array, and [ReplacementStrategy].
+             *
+             * @param [strategy] The [ReplacementStrategy].
+             * @param [offset] The index in the array to start at.
+             * @param [len] The number of characters, starting at index [offset].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
+             * @throws [IndexOutOfBoundsException] If [offset] or [len] are inappropriate.
+             * */
+            @JvmStatic
+            @JvmName("sizeOf")
+            public fun CharArray.sizeUTF8(strategy: ReplacementStrategy, offset: Int, len: Int): Long {
+                if (offset < 0) throw IndexOutOfBoundsException("offset[$offset] < 0")
+                if (len < 0) throw IndexOutOfBoundsException("len[$len] < 0")
+                if (offset > size - len) {
+                    throw IndexOutOfBoundsException("offset[$offset] > size[$size] - len[$len]")
+                }
+
+                val cpp = of(strategy)
+                repeat(len) { i -> cpp + this[i + offset] }
+                return cpp.doFinal()
+            }
+
+            /**
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8] encoder/decoder.
+             *
+             * @param [utf8] The encoder/decoder to retrieve the [ReplacementStrategy] from.
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
              *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
@@ -381,6 +469,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8.Config].
              *
+             * @param [config] The [Config] to retrieve the [ReplacementStrategy] from.
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
              * */
@@ -390,6 +482,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
             /**
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy].
+             *
+             * @param [strategy] The [ReplacementStrategy].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
              *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
@@ -403,8 +499,80 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
             }
 
             /**
+             * Calculate the UTF-8 byte output size for [len] number of characters, starting at index [offset],
+             * from the provided sequence, and [ReplacementStrategy] for the [UTF8] encoder/decoder.
+             *
+             * @param [utf8] The encoder/decoder to retrieve the [ReplacementStrategy] from.
+             * @param [offset] The index in the sequence to start at.
+             * @param [len] The number of characters, starting at index [offset].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
+             * @throws [IndexOutOfBoundsException] If [offset] or [len] are inappropriate.
+             * */
+            @JvmStatic
+            @JvmName("sizeOf")
+            public inline fun CharSequence.sizeUTF8(utf8: UTF8, offset: Int, len: Int): Long {
+                return sizeUTF8(utf8.config.replacementStrategy, offset, len)
+            }
+
+            /**
+             * Calculate the UTF-8 byte output size for [len] number of characters, starting at index [offset],
+             * from the provided sequence, and [ReplacementStrategy] for the [UTF8.Config].
+             *
+             * @param [config] The [Config] to retrieve the [ReplacementStrategy] from.
+             * @param [offset] The index in the sequence to start at.
+             * @param [len] The number of characters, starting at index [offset].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
+             * @throws [IndexOutOfBoundsException] If [offset] or [len] are inappropriate.
+             * */
+            @JvmStatic
+            @JvmName("sizeOf")
+            public inline fun CharSequence.sizeUTF8(config: Config, offset: Int, len: Int): Long {
+                return sizeUTF8(config.replacementStrategy, offset, len)
+            }
+
+            /**
+             * Calculate the UTF-8 byte output size for [len] number of characters, starting at index [offset],
+             * from the provided sequence, and [ReplacementStrategy].
+             *
+             * @param [strategy] The [ReplacementStrategy].
+             * @param [offset] The index in the sequence to start at.
+             * @param [len] The number of characters, starting at index [offset].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
+             * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
+             *   [strategy] is [ReplacementStrategy.THROW].
+             * @throws [IndexOutOfBoundsException] If [offset] or [len] are inappropriate.
+             * */
+            @JvmStatic
+            @JvmName("sizeOf")
+            public fun CharSequence.sizeUTF8(strategy: ReplacementStrategy, offset: Int, len: Int): Long {
+                if (offset < 0) throw IndexOutOfBoundsException("offset[$offset] < 0")
+                if (len < 0) throw IndexOutOfBoundsException("len[$len] < 0")
+                if (offset > length - len) {
+                    throw IndexOutOfBoundsException("offset[$offset] > length[$length] - len[$len]")
+                }
+
+                val cpp = of(strategy)
+                repeat(len) { i -> cpp + this[i + offset] }
+                return cpp.doFinal()
+            }
+
+            /**
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8] encoder/decoder.
+             *
+             * @param [utf8] The encoder/decoder to retrieve the [ReplacementStrategy] from.
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
              *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
@@ -417,6 +585,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy] for the
              * [UTF8.Config].
              *
+             * @param [config] The [Config] to retrieve the [ReplacementStrategy] from.
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
+             *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
              * */
@@ -426,6 +598,10 @@ public open class UTF8: EncoderDecoder<UTF8.Config> {
 
             /**
              * Calculate the UTF-8 byte output size for the provided characters and [ReplacementStrategy].
+             *
+             * @param [strategy] The [ReplacementStrategy].
+             *
+             * @return The exact number of UTF-8 bytes this transformation would result in.
              *
              * @throws [MalformedEncodingException] If an invalid character sequence is encountered and the
              *   [strategy] is [ReplacementStrategy.THROW].
